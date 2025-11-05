@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { passages } from "./passages";
+import { passages } from "./content";
 
 export const Passage = () => {
   const { id } = useParams<{ id: string }>();
@@ -7,7 +7,6 @@ export const Passage = () => {
 
   const passageId = parseInt(id || "1", 10);
 
-  // Handle invalid passage IDs by showing an error
   if (isNaN(passageId) || passageId < 1) {
     return (
       <div className="adventure-book">
