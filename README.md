@@ -53,7 +53,12 @@ npm run dev
 npm run dev          # Start development server
 npm run build        # Build for production
 npm run preview      # Preview production build
-npm run lint         # Run ESLint
+
+# Linting
+npm run lint         # Run both ESLint and Stylelint
+npm run lint:es      # Run ESLint on JavaScript/TypeScript files
+npm run lint:styles  # Run Stylelint on CSS files
+npm run lint:styles:fix # Run Stylelint with auto-fix
 
 # Testing
 npm test             # Run tests in watch mode
@@ -95,7 +100,8 @@ npm run test:coverage # Run tests with coverage report
 
 ### Development Practices
 
-- **ESLint Configuration**: Enforcing code quality and consistency standards
+- **ESLint Configuration**: Enforcing JavaScript/TypeScript code quality and consistency standards
+- **Stylelint Configuration**: Modern CSS linting with standard rules for code quality and best practices
 - **Hot Module Replacement**: Fast development feedback with preserved state
 - **Build Optimization**: Production builds optimized for performance and bundle size
 - **Development vs Production**: Different configurations optimized for each environment
@@ -115,10 +121,13 @@ npm run test:coverage # Run tests with coverage report
 - Write tests for new features and maintain existing test coverage
 - Ensure components are accessible and follow semantic HTML principles
 - Keep components focused and composable
+- Follow CSS best practices using Stylelint to maintain consistent styling standards
 
 ### Development Workflow
 
 - Use the provided development scripts for consistent tooling
 - Run tests before committing changes
+- Run `npm run lint` to check both JavaScript/TypeScript and CSS code quality
+- Use individual linting commands (`lint:es`, `lint:styles`) for targeted checks
 - Follow the established project structure and naming conventions
 - Consider performance implications of changes, especially for user interactions
