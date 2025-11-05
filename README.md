@@ -131,3 +131,7 @@ npm run test:coverage # Run tests with coverage report
 - Use individual linting commands (`lint:es`, `lint:styles`) for targeted checks
 - Follow the established project structure and naming conventions
 - Consider performance implications of changes, especially for user interactions
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
