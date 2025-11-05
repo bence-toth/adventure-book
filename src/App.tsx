@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import "./App.css";
-import { Passage } from "./Passage.tsx";
-import { Introduction } from "./Introduction.tsx";
+import "./styles/App.css";
+import { Passage, Introduction } from "./components";
 
 const App = () => {
   return (

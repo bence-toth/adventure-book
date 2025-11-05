@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { passages } from "./content";
-import type { Choice } from "./data/types";
+import { passages } from "../data";
 import "./Passage.css";
 
 export const Passage = () => {
@@ -48,7 +47,7 @@ export const Passage = () => {
       <div className="passage">
         <p className="passage-text">{currentPassage.text}</p>
         <div className="choices">
-          {currentPassage.choices.map((choice: Choice, index: number) => (
+          {currentPassage.choices.map((choice, index) => (
             <button
               key={index}
               className="choice-button"

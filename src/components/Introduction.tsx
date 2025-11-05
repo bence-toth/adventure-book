@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { introduction } from "./content";
+import { introduction } from "../data";
 import "./Introduction.css";
 
 export const Introduction = () => {
@@ -14,7 +14,7 @@ export const Introduction = () => {
       <div className="introduction">
         <h1>{introduction.title}</h1>
         <div className="intro-text">
-          {introduction.paragraphs.map((paragraph: string, index: number) => (
+          {introduction.paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
