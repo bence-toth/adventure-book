@@ -1,39 +1,14 @@
-import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
-import { passages } from "./passages";
+import { Passage } from "./Passage.tsx";
 
 const App = () => {
-  const [currentPassageId, setCurrentPassageId] = useState(1);
-
-  const currentPassage = passages.find(
-    (passage) => passage.id === currentPassageId
-  );
-
-  if (!currentPassage) {
-    return <div className="error">Passage not found!</div>;
-  }
-
-  const handleChoiceClick = (nextId: number) => {
-    setCurrentPassageId(nextId);
-  };
-
   return (
-    <div className="adventure-book">
-      <div className="passage">
-        <p className="passage-text">{currentPassage.text}</p>
-        <div className="choices">
-          {currentPassage.choices.map((choice, index) => (
-            <button
-              key={index}
-              className="choice-button"
-              onClick={() => handleChoiceClick(choice.nextId)}
-            >
-              {choice.text}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/passage/:id" element={<Passage />} />
+      <Route path="/" element={<Navigate to="/passage/1" replace />} />
+      <Route path="*" element={<Navigate to="/passage/1" replace />} />
+    </Routes>
   );
 };
 
