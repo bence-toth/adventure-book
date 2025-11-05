@@ -1,0 +1,59 @@
+.adventure-book {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background);
+  padding: var(--space-3);
+  font-family: "Georgia", serif;
+}
+
+.passage {
+  max-width: 600px;
+  padding: var(--space-5);
+}
+
+.passage-text {
+  line-height: 1.75;
+  color: var(--color-foreground);
+  margin-bottom: var(--space-4);
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.choice-button {
+  background: var(--color-button-primary);
+  color: var(--color-on-primary);
+  border: 1px solid var(--color-button-border);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--space-1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 var(--space-1) var(--space-2) var(--shadow-primary);
+}
+
+.choice-button:hover {
+  transform: translateY(-2px);
+  background: var(--color-button-primary-hover);
+  box-shadow: 0 var(--space-1) var(--space-3) var(--shadow-secondary);
+}
+
+.choice-button:active {
+  transform: translateY(0);
+  background: var(--color-button-primary);
+  box-shadow: 0 2px var(--space-1) var(--shadow-primary);
+}
+
+.error {
+  color: var(--color-error);
+  text-align: center;
+  background: var(--color-surface);
+  padding: var(--space-3);
+  border-radius: var(--space-1);
+  border: 1px solid var(--color-border-subtle);
+  box-shadow: 0 var(--space-1) var(--space-2) var(--shadow-primary);
+}
