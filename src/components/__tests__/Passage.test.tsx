@@ -36,6 +36,9 @@ describe("Passage Component", () => {
       screen.getByText(/In the beginning, there was code/)
     ).toBeInTheDocument();
     expect(
+      screen.getByText(/You find yourself standing at the entrance/)
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("button", { name: /Enter the realm of functions/ })
     ).toBeInTheDocument();
     expect(
@@ -95,6 +98,9 @@ describe("Passage Component", () => {
 
     expect(screen.getByText(/You step through the portal/)).toBeInTheDocument();
     expect(
+      screen.getByText(/The adventure has changed you forever/)
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole("button", { name: /Start a new adventure/ })
     ).toBeInTheDocument();
   });
@@ -116,5 +122,30 @@ describe("Passage Component", () => {
         .getByText(/In the beginning, there was code/)
         .closest(".adventure-book")
     ).toBeInTheDocument();
+
+    // Check that passage text is wrapped in the correct div
+    const passageTextDiv = screen
+      .getByText(/In the beginning, there was code/)
+      .closest(".passage-text");
+    expect(passageTextDiv).toBeInTheDocument();
+  });
+
+  it("renders multiple paragraphs correctly", () => {
+    renderWithRoute("/passage/1");
+
+    // Check that all paragraphs from passage 1 are rendered
+    expect(
+      screen.getByText(/In the beginning, there was code/)
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/You find yourself standing at the entrance/)
+    ).toBeInTheDocument();
+    expect(screen.getByText(/What do you choose to do/)).toBeInTheDocument();
+
+    // Verify they are separate paragraph elements
+    const paragraphs = screen
+      .getAllByText(/.*/)
+      .filter((element) => element.tagName === "P");
+    expect(paragraphs.length).toBeGreaterThanOrEqual(3);
   });
 });

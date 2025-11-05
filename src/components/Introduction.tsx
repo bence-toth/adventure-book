@@ -15,7 +15,9 @@ export const Introduction = () => {
         <h1>{introduction.title}</h1>
         <div className="intro-text">
           {introduction.paragraphs.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
+            <p className="intro-paragraph" key={index}>
+              {paragraph}
+            </p>
           ))}
         </div>
         <div className="intro-action">

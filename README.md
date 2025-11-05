@@ -26,7 +26,11 @@ The adventure book content is managed through simple TypeScript files. To create
    ```typescript
    {
      id: 1, // Unique ID
-     text: "Your story text here...",
+     paragraphs: [
+       "First paragraph of your passage...",
+       "Second paragraph for more detailed narrative...",
+       "Additional paragraphs as needed..."
+     ],
      choices: [
        {
          text: "Choice description",
@@ -43,6 +47,8 @@ The adventure book content is managed through simple TypeScript files. To create
 ### Content Guidelines
 
 - **Unique IDs**: Ensure each passage has a unique identifier
+- **Rich Paragraphs**: Use multiple paragraphs to create immersive, detailed narratives that draw readers into the story world
+- **Paragraph Structure**: Break longer text into logical paragraphs for better readability - consider pacing, scene changes, and dramatic pauses
 - **Clear Choices**: Write descriptive choice text that hints at consequences
 - **Narrative Flow**: Test your story paths to ensure they make logical sense
 - **Multiple Endings**: Consider creating various story conclusions for replayability

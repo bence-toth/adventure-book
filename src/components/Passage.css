@@ -4,15 +4,42 @@
 }
 
 .passage-text {
+  margin-bottom: var(--space-4);
+}
+
+.passage-paragraph {
   line-height: 1.75;
   color: var(--color-foreground);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
 }
 
 .choices {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+}
+
+.choice-button {
+  background: var(--color-button-primary);
+  color: var(--color-on-primary);
+  border: 1px solid var(--color-button-border);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--space-1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 var(--space-1) var(--space-2) var(--shadow-primary);
+}
+
+.choice-button:hover {
+  transform: translateY(-2px);
+  background: var(--color-button-primary-hover);
+  box-shadow: 0 var(--space-1) var(--space-3) var(--shadow-secondary);
+}
+
+.choice-button:active {
+  transform: translateY(0);
+  background: var(--color-button-primary);
+  box-shadow: 0 2px var(--space-1) var(--shadow-primary);
 }
 
 .error {

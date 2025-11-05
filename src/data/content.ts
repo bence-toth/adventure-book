@@ -1,4 +1,4 @@
-import type { IntroductionContent, Passage } from './types';
+import type { IntroductionContent, Passage } from "./types";
 
 export const introduction: IntroductionContent = {
   title: "Welcome to the Code Adventure",
@@ -13,7 +13,11 @@ export const introduction: IntroductionContent = {
 export const passages: Passage[] = [
   {
     id: 1,
-    text: "In the beginning, there was code. And the code was good. You find yourself standing at the entrance of a mysterious digital realm where algorithms dance and data flows like rivers. What do you choose to do?",
+    paragraphs: [
+      "In the beginning, there was code. And the code was good.",
+      "You find yourself standing at the entrance of a mysterious digital realm where algorithms dance and data flows like rivers. The air hums with the electricity of possibilities, and pathways stretch out before you, each glowing with its own unique algorithmic energy.",
+      "What do you choose to do?",
+    ],
     choices: [
       { text: "Enter the realm of functions", nextId: 2 },
       { text: "Explore the data structures", nextId: 3 },
@@ -22,7 +26,10 @@ export const passages: Passage[] = [
   },
   {
     id: 2,
-    text: "You step into the realm of functions, where pure functions gleam like crystals and side effects lurk in the shadows. A wise lambda approaches you with ancient knowledge.",
+    paragraphs: [
+      "You step into the realm of functions, where pure functions gleam like crystals and side effects lurk in the shadows. The air is clean here, free from the mutations that plague other domains.",
+      "A wise lambda approaches you with ancient knowledge, its form shifting and currying as it moves. Its eyes hold the wisdom of countless transformations and elegant compositions.",
+    ],
     choices: [
       { text: "Listen to the lambda's wisdom", nextId: 5 },
       { text: "Continue deeper into functional territory", nextId: 6 },
@@ -31,7 +38,10 @@ export const passages: Passage[] = [
   },
   {
     id: 3,
-    text: "You wander into a vast library of data structures. Arrays stretch endlessly in perfect rows, while trees tower above you with their branching networks. Maps and sets organize themselves in mysterious patterns.",
+    paragraphs: [
+      "You wander into a vast library of data structures. Arrays stretch endlessly in perfect rows, while trees tower above you with their branching networks. Maps and sets organize themselves in mysterious patterns.",
+      "The architecture here is breathtaking - each structure serves its purpose with mathematical precision. You can feel the Big O complexities shifting around you like living entities, and the balance between time and space complexity creates a harmony that resonates through the entire realm.",
+    ],
     choices: [
       { text: "Climb the binary tree", nextId: 7 },
       { text: "Navigate through the hash table maze", nextId: 8 },
@@ -40,7 +50,10 @@ export const passages: Passage[] = [
   },
   {
     id: 4,
-    text: "You decide to turn back, but the digital realm won't let you leave so easily. The exit portal flickers and shows you a glimpse of what lies beyond.",
+    paragraphs: [
+      "You decide to turn back, but the digital realm won't let you leave so easily. The pathways behind you have shifted and rearranged themselves, blocking your retreat.",
+      "The exit portal flickers and shows you a glimpse of what lies beyond - a world where you never learned the secrets of code, where the mysteries remain forever unsolved.",
+    ],
     choices: [
       { text: "Step through the flickering portal", nextId: 9 },
       { text: "Stay and face your coding destiny", nextId: 1 },
@@ -48,7 +61,10 @@ export const passages: Passage[] = [
   },
   {
     id: 5,
-    text: "The lambda whispers secrets of immutability and composition. 'Remember,' it says, 'the power lies not in changing the world, but in creating new realities from the old.'",
+    paragraphs: [
+      "The lambda whispers secrets of immutability and composition. Its voice carries the weight of countless transformations and the elegance of pure logic.",
+      "'Remember,' it says, its form shimmering with mathematical beauty, 'the power lies not in changing the world, but in creating new realities from the old. Each function should be a lens through which data flows unchanged but transformed.'",
+    ],
     choices: [
       { text: "Ask about higher-order functions", nextId: 10 },
       { text: "Thank the lambda and move on", nextId: 2 },
@@ -56,7 +72,10 @@ export const passages: Passage[] = [
   },
   {
     id: 6,
-    text: "Deeper in the functional realm, you discover recursive patterns that seem to fold in on themselves infinitely. The beauty is mesmerizing but dangerous.",
+    paragraphs: [
+      "Deeper in the functional realm, you discover recursive patterns that seem to fold in on themselves infinitely. Fibonacci sequences spiral through the air like golden ribbons, and factorial calculations bloom like mathematical flowers.",
+      "The beauty is mesmerizing but dangerous. You can feel yourself being drawn into the infinite descent, where each call leads to another, and the stack grows ever deeper.",
+    ],
     choices: [
       { text: "Embrace the recursion", nextId: 11 },
       { text: "Step back carefully", nextId: 2 },
@@ -64,7 +83,10 @@ export const passages: Passage[] = [
   },
   {
     id: 7,
-    text: "From the top of the binary tree, you can see the entire data structure kingdom. Balanced and unbalanced trees sway in the algorithmic wind.",
+    paragraphs: [
+      "From the top of the binary tree, you can see the entire data structure kingdom. Balanced and unbalanced trees sway in the algorithmic wind, their branches reaching toward optimal performance.",
+      "The view is spectacular - AVL trees maintain perfect balance with their rotations, while red-black trees display their colorful node patterns. In the distance, you can see heaps organizing themselves by priority, and graphs weaving complex networks of connections.",
+    ],
     choices: [
       { text: "Enjoy the view and climb down", nextId: 3 },
       { text: "Jump to the next tree", nextId: 12 },
@@ -72,7 +94,10 @@ export const passages: Passage[] = [
   },
   {
     id: 8,
-    text: "You navigate through the hash table maze, where collision resolution creates unexpected paths. You emerge wiser about the complexity of constant-time operations.",
+    paragraphs: [
+      "You navigate through the hash table maze, where collision resolution creates unexpected paths. Open addressing leads you down one corridor, while chaining takes you through another.",
+      "The maze teaches you about the delicate balance between space and time. You emerge wiser about the complexity of constant-time operations, understanding that even O(1) can hide deeper truths about worst-case scenarios and load factors.",
+    ],
     choices: [
       { text: "Explore more data structures", nextId: 3 },
       { text: "Head back to the entrance", nextId: 1 },
@@ -80,12 +105,18 @@ export const passages: Passage[] = [
   },
   {
     id: 9,
-    text: "You step through the portal and find yourself back in the real world, but with new knowledge burning in your mind. The adventure has changed you forever.",
+    paragraphs: [
+      "You step through the portal and find yourself back in the real world, but with new knowledge burning in your mind. The screens around you now pulse with deeper meaning.",
+      "The adventure has changed you forever. You see patterns where others see chaos, elegance where others see complexity. The code whispers its secrets to you now, and you understand that every ending is just another beginning.",
+    ],
     choices: [{ text: "Start a new adventure", nextId: 1 }],
   },
   {
     id: 10,
-    text: "The lambda's eyes glow with excitement. 'Higher-order functions,' it explains, 'are the composers of the coding symphony. They take functions and return new functions, creating beautiful abstractions.'",
+    paragraphs: [
+      "The lambda's eyes glow with excitement as it senses your curiosity about the deeper mysteries of functional programming.",
+      "'Higher-order functions,' it explains, its voice resonating with the harmony of mathematical precision, 'are the composers of the coding symphony. They take functions and return new functions, creating beautiful abstractions that elevate code from mere instructions to elegant poetry.'",
+    ],
     choices: [
       { text: "Ask for a practical example", nextId: 13 },
       { text: "Thank the lambda", nextId: 5 },
@@ -93,7 +124,10 @@ export const passages: Passage[] = [
   },
   {
     id: 11,
-    text: "You embrace the recursion and find yourself in an infinite loop of discovery. Each iteration reveals new patterns, but be careful not to lose yourself in the endless descent.",
+    paragraphs: [
+      "You embrace the recursion and find yourself in an infinite loop of discovery. Each iteration reveals new patterns - the Tower of Hanoi unfolds its ancient puzzle, fractals bloom with self-similar beauty.",
+      "But be careful not to lose yourself in the endless descent. Without a proper base case, even the most elegant recursion becomes a trap that consumes memory until the stack overflows.",
+    ],
     choices: [
       { text: "Find the base case and return", nextId: 6 },
       { text: "Continue recursing (dangerous!)", nextId: 11 },
@@ -101,7 +135,10 @@ export const passages: Passage[] = [
   },
   {
     id: 12,
-    text: "You leap gracefully between trees, learning the art of tree traversal. In-order, pre-order, post-order - each method reveals different secrets of the data.",
+    paragraphs: [
+      "You leap gracefully between trees, learning the art of tree traversal. Each movement teaches you about the different ways to explore hierarchical data.",
+      "In-order reveals the sorted sequence hidden within binary search trees, pre-order captures the structure for reconstruction, and post-order ensures children are processed before parents. Each method reveals different secrets of the data, like viewing a sculpture from different angles.",
+    ],
     choices: [
       { text: "Master all traversal methods", nextId: 7 },
       { text: "Climb down to solid ground", nextId: 3 },
@@ -109,7 +146,10 @@ export const passages: Passage[] = [
   },
   {
     id: 13,
-    text: "The lambda conjures a shimmering example: 'Behold, map, filter, and reduce - the trinity of functional transformation. They take functions as arguments and transform entire collections with elegant simplicity.'",
+    paragraphs: [
+      "The lambda conjures a shimmering example in the air before you, data flowing like liquid light through transparent functions.",
+      "'Behold, map, filter, and reduce - the trinity of functional transformation,' it declares with reverence. 'They take functions as arguments and transform entire collections with elegant simplicity. Map transforms each element, filter selects the worthy, and reduce collapses many into one.'",
+    ],
     choices: [
       { text: "Practice with the trinity", nextId: 14 },
       { text: "Ask about more advanced concepts", nextId: 10 },
@@ -117,7 +157,10 @@ export const passages: Passage[] = [
   },
   {
     id: 14,
-    text: "You practice with map, filter, and reduce, feeling the power of functional programming flow through your code. Arrays transform before your eyes, and you understand the elegance of declarative programming.",
+    paragraphs: [
+      "You practice with map, filter, and reduce, feeling the power of functional programming flow through your code. Arrays transform before your eyes like living entities, each element passing through the pipeline of transformation.",
+      "You understand now the elegance of declarative programming - instead of telling the computer how to do something step by step, you describe what you want, and the higher-order functions handle the details. It's like conducting an orchestra where each function plays its part in perfect harmony.",
+    ],
     choices: [
       { text: "Master these concepts completely", nextId: 15 },
       { text: "Explore other functional concepts", nextId: 5 },
@@ -125,7 +168,10 @@ export const passages: Passage[] = [
   },
   {
     id: 15,
-    text: "Congratulations! You have mastered the fundamental concepts of this digital realm. You stand now as a true code adventurer, ready for whatever challenges await in the vast universe of programming.",
+    paragraphs: [
+      "Congratulations! You have mastered the fundamental concepts of this digital realm. The knowledge courses through your mind like electricity through circuits, connecting patterns and possibilities you never saw before.",
+      "You stand now as a true code adventurer, ready for whatever challenges await in the vast universe of programming. The algorithms bow to your understanding, the data structures align themselves for your inspection, and the functions eagerly await your commands.",
+    ],
     choices: [
       { text: "Begin a new adventure", nextId: 1 },
       { text: "Exit the realm as a master", nextId: 9 },

@@ -45,7 +45,13 @@ export const Passage = () => {
   return (
     <div className="adventure-book">
       <div className="passage">
-        <p className="passage-text">{currentPassage.text}</p>
+        <div className="passage-text">
+          {currentPassage.paragraphs.map((paragraph, index) => (
+            <p className="passage-paragraph" key={index}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
         <div className="choices">
           {currentPassage.choices.map((choice, index) => (
             <button

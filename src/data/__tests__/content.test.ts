@@ -32,15 +32,22 @@ describe("Passages Data", () => {
   it("has passage with id 1 as starting passage", () => {
     const startingPassage = passages.find((p) => p.id === 1);
     expect(startingPassage).toBeDefined();
-    expect(startingPassage?.text).toContain("In the beginning, there was code");
+    expect(startingPassage?.paragraphs[0]).toContain(
+      "In the beginning, there was code"
+    );
   });
 
   it("all passages have required properties", () => {
     passages.forEach((passage) => {
       expect(passage.id).toBeDefined();
       expect(typeof passage.id).toBe("number");
-      expect(passage.text).toBeDefined();
-      expect(typeof passage.text).toBe("string");
+      expect(passage.paragraphs).toBeDefined();
+      expect(Array.isArray(passage.paragraphs)).toBe(true);
+      expect(passage.paragraphs.length).toBeGreaterThan(0);
+      passage.paragraphs.forEach((paragraph) => {
+        expect(typeof paragraph).toBe("string");
+        expect(paragraph.length).toBeGreaterThan(0);
+      });
       expect(Array.isArray(passage.choices)).toBe(true);
       expect(passage.choices.length).toBeGreaterThan(0);
     });
@@ -82,5 +89,23 @@ describe("Passages Data", () => {
     expect(passages.find((p) => p.id === 9)).toBeDefined(); // Ending passage
     expect(passages.find((p) => p.id === 2)).toBeDefined(); // Functions path
     expect(passages.find((p) => p.id === 3)).toBeDefined(); // Data structures path
+  });
+
+  it("all passages contain meaningful paragraph content", () => {
+    passages.forEach((passage) => {
+      // Each passage should have at least one paragraph
+      expect(passage.paragraphs.length).toBeGreaterThan(0);
+
+      // Each paragraph should have substantial content (not just whitespace)
+      passage.paragraphs.forEach((paragraph) => {
+        expect(paragraph.trim().length).toBeGreaterThan(10);
+      });
+
+      // At least some passages should have multiple paragraphs to showcase the feature
+      const multiParagraphPassages = passages.filter(
+        (p) => p.paragraphs.length > 1
+      );
+      expect(multiParagraphPassages.length).toBeGreaterThan(0);
+    });
   });
 });

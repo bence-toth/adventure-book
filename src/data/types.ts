@@ -5,7 +5,7 @@ export interface Choice {
 
 export interface Passage {
   id: number;
-  text: string;
+  paragraphs: string[];
   choices: Choice[];
 }
 
