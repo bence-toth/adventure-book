@@ -14,11 +14,8 @@ export const Passage = () => {
         <div className="error">
           <h2>Invalid Passage ID</h2>
           <p>The passage ID "{id}" is not valid. Please use a valid number.</p>
-          <button
-            className="choice-button"
-            onClick={() => navigate("/passage/1")}
-          >
-            Go to Beginning
+          <button className="choice-button" onClick={() => navigate("/")}>
+            Go to Introduction
           </button>
         </div>
       </div>
@@ -33,11 +30,8 @@ export const Passage = () => {
         <div className="error">
           <h2>Passage Not Found</h2>
           <p>Passage {passageId} does not exist in this adventure.</p>
-          <button
-            className="choice-button"
-            onClick={() => navigate("/passage/1")}
-          >
-            Go to Beginning
+          <button className="choice-button" onClick={() => navigate("/")}>
+            Go to Introduction
           </button>
         </div>
       </div>
