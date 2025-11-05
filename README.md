@@ -1,29 +1,61 @@
 # Adventure Book
 
-An interactive choose-your-own-adventure application built with React, TypeScript, and Vite. Navigate through a digital realm of programming concepts where every choice shapes your understanding of code.
+A low-code tool for creating and testing interactive choose-your-own-adventure stories. Built with React, TypeScript, and Vite, this application allows you to easily create engaging narratives where every choice shapes the reader's journey.
 
-## Core Principles
+## Creating Your Adventure Book
 
-### Development Philosophy
+### Editing Story Content
 
-- **Type Safety First**: Leveraging TypeScript throughout the application for robust type checking and better developer experience
-- **Component-Based Architecture**: Building reusable, testable components that encapsulate behavior and styling
-- **Fast Development Cycle**: Using modern tooling (Vite) for rapid iteration and development feedback
-- **Accessibility-Minded**: Writing semantic HTML and ensuring proper navigation flows
+The adventure book content is managed through simple TypeScript files. To create or modify your story:
 
-### Code Organization
+1. **Story Structure**: Navigate to `src/data/content.ts` where all story content is defined
+2. **Introduction Section**: Customize the welcome screen by editing the `introduction` object:
+   ```typescript
+   export const introduction: IntroductionContent = {
+     title: "Your Adventure Title",
+     paragraphs: [
+       "First paragraph of your introduction...",
+       "Second paragraph...",
+       "Third paragraph...",
+     ],
+     buttonText: "Begin Your Adventure",
+   };
+   ```
+3. **Passage Format**: Each passage follows this structure:
 
-- **Separation of Concerns**: Keeping data, presentation, and logic in dedicated modules
-- **Test-Driven Development**: Writing tests alongside features to ensure reliability and maintainability
-- **Consistent Structure**: Following established patterns for file organization and naming conventions
-- **Progressive Enhancement**: Building features that work gracefully and enhance user experience
+   ```typescript
+   {
+     id: 1, // Unique ID
+     text: "Your story text here...",
+     choices: [
+       {
+         text: "Choice description",
+         nextId: 2 // ID of the next passage
+       }
+     ]
+   }
+   ```
 
-### User Experience
+4. **Adding New Passages**: Simply add new passage objects to the `passages` array
+5. **Linking Passages**: Connect passages by referencing their `id` in the `nextId` field of choices
+6. **Ending Passages**: Passages without choices automatically become story endings
 
-- **Interactive Storytelling**: Creating engaging narratives with meaningful choices and consequences
-- **Responsive Design**: Ensuring the application works across different devices and screen sizes
-- **Error Resilience**: Handling edge cases gracefully and providing helpful feedback
-- **Performance-Conscious**: Optimizing for fast loading and smooth interactions
+### Content Guidelines
+
+- **Unique IDs**: Ensure each passage has a unique identifier
+- **Clear Choices**: Write descriptive choice text that hints at consequences
+- **Narrative Flow**: Test your story paths to ensure they make logical sense
+- **Multiple Endings**: Consider creating various story conclusions for replayability
+
+### Testing Your Story
+
+After editing content, you can immediately test your changes:
+
+```bash
+npm run dev  # Start the development server
+```
+
+The application will automatically reload with your new content, allowing you to navigate through your story and verify all paths work correctly.
 
 ## Getting Started
 
@@ -46,6 +78,10 @@ npm install
 npm run dev
 ```
 
+## Contributing
+
+This section contains information for developers who want to contribute to the adventure book tool itself.
+
 ### Available Scripts
 
 ```bash
@@ -66,39 +102,62 @@ npm run test:run     # Run tests once
 npm run test:coverage # Run tests with coverage report
 ```
 
-## Testing Strategy
+### Core Principles
 
-### Testing Philosophy
+#### Development Philosophy
+
+- **Type Safety First**: Leveraging TypeScript throughout the application for robust type checking and better developer experience
+- **Component-Based Architecture**: Building reusable, testable components that encapsulate behavior and styling
+- **Fast Development Cycle**: Using modern tooling (Vite) for rapid iteration and development feedback
+- **Accessibility-Minded**: Writing semantic HTML and ensuring proper navigation flows
+
+#### Code Organization
+
+- **Separation of Concerns**: Keeping data, presentation, and logic in dedicated modules
+- **Test-Driven Development**: Writing tests alongside features to ensure reliability and maintainability
+- **Consistent Structure**: Following established patterns for file organization and naming conventions
+- **Progressive Enhancement**: Building features that work gracefully and enhance user experience
+
+#### User Experience
+
+- **Interactive Storytelling**: Creating engaging narratives with meaningful choices and consequences
+- **Responsive Design**: Ensuring the application works across different devices and screen sizes
+- **Error Resilience**: Handling edge cases gracefully and providing helpful feedback
+- **Performance-Conscious**: Optimizing for fast loading and smooth interactions
+
+### Testing Strategy
+
+#### Testing Philosophy
 
 - **Behavior Over Implementation**: Focus on testing user interactions and visible outcomes rather than internal implementation details
 - **Comprehensive Coverage**: Include unit tests for components, integration tests for user flows, and data validation tests
 - **Accessible Testing**: Use semantic queries that mirror how users interact with the application
 - **Isolated and Independent**: Each test should be self-contained and not depend on the execution order of other tests
 
-### Testing Approach
+#### Testing Approach
 
 - **Component Testing**: Verify individual components render correctly and handle user interactions
 - **Integration Testing**: Test complete user journeys and component interactions
 - **Data Validation**: Ensure story content and application data maintain structural integrity
 - **Error Handling**: Validate graceful handling of edge cases and invalid states
 
-### Testing Tools and Setup
+#### Testing Tools and Setup
 
 - **Modern Testing Stack**: Using Vitest for fast test execution with React Testing Library for component testing
 - **DOM Environment**: jsdom provides a browser-like environment for testing without a real browser
 - **User Simulation**: Testing user interactions with realistic event simulation
 - **Mock Strategy**: Strategic mocking of external dependencies while preserving core application logic
 
-## Architecture Decisions
+### Architecture Decisions
 
-### Technology Stack
+#### Technology Stack
 
 - **React + TypeScript**: Provides strong typing and component-based architecture
 - **Vite**: Fast build tool optimized for modern development workflows
 - **CSS Modules/Styled Components**: Scoped styling to prevent conflicts and improve maintainability
 - **React Router**: Client-side routing for single-page application navigation
 
-### Development Practices
+#### Development Practices
 
 - **ESLint Configuration**: Enforcing JavaScript/TypeScript code quality and consistency standards
 - **Stylelint Configuration**: Modern CSS linting with standard rules for code quality and best practices
@@ -106,16 +165,16 @@ npm run test:coverage # Run tests with coverage report
 - **Build Optimization**: Production builds optimized for performance and bundle size
 - **Development vs Production**: Different configurations optimized for each environment
 
-### Story and Content Management
+#### Story and Content Management
 
 - **Data-Driven Narrative**: Story content separated from presentation logic
 - **Extensible Structure**: Architecture supports easy addition of new story paths and content
 - **Type-Safe Content**: Story data validated through TypeScript interfaces
 - **Dynamic Routing**: URL-based navigation that supports bookmarking and sharing
 
-## Contributing Guidelines
+### Development Guidelines
 
-### Code Quality
+#### Code Quality
 
 - Follow TypeScript best practices and leverage the type system effectively
 - Write tests for new features and maintain existing test coverage
@@ -123,7 +182,7 @@ npm run test:coverage # Run tests with coverage report
 - Keep components focused and composable
 - Follow CSS best practices using Stylelint to maintain consistent styling standards
 
-### Development Workflow
+#### Development Workflow
 
 - Use the provided development scripts for consistent tooling
 - Run tests before committing changes
