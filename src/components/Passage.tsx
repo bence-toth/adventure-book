@@ -74,10 +74,6 @@ export const Passage = () => {
     navigate(`/passage/${nextId}`);
   };
 
-  // Check if this is an ending passage (no choices means it's an ending)
-  const isEnding =
-    !currentPassage.choices || currentPassage.choices.length === 0;
-
   return (
     <div className="adventure-book">
       <div className="passage">
@@ -89,7 +85,7 @@ export const Passage = () => {
           ))}
         </div>
         <div className="choices">
-          {isEnding ? (
+          {currentPassage.ending ? (
             <button
               className="choice-button"
               onClick={() => {
