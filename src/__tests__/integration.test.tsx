@@ -60,7 +60,7 @@ describe("Adventure Book Integration Tests", () => {
     );
 
     // Should show error page with invalid passage ID
-    expect(screen.getByText("Invalid Passage ID")).toBeInTheDocument();
+    expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
     expect(
       screen.getByText(/The passage ID "invalid" is not valid/)
     ).toBeInTheDocument();

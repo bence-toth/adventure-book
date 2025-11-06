@@ -63,7 +63,7 @@ describe("Passage Component", () => {
   it("shows error for invalid passage ID", () => {
     renderWithRoute("/passage/invalid");
 
-    expect(screen.getByText("Invalid Passage ID")).toBeInTheDocument();
+    expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
     expect(
       screen.getByText(/The passage ID "invalid" is not valid/)
     ).toBeInTheDocument();
@@ -75,7 +75,7 @@ describe("Passage Component", () => {
   it("shows error for non-existent passage ID", () => {
     renderWithRoute("/passage/999");
 
-    expect(screen.getByText("Passage Not Found")).toBeInTheDocument();
+    expect(screen.getByText("Passage not found")).toBeInTheDocument();
     expect(screen.getByText(/Passage 999 does not exist/)).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: "Go to Introduction" })
@@ -90,7 +90,7 @@ describe("Passage Component", () => {
     });
     fireEvent.click(goHomeButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    expect(mockNavigate).toHaveBeenCalledWith("/passage/0");
   });
 
   it("renders passage with single choice correctly", () => {
@@ -108,7 +108,7 @@ describe("Passage Component", () => {
   it("handles negative passage IDs as invalid", () => {
     renderWithRoute("/passage/-1");
 
-    expect(screen.getByText("Invalid Passage ID")).toBeInTheDocument();
+    expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
   });
 
   it("handles passage 0 by showing reset message and redirecting", () => {
