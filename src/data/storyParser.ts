@@ -154,6 +154,18 @@ export class StoryParser {
         );
       }
 
+      // Validate non-ending passages have at least one choice
+      if (
+        passageObj.ending !== true &&
+        (!passageObj.choices ||
+          !Array.isArray(passageObj.choices) ||
+          passageObj.choices.length === 0)
+      ) {
+        throw new Error(
+          `Invalid YAML: Non-ending passage ${passageId} must have at least one choice`
+        );
+      }
+
       // Validate optional type field
       if (passageObj.type !== undefined) {
         const validTypes = ["victory", "defeat", "neutral"];
@@ -179,7 +191,6 @@ export class StoryParser {
     const processedStory: Story = {
       metadata: rawStory.metadata,
       intro: {
-        text: rawStory.intro.text,
         paragraphs: this.textToParagraphs(rawStory.intro.text),
       },
       passages: {},
@@ -188,7 +199,6 @@ export class StoryParser {
     // Process passage texts
     for (const [id, rawPassage] of Object.entries(rawStory.passages)) {
       processedStory.passages[Number(id)] = {
-        text: rawPassage.text,
         paragraphs: this.textToParagraphs(rawPassage.text),
         choices: rawPassage.choices,
         ending: rawPassage.ending,

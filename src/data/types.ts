@@ -25,7 +25,6 @@ export interface RawStory {
 }
 
 export interface Passage {
-  text: string;
   paragraphs: string[];
   choices?: Choice[];
   ending?: boolean;
@@ -33,7 +32,6 @@ export interface Passage {
 }
 
 export interface Intro {
-  text: string;
   paragraphs: string[];
 }
 

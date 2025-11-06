@@ -226,7 +226,6 @@ describe("StoryLoader", () => {
       expect(story.metadata.version).toBeTruthy();
 
       // Intro validation
-      expect(story.intro.text).toBeTruthy();
       expect(story.intro.paragraphs).toBeTruthy();
 
       // Passages validation

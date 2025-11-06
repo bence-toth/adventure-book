@@ -314,6 +314,43 @@ passages:
         "Invalid YAML: Passage 1 type must be one of: victory, defeat, neutral"
       );
     });
+
+    it("should throw error for non-ending passages without choices", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: "This passage has no choices and is not marked as ending"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Non-ending passage 1 must have at least one choice"
+      );
+    });
+
+    it("should throw error for non-ending passages with empty choices array", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: "This passage has empty choices array"
+    choices: []
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Non-ending passage 1 must have at least one choice"
+      );
+    });
   });
 
   describe("textToParagraphs", () => {
@@ -418,15 +455,13 @@ passages:
     it("should return no errors for valid story", () => {
       const validStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro", paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"] },
         passages: {
           1: {
-            text: "Passage 1",
             paragraphs: ["Passage 1"],
             choices: [{ text: "Go to 2", goto: 2 }],
           },
           2: {
-            text: "Passage 2",
             paragraphs: ["Passage 2"],
             ending: true,
           },
@@ -440,10 +475,9 @@ passages:
     it("should detect invalid goto references", () => {
       const invalidStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro", paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"] },
         passages: {
           1: {
-            text: "Passage 1",
             paragraphs: ["Passage 1"],
             choices: [
               { text: "Go to 2", goto: 2 },
@@ -451,7 +485,6 @@ passages:
             ],
           },
           2: {
-            text: "Passage 2",
             paragraphs: ["Passage 2"],
             choices: [{ text: "Go to 100", goto: 100 }],
           },
@@ -466,10 +499,9 @@ passages:
     it("should detect ending passages with choices", () => {
       const invalidStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro", paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"] },
         passages: {
           1: {
-            text: "Ending with choices",
             paragraphs: ["Ending with choices"],
             ending: true,
             choices: [{ text: "This shouldn't be here", goto: 2 }],
@@ -486,32 +518,27 @@ passages:
     it("should return all passages marked as endings", () => {
       const story: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro", paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"] },
         passages: {
           1: {
-            text: "Regular passage",
             paragraphs: ["Regular passage"],
             choices: [{ text: "Go", goto: 2 }],
           },
           2: {
-            text: "Victory ending",
             paragraphs: ["Victory ending"],
             ending: true,
             type: "victory",
           },
           3: {
-            text: "Another passage",
             paragraphs: ["Another passage"],
             choices: [{ text: "Go", goto: 4 }],
           },
           4: {
-            text: "Defeat ending",
             paragraphs: ["Defeat ending"],
             ending: true,
             type: "defeat",
           },
           5: {
-            text: "Neutral ending",
             paragraphs: ["Neutral ending"],
             ending: true,
             type: "neutral",
@@ -526,15 +553,13 @@ passages:
     it("should return empty array when no endings exist", () => {
       const story: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro", paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"] },
         passages: {
           1: {
-            text: "Regular passage",
             paragraphs: ["Regular passage"],
             choices: [{ text: "Go", goto: 2 }],
           },
           2: {
-            text: "Another regular passage",
             paragraphs: ["Another regular passage"],
             choices: [{ text: "Go", goto: 1 }],
           },
