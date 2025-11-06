@@ -23,14 +23,18 @@ export class StoryParser {
   }
 
   private static validateParsedObject(parsed: unknown): Story {
-    if (!parsed || typeof parsed !== "object") {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       throw new Error("Invalid YAML: Root must be an object");
     }
 
     const obj = parsed as Record<string, unknown>;
 
     // Validate metadata
-    if (!obj.metadata || typeof obj.metadata !== "object") {
+    if (
+      !obj.metadata ||
+      typeof obj.metadata !== "object" ||
+      Array.isArray(obj.metadata)
+    ) {
       throw new Error("Invalid YAML: Missing or invalid metadata object");
     }
     const metadata = obj.metadata as Record<string, unknown>;
@@ -51,7 +55,11 @@ export class StoryParser {
     }
 
     // Validate intro
-    if (!obj.intro || typeof obj.intro !== "object") {
+    if (
+      !obj.intro ||
+      typeof obj.intro !== "object" ||
+      Array.isArray(obj.intro)
+    ) {
       throw new Error("Invalid YAML: Missing or invalid intro object");
     }
     const intro = obj.intro as Record<string, unknown>;
@@ -60,7 +68,11 @@ export class StoryParser {
     }
 
     // Validate passages
-    if (!obj.passages || typeof obj.passages !== "object") {
+    if (
+      !obj.passages ||
+      typeof obj.passages !== "object" ||
+      Array.isArray(obj.passages)
+    ) {
       throw new Error("Invalid YAML: Missing or invalid passages object");
     }
     const passages = obj.passages as Record<string, unknown>;
@@ -73,7 +85,7 @@ export class StoryParser {
         );
       }
 
-      if (!passage || typeof passage !== "object") {
+      if (!passage || typeof passage !== "object" || Array.isArray(passage)) {
         throw new Error(`Invalid YAML: Passage ${passageId} must be an object`);
       }
 
@@ -96,7 +108,7 @@ export class StoryParser {
 
         for (let i = 0; i < passageObj.choices.length; i++) {
           const choice = passageObj.choices[i];
-          if (!choice || typeof choice !== "object") {
+          if (!choice || typeof choice !== "object" || Array.isArray(choice)) {
             throw new Error(
               `Invalid YAML: Passage ${passageId} choice ${i} must be an object`
             );
