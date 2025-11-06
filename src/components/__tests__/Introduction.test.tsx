@@ -1,6 +1,6 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { Introduction } from "../Introduction";
-import { render } from "../../test/test-utils";
+import { render } from "../../test/testUtils";
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
