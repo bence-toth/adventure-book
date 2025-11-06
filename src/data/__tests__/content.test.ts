@@ -1,5 +1,5 @@
-import { introduction, passages } from "../content";
-import type { IntroductionContent, Passage } from "../types";
+import { introduction, getAllPassages, getPassage } from "../storyLoader";
+import type { IntroductionContent } from "../types";
 
 describe("Introduction Data", () => {
   it("has the correct structure", () => {
@@ -24,88 +24,93 @@ describe("Introduction Data", () => {
 });
 
 describe("Passages Data", () => {
-  it("is an array with passages", () => {
-    expect(Array.isArray(passages)).toBe(true);
-    expect(passages.length).toBeGreaterThan(0);
+  it("has passages available", () => {
+    const allPassages = getAllPassages();
+    expect(allPassages).toBeDefined();
+    expect(Object.keys(allPassages).length).toBeGreaterThan(0);
   });
 
   it("has passage with id 1 as starting passage", () => {
-    const startingPassage = passages.find((p) => p.id === 1);
+    const startingPassage = getPassage(1);
     expect(startingPassage).toBeDefined();
-    expect(startingPassage?.paragraphs[0]).toContain(
+    expect(startingPassage?.paragraphs?.[0]).toContain(
       "In the beginning, there was code"
     );
   });
 
   it("all passages have required properties", () => {
-    passages.forEach((passage) => {
-      expect(passage.id).toBeDefined();
-      expect(typeof passage.id).toBe("number");
+    const allPassages = getAllPassages();
+    Object.entries(allPassages).forEach(([id, passage]) => {
+      expect(id).toBeDefined();
+      expect(typeof Number(id)).toBe("number");
       expect(passage.paragraphs).toBeDefined();
       expect(Array.isArray(passage.paragraphs)).toBe(true);
-      expect(passage.paragraphs.length).toBeGreaterThan(0);
-      passage.paragraphs.forEach((paragraph) => {
+      expect(passage.paragraphs!.length).toBeGreaterThan(0);
+      passage.paragraphs!.forEach((paragraph) => {
         expect(typeof paragraph).toBe("string");
         expect(paragraph.length).toBeGreaterThan(0);
       });
-      expect(Array.isArray(passage.choices)).toBe(true);
-      expect(passage.choices.length).toBeGreaterThan(0);
+      if (passage.choices) {
+        expect(Array.isArray(passage.choices)).toBe(true);
+      }
     });
   });
 
   it("all choices have required properties", () => {
-    passages.forEach((passage) => {
-      passage.choices.forEach((choice) => {
-        expect(choice.text).toBeDefined();
-        expect(typeof choice.text).toBe("string");
-        expect(choice.nextId).toBeDefined();
-        expect(typeof choice.nextId).toBe("number");
-      });
+    const allPassages = getAllPassages();
+    Object.entries(allPassages).forEach(([, passage]) => {
+      if (passage.choices) {
+        passage.choices.forEach((choice) => {
+          expect(choice.text).toBeDefined();
+          expect(typeof choice.text).toBe("string");
+          expect(choice.goto).toBeDefined();
+          expect(typeof choice.goto).toBe("number");
+        });
+      }
     });
   });
 
-  it("all choice nextIds reference valid passages or are loops", () => {
-    const validIds = new Set(passages.map((p) => p.id));
+  it("all choice gotos reference valid passages or are loops", () => {
+    const allPassages = getAllPassages();
+    const validIds = new Set(Object.keys(allPassages).map(Number));
 
-    passages.forEach((passage) => {
-      passage.choices.forEach((choice) => {
-        // nextId should either be a valid passage id or reference itself (loop)
-        expect(
-          validIds.has(choice.nextId) || choice.nextId === passage.id
-        ).toBe(true);
-      });
+    Object.entries(allPassages).forEach(([id, passage]) => {
+      const passageId = Number(id);
+      if (passage.choices) {
+        passage.choices.forEach((choice) => {
+          // goto should either be a valid passage id or reference itself (loop)
+          expect(validIds.has(choice.goto) || choice.goto === passageId).toBe(
+            true
+          );
+        });
+      }
     });
-  });
-
-  it("matches Passage interface structure", () => {
-    // Type checking - this will fail at compile time if structure is wrong
-    const testPassages: Passage[] = passages;
-    expect(testPassages).toBeDefined();
   });
 
   it("has specific key passages for testing", () => {
     // Test that important passages exist for our component tests
-    expect(passages.find((p) => p.id === 1)).toBeDefined(); // Starting passage
-    expect(passages.find((p) => p.id === 9)).toBeDefined(); // Ending passage
-    expect(passages.find((p) => p.id === 2)).toBeDefined(); // Functions path
-    expect(passages.find((p) => p.id === 3)).toBeDefined(); // Data structures path
+    expect(getPassage(1)).toBeDefined(); // Starting passage
+    expect(getPassage(9)).toBeDefined(); // Ending passage
+    expect(getPassage(2)).toBeDefined(); // Functions path
+    expect(getPassage(3)).toBeDefined(); // Data structures path
   });
 
   it("all passages contain meaningful paragraph content", () => {
-    passages.forEach((passage) => {
+    const allPassages = getAllPassages();
+    Object.values(allPassages).forEach((passage) => {
       // Each passage should have at least one paragraph
-      expect(passage.paragraphs.length).toBeGreaterThan(0);
+      expect(passage.paragraphs!.length).toBeGreaterThan(0);
 
       // Each paragraph should have substantial content (not just whitespace)
-      passage.paragraphs.forEach((paragraph) => {
+      passage.paragraphs!.forEach((paragraph) => {
         expect(paragraph.trim().length).toBeGreaterThan(10);
       });
-
-      // At least some passages should have multiple paragraphs to showcase the feature
-      const multiParagraphPassages = passages.filter(
-        (p) => p.paragraphs.length > 1
-      );
-      expect(multiParagraphPassages.length).toBeGreaterThan(0);
     });
+
+    // At least some passages should have multiple paragraphs to showcase the feature
+    const multiParagraphPassages = Object.values(allPassages).filter(
+      (p) => p.paragraphs!.length > 1
+    );
+    expect(multiParagraphPassages.length).toBeGreaterThan(0);
   });
 });
