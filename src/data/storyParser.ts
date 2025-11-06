@@ -11,12 +11,139 @@ export class StoryParser {
       customTags: [],
       // Enforce strict YAML parsing (catch duplicate keys, etc.)
       strict: true,
-    }) as Story;
+    });
+
+    // Validate the parsed object matches the Story interface
+    const validatedStory = this.validateParsedObject(parsed);
 
     // Convert multiline text to paragraphs
-    this.processTextFields(parsed);
+    this.processTextFields(validatedStory);
 
-    return parsed;
+    return validatedStory;
+  }
+
+  private static validateParsedObject(parsed: unknown): Story {
+    if (!parsed || typeof parsed !== "object") {
+      throw new Error("Invalid YAML: Root must be an object");
+    }
+
+    const obj = parsed as Record<string, unknown>;
+
+    // Validate metadata
+    if (!obj.metadata || typeof obj.metadata !== "object") {
+      throw new Error("Invalid YAML: Missing or invalid metadata object");
+    }
+    const metadata = obj.metadata as Record<string, unknown>;
+    if (typeof metadata.title !== "string" || !metadata.title.trim()) {
+      throw new Error(
+        "Invalid YAML: metadata.title must be a non-empty string"
+      );
+    }
+    if (typeof metadata.author !== "string" || !metadata.author.trim()) {
+      throw new Error(
+        "Invalid YAML: metadata.author must be a non-empty string"
+      );
+    }
+    if (typeof metadata.version !== "string" || !metadata.version.trim()) {
+      throw new Error(
+        "Invalid YAML: metadata.version must be a non-empty string"
+      );
+    }
+
+    // Validate intro
+    if (!obj.intro || typeof obj.intro !== "object") {
+      throw new Error("Invalid YAML: Missing or invalid intro object");
+    }
+    const intro = obj.intro as Record<string, unknown>;
+    if (typeof intro.text !== "string" || !intro.text.trim()) {
+      throw new Error("Invalid YAML: intro.text must be a non-empty string");
+    }
+
+    // Validate passages
+    if (!obj.passages || typeof obj.passages !== "object") {
+      throw new Error("Invalid YAML: Missing or invalid passages object");
+    }
+    const passages = obj.passages as Record<string, unknown>;
+
+    for (const [passageId, passage] of Object.entries(passages)) {
+      // Validate passage ID is numeric
+      if (isNaN(Number(passageId))) {
+        throw new Error(
+          `Invalid YAML: Passage ID '${passageId}' must be numeric`
+        );
+      }
+
+      if (!passage || typeof passage !== "object") {
+        throw new Error(`Invalid YAML: Passage ${passageId} must be an object`);
+      }
+
+      const passageObj = passage as Record<string, unknown>;
+
+      // Validate required text field
+      if (typeof passageObj.text !== "string" || !passageObj.text.trim()) {
+        throw new Error(
+          `Invalid YAML: Passage ${passageId} text must be a non-empty string`
+        );
+      }
+
+      // Validate optional choices array
+      if (passageObj.choices) {
+        if (!Array.isArray(passageObj.choices)) {
+          throw new Error(
+            `Invalid YAML: Passage ${passageId} choices must be an array`
+          );
+        }
+
+        for (let i = 0; i < passageObj.choices.length; i++) {
+          const choice = passageObj.choices[i];
+          if (!choice || typeof choice !== "object") {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} choice ${i} must be an object`
+            );
+          }
+
+          const choiceObj = choice as Record<string, unknown>;
+          if (typeof choiceObj.text !== "string" || !choiceObj.text.trim()) {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} choice ${i} text must be a non-empty string`
+            );
+          }
+          if (typeof choiceObj.goto !== "number") {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} choice ${i} goto must be a number`
+            );
+          }
+        }
+      }
+
+      // Validate optional ending field
+      if (
+        passageObj.ending !== undefined &&
+        typeof passageObj.ending !== "boolean"
+      ) {
+        throw new Error(
+          `Invalid YAML: Passage ${passageId} ending must be a boolean`
+        );
+      }
+
+      // Validate optional type field
+      if (passageObj.type !== undefined) {
+        const validTypes = ["victory", "defeat", "neutral"];
+        if (
+          typeof passageObj.type !== "string" ||
+          !validTypes.includes(passageObj.type)
+        ) {
+          throw new Error(
+            `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(
+              ", "
+            )}`
+          );
+        }
+      }
+    }
+
+    // Type assertion is now safe after validation
+    return parsed as Story;
   }
 
   private static processTextFields(story: Story): void {

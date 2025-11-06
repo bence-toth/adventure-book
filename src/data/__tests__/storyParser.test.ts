@@ -122,6 +122,198 @@ metadata:
 
       expect(() => StoryParser.parseFromString(invalidYaml)).toThrow();
     });
+
+    it("should throw error for missing metadata", () => {
+      const yamlContent = `
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: "Test passage"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Missing or invalid metadata object"
+      );
+    });
+
+    it("should throw error for invalid metadata fields", () => {
+      const yamlContentMissingTitle = `
+metadata:
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test"
+passages:
+  1:
+    text: "Test"
+`;
+
+      expect(() =>
+        StoryParser.parseFromString(yamlContentMissingTitle)
+      ).toThrow("Invalid YAML: metadata.title must be a non-empty string");
+
+      const yamlContentEmptyAuthor = `
+metadata:
+  title: "Test Story"
+  author: ""
+  version: "1.0"
+intro:
+  text: "Test"
+passages:
+  1:
+    text: "Test"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContentEmptyAuthor)).toThrow(
+        "Invalid YAML: metadata.author must be a non-empty string"
+      );
+    });
+
+    it("should throw error for missing intro", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+passages:
+  1:
+    text: "Test passage"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Missing or invalid intro object"
+      );
+    });
+
+    it("should throw error for invalid intro text", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: ""
+passages:
+  1:
+    text: "Test passage"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: intro.text must be a non-empty string"
+      );
+    });
+
+    it("should throw error for missing passages", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Missing or invalid passages object"
+      );
+    });
+
+    it("should throw error for invalid passage ID", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  "not-a-number":
+    text: "Test passage"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage ID 'not-a-number' must be numeric"
+      );
+    });
+
+    it("should throw error for invalid passage structure", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: ""
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 text must be a non-empty string"
+      );
+    });
+
+    it("should throw error for invalid choice structure", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: "Test passage"
+    choices:
+      - text: ""
+        goto: 2
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 choice 0 text must be a non-empty string"
+      );
+
+      const yamlContentInvalidGoto = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: "Test passage"
+    choices:
+      - text: "Go somewhere"
+        goto: "not-a-number"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContentInvalidGoto)).toThrow(
+        "Invalid YAML: Passage 1 choice 0 goto must be a number"
+      );
+    });
+
+    it("should throw error for invalid passage type", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: "Test passage"
+    ending: true
+    type: "invalid-type"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 type must be one of: victory, defeat, neutral"
+      );
+    });
   });
 
   describe("textToParagraphs", () => {
