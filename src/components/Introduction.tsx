@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { introduction } from "../data";
+import { introduction } from "../data/storyLoader";
 import { getCurrentPassageId } from "../utils/localStorage";
 import "./Introduction.css";
 

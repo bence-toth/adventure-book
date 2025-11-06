@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { passages } from "../data";
+import { getPassage } from "../data/storyLoader";
 import {
   saveCurrentPassageId,
   clearCurrentPassageId,
@@ -54,7 +54,7 @@ export const Passage = () => {
     );
   }
 
-  const currentPassage = passages.find((passage) => passage.id === passageId);
+  const currentPassage = getPassage(passageId);
 
   if (!currentPassage) {
     return (
@@ -74,26 +74,42 @@ export const Passage = () => {
     navigate(`/passage/${nextId}`);
   };
 
+  // Check if this is an ending passage (no choices means it's an ending)
+  const isEnding =
+    !currentPassage.choices || currentPassage.choices.length === 0;
+
   return (
     <div className="adventure-book">
       <div className="passage">
         <div className="passage-text">
-          {currentPassage.paragraphs.map((paragraph, index) => (
+          {currentPassage.paragraphs?.map((paragraph, index) => (
             <p className="passage-paragraph" key={index}>
               {paragraph}
             </p>
           ))}
         </div>
         <div className="choices">
-          {currentPassage.choices.map((choice, index) => (
+          {isEnding ? (
             <button
-              key={index}
               className="choice-button"
-              onClick={() => handleChoiceClick(choice.nextId)}
+              onClick={() => {
+                clearCurrentPassageId();
+                navigate("/");
+              }}
             >
-              {choice.text}
+              Start a new adventure
             </button>
-          ))}
+          ) : (
+            currentPassage.choices?.map((choice, index) => (
+              <button
+                key={index}
+                className="choice-button"
+                onClick={() => handleChoiceClick(choice.goto)}
+              >
+                {choice.text}
+              </button>
+            ))
+          )}
         </div>
       </div>
     </div>
