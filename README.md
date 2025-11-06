@@ -39,7 +39,7 @@ passages:
 
   2:
     text: |
-      Another passage...
+      Another passage…
     ending: true
     type: "victory"
 ```

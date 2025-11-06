@@ -130,7 +130,7 @@ describe("Adventure Book Integration Tests", () => {
     expect(screen.getByTestId("error-invalid-id")).toBeInTheDocument();
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
     expect(
-      screen.getByText(/The passage ID "invalid" is not valid/)
+      screen.getByText(/The passage ID “invalid” is not valid/)
     ).toBeInTheDocument();
 
     // Should have button to go back to introduction

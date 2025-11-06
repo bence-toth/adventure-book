@@ -291,7 +291,7 @@ passages:
 `;
 
       expect(() => StoryParser.parseFromString(yamlContentInvalidGoto)).toThrow(
-        "Invalid YAML: Passage 1 choice 0 goto must be a number"
+        "Invalid YAML: Passage 1 choice 0 goto must be a positive integer"
       );
     });
 

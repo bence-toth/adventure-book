@@ -11,7 +11,7 @@ export const Passage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const passageId = parseInt(id || "1", 10);
+  const passageId = parseInt(id ?? "1", 10);
 
   useEffect(() => {
     if (!isNaN(passageId)) {
@@ -26,18 +26,18 @@ export const Passage = () => {
     }
   }, [passageId, navigate]);
 
-  if (isNaN(passageId) || passageId < 0) {
+  if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
     return (
       <div className="adventure-book">
         <div className="error" data-testid="error-invalid-id">
           <h2>Invalid passage ID</h2>
-          <p>The passage ID "{id}" is not valid. Please use a valid number.</p>
+          <p>The passage ID “{id}” is not valid. Please use a valid number.</p>
           <button
             className="choice-button"
             onClick={() => navigate("/passage/0")}
             data-testid="go-to-introduction-button"
           >
-            Go to Introduction
+            Go to introduction
           </button>
         </div>
       </div>
@@ -51,7 +51,7 @@ export const Passage = () => {
       <div className="adventure-book">
         <div className="passage" data-testid="reset-passage">
           <div className="passage-text">
-            <p className="passage-paragraph">Resetting your adventure...</p>
+            <p className="passage-paragraph">Resetting your adventure…</p>
           </div>
         </div>
       </div>
@@ -71,7 +71,7 @@ export const Passage = () => {
             onClick={() => navigate("/passage/0")}
             data-testid="go-to-introduction-button"
           >
-            Go to Introduction
+            Go to introduction
           </button>
         </div>
       </div>

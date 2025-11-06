@@ -125,7 +125,7 @@ describe("Passage Component", () => {
 
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
     expect(
-      screen.getByText(/The passage ID "invalid" is not valid/)
+      screen.getByText(/The passage ID “invalid” is not valid/)
     ).toBeInTheDocument();
 
     const goHomeButton = screen.getByTestId("go-to-introduction-button");
@@ -183,7 +183,7 @@ describe("Passage Component", () => {
 
     const resetPassage = screen.getByTestId("reset-passage");
     expect(resetPassage).toBeInTheDocument();
-    expect(screen.getByText("Resetting your adventure...")).toBeInTheDocument();
+    expect(screen.getByText("Resetting your adventure…")).toBeInTheDocument();
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 

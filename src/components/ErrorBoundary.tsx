@@ -85,7 +85,11 @@ export class ErrorBoundary extends Component<Props, State> {
               If this problem persists, the story file may need to be fixed.
             </p>
             {error && (
-              <details className="error-boundary-details">
+              <details
+                className="error-boundary-details"
+                role="region"
+                aria-label="Technical details"
+              >
                 <summary className="error-boundary-details-summary">
                   Technical details
                 </summary>

@@ -107,7 +107,7 @@
 }
 
 .error-boundary-details-content-stack {
-  color: var(--color-muted);
+  color: var(--color-foreground);
   font-size: var(--font-size-sm);
   line-height: var(--line-height-loose);
 }

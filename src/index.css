@@ -83,15 +83,15 @@ button {
   --line-height-loose: 2;
 
   /* Spacing variables */
-  --space-seed: 8px;
-  --space-1: calc(var(--space-seed) * 1);
-  --space-2: calc(var(--space-seed) * 2);
-  --space-3: calc(var(--space-seed) * 3);
-  --space-4: calc(var(--space-seed) * 4);
-  --space-5: calc(var(--space-seed) * 5);
+  --space-base: 8px;
+  --space-1: calc(var(--space-base) * 1);
+  --space-2: calc(var(--space-base) * 2);
+  --space-3: calc(var(--space-base) * 3);
+  --space-4: calc(var(--space-base) * 4);
+  --space-5: calc(var(--space-base) * 5);
 
   /* Element sizing variables */
-  --size-content: calc(var(--space-seed) * 75);
+  --size-content: calc(var(--space-base) * 75);
 }
 
 @media (prefers-color-scheme: light) {
