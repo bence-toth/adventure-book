@@ -367,6 +367,43 @@ passages:
       expect(story.intro.paragraphs).toEqual(["Para 1", "Para 2"]);
       expect(story.passages[1].paragraphs).toEqual(["Para 1"]);
     });
+
+    it("should handle missing or undefined text fields defensively", () => {
+      // Test with a malformed story object that bypassed validation somehow
+      const malformedStory = {
+        metadata: { title: "Test", author: "Author", version: "1.0" },
+        intro: {}, // Missing text field
+        passages: {
+          1: {}, // Missing text field
+          2: { text: "Valid text" },
+        },
+      } as unknown as Story;
+
+      // Should not crash and should set empty paragraphs
+      expect(() =>
+        StoryParser["processTextFields"](malformedStory)
+      ).not.toThrow();
+      expect(malformedStory.intro.paragraphs).toEqual([]);
+      expect(malformedStory.passages[1].paragraphs).toEqual([]);
+      expect(malformedStory.passages[2].paragraphs).toEqual(["Valid text"]);
+    });
+
+    it("should handle empty or whitespace-only text", () => {
+      const story: Story = {
+        metadata: { title: "Test", author: "Author", version: "1.0" },
+        intro: { text: "   \n\n   " }, // Only whitespace
+        passages: {
+          1: { text: "" }, // Empty string
+          2: { text: "   " }, // Only spaces
+        },
+      };
+
+      StoryParser["processTextFields"](story);
+
+      expect(story.intro.paragraphs).toEqual([]);
+      expect(story.passages[1].paragraphs).toEqual([]);
+      expect(story.passages[2].paragraphs).toEqual([]);
+    });
   });
 
   describe("validateStory", () => {
