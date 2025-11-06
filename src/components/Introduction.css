@@ -10,6 +10,7 @@
   color: var(--color-foreground);
   font-weight: bold;
   text-shadow: 0 2px 4px var(--shadow-primary);
+  text-wrap: balance;
 }
 
 .intro-text {
