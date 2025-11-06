@@ -326,7 +326,7 @@ passages:
         },
       };
 
-      // Access the private method through the public parseFromString method
+      // Access the private method directly for testing purposes
       StoryParser["processTextFields"](story);
 
       expect(story.intro.paragraphs).toEqual(["Para 1", "Para 2", "Para 3"]);
