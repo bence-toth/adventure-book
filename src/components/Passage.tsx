@@ -91,7 +91,7 @@ export const Passage = () => {
     <div className="adventure-book">
       <div className="passage" data-testid="passage">
         <div className="passage-text" data-testid="passage-text">
-          {currentPassage.paragraphs?.map((paragraph, index) => (
+          {currentPassage.paragraphs.map((paragraph, index) => (
             <p
               className="passage-paragraph"
               key={index}
@@ -111,7 +111,7 @@ export const Passage = () => {
               Restart adventure
             </button>
           ) : (
-            currentPassage.choices?.map((choice, index) => (
+            currentPassage.choices!.map((choice, index) => (
               <button
                 key={index}
                 className="choice-button"

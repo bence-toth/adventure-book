@@ -38,7 +38,7 @@ export const introduction: IntroductionContent = {
   },
   get paragraphs() {
     const story = loadStory();
-    return story.intro.paragraphs ?? [];
+    return story.intro.paragraphs;
   },
   buttonText: "Begin Your Adventure",
 };
