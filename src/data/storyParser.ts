@@ -1,9 +1,9 @@
-import * as yaml from "js-yaml";
+import { parse } from "yaml";
 import type { Story } from "./types";
 
 export class StoryParser {
   static parseFromString(yamlContent: string): Story {
-    const parsed = yaml.load(yamlContent) as Story;
+    const parsed = parse(yamlContent) as Story;
 
     // Convert multiline text to paragraphs
     this.processTextFields(parsed);
