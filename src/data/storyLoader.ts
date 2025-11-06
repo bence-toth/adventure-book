@@ -27,6 +27,10 @@ export const reloadStory = (): Story => {
   return loadStory();
 };
 
+// Note: Using getters for lazy loading - these satisfy the IntroductionContent interface
+// but ensure the story is loaded on-demand when title/paragraphs are accessed.
+// This allows the introduction object to be exported immediately without requiring
+// the story to be loaded at module initialization time.
 export const introduction: IntroductionContent = {
   get title() {
     return loadStory().metadata.title;
