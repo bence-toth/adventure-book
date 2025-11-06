@@ -20,11 +20,15 @@ export const Introduction = () => {
 
   return (
     <div className="adventure-book">
-      <div className="introduction">
-        <h1>{introduction.title}</h1>
-        <div className="intro-text">
+      <div className="introduction" data-testid="introduction">
+        <h1 data-testid="intro-title">{introduction.title}</h1>
+        <div className="intro-text" data-testid="intro-text">
           {introduction.paragraphs.map((paragraph, index) => (
-            <p className="intro-paragraph" key={index}>
+            <p
+              className="intro-paragraph"
+              key={index}
+              data-testid={`intro-paragraph-${index}`}
+            >
               {paragraph}
             </p>
           ))}
@@ -33,6 +37,7 @@ export const Introduction = () => {
           <button
             className="choice-button start-adventure-button"
             onClick={handleStartAdventure}
+            data-testid="start-adventure-button"
           >
             {introduction.buttonText}
           </button>
