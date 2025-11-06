@@ -144,7 +144,7 @@ export class StoryParser {
 
       // Validate ending has no choices
       if (
-        passageObj.ending !== undefined &&
+        passageObj.ending === true &&
         passageObj.choices &&
         Array.isArray(passageObj.choices) &&
         passageObj.choices.length > 0
