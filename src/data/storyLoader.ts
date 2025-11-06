@@ -7,7 +7,7 @@ import storyYaml from "./story.yaml?raw";
 
 let loadedStory: Story | null = null;
 
-export function loadStory(): Story {
+export const loadStory = (): Story => {
   if (!loadedStory) {
     loadedStory = StoryParser.parseFromString(storyYaml);
 
@@ -20,15 +20,13 @@ export function loadStory(): Story {
   }
 
   return loadedStory;
-}
+};
 
-// Function to reload story (useful for development)
-export function reloadStory(): Story {
+export const reloadStory = (): Story => {
   loadedStory = null;
   return loadStory();
-}
+};
 
-// Export story data
 export const introduction: IntroductionContent = {
   get title() {
     return loadStory().metadata.title;
@@ -40,12 +38,12 @@ export const introduction: IntroductionContent = {
   buttonText: "Begin Your Adventure",
 };
 
-export function getPassage(id: number) {
+export const getPassage = (id: number) => {
   const story = loadStory();
   return story.passages[id];
-}
+};
 
-export function getAllPassages() {
+export const getAllPassages = () => {
   const story = loadStory();
   return story.passages;
-}
+};

@@ -5,9 +5,9 @@ import type { ReactElement } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 // Wrapper component for providers
-function AllTheProviders({ children }: { children: React.ReactNode }) {
+const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return <BrowserRouter>{children}</BrowserRouter>;
-}
+};
 
 // Custom render function
 const customRender = (
