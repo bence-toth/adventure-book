@@ -43,7 +43,6 @@
 
 .error {
   text-align: center;
-  background: var(--color-surface);
   padding: var(--space-4);
   max-width: var(--size-content);
 }
