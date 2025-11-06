@@ -111,6 +111,13 @@ describe("Passage Component", () => {
     expect(screen.getByText("Invalid Passage ID")).toBeInTheDocument();
   });
 
+  it("handles passage 0 by showing reset message and redirecting", () => {
+    renderWithRoute("/passage/0");
+
+    expect(screen.getByText("Resetting your adventure...")).toBeInTheDocument();
+    expect(mockNavigate).toHaveBeenCalledWith("/");
+  });
+
   it("has correct CSS classes applied", () => {
     renderWithRoute("/passage/1");
 

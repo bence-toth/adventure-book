@@ -1,5 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { passages } from "../data";
+import {
+  saveCurrentPassageId,
+  clearCurrentPassageId,
+} from "../utils/localStorage";
 import "./Passage.css";
 
 export const Passage = () => {
@@ -8,7 +13,20 @@ export const Passage = () => {
 
   const passageId = parseInt(id || "1", 10);
 
-  if (isNaN(passageId) || passageId < 1) {
+  useEffect(() => {
+    if (!isNaN(passageId)) {
+      if (passageId === 0) {
+        // Special case: passage 0 clears localStorage and redirects to introduction
+        clearCurrentPassageId();
+        navigate("/");
+        return;
+      } else if (passageId >= 1) {
+        saveCurrentPassageId(passageId);
+      }
+    }
+  }, [passageId, navigate]);
+
+  if (isNaN(passageId) || passageId < 0) {
     return (
       <div className="adventure-book">
         <div className="error">
@@ -17,6 +35,20 @@ export const Passage = () => {
           <button className="choice-button" onClick={() => navigate("/")}>
             Go to Introduction
           </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle passage 0 (reset) - this will be handled in useEffect, but we need to prevent
+  // the rest of the component from rendering while the redirect happens
+  if (passageId === 0) {
+    return (
+      <div className="adventure-book">
+        <div className="passage">
+          <div className="passage-text">
+            <p className="passage-paragraph">Resetting your adventure...</p>
+          </div>
         </div>
       </div>
     );
