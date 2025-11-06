@@ -64,7 +64,7 @@ export const Passage = () => {
       <div className="adventure-book">
         <div className="error">
           <h2>Passage not found</h2>
-          <p>Passage {passageId} does not exist in this adventure.</p>
+          <p>Passage #{passageId} does not exist in this adventure.</p>
           <button
             className="choice-button"
             onClick={() => navigate("/passage/0")}
@@ -98,7 +98,7 @@ export const Passage = () => {
         <div className="choices">
           {currentPassage.ending ? (
             <button className="choice-button" onClick={handleRestartClick}>
-              Start a new adventure
+              Restart adventure
             </button>
           ) : (
             currentPassage.choices?.map((choice, index) => (

@@ -7,9 +7,9 @@ intro:
   text: |
     Welcome, brave adventurer, to a digital realm where code comes alive and algorithms dance through the very fabric of reality. You are about to embark on an interactive journey through the mystical world of programming concepts, where every choice you make will shape your understanding of the computational universe.
 
-    In this adventure, you'll encounter wise lambdas sharing ancient functional wisdom, navigate through mazes of data structures, climb towering binary trees, and discover the elegant patterns that govern the world of software. Each path you choose will reveal new insights about the art and science of programming.
+    In this adventure, you’ll encounter wise lambdas sharing ancient functional wisdom, navigate through mazes of data structures, climb towering binary trees, and discover the elegant patterns that govern the world of software. Each path you choose will reveal new insights about the art and science of programming.
 
-    Your adventure awaits. Will you step through the digital gateway and discover what lies beyond the screen? The choice is yours, but remember - in the world of code, every decision creates new possibilities.
+    Your adventure awaits. Will you step through the digital gateway and discover what lies beyond the screen? The choice is yours, but remember — in the world of code, every decision creates new possibilities.
 
 passages:
   1:
@@ -33,7 +33,7 @@ passages:
 
       A wise lambda approaches you with ancient knowledge, its form shifting and currying as it moves. Its eyes hold the wisdom of countless transformations and elegant compositions.
     choices:
-      - text: "Listen to the lambda's wisdom"
+      - text: "Listen to the lambda’s wisdom"
         goto: 5
       - text: "Continue deeper into functional territory"
         goto: 6
@@ -44,7 +44,7 @@ passages:
     text: |
       You wander into a vast library of data structures. Arrays stretch endlessly in perfect rows, while trees tower above you with their branching networks. Maps and sets organize themselves in mysterious patterns.
 
-      The architecture here is breathtaking - each structure serves its purpose with mathematical precision. You can feel the Big O complexities shifting around you like living entities, and the balance between time and space complexity creates a harmony that resonates through the entire realm.
+      The architecture here is breathtaking — each structure serves its purpose with mathematical precision. You can feel the Big O complexities shifting around you like living entities, and the balance between time and space complexity creates a harmony that resonates through the entire realm.
     choices:
       - text: "Climb the binary tree"
         goto: 7
@@ -55,9 +55,9 @@ passages:
 
   4:
     text: |
-      You decide to turn back, but the digital realm won't let you leave so easily. The pathways behind you have shifted and rearranged themselves, blocking your retreat.
+      You decide to turn back, but the digital realm won’t let you leave so easily. The pathways behind you have shifted and rearranged themselves, blocking your retreat.
 
-      The exit portal flickers and shows you a glimpse of what lies beyond - a world where you never learned the secrets of code, where the mysteries remain forever unsolved.
+      The exit portal flickers and shows you a glimpse of what lies beyond — a world where you never learned the secrets of code, where the mysteries remain forever unsolved.
     choices:
       - text: "Step through the flickering portal"
         goto: 9
@@ -68,7 +68,7 @@ passages:
     text: |
       The lambda whispers secrets of immutability and composition. Its voice carries the weight of countless transformations and the elegance of pure logic.
 
-      'Remember,' it says, its form shimmering with mathematical beauty, 'the power lies not in changing the world, but in creating new realities from the old. Each function should be a lens through which data flows unchanged but transformed.'
+      “Remember,” it says, its form shimmering with mathematical beauty, “the power lies not in changing the world, but in creating new realities from the old. Each function should be a lens through which data flows unchanged but transformed.”
     choices:
       - text: "Ask about higher-order functions"
         goto: 10
@@ -90,7 +90,7 @@ passages:
     text: |
       From the top of the binary tree, you can see the entire data structure kingdom. Balanced and unbalanced trees sway in the algorithmic wind, their branches reaching toward optimal performance.
 
-      The view is spectacular - AVL trees maintain perfect balance with their rotations, while red-black trees display their colorful node patterns. In the distance, you can see heaps organizing themselves by priority, and graphs weaving complex networks of connections.
+      The view is spectacular — AVL trees maintain perfect balance with their rotations, while red-black trees display their colorful node patterns. In the distance, you can see heaps organizing themselves by priority, and graphs weaving complex networks of connections.
     choices:
       - text: "Enjoy the view and climb down"
         goto: 3
@@ -118,9 +118,9 @@ passages:
 
   10:
     text: |
-      The lambda's eyes glow with excitement as it senses your curiosity about the deeper mysteries of functional programming.
+      The lambda’s eyes glow with excitement as it senses your curiosity about the deeper mysteries of functional programming.
 
-      'Higher-order functions,' it explains, its voice resonating with the harmony of mathematical precision, 'are the composers of the coding symphony. They take functions and return new functions, creating beautiful abstractions that elevate code from mere instructions to elegant poetry.'
+      “Higher-order functions,” it explains, its voice resonating with the harmony of mathematical precision, “are the composers of the coding symphony. They take functions and return new functions, creating beautiful abstractions that elevate code from mere instructions to elegant poetry.”
     choices:
       - text: "Ask for a practical example"
         goto: 13
@@ -129,7 +129,7 @@ passages:
 
   11:
     text: |
-      You embrace the recursion and find yourself in an infinite loop of discovery. Each iteration reveals new patterns - the Tower of Hanoi unfolds its ancient puzzle, fractals bloom with self-similar beauty.
+      You embrace the recursion and find yourself in an infinite loop of discovery. Each iteration reveals new patterns — the Tower of Hanoi unfolds its ancient puzzle, fractals bloom with self-similar beauty.
 
       But be careful not to lose yourself in the endless descent. Without a proper base case, even the most elegant recursion becomes a trap that consumes memory until the stack overflows.
     choices:
@@ -153,7 +153,7 @@ passages:
     text: |
       The lambda conjures a shimmering example in the air before you, data flowing like liquid light through transparent functions.
 
-      'Behold, map, filter, and reduce - the trinity of functional transformation,' it declares with reverence. 'They take functions as arguments and transform entire collections with elegant simplicity. Map transforms each element, filter selects the worthy, and reduce collapses many into one.'
+      “Behold, map, filter, and reduce — the trinity of functional transformation,” it declares with reverence. “They take functions as arguments and transform entire collections with elegant simplicity. Map transforms each element, filter selects the worthy, and reduce collapses many into one.”
     choices:
       - text: "Practice with the trinity"
         goto: 14
@@ -164,7 +164,7 @@ passages:
     text: |
       You practice with map, filter, and reduce, feeling the power of functional programming flow through your code. Arrays transform before your eyes like living entities, each element passing through the pipeline of transformation.
 
-      You understand now the elegance of declarative programming - instead of telling the computer how to do something step by step, you describe what you want, and the higher-order functions handle the details. It's like conducting an orchestra where each function plays its part in perfect harmony.
+      You understand now the elegance of declarative programming — instead of telling the computer how to do something step by step, you describe what you want, and the higher-order functions handle the details. It’s like conducting an orchestra where each function plays its part in perfect harmony.
     choices:
       - text: "Master these concepts completely"
         goto: 15
