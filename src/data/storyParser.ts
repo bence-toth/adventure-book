@@ -123,7 +123,7 @@ export class StoryParser {
           if (
             typeof choiceObj.goto !== "number" ||
             !Number.isInteger(choiceObj.goto) ||
-            choiceObj.goto < 0
+            choiceObj.goto <= 0
           ) {
             throw new Error(
               `Invalid YAML: Passage ${passageId} choice ${i} goto must be a positive integer`
@@ -143,7 +143,12 @@ export class StoryParser {
       }
 
       // Validate ending has no choices
-      if (passageObj.ending !== undefined && passageObj.choices) {
+      if (
+        passageObj.ending !== undefined &&
+        passageObj.choices &&
+        Array.isArray(passageObj.choices) &&
+        passageObj.choices.length > 0
+      ) {
         throw new Error(
           `Invalid YAML: Ending passage ${passageId} must not have choices`
         );
