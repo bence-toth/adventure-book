@@ -32,12 +32,12 @@ describe("ErrorBoundary", () => {
     );
 
     // Check that error UI is rendered
-    expect(screen.getByText("Story Loading Error")).toBeInTheDocument();
+    expect(screen.getByText("A system error occurred")).toBeInTheDocument();
     expect(
       screen.getByText(/An error occurred while loading the story/)
     ).toBeInTheDocument();
-    expect(screen.getByText("Try Again")).toBeInTheDocument();
-    expect(screen.getByText("Reload Page")).toBeInTheDocument();
+    expect(screen.getByText("Try again")).toBeInTheDocument();
+    expect(screen.getByText("Reload page")).toBeInTheDocument();
 
     // Verify console.error was called
     expect(consoleSpy).toHaveBeenCalledWith(
@@ -58,7 +58,7 @@ describe("ErrorBoundary", () => {
     );
 
     // Check technical details are available
-    expect(screen.getByText("Technical Details")).toBeInTheDocument();
+    expect(screen.getByText("Technical details")).toBeInTheDocument();
 
     consoleSpy.mockRestore();
   });
