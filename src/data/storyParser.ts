@@ -147,20 +147,12 @@ export class StoryParser {
   }
 
   private static processTextFields(story: Story): void {
-    // Process intro text - defensive check even though validation should ensure text exists
-    if (story.intro?.text) {
-      story.intro.paragraphs = this.textToParagraphs(story.intro.text);
-    } else {
-      story.intro.paragraphs = [];
-    }
+    // Process intro text
+    story.intro.paragraphs = this.textToParagraphs(story.intro.text);
 
-    // Process passage texts - defensive check for each passage
+    // Process passage texts
     for (const passage of Object.values(story.passages)) {
-      if (passage?.text) {
-        passage.paragraphs = this.textToParagraphs(passage.text);
-      } else {
-        passage.paragraphs = [];
-      }
+      passage.paragraphs = this.textToParagraphs(passage.text);
     }
   }
 
