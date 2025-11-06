@@ -42,7 +42,7 @@ describe("Passages Data", () => {
     const allPassages = getAllPassages();
     Object.entries(allPassages).forEach(([id, passage]) => {
       expect(id).toBeDefined();
-      expect(typeof Number(id)).toBe("number");
+      expect(!isNaN(Number(id))).toBe(true);
       expect(passage.paragraphs).toBeDefined();
       expect(Array.isArray(passage.paragraphs)).toBe(true);
       expect(passage.paragraphs!.length).toBeGreaterThan(0);
