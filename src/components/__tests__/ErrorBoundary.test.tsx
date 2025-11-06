@@ -36,7 +36,6 @@ describe("ErrorBoundary", () => {
     expect(
       screen.getByText(/An error occurred while loading the story/)
     ).toBeInTheDocument();
-    expect(screen.getByText("Try again")).toBeInTheDocument();
     expect(screen.getByText("Reload page")).toBeInTheDocument();
 
     // Verify console.error was called

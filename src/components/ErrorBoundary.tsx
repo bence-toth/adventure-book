@@ -68,12 +68,6 @@ export class ErrorBoundary extends Component<Props, State> {
           <p className="error-boundary-description">{getErrorMessage()}</p>
           <div className="error-boundary-actions">
             <button
-              className="error-boundary-button error-boundary-button-retry"
-              onClick={this.handleRetry}
-            >
-              Try again
-            </button>
-            <button
               className="error-boundary-button error-boundary-button-reload"
               onClick={() => window.location.reload()}
             >
@@ -110,10 +104,5 @@ export class ErrorBoundary extends Component<Props, State> {
         </div>
       </div>
     );
-  };
-
-  private handleRetry = () => {
-    // Reset error state and try again
-    this.setState({ hasError: false, error: undefined });
   };
 }
