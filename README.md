@@ -10,7 +10,7 @@ The adventure book system supports authoring stories in YAML format, making it e
 
 #### Basic YAML Structure
 
-A story YAML file has four main sections:
+A story YAML file has three main sections:
 
 ```yaml
 metadata:
