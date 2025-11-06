@@ -9,8 +9,8 @@ export class StoryParser {
     const parsed = parse(yamlContent, {
       // Explicitly disable custom tags for extra security
       customTags: [],
-      // Only parse standard YAML types
-      schema: "core",
+      // Enforce strict YAML parsing (catch duplicate keys, etc.)
+      strict: true,
     }) as Story;
 
     // Convert multiline text to paragraphs
