@@ -1,9 +1,8 @@
+/// <reference types="../vite-env" />
 import { StoryParser } from "./storyParser";
 import type { Story, IntroductionContent } from "./types";
 
 // Import the YAML file as a string
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import storyYaml from "./story.yaml?raw";
 
 let loadedStory: Story | null = null;
