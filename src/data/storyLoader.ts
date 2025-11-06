@@ -1,6 +1,6 @@
 /// <reference types="../vite-env" />
 import { StoryParser } from "./storyParser";
-import type { Story, IntroductionContent } from "./types";
+import type { Story, Passage, IntroductionContent } from "./types";
 
 // Import the YAML file as a string
 import storyYaml from "./story.yaml?raw";
@@ -38,12 +38,12 @@ export const introduction: IntroductionContent = {
   buttonText: "Begin Your Adventure",
 };
 
-export const getPassage = (id: number) => {
+export const getPassage = (id: number): Passage | undefined => {
   const story = loadStory();
   return story.passages[id];
 };
 
-export const getAllPassages = () => {
+export const getAllPassages = (): Record<number, Passage> => {
   const story = loadStory();
   return story.passages;
 };
