@@ -1,9 +1,18 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import { introduction } from "../data";
+import { getCurrentPassageId } from "../utils/localStorage";
 import "./Introduction.css";
 
 export const Introduction = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const savedPassageId = getCurrentPassageId();
+    if (savedPassageId !== null) {
+      navigate(`/passage/${savedPassageId}`);
+    }
+  }, [navigate]);
 
   const handleStartAdventure = () => {
     navigate("/passage/1");
