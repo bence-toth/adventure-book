@@ -74,6 +74,11 @@ export const Passage = () => {
     navigate(`/passage/${nextId}`);
   };
 
+  const handleRestartClick = () => {
+    clearCurrentPassageId();
+    navigate("/");
+  };
+
   return (
     <div className="adventure-book">
       <div className="passage">
@@ -86,13 +91,7 @@ export const Passage = () => {
         </div>
         <div className="choices">
           {currentPassage.ending ? (
-            <button
-              className="choice-button"
-              onClick={() => {
-                clearCurrentPassageId();
-                navigate("/");
-              }}
-            >
+            <button className="choice-button" onClick={handleRestartClick}>
               Start a new adventure
             </button>
           ) : (
