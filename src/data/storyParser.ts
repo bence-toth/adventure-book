@@ -3,7 +3,15 @@ import type { Story } from "./types";
 
 export class StoryParser {
   static parseFromString(yamlContent: string): Story {
-    const parsed = parse(yamlContent) as Story;
+    // The 'yaml' package's parse() function is safe by default (unlike js-yaml's load())
+    // It only parses standard YAML types and doesn't execute arbitrary code or custom tags
+    // This is much safer than js-yaml.load() which could execute arbitrary JavaScript
+    const parsed = parse(yamlContent, {
+      // Explicitly disable custom tags for extra security
+      customTags: [],
+      // Only parse standard YAML types
+      schema: "core",
+    }) as Story;
 
     // Convert multiline text to paragraphs
     this.processTextFields(parsed);

@@ -1,6 +1,9 @@
 import { StoryParser } from "../storyParser";
 import type { Story } from "../types";
 
+// Note: Using 'yaml' package instead of 'js-yaml' for security
+// The 'yaml' package is safe by default and doesn't execute arbitrary code
+
 describe("StoryParser", () => {
   describe("parseFromString", () => {
     it("should parse a valid YAML story", () => {
