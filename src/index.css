@@ -1,0 +1,129 @@
+@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Eagle+Lake&family=Inconsolata:wght@200..900&display=swap");
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  line-height: var(--line-height-dense);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+:root {
+  color-scheme: light dark;
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  font-family: var(--font-family-default);
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Color variables */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  --color-red-100: #fef2f2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-red-900: #7f1d1d;
+
+  /* Shadow color variables with opacity based on color variables */
+  --color-shadow-black: color-mix(in srgb, var(--color-black) 10%, transparent);
+  --color-shadow-black-md: color-mix(
+    in srgb,
+    var(--color-black) 20%,
+    transparent
+  );
+  --color-shadow-black-lg: color-mix(
+    in srgb,
+    var(--color-black) 30%,
+    transparent
+  );
+
+  /* Shadow variables */
+  --shadow-default: 0 var(--space-1) var(--space-2) var(--shadow-primary);
+  --shadow-hover: 0 var(--space-1) var(--space-3) var(--shadow-secondary);
+  --shadow-active: 0 2px var(--space-1) var(--shadow-primary);
+
+  /* Font family variables */
+  --font-family-display: "Eagle Lake", serif;
+  --font-family-monospace: "Inconsolata", monospace;
+  --font-family-default: "Atkinson Hyperlegible Next", sans-serif;
+
+  /* Font size variables */
+  --font-size-sm: 0.75rem;
+  --font-size-md: 1rem;
+  --font-size-xl: 1.75rem;
+
+  /* Line height variables */
+  --line-height-dense: 1;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.75;
+  --line-height-loose: 2;
+
+  /* Spacing variables */
+  --space-base: 8px;
+  --space-1: calc(var(--space-base) * 1);
+  --space-2: calc(var(--space-base) * 2);
+  --space-3: calc(var(--space-base) * 3);
+  --space-4: calc(var(--space-base) * 4);
+  --space-5: calc(var(--space-base) * 5);
+
+  /* Element sizing variables */
+  --size-content: calc(var(--space-base) * 75);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-foreground: var(--color-gray-800);
+    --color-background: var(--color-white);
+    --color-border-subtle: var(--color-gray-300);
+    --color-button-primary: var(--color-gray-800);
+    --color-button-primary-hover: var(--color-gray-700);
+    --color-button-border: var(--color-gray-700);
+    --color-error: var(--color-red-600);
+    --color-code-background: #f6f8fa;
+    --color-code-border: #e1e4e8;
+    --color-on-primary: var(--color-white);
+    --shadow-primary: var(--color-shadow-black);
+    --shadow-secondary: var(--color-shadow-black-md);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-foreground: var(--color-gray-200);
+    --color-background: var(--color-gray-800);
+    --color-border-subtle: var(--color-gray-600);
+    --color-button-primary: var(--color-gray-600);
+    --color-button-primary-hover: var(--color-gray-500);
+    --color-button-border: var(--color-gray-500);
+    --color-error: var(--color-red-400);
+    --color-code-background: var(--color-gray-700);
+    --color-code-border: #444c56;
+    --color-on-primary: var(--color-white);
+    --shadow-primary: var(--color-shadow-black-md);
+    --shadow-secondary: var(--color-shadow-black-lg);
+  }
+}

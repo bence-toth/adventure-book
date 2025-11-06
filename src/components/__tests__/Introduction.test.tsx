@@ -1,6 +1,20 @@
 import { screen, fireEvent } from "@testing-library/react";
+import { vi } from "vitest";
 import { Introduction } from "../Introduction";
-import { render } from "../../test/test-utils";
+import { render } from "../../test/testUtils";
+
+// Mock the story loader to return stable test data
+vi.mock("../../data/storyLoader", () => ({
+  introduction: {
+    title: "Test Adventure",
+    paragraphs: [
+      "This is a test introduction paragraph.",
+      "This is a second test paragraph.",
+      "This is a third test paragraph.",
+    ],
+    buttonText: "Begin Your Adventure",
+  },
+}));
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
@@ -19,33 +33,45 @@ describe("Introduction Component", () => {
 
   it("renders the introduction title", () => {
     render(<Introduction />);
-    expect(
-      screen.getByText("Welcome to the Code Adventure")
-    ).toBeInTheDocument();
+
+    const title = screen.getByTestId("intro-title");
+    expect(title).toBeInTheDocument();
+    expect(title).toHaveTextContent("Test Adventure");
   });
 
   it("renders all introduction paragraphs", () => {
     render(<Introduction />);
 
-    expect(screen.getByText(/Welcome, brave adventurer/)).toBeInTheDocument();
-    expect(
-      screen.getByText(/In this adventure, you'll encounter/)
-    ).toBeInTheDocument();
-    expect(screen.getByText(/Your adventure awaits/)).toBeInTheDocument();
+    const introText = screen.getByTestId("intro-text");
+    expect(introText).toBeInTheDocument();
+
+    // Check that the correct number of paragraphs are rendered
+    const expectedParagraphs = [
+      "This is a test introduction paragraph.",
+      "This is a second test paragraph.",
+      "This is a third test paragraph.",
+    ];
+
+    expectedParagraphs.forEach((expectedText, index) => {
+      const paragraph = screen.getByTestId(`intro-paragraph-${index}`);
+      expect(paragraph).toBeInTheDocument();
+      expect(paragraph).toHaveTextContent(expectedText);
+    });
   });
 
   it("renders the start adventure button with correct text", () => {
     render(<Introduction />);
 
-    const button = screen.getByRole("button", { name: "Begin Your Adventure" });
+    const button = screen.getByTestId("start-adventure-button");
     expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent("Begin Your Adventure");
     expect(button).toHaveClass("choice-button", "start-adventure-button");
   });
 
   it("navigates to passage 1 when start adventure button is clicked", () => {
     render(<Introduction />);
 
-    const button = screen.getByRole("button", { name: "Begin Your Adventure" });
+    const button = screen.getByTestId("start-adventure-button");
     fireEvent.click(button);
 
     expect(mockNavigate).toHaveBeenCalledWith("/passage/1");
@@ -55,13 +81,12 @@ describe("Introduction Component", () => {
   it("has correct CSS classes applied", () => {
     render(<Introduction />);
 
-    expect(
-      screen.getByText("Welcome to the Code Adventure").closest(".introduction")
-    ).toBeInTheDocument();
-    expect(
-      screen
-        .getByText("Welcome to the Code Adventure")
-        .closest(".adventure-book")
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("introduction")).toBeInTheDocument();
+    expect(screen.getByTestId("introduction")).toHaveClass("introduction");
+
+    const adventureBook = screen
+      .getByTestId("introduction")
+      .closest(".adventure-book");
+    expect(adventureBook).toBeInTheDocument();
   });
 });

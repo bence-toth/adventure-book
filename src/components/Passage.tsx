@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { passages } from "../data";
+import { getPassage } from "../data/storyLoader";
 import {
   saveCurrentPassageId,
   clearCurrentPassageId,
@@ -11,7 +11,7 @@ export const Passage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const passageId = parseInt(id || "1", 10);
+  const passageId = parseInt(id ?? "1", 10);
 
   useEffect(() => {
     if (!isNaN(passageId)) {
@@ -26,14 +26,18 @@ export const Passage = () => {
     }
   }, [passageId, navigate]);
 
-  if (isNaN(passageId) || passageId < 0) {
+  if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
     return (
       <div className="adventure-book">
-        <div className="error">
-          <h2>Invalid Passage ID</h2>
-          <p>The passage ID "{id}" is not valid. Please use a valid number.</p>
-          <button className="choice-button" onClick={() => navigate("/")}>
-            Go to Introduction
+        <div className="error" data-testid="error-invalid-id">
+          <h2>Invalid passage ID</h2>
+          <p>The passage ID “{id}” is not valid. Please use a valid number.</p>
+          <button
+            className="choice-button"
+            onClick={() => navigate("/passage/0")}
+            data-testid="go-to-introduction-button"
+          >
+            Go to introduction
           </button>
         </div>
       </div>
@@ -45,25 +49,29 @@ export const Passage = () => {
   if (passageId === 0) {
     return (
       <div className="adventure-book">
-        <div className="passage">
+        <div className="passage" data-testid="reset-passage">
           <div className="passage-text">
-            <p className="passage-paragraph">Resetting your adventure...</p>
+            <p className="passage-paragraph">Resetting your adventure…</p>
           </div>
         </div>
       </div>
     );
   }
 
-  const currentPassage = passages.find((passage) => passage.id === passageId);
+  const currentPassage = getPassage(passageId);
 
   if (!currentPassage) {
     return (
       <div className="adventure-book">
-        <div className="error">
-          <h2>Passage Not Found</h2>
-          <p>Passage {passageId} does not exist in this adventure.</p>
-          <button className="choice-button" onClick={() => navigate("/")}>
-            Go to Introduction
+        <div className="error" data-testid="error-passage-not-found">
+          <h2>Passage not found</h2>
+          <p>Passage #{passageId} does not exist in this adventure.</p>
+          <button
+            className="choice-button"
+            onClick={() => navigate("/passage/0")}
+            data-testid="go-to-introduction-button"
+          >
+            Go to introduction
           </button>
         </div>
       </div>
@@ -74,26 +82,47 @@ export const Passage = () => {
     navigate(`/passage/${nextId}`);
   };
 
+  const handleRestartClick = () => {
+    clearCurrentPassageId();
+    navigate("/");
+  };
+
   return (
     <div className="adventure-book">
-      <div className="passage">
-        <div className="passage-text">
+      <div className="passage" data-testid="passage">
+        <div className="passage-text" data-testid="passage-text">
           {currentPassage.paragraphs.map((paragraph, index) => (
-            <p className="passage-paragraph" key={index}>
+            <p
+              className="passage-paragraph"
+              key={index}
+              data-testid={`passage-paragraph-${index}`}
+            >
               {paragraph}
             </p>
           ))}
         </div>
-        <div className="choices">
-          {currentPassage.choices.map((choice, index) => (
+        <div className="choices" data-testid="choices">
+          {currentPassage.ending ? (
             <button
-              key={index}
               className="choice-button"
-              onClick={() => handleChoiceClick(choice.nextId)}
+              onClick={handleRestartClick}
+              data-testid="restart-button"
             >
-              {choice.text}
+              Restart adventure
             </button>
-          ))}
+          ) : (
+            currentPassage.choices!.map((choice, index) => (
+              <button
+                key={index}
+                className="choice-button"
+                onClick={() => handleChoiceClick(choice.goto)}
+                data-testid={`choice-button-${index}`}
+                data-goto={choice.goto}
+              >
+                {choice.text}
+              </button>
+            ))
+          )}
         </div>
       </div>
     </div>

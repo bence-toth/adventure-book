@@ -1,27 +1,27 @@
 .introduction {
-  max-width: 600px;
+  max-width: var(--size-content);
   padding: var(--space-5);
   text-align: center;
 }
 
 .introduction h1 {
-  font-size: 2.2rem;
+  font-family: var(--font-family-display);
+  font-size: var(--font-size-xl);
   margin-bottom: var(--space-4);
   color: var(--color-foreground);
   font-weight: bold;
-  text-shadow: 0 2px 4px var(--shadow-primary);
+  text-wrap: balance;
 }
 
 .intro-text {
   margin-bottom: var(--space-5);
-  text-align: left;
+  text-align: start;
 }
 
 .intro-paragraph {
-  line-height: 1.75;
+  line-height: var(--line-height-relaxed);
   color: var(--color-foreground);
   margin-bottom: var(--space-2);
-  font-size: 1.1rem;
 }
 
 .intro-action {
@@ -34,19 +34,18 @@
   border: 1px solid var(--color-button-border);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--space-1);
-  cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 var(--space-1) var(--space-2) var(--shadow-primary);
+  box-shadow: var(--shadow-default);
 }
 
 .start-adventure-button:hover {
   transform: translateY(-2px);
   background: var(--color-button-primary-hover);
-  box-shadow: 0 var(--space-1) var(--space-3) var(--shadow-secondary);
+  box-shadow: var(--shadow-hover);
 }
 
 .start-adventure-button:active {
   transform: translateY(0);
   background: var(--color-button-primary);
-  box-shadow: 0 2px var(--space-1) var(--shadow-primary);
+  box-shadow: var(--shadow-active);
 }
