@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import "./styles/App.css";
+import "./App.css";
 import { Passage, Introduction } from "./components";
 
 const App = () => {
