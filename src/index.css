@@ -49,6 +49,9 @@
     --color-button-primary-hover: var(--color-gray-700);
     --color-button-border: var(--color-gray-700);
     --color-error: var(--color-gray-800);
+    --color-error-accent: #dc2626;
+    --color-code-background: #f6f8fa;
+    --color-code-border: #e1e4e8;
     --color-on-primary: var(--color-white);
     --shadow-primary: var(--shadow-black);
     --shadow-secondary: var(--shadow-black-md);
@@ -65,6 +68,9 @@
     --color-button-primary-hover: var(--color-gray-500);
     --color-button-border: var(--color-gray-500);
     --color-error: var(--color-gray-200);
+    --color-error-accent: #f87171;
+    --color-code-background: #2d333b;
+    --color-code-border: #444c56;
     --color-on-primary: var(--color-white);
     --shadow-primary: var(--shadow-black-md);
     --shadow-secondary: var(--shadow-black-lg);

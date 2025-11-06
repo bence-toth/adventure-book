@@ -31,6 +31,7 @@ export const reloadStory = (): Story => {
 // but ensure the story is loaded on-demand when title/paragraphs are accessed.
 // This allows the introduction object to be exported immediately without requiring
 // the story to be loaded at module initialization time.
+// Errors are now handled by React Error Boundaries for better UX.
 export const introduction: IntroductionContent = {
   get title() {
     return loadStory().metadata.title;

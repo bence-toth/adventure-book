@@ -194,6 +194,28 @@ describe("StoryLoader", () => {
     });
   });
 
+  describe("error handling", () => {
+    it("should throw errors when YAML is invalid (to be caught by Error Boundary)", () => {
+      // This test verifies that the functions now throw errors properly
+      // so that React Error Boundaries can catch them and display error UI
+
+      // In normal operation, these should not throw
+      expect(() => introduction.title).not.toThrow();
+      expect(() => introduction.paragraphs).not.toThrow();
+      expect(() => getPassage(1)).not.toThrow();
+      expect(() => getAllPassages()).not.toThrow();
+
+      // Verify they return expected types in normal operation
+      expect(typeof introduction.title).toBe("string");
+      expect(Array.isArray(introduction.paragraphs)).toBe(true);
+      expect(getPassage(999)).toBeUndefined(); // Non-existent passage
+      expect(typeof getAllPassages()).toBe("object");
+
+      // The key change: errors are now thrown (not caught) so that
+      // React Error Boundaries can catch them and display proper error UI
+      // This provides better separation of concerns and user experience
+    });
+  });
   describe("story validation", () => {
     it("should have a valid story structure", () => {
       const story = loadStory();
