@@ -6,52 +6,77 @@ A low-code tool for creating and testing interactive choose-your-own-adventure s
 
 ### Editing Story Content
 
-The adventure book content is managed through simple TypeScript files. To create or modify your story:
+The adventure book system supports authoring stories in YAML format, making it easy for writers to create interactive narratives without touching code.
 
-1. **Story Structure**: Navigate to `src/data/content.ts` where all story content is defined
-2. **Introduction Section**: Customize the welcome screen by editing the `introduction` object:
-   ```typescript
-   export const introduction: IntroductionContent = {
-     title: "Your Adventure Title",
-     paragraphs: [
-       "First paragraph of your introduction...",
-       "Second paragraph...",
-       "Third paragraph...",
-     ],
-     buttonText: "Begin Your Adventure",
-   };
-   ```
-3. **Passage Format**: Each passage follows this structure:
+#### Basic YAML Structure
 
-   ```typescript
-   {
-     id: 1, // Unique ID
-     paragraphs: [
-       "First paragraph of your passage...",
-       "Second paragraph for more detailed narrative...",
-       "Additional paragraphs as needed..."
-     ],
-     choices: [
-       {
-         text: "Choice description",
-         nextId: 2 // ID of the next passage
-       }
-     ]
-   }
-   ```
+A story YAML file has four main sections:
 
-4. **Adding New Passages**: Simply add new passage objects to the `passages` array
-5. **Linking Passages**: Connect passages by referencing their `id` in the `nextId` field of choices
-6. **Ending Passages**: Passages without choices automatically become story endings
+```yaml
+metadata:
+  title: "Your Story Title"
+  author: "Author Name"
+  version: "1.0"
 
-### Content Guidelines
+intro:
+  text: |
+    Your introduction text here.
 
-- **Unique IDs**: Ensure each passage has a unique identifier
-- **Rich Paragraphs**: Use multiple paragraphs to create immersive, detailed narratives that draw readers into the story world
-- **Paragraph Structure**: Break longer text into logical paragraphs for better readability - consider pacing, scene changes, and dramatic pauses
-- **Clear Choices**: Write descriptive choice text that hints at consequences
-- **Narrative Flow**: Test your story paths to ensure they make logical sense
-- **Multiple Endings**: Consider creating various story conclusions for replayability
+    Multiple paragraphs are supported.
+    Use pipe (|) notation for multi-line text.
+
+passages:
+  1:
+    text: |
+      Passage text here.
+
+      Each paragraph should be separated by blank lines.
+    choices:
+      - text: "Choice text"
+        goto: 2
+      - text: "Another choice"
+        goto: 3
+
+  2:
+    text: |
+      Another passage...
+    ending: true
+    type: "victory"
+```
+
+#### Key Features
+
+1. **Numbered Passages**: Use numbers as passage IDs (1, 2, 3, etc.). You can skip numbers (1, 5, 10) to leave room for future insertions.
+
+2. **Multiple Paragraph Support**: Use YAML's pipe (`|`) notation for multi-line text. Separate paragraphs with blank lines in the YAML.
+
+3. **Choices**: Each passage can have multiple choices with `text` and `goto` properties.
+
+4. **Endings**: Mark ending passages with `ending: true`. Optional `type` can be "victory", "defeat", or "neutral".
+
+#### File Location
+
+Your story content is defined in:
+
+- `src/data/story.yaml` - The main story file
+
+To modify your story, simply edit this YAML file and the changes will be reflected immediately in development mode.
+
+### Writing Guidelines
+
+1. **Use descriptive choice text**: Make each option clear and engaging
+2. **Plan your numbering**: Leave gaps for future expansion (use 10, 20, 30 for major sections)
+3. **Test your paths**: Ensure all choices lead somewhere
+4. **Consider multiple endings**: Different outcomes increase replayability
+5. **Rich Paragraphs**: Use multiple paragraphs to create immersive, detailed narratives
+6. **Paragraph Structure**: Break longer text into logical paragraphs for better readability
+
+#### Technical Notes
+
+- The system validates all `goto` references on load
+- Broken references will show errors in the console
+- The YAML is parsed and validated automatically
+- All existing game functionality remains unchanged
 
 ### Testing Your Story
 
