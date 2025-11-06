@@ -1,7 +1,6 @@
 export interface Choice {
   text: string;
   goto: number;
-  requirements?: Record<string, unknown>;
 }
 
 export interface Passage {
