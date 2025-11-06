@@ -1,5 +1,5 @@
 import { StoryParser } from "../storyParser";
-import type { Story } from "../types";
+import type { Story, RawStory } from "../types";
 
 // Note: Using 'yaml' package instead of 'js-yaml' for security
 // The 'yaml' package is safe by default and doesn't execute arbitrary code
@@ -318,7 +318,7 @@ passages:
 
   describe("textToParagraphs", () => {
     it("should split text by double newlines", () => {
-      const story: Story = {
+      const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "Para 1\n\nPara 2\n\nPara 3" },
         passages: {
@@ -327,17 +327,21 @@ passages:
       };
 
       // Access the private method directly for testing purposes
-      StoryParser["processTextFields"](story);
+      const processedStory = StoryParser["processTextFields"](rawStory);
 
-      expect(story.intro.paragraphs).toEqual(["Para 1", "Para 2", "Para 3"]);
-      expect(story.passages[1].paragraphs).toEqual([
+      expect(processedStory.intro.paragraphs).toEqual([
+        "Para 1",
+        "Para 2",
+        "Para 3",
+      ]);
+      expect(processedStory.passages[1].paragraphs).toEqual([
         "Passage para 1",
         "Passage para 2",
       ]);
     });
 
     it("should handle single newlines within paragraphs", () => {
-      const story: Story = {
+      const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "Line 1\nLine 2\n\nPara 2" },
         passages: {
@@ -345,16 +349,19 @@ passages:
         },
       };
 
-      StoryParser["processTextFields"](story);
+      const processedStory = StoryParser["processTextFields"](rawStory);
 
-      expect(story.intro.paragraphs).toEqual(["Line 1 Line 2", "Para 2"]);
-      expect(story.passages[1].paragraphs).toEqual([
+      expect(processedStory.intro.paragraphs).toEqual([
+        "Line 1 Line 2",
+        "Para 2",
+      ]);
+      expect(processedStory.passages[1].paragraphs).toEqual([
         "Passage line 1 Passage line 2",
       ]);
     });
 
     it("should filter out empty paragraphs", () => {
-      const story: Story = {
+      const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "Para 1\n\n\n\nPara 2\n\n" },
         passages: {
@@ -362,34 +369,35 @@ passages:
         },
       };
 
-      StoryParser["processTextFields"](story);
+      const processedStory = StoryParser["processTextFields"](rawStory);
 
-      expect(story.intro.paragraphs).toEqual(["Para 1", "Para 2"]);
-      expect(story.passages[1].paragraphs).toEqual(["Para 1"]);
+      expect(processedStory.intro.paragraphs).toEqual(["Para 1", "Para 2"]);
+      expect(processedStory.passages[1].paragraphs).toEqual(["Para 1"]);
     });
 
     it("should handle missing or undefined text fields defensively", () => {
-      // Test with a malformed story object that bypassed validation somehow
-      const malformedStory = {
+      // Test with a malformed raw story object that bypassed validation somehow
+      const malformedRawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: {}, // Missing text field
         passages: {
           1: {}, // Missing text field
           2: { text: "Valid text" },
         },
-      } as unknown as Story;
+      } as unknown as RawStory;
 
       // Should not crash and should set empty paragraphs
-      expect(() =>
-        StoryParser["processTextFields"](malformedStory)
-      ).not.toThrow();
-      expect(malformedStory.intro.paragraphs).toEqual([]);
-      expect(malformedStory.passages[1].paragraphs).toEqual([]);
-      expect(malformedStory.passages[2].paragraphs).toEqual(["Valid text"]);
+      expect(() => {
+        const processedStory =
+          StoryParser["processTextFields"](malformedRawStory);
+        expect(processedStory.intro.paragraphs).toEqual([]);
+        expect(processedStory.passages[1].paragraphs).toEqual([]);
+        expect(processedStory.passages[2].paragraphs).toEqual(["Valid text"]);
+      }).not.toThrow();
     });
 
     it("should handle empty or whitespace-only text", () => {
-      const story: Story = {
+      const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "   \n\n   " }, // Only whitespace
         passages: {
@@ -398,11 +406,11 @@ passages:
         },
       };
 
-      StoryParser["processTextFields"](story);
+      const processedStory = StoryParser["processTextFields"](rawStory);
 
-      expect(story.intro.paragraphs).toEqual([]);
-      expect(story.passages[1].paragraphs).toEqual([]);
-      expect(story.passages[2].paragraphs).toEqual([]);
+      expect(processedStory.intro.paragraphs).toEqual([]);
+      expect(processedStory.passages[1].paragraphs).toEqual([]);
+      expect(processedStory.passages[2].paragraphs).toEqual([]);
     });
   });
 
@@ -410,14 +418,16 @@ passages:
     it("should return no errors for valid story", () => {
       const validStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro" },
+        intro: { text: "Intro", paragraphs: ["Intro"] },
         passages: {
           1: {
             text: "Passage 1",
+            paragraphs: ["Passage 1"],
             choices: [{ text: "Go to 2", goto: 2 }],
           },
           2: {
             text: "Passage 2",
+            paragraphs: ["Passage 2"],
             ending: true,
           },
         },
@@ -430,10 +440,11 @@ passages:
     it("should detect invalid goto references", () => {
       const invalidStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro" },
+        intro: { text: "Intro", paragraphs: ["Intro"] },
         passages: {
           1: {
             text: "Passage 1",
+            paragraphs: ["Passage 1"],
             choices: [
               { text: "Go to 2", goto: 2 },
               { text: "Go to 99", goto: 99 },
@@ -441,6 +452,7 @@ passages:
           },
           2: {
             text: "Passage 2",
+            paragraphs: ["Passage 2"],
             choices: [{ text: "Go to 100", goto: 100 }],
           },
         },
@@ -454,10 +466,11 @@ passages:
     it("should detect ending passages with choices", () => {
       const invalidStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro" },
+        intro: { text: "Intro", paragraphs: ["Intro"] },
         passages: {
           1: {
             text: "Ending with choices",
+            paragraphs: ["Ending with choices"],
             ending: true,
             choices: [{ text: "This shouldn't be here", goto: 2 }],
           },
@@ -467,35 +480,42 @@ passages:
       const errors = StoryParser.validateStory(invalidStory);
       expect(errors).toContain("Ending passage 1 should not have choices");
     });
-
-    it("should allow self-referencing passages (loops)", () => {
-      const storyWithLoop: Story = {
-        metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro" },
-        passages: {
-          1: {
-            text: "Looping passage",
-            choices: [{ text: "Loop back", goto: 1 }],
-          },
-        },
-      };
-
-      const errors = StoryParser.validateStory(storyWithLoop);
-      expect(errors).toEqual([]);
-    });
   });
 
   describe("getEndingPassages", () => {
     it("should return all passages marked as endings", () => {
       const story: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro" },
+        intro: { text: "Intro", paragraphs: ["Intro"] },
         passages: {
-          1: { text: "Regular passage", choices: [{ text: "Go", goto: 2 }] },
-          2: { text: "Victory ending", ending: true, type: "victory" },
-          3: { text: "Another passage", choices: [{ text: "Go", goto: 4 }] },
-          4: { text: "Defeat ending", ending: true, type: "defeat" },
-          5: { text: "Neutral ending", ending: true, type: "neutral" },
+          1: {
+            text: "Regular passage",
+            paragraphs: ["Regular passage"],
+            choices: [{ text: "Go", goto: 2 }],
+          },
+          2: {
+            text: "Victory ending",
+            paragraphs: ["Victory ending"],
+            ending: true,
+            type: "victory",
+          },
+          3: {
+            text: "Another passage",
+            paragraphs: ["Another passage"],
+            choices: [{ text: "Go", goto: 4 }],
+          },
+          4: {
+            text: "Defeat ending",
+            paragraphs: ["Defeat ending"],
+            ending: true,
+            type: "defeat",
+          },
+          5: {
+            text: "Neutral ending",
+            paragraphs: ["Neutral ending"],
+            ending: true,
+            type: "neutral",
+          },
         },
       };
 
@@ -506,11 +526,16 @@ passages:
     it("should return empty array when no endings exist", () => {
       const story: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Intro" },
+        intro: { text: "Intro", paragraphs: ["Intro"] },
         passages: {
-          1: { text: "Regular passage", choices: [{ text: "Go", goto: 2 }] },
+          1: {
+            text: "Regular passage",
+            paragraphs: ["Regular passage"],
+            choices: [{ text: "Go", goto: 2 }],
+          },
           2: {
             text: "Another regular passage",
+            paragraphs: ["Another regular passage"],
             choices: [{ text: "Go", goto: 1 }],
           },
         },

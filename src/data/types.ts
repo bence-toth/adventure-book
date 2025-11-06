@@ -3,12 +3,38 @@ export interface Choice {
   goto: number;
 }
 
-export interface Passage {
+export interface RawPassage {
   text: string;
-  paragraphs?: string[];
   choices?: Choice[];
   ending?: boolean;
   type?: "victory" | "defeat" | "neutral";
+}
+
+export interface RawIntro {
+  text: string;
+}
+
+export interface RawStory {
+  metadata: {
+    title: string;
+    author: string;
+    version: string;
+  };
+  intro: RawIntro;
+  passages: Record<number, RawPassage>;
+}
+
+export interface Passage {
+  text: string;
+  paragraphs: string[];
+  choices?: Choice[];
+  ending?: boolean;
+  type?: "victory" | "defeat" | "neutral";
+}
+
+export interface Intro {
+  text: string;
+  paragraphs: string[];
 }
 
 export interface Story {
@@ -17,10 +43,7 @@ export interface Story {
     author: string;
     version: string;
   };
-  intro: {
-    text: string;
-    paragraphs?: string[];
-  };
+  intro: Intro;
   passages: Record<number, Passage>;
 }
 

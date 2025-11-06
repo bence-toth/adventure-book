@@ -1,5 +1,5 @@
 import { parse } from "yaml";
-import type { Story } from "./types";
+import type { Story, RawStory } from "./types";
 
 export class StoryParser {
   static parseFromString(yamlContent: string): Story {
@@ -13,16 +13,16 @@ export class StoryParser {
       strict: true,
     });
 
-    // Validate the parsed object matches the Story interface
-    const validatedStory = this.validateParsedObject(parsed);
+    // Validate the parsed object matches the RawStory interface
+    const rawStory = this.validateParsedObject(parsed);
 
-    // Convert multiline text to paragraphs
-    this.processTextFields(validatedStory);
+    // Convert multiline text to paragraphs and transform to processed Story
+    const processedStory = this.processTextFields(rawStory);
 
-    return validatedStory;
+    return processedStory;
   }
 
-  private static validateParsedObject(parsed: unknown): Story {
+  private static validateParsedObject(parsed: unknown): RawStory {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       throw new Error("Invalid YAML: Root must be an object");
     }
@@ -155,17 +155,32 @@ export class StoryParser {
     }
 
     // Type assertion is now safe after validation
-    return parsed as Story;
+    return parsed as RawStory;
   }
 
-  private static processTextFields(story: Story): void {
-    // Process intro text
-    story.intro.paragraphs = this.textToParagraphs(story.intro.text);
+  private static processTextFields(rawStory: RawStory): Story {
+    // Create processed story with paragraphs
+    const processedStory: Story = {
+      metadata: rawStory.metadata,
+      intro: {
+        text: rawStory.intro.text,
+        paragraphs: this.textToParagraphs(rawStory.intro.text),
+      },
+      passages: {},
+    };
 
     // Process passage texts
-    for (const passage of Object.values(story.passages)) {
-      passage.paragraphs = this.textToParagraphs(passage.text);
+    for (const [id, rawPassage] of Object.entries(rawStory.passages)) {
+      processedStory.passages[Number(id)] = {
+        text: rawPassage.text,
+        paragraphs: this.textToParagraphs(rawPassage.text),
+        choices: rawPassage.choices,
+        ending: rawPassage.ending,
+        type: rawPassage.type,
+      };
     }
+
+    return processedStory;
   }
 
   private static textToParagraphs(text: string): string[] {
