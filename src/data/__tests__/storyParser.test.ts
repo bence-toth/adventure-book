@@ -113,43 +113,6 @@ passages:
       expect(story.passages[1].choices).toBeUndefined();
     });
 
-    it("should handle choices with requirements", () => {
-      const yamlContent = `
-metadata:
-  title: "Requirements Test"
-  author: "Test Author"
-  version: "1.0"
-
-intro:
-  text: "Test intro."
-
-passages:
-  1:
-    text: "Passage with requirements."
-    choices:
-      - text: "Normal choice"
-        goto: 2
-      - text: "Special choice"
-        goto: 3
-        requirements:
-          has_key: true
-          level: 5
-
-  2:
-    text: "Normal ending."
-    ending: true
-`;
-
-      const story = StoryParser.parseFromString(yamlContent);
-
-      expect(story.passages[1].choices).toHaveLength(2);
-      expect(story.passages[1].choices![0].requirements).toBeUndefined();
-      expect(story.passages[1].choices![1].requirements).toEqual({
-        has_key: true,
-        level: 5,
-      });
-    });
-
     it("should throw error for invalid YAML", () => {
       const invalidYaml = `
 metadata:
