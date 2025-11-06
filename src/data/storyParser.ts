@@ -170,7 +170,7 @@ export class StoryParser {
 
   private static textToParagraphs(text: string): string[] {
     // Handle edge cases
-    if (!text || typeof text !== "string") {
+    if (!text) {
       return [];
     }
 
