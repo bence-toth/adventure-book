@@ -248,7 +248,7 @@ This separation ensures that authors can freely modify their story content, add 
 export const ComponentName = () => {
   // 1. Hooks and state
   const navigate = useNavigate();
-  const { data, error } = useStorData();
+  const { data, error } = useStoryData();
 
   // 2. Event handlers (pure functions when possible)
   const handleAction = useCallback(
