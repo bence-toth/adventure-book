@@ -135,14 +135,13 @@ export class StoryParser {
         }
       }
 
-      // Validate optional ending field
-      if (
-        passageObj.ending !== undefined &&
-        typeof passageObj.ending !== "boolean"
-      ) {
-        throw new Error(
-          `Invalid YAML: Passage ${passageId} ending must be a boolean`
-        );
+      // Validate optional ending field - can only be true
+      if (passageObj.ending !== undefined) {
+        if (passageObj.ending !== true) {
+          throw new Error(
+            `Invalid YAML: Passage ${passageId} ending must be true (or omitted for non-ending passages)`
+          );
+        }
       }
 
       // Validate ending has no choices
@@ -169,7 +168,7 @@ export class StoryParser {
         );
       }
 
-      // Validate optional type field
+      // Validate optional type field - only allowed with ending: true
       if (passageObj.type !== undefined) {
         const validTypes = ["victory", "defeat", "neutral"];
         if (
@@ -180,6 +179,12 @@ export class StoryParser {
             `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(
               ", "
             )}`
+          );
+        }
+        // Type can only be used with ending: true
+        if (passageObj.ending !== true) {
+          throw new Error(
+            `Invalid YAML: Passage ${passageId} type can only be used with ending: true`
           );
         }
       }

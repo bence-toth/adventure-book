@@ -83,8 +83,8 @@
           "minItems": 1
         },
         "ending": {
-          "type": "boolean",
-          "description": "Mark this passage as an ending. Ending passages should not have choices."
+          "const": true,
+          "description": "Mark this passage as an ending. Ending passages must not have choices."
         },
         "type": {
           "type": "string",
@@ -95,13 +95,23 @@
       "allOf": [
         {
           "if": {
-            "properties": { "ending": { "const": true } }
+            "required": ["ending"]
           },
           "then": {
-            "not": { "required": ["choices"] }
+            "not": {
+              "required": ["choices"]
+            }
           },
           "else": {
             "required": ["choices"]
+          }
+        },
+        {
+          "if": {
+            "required": ["type"]
+          },
+          "then": {
+            "required": ["ending"]
           }
         }
       ]

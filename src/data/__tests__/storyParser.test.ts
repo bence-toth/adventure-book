@@ -346,6 +346,58 @@ passages:
       );
     });
 
+    it("should throw error for ending: false", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Test"
+passages:
+  1:
+    text: "Test passage"
+    ending: false
+    choices:
+      - text: "Go somewhere"
+        goto: 2
+  2:
+    text: "Another passage"
+    ending: true
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 ending must be true (or omitted for non-ending passages)"
+      );
+    });
+
+    it("should throw error for type without ending: true", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Test"
+passages:
+  1:
+    text: "Test passage"
+    type: "victory"
+    choices:
+      - text: "Go somewhere"
+        goto: 2
+  2:
+    text: "Another passage"
+    ending: true
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 type can only be used with ending: true"
+      );
+    });
+
     it("should throw error for non-ending passages without choices", () => {
       const yamlContent = `
 metadata:
@@ -382,6 +434,32 @@ passages:
 
       expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
         "Invalid YAML: Non-ending passage 1 must have at least one choice"
+      );
+    });
+
+    it("should throw error for ending passages with choices", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Test"
+passages:
+  1:
+    text: "This is an ending but has choices"
+    ending: true
+    choices:
+      - text: "This shouldn't be allowed"
+        goto: 2
+  2:
+    text: "Another passage"
+    ending: true
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Ending passage 1 must not have choices"
       );
     });
   });
