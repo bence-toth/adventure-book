@@ -91,7 +91,20 @@
           "description": "Type of ending (only used with ending: true)",
           "enum": ["victory", "defeat", "neutral"]
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": { "ending": { "const": true } }
+          },
+          "then": {
+            "not": { "required": ["choices"] }
+          },
+          "else": {
+            "required": ["choices"]
+          }
+        }
+      ]
     },
     "choice": {
       "type": "object",
