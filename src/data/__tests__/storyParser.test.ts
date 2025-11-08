@@ -470,12 +470,14 @@ passages:
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "Para 1\n\nPara 2\n\nPara 3", action: "Test" },
         passages: {
-          1: { text: "Passage para 1\n\nPassage para 2" },
+          1: { text: "Passage para 1\n\nPassage para 2", ending: true },
         },
-      };
+      } as const;
 
       // Access the private method directly for testing purposes
-      const processedStory = StoryParser["processTextFields"](rawStory);
+      const processedStory = StoryParser["processTextFields"](
+        rawStory as RawStory
+      );
 
       expect(processedStory.intro.paragraphs).toEqual([
         "Para 1",
@@ -493,11 +495,13 @@ passages:
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "Line 1\nLine 2\n\nPara 2", action: "Test" },
         passages: {
-          1: { text: "Passage line 1\nPassage line 2" },
+          1: { text: "Passage line 1\nPassage line 2", ending: true },
         },
-      };
+      } as const;
 
-      const processedStory = StoryParser["processTextFields"](rawStory);
+      const processedStory = StoryParser["processTextFields"](
+        rawStory as RawStory
+      );
 
       expect(processedStory.intro.paragraphs).toEqual([
         "Line 1 Line 2",
@@ -513,11 +517,13 @@ passages:
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "Para 1\n\n\n\nPara 2\n\n", action: "Test" },
         passages: {
-          1: { text: "\n\nPara 1\n\n\n\n" },
+          1: { text: "\n\nPara 1\n\n\n\n", ending: true },
         },
-      };
+      } as const;
 
-      const processedStory = StoryParser["processTextFields"](rawStory);
+      const processedStory = StoryParser["processTextFields"](
+        rawStory as RawStory
+      );
 
       expect(processedStory.intro.paragraphs).toEqual(["Para 1", "Para 2"]);
       expect(processedStory.passages[1].paragraphs).toEqual(["Para 1"]);
@@ -530,7 +536,7 @@ passages:
         intro: {}, // Missing text field
         passages: {
           1: {}, // Missing text field
-          2: { text: "Valid text" },
+          2: { text: "Valid text", ending: true },
         },
       } as unknown as RawStory;
 
@@ -549,12 +555,14 @@ passages:
         metadata: { title: "Test", author: "Author", version: "1.0" },
         intro: { text: "   \n\n   ", action: "Test" }, // Only whitespace
         passages: {
-          1: { text: "" }, // Empty string
-          2: { text: "   " }, // Only spaces
+          1: { text: "", ending: true }, // Empty string
+          2: { text: "   ", ending: true }, // Only spaces
         },
-      };
+      } as const;
 
-      const processedStory = StoryParser["processTextFields"](rawStory);
+      const processedStory = StoryParser["processTextFields"](
+        rawStory as RawStory
+      );
 
       expect(processedStory.intro.paragraphs).toEqual([]);
       expect(processedStory.passages[1].paragraphs).toEqual([]);
@@ -607,22 +615,8 @@ passages:
       expect(errors).toContain("Passage 2 has invalid goto: 100");
     });
 
-    it("should detect ending passages with choices", () => {
-      const invalidStory: Story = {
-        metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"], action: "Test" },
-        passages: {
-          1: {
-            paragraphs: ["Ending with choices"],
-            ending: true,
-            choices: [{ text: "This shouldn't be here", goto: 2 }],
-          },
-        },
-      };
-
-      const errors = StoryParser.validateStory(invalidStory);
-      expect(errors).toContain("Ending passage 1 should not have choices");
-    });
+    // Note: "ending passages with choices" is now prevented by TypeScript's
+    // discriminated union types at compile time, so no runtime validation test is needed
   });
 
   describe("getEndingPassages", () => {

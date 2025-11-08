@@ -207,12 +207,22 @@ export class StoryParser {
 
     // Process passage texts
     for (const [id, rawPassage] of Object.entries(rawStory.passages)) {
-      processedStory.passages[Number(id)] = {
-        paragraphs: this.textToParagraphs(rawPassage.text),
-        choices: rawPassage.choices,
-        ending: rawPassage.ending,
-        type: rawPassage.type,
-      };
+      const paragraphs = this.textToParagraphs(rawPassage.text);
+
+      if (rawPassage.ending === true) {
+        // Ending passage
+        processedStory.passages[Number(id)] = {
+          paragraphs,
+          ending: true,
+          ...(rawPassage.type && { type: rawPassage.type }),
+        };
+      } else {
+        // Regular passage with choices
+        processedStory.passages[Number(id)] = {
+          paragraphs,
+          choices: rawPassage.choices!,
+        };
+      }
     }
 
     return processedStory;
@@ -236,7 +246,7 @@ export class StoryParser {
 
     // Validate all goto references exist
     for (const [passageId, passage] of Object.entries(story.passages)) {
-      if (passage.choices) {
+      if ("choices" in passage && passage.choices) {
         for (const choice of passage.choices) {
           if (!passageNumbers.includes(choice.goto)) {
             errors.push(
@@ -244,13 +254,6 @@ export class StoryParser {
             );
           }
         }
-      }
-    }
-
-    // Validate that ending passages don't have choices
-    for (const [passageId, passage] of Object.entries(story.passages)) {
-      if (passage.ending && passage.choices && passage.choices.length > 0) {
-        errors.push(`Ending passage ${passageId} should not have choices`);
       }
     }
 

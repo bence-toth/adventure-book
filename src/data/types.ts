@@ -3,12 +3,19 @@ export interface Choice {
   goto: number;
 }
 
-export interface RawPassage {
-  text: string;
-  choices?: Choice[];
-  ending?: boolean;
-  type?: "victory" | "defeat" | "neutral";
-}
+export type RawPassage =
+  | {
+      text: string;
+      ending: true;
+      type?: "victory" | "defeat" | "neutral";
+      choices?: never;
+    }
+  | {
+      text: string;
+      choices: Choice[];
+      ending?: never;
+      type?: never;
+    };
 
 export interface RawIntro {
   text: string;
@@ -25,12 +32,19 @@ export interface RawStory {
   passages: Record<number, RawPassage>;
 }
 
-export interface Passage {
-  paragraphs: string[];
-  choices?: Choice[];
-  ending?: boolean;
-  type?: "victory" | "defeat" | "neutral";
-}
+export type Passage =
+  | {
+      paragraphs: string[];
+      ending: true;
+      type?: "victory" | "defeat" | "neutral";
+      choices?: never;
+    }
+  | {
+      paragraphs: string[];
+      choices: Choice[];
+      ending?: never;
+      type?: never;
+    };
 
 export interface Intro {
   paragraphs: string[];
