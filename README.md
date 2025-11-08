@@ -1,4 +1,4 @@
-# Adventure Book
+# ⚔️ Adventure Book Editor and Testing Tool
 
 A low-code tool for creating and testing interactive choose-your-own-adventure stories. Built with React, TypeScript, and Vite, this application allows you to easily create engaging narratives where every choice shapes the reader's journey.
 
