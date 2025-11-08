@@ -220,7 +220,7 @@ export class StoryParser {
         // Regular passage with choices
         processedStory.passages[Number(id)] = {
           paragraphs,
-          choices: rawPassage.choices!,
+          choices: rawPassage.choices,
         };
       }
     }
