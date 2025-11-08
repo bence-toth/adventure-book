@@ -12,7 +12,7 @@ vi.mock("../../data/storyLoader", () => ({
       "This is a second test paragraph.",
       "This is a third test paragraph.",
     ],
-    buttonText: "Begin Your Adventure",
+    action: "Begin your adventure",
   },
 }));
 
@@ -64,7 +64,7 @@ describe("Introduction Component", () => {
 
     const button = screen.getByTestId("start-adventure-button");
     expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent("Begin Your Adventure");
+    expect(button).toHaveTextContent("Begin your adventure");
     expect(button).toHaveClass("choice-button", "start-adventure-button");
   });
 

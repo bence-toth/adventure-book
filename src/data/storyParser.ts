@@ -66,6 +66,9 @@ export class StoryParser {
     if (typeof intro.text !== "string" || !intro.text.trim()) {
       throw new Error("Invalid YAML: intro.text must be a non-empty string");
     }
+    if (typeof intro.action !== "string" || !intro.action.trim()) {
+      throw new Error("Invalid YAML: intro.action must be a non-empty string");
+    }
 
     // Validate passages
     if (
@@ -192,6 +195,7 @@ export class StoryParser {
       metadata: rawStory.metadata,
       intro: {
         paragraphs: this.textToParagraphs(rawStory.intro.text),
+        action: rawStory.intro.action,
       },
       passages: {},
     };

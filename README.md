@@ -76,7 +76,6 @@ To modify your story, simply edit this YAML file and the changes will be reflect
 - The system validates all `goto` references on load
 - Broken references will show errors in the console
 - The YAML is parsed and validated automatically
-- All existing game functionality remains unchanged
 
 ### Testing Your Story
 

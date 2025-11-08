@@ -12,6 +12,7 @@ export interface RawPassage {
 
 export interface RawIntro {
   text: string;
+  action: string;
 }
 
 export interface RawStory {
@@ -33,6 +34,7 @@ export interface Passage {
 
 export interface Intro {
   paragraphs: string[];
+  action: string;
 }
 
 export interface Story {
@@ -48,5 +50,5 @@ export interface Story {
 export interface IntroductionContent {
   title: string;
   paragraphs: string[];
-  buttonText: string;
+  action: string;
 }

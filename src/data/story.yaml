@@ -10,6 +10,7 @@ intro:
     In this adventure, you’ll encounter wise lambdas sharing ancient functional wisdom, navigate through mazes of data structures, climb towering binary trees, and discover the elegant patterns that govern the world of software. Each path you choose will reveal new insights about the art and science of programming.
 
     Your adventure awaits. Will you step through the digital gateway and discover what lies beyond the screen? The choice is yours, but remember — in the world of code, every decision creates new possibilities.
+  action: "Begin your adventure"
 
 passages:
   1:
