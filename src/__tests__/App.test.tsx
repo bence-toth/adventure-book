@@ -20,7 +20,7 @@ describe("App Component", () => {
       screen.getByText("Welcome to the Code Adventure")
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "Begin Your Adventure" })
+      screen.getByRole("button", { name: "Begin your adventure" })
     ).toBeInTheDocument();
   });
 

@@ -40,7 +40,10 @@ export const introduction: IntroductionContent = {
     const story = loadStory();
     return story.intro.paragraphs;
   },
-  buttonText: "Begin Your Adventure",
+  get action() {
+    const story = loadStory();
+    return story.intro.action;
+  },
 };
 
 export const getPassage = (id: number): Passage | undefined => {

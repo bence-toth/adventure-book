@@ -18,6 +18,7 @@ intro:
     Welcome to the test story.
     
     This is a second paragraph.
+  action: "Start adventure"
 
 passages:
   1:
@@ -65,6 +66,7 @@ metadata:
 
 intro:
   text: "Single paragraph intro."
+  action: "Start Test"
 
 passages:
   1:
@@ -98,6 +100,7 @@ metadata:
 
 intro:
   text: "Test intro."
+  action: "Test Button"
 
 passages:
   1:
@@ -127,6 +130,7 @@ metadata:
       const yamlContent = `
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   1:
     text: "Test passage"
@@ -144,6 +148,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test"
+  action: "Test"
 passages:
   1:
     text: "Test"
@@ -160,6 +165,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test"
+  action: "Test"
 passages:
   1:
     text: "Test"
@@ -194,6 +200,7 @@ metadata:
   version: "1.0"
 intro:
   text: ""
+  action: "Test"
 passages:
   1:
     text: "Test passage"
@@ -201,6 +208,24 @@ passages:
 
       expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
         "Invalid YAML: intro.text must be a non-empty string"
+      );
+    });
+
+    it("should throw error for missing intro action", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Story"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+passages:
+  1:
+    text: "Test passage"
+`;
+
+      expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: intro.action must be a non-empty string"
       );
     });
 
@@ -212,6 +237,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 `;
 
       expect(() => StoryParser.parseFromString(yamlContent)).toThrow(
@@ -227,6 +253,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   "not-a-number":
     text: "Test passage"
@@ -245,6 +272,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   1:
     text: ""
@@ -263,6 +291,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   1:
     text: "Test passage"
@@ -282,6 +311,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   1:
     text: "Test passage"
@@ -303,6 +333,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   1:
     text: "Test passage"
@@ -323,6 +354,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   1:
     text: "This passage has no choices and is not marked as ending"
@@ -341,6 +373,7 @@ metadata:
   version: "1.0"
 intro:
   text: "Test intro"
+  action: "Test"
 passages:
   1:
     text: "This passage has empty choices array"
@@ -357,7 +390,7 @@ passages:
     it("should split text by double newlines", () => {
       const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Para 1\n\nPara 2\n\nPara 3" },
+        intro: { text: "Para 1\n\nPara 2\n\nPara 3", action: "Test" },
         passages: {
           1: { text: "Passage para 1\n\nPassage para 2" },
         },
@@ -380,7 +413,7 @@ passages:
     it("should handle single newlines within paragraphs", () => {
       const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Line 1\nLine 2\n\nPara 2" },
+        intro: { text: "Line 1\nLine 2\n\nPara 2", action: "Test" },
         passages: {
           1: { text: "Passage line 1\nPassage line 2" },
         },
@@ -400,7 +433,7 @@ passages:
     it("should filter out empty paragraphs", () => {
       const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "Para 1\n\n\n\nPara 2\n\n" },
+        intro: { text: "Para 1\n\n\n\nPara 2\n\n", action: "Test" },
         passages: {
           1: { text: "\n\nPara 1\n\n\n\n" },
         },
@@ -436,7 +469,7 @@ passages:
     it("should handle empty or whitespace-only text", () => {
       const rawStory = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { text: "   \n\n   " }, // Only whitespace
+        intro: { text: "   \n\n   ", action: "Test" }, // Only whitespace
         passages: {
           1: { text: "" }, // Empty string
           2: { text: "   " }, // Only spaces
@@ -455,7 +488,7 @@ passages:
     it("should return no errors for valid story", () => {
       const validStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"], action: "Test" },
         passages: {
           1: {
             paragraphs: ["Passage 1"],
@@ -475,7 +508,7 @@ passages:
     it("should detect invalid goto references", () => {
       const invalidStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"], action: "Test" },
         passages: {
           1: {
             paragraphs: ["Passage 1"],
@@ -499,7 +532,7 @@ passages:
     it("should detect ending passages with choices", () => {
       const invalidStory: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"], action: "Test" },
         passages: {
           1: {
             paragraphs: ["Ending with choices"],
@@ -518,7 +551,7 @@ passages:
     it("should return all passages marked as endings", () => {
       const story: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"], action: "Test" },
         passages: {
           1: {
             paragraphs: ["Regular passage"],
@@ -553,7 +586,7 @@ passages:
     it("should return empty array when no endings exist", () => {
       const story: Story = {
         metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"] },
+        intro: { paragraphs: ["Intro"], action: "Test" },
         passages: {
           1: {
             paragraphs: ["Regular passage"],

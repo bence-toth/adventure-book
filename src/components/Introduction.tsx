@@ -39,7 +39,7 @@ export const Introduction = () => {
             onClick={handleStartAdventure}
             data-testid="start-adventure-button"
           >
-            {introduction.buttonText}
+            {introduction.action}
           </button>
         </div>
       </div>

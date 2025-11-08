@@ -5,7 +5,7 @@ describe("Introduction Data", () => {
   it("has the correct structure", () => {
     expect(introduction).toBeDefined();
     expect(introduction.title).toBe("Welcome to the Code Adventure");
-    expect(introduction.buttonText).toBe("Begin Your Adventure");
+    expect(introduction.action).toBe("Begin your adventure");
     expect(Array.isArray(introduction.paragraphs)).toBe(true);
     expect(introduction.paragraphs.length).toBeGreaterThan(0);
   });

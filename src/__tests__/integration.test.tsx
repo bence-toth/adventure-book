@@ -13,7 +13,7 @@ vi.mock("../data/storyLoader", () => ({
       "This is a second test paragraph.",
       "This is a third test paragraph.",
     ],
-    buttonText: "Begin Your Adventure",
+    action: "Begin your adventure",
   },
   getPassage: (id: number) => {
     interface MockPassage {
