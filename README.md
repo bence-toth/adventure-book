@@ -221,6 +221,10 @@ npm run test:coverage # Run tests with coverage report
 - Follow the established project structure and naming conventions
 - Consider performance implications of changes, especially for user interactions
 
+### Code of Conduct
+
+Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
