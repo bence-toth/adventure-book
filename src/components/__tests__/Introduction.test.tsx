@@ -74,7 +74,7 @@ describe("Introduction Component", () => {
     const button = screen.getByTestId("start-adventure-button");
     fireEvent.click(button);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/passage/1");
+    expect(mockNavigate).toHaveBeenCalledWith("/test/passage/1");
     expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 

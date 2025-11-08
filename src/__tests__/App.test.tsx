@@ -70,7 +70,7 @@ describe("App Component", () => {
   });
 
   it("renders Passage component on passage path", () => {
-    renderAppWithRoute("/passage/1");
+    renderAppWithRoute("/test/passage/1");
 
     // Check for mocked content from passage 1
     expect(screen.getByText(/This is mock passage 1/)).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe("App Component", () => {
   });
 
   it("handles passage routes with parameters", () => {
-    renderAppWithRoute("/passage/2");
+    renderAppWithRoute("/test/passage/2");
 
     // Check for mocked content from passage 2
     expect(screen.getByText(/This is mock passage 2/)).toBeInTheDocument();

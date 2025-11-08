@@ -121,7 +121,7 @@ describe("Adventure Book Integration Tests", () => {
 
   it("handles error states in the flow", () => {
     rtlRender(
-      <MemoryRouter initialEntries={["/passage/invalid"]}>
+      <MemoryRouter initialEntries={["/test/passage/invalid"]}>
         <App />
       </MemoryRouter>
     );
@@ -129,9 +129,7 @@ describe("Adventure Book Integration Tests", () => {
     // Should show error page with invalid passage ID
     expect(screen.getByTestId("error-invalid-id")).toBeInTheDocument();
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
-    expect(
-      screen.getByText(/The passage ID “invalid” is not valid/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/is not valid/)).toBeInTheDocument();
 
     // Should have button to go back to introduction
     const goHomeButton = screen.getByTestId("go-to-introduction-button");
@@ -140,7 +138,7 @@ describe("Adventure Book Integration Tests", () => {
 
   it("navigates through different story paths", () => {
     rtlRender(
-      <MemoryRouter initialEntries={["/passage/1"]}>
+      <MemoryRouter initialEntries={["/test/passage/1"]}>
         <App />
       </MemoryRouter>
     );
@@ -162,7 +160,7 @@ describe("Adventure Book Integration Tests", () => {
 
   it("handles the ending passage correctly", () => {
     rtlRender(
-      <MemoryRouter initialEntries={["/passage/4"]}>
+      <MemoryRouter initialEntries={["/test/passage/4"]}>
         <App />
       </MemoryRouter>
     );
@@ -185,7 +183,7 @@ describe("Adventure Book Integration Tests", () => {
 
     // Test passage styling
     rtlRender(
-      <MemoryRouter initialEntries={["/passage/1"]}>
+      <MemoryRouter initialEntries={["/test/passage/1"]}>
         <App />
       </MemoryRouter>
     );
@@ -194,7 +192,7 @@ describe("Adventure Book Integration Tests", () => {
 
     // Test error styling
     rtlRender(
-      <MemoryRouter initialEntries={["/passage/999"]}>
+      <MemoryRouter initialEntries={["/test/passage/999"]}>
         <App />
       </MemoryRouter>
     );

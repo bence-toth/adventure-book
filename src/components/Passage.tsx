@@ -18,7 +18,7 @@ export const Passage = () => {
       if (passageId === 0) {
         // Special case: passage 0 clears localStorage and redirects to introduction
         clearCurrentPassageId();
-        navigate("/");
+        navigate("/test");
         return;
       } else if (passageId >= 1) {
         saveCurrentPassageId(passageId);
@@ -34,7 +34,7 @@ export const Passage = () => {
           <p>The passage ID “{id}” is not valid. Please use a valid number.</p>
           <button
             className="choice-button"
-            onClick={() => navigate("/passage/0")}
+            onClick={() => navigate("/test/passage/0")}
             data-testid="go-to-introduction-button"
           >
             Go to introduction
@@ -68,7 +68,7 @@ export const Passage = () => {
           <p>Passage #{passageId} does not exist in this adventure.</p>
           <button
             className="choice-button"
-            onClick={() => navigate("/passage/0")}
+            onClick={() => navigate("/test/passage/0")}
             data-testid="go-to-introduction-button"
           >
             Go to introduction
@@ -79,12 +79,12 @@ export const Passage = () => {
   }
 
   const handleChoiceClick = (nextId: number) => {
-    navigate(`/passage/${nextId}`);
+    navigate(`/test/passage/${nextId}`);
   };
 
   const handleRestartClick = () => {
     clearCurrentPassageId();
-    navigate("/");
+    navigate("/test");
   };
 
   return (

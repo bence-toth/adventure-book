@@ -6,6 +6,9 @@ export const TopBar = () => {
   const location = useLocation();
 
   const isActive = (path: string) => {
+    if (path === "/test") {
+      return location.pathname.startsWith("/test");
+    }
     return location.pathname === path || location.pathname.startsWith(path);
   };
 
@@ -19,10 +22,8 @@ export const TopBar = () => {
       </div>
       <nav className="top-bar-nav">
         <Link
-          to="/"
-          className={`top-bar-nav-item ${
-            isActive("/") && !isActive("/edit") ? "active" : ""
-          }`}
+          to="/test"
+          className={`top-bar-nav-item ${isActive("/test") ? "active" : ""}`}
         >
           <GiPlayButton className="top-bar-nav-icon" aria-hidden="true" />
           <span>Test</span>

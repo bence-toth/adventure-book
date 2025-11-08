@@ -114,7 +114,7 @@ describe("Passage Component", () => {
 
     fireEvent.click(firstChoice);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/passage/2");
+    expect(mockNavigate).toHaveBeenCalledWith("/test/passage/2");
   });
 
   it("shows error for invalid passage ID", () => {
@@ -125,7 +125,12 @@ describe("Passage Component", () => {
 
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
     expect(
-      screen.getByText(/The passage ID “invalid” is not valid/)
+      screen.getByText((_content, element) => {
+        return (
+          element?.textContent ===
+          "The passage ID “invalid” is not valid. Please use a valid number."
+        );
+      })
     ).toBeInTheDocument();
 
     const goHomeButton = screen.getByTestId("go-to-introduction-button");
@@ -151,7 +156,7 @@ describe("Passage Component", () => {
     const goHomeButton = screen.getByTestId("go-to-introduction-button");
     fireEvent.click(goHomeButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/passage/0");
+    expect(mockNavigate).toHaveBeenCalledWith("/test/passage/0");
   });
 
   it("renders passage with single choice correctly (ending passage)", () => {
@@ -184,7 +189,7 @@ describe("Passage Component", () => {
     const resetPassage = screen.getByTestId("reset-passage");
     expect(resetPassage).toBeInTheDocument();
     expect(screen.getByText("Resetting your adventure…")).toBeInTheDocument();
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    expect(mockNavigate).toHaveBeenCalledWith("/test");
   });
 
   it("has correct CSS classes applied", () => {

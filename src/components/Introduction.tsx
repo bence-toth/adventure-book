@@ -10,12 +10,12 @@ export const Introduction = () => {
   useEffect(() => {
     const savedPassageId = getCurrentPassageId();
     if (savedPassageId !== null) {
-      navigate(`/passage/${savedPassageId}`);
+      navigate(`/test/passage/${savedPassageId}`);
     }
   }, [navigate]);
 
   const handleStartAdventure = () => {
-    navigate("/passage/1");
+    navigate("/test/passage/1");
   };
 
   return (
