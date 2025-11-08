@@ -79,10 +79,8 @@ export const mockStory: Story = {
   passages: mockPassages,
 };
 
-/**
- * Factory function to create a mock story loader module
- * This can be used in vi.mock() calls to replace the actual story loader
- */
+// Factory function to create a mock story loader module
+// This can be used in vi.mock() calls to replace the actual story loader
 export const createMockStoryLoader = () => ({
   loadStory: () => mockStory,
   introduction: mockIntroduction,
@@ -90,9 +88,7 @@ export const createMockStoryLoader = () => ({
   getAllPassages: () => mockPassages,
 });
 
-/**
- * Create story loader mocks with custom data
- */
+// Create story loader mocks with custom data
 export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
   const story = { ...mockStory, ...customStory };
   const introduction: IntroductionContent = {
@@ -109,24 +105,29 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
   };
 };
 
-/**
- * Helper function to create a simple mock passage for testing specific scenarios
- */
+// Helper function to create a simple mock passage for testing specific scenarios
+// Due to discriminated union types, you must create either an ending passage or a regular passage
 export const createMockPassage = (
   paragraphs: string[],
-  choices?: { text: string; goto: number }[],
-  ending?: boolean,
-  type?: "victory" | "defeat" | "neutral"
-): Passage => ({
-  paragraphs,
-  choices,
-  ending,
-  type,
-});
+  options:
+    | { ending: true; type?: "victory" | "defeat" | "neutral" }
+    | { choices: { text: string; goto: number }[] }
+): Passage => {
+  if ("ending" in options) {
+    return {
+      paragraphs,
+      ending: true,
+      ...(options.type && { type: options.type }),
+    };
+  } else {
+    return {
+      paragraphs,
+      choices: options.choices,
+    };
+  }
+};
 
-/**
- * Helper function to create a simple mock introduction for testing
- */
+// Helper function to create a simple mock introduction for testing
 export const createMockIntroduction = (
   title: string,
   paragraphs: string[],

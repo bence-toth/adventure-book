@@ -1,10 +1,10 @@
-/* eslint-disable react-refresh/only-export-components */
 import { render as rtlRender } from "@testing-library/react";
 import type { RenderOptions } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 // Wrapper component for providers
+// eslint-disable-next-line react-refresh/only-export-components
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return <BrowserRouter>{children}</BrowserRouter>;
 };
