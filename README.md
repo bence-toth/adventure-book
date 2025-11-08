@@ -110,7 +110,24 @@ npm run dev
 
 ## Contributing
 
-This section contains information for developers who want to contribute to the adventure book tool itself.
+We welcome contributions from the community! Whether you want to report bugs, suggest new features, improve documentation, or submit code changes, your contributions are greatly appreciated.
+
+### Ways to Contribute
+
+- **Report Issues**: Found a bug or have a feature request? [Open an issue](https://github.com/bence-toth/adventure-book/issues) to let us know
+- **Submit Pull Requests**: Ready to contribute code? Fork the repository and submit a pull request with your changes
+- **Improve Documentation**: Help make the documentation clearer or add missing information
+- **Share Ideas**: Join discussions about new features or improvements
+- **Test and Provide Feedback**: Try out new features and provide feedback on usability
+
+### Getting Started as a Contributor
+
+1. Fork the repository
+2. Create a feature branch from `main`
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass and code meets our standards
+6. Submit a pull request with a clear description of your changes
 
 ### Available Scripts
 
