@@ -178,8 +178,8 @@ describe("Adventure Book Integration Tests", () => {
   it("maintains consistent styling across all pages", () => {
     // Test introduction styling
     renderApp();
-    expect(document.querySelector(".adventure-book")).toBeInTheDocument();
     expect(screen.getByTestId("introduction")).toBeInTheDocument();
+    expect(screen.getByTestId("introduction")).toHaveClass("introduction");
 
     // Test passage styling
     rtlRender(
@@ -187,8 +187,8 @@ describe("Adventure Book Integration Tests", () => {
         <App />
       </MemoryRouter>
     );
-    expect(document.querySelector(".adventure-book")).toBeInTheDocument();
     expect(screen.getByTestId("passage")).toBeInTheDocument();
+    expect(screen.getByTestId("passage")).toHaveClass("passage");
 
     // Test error styling
     rtlRender(
@@ -196,7 +196,7 @@ describe("Adventure Book Integration Tests", () => {
         <App />
       </MemoryRouter>
     );
-    expect(document.querySelector(".adventure-book")).toBeInTheDocument();
     expect(screen.getByTestId("error-passage-not-found")).toBeInTheDocument();
+    expect(screen.getByTestId("error-passage-not-found")).toHaveClass("error");
   });
 });

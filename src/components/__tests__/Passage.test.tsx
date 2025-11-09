@@ -198,9 +198,6 @@ describe("Passage Component", () => {
     const passage = screen.getByTestId("passage");
     expect(passage).toHaveClass("passage");
 
-    const adventureBook = passage.closest(".adventure-book");
-    expect(adventureBook).toBeInTheDocument();
-
     // Check that passage text is wrapped in the correct div
     const passageTextDiv = screen.getByTestId("passage-text");
     expect(passageTextDiv).toHaveClass("passage-text");

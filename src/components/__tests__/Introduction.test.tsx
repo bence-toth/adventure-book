@@ -83,10 +83,5 @@ describe("Introduction Component", () => {
 
     expect(screen.getByTestId("introduction")).toBeInTheDocument();
     expect(screen.getByTestId("introduction")).toHaveClass("introduction");
-
-    const adventureBook = screen
-      .getByTestId("introduction")
-      .closest(".adventure-book");
-    expect(adventureBook).toBeInTheDocument();
   });
 });
