@@ -12,10 +12,11 @@
 .top-bar-logo {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-1);
 }
 
 .top-bar-logo-icon {
+  display: flex;
   font-size: var(--font-size-xl);
   line-height: 1;
 }
@@ -40,7 +41,7 @@
   background: var(--color-button-primary);
   color: var(--color-on-primary);
   border: 1px solid var(--color-button-border);
-  padding: var(--space-2) var(--space-3);
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--space-1);
   transition: all 0.3s ease;
   box-shadow: var(--shadow-default);

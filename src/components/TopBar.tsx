@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { GiCrossedSwords, GiPlayButton, GiFountainPen } from "react-icons/gi";
+import { Swords, Play, PenTool } from "lucide-react";
 import "./TopBar.css";
 
 export const TopBar = () => {
@@ -15,8 +15,8 @@ export const TopBar = () => {
   return (
     <header className="top-bar">
       <div className="top-bar-logo">
-        <span className="top-bar-logo-icon" role="img" aria-label="sword">
-          <GiCrossedSwords aria-hidden="true" />
+        <span className="top-bar-logo-icon" role="img" aria-label="swords">
+          <Swords size={32} strokeWidth={1.5} aria-hidden="true" />
         </span>
         <h1 className="top-bar-title">Adventure Book Companion</h1>
       </div>
@@ -25,14 +25,14 @@ export const TopBar = () => {
           to="/test"
           className={`top-bar-nav-item ${isActive("/test") ? "active" : ""}`}
         >
-          <GiPlayButton className="top-bar-nav-icon" aria-hidden="true" />
+          <Play size={20} strokeWidth={1.5} aria-hidden="true" />
           <span>Test</span>
         </Link>
         <Link
           to="/edit"
           className={`top-bar-nav-item ${isActive("/edit") ? "active" : ""}`}
         >
-          <GiFountainPen className="top-bar-nav-icon" aria-hidden="true" />
+          <PenTool size={20} strokeWidth={1.5} aria-hidden="true" />
           <span>Edit</span>
         </Link>
       </nav>
