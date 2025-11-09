@@ -3,6 +3,10 @@ import { useEffect } from "react";
 import { introduction } from "../data/storyLoader";
 import { getCurrentPassageId } from "../utils/localStorage";
 import { getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
+import {
+  INTRODUCTION_TEST_IDS,
+  getIntroParagraphTestId,
+} from "../constants/testIds";
 import "./Introduction.css";
 
 export const Introduction = () => {
@@ -20,14 +24,14 @@ export const Introduction = () => {
   };
 
   return (
-    <div className="introduction" data-testid="introduction">
-      <h1 data-testid="intro-title">{introduction.title}</h1>
-      <div className="intro-text" data-testid="intro-text">
+    <div className="introduction" data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
+      <h1 data-testid={INTRODUCTION_TEST_IDS.TITLE}>{introduction.title}</h1>
+      <div className="intro-text" data-testid={INTRODUCTION_TEST_IDS.TEXT}>
         {introduction.paragraphs.map((paragraph, index) => (
           <p
             className="intro-paragraph"
             key={index}
-            data-testid={`intro-paragraph-${index}`}
+            data-testid={getIntroParagraphTestId(index)}
           >
             {paragraph}
           </p>
@@ -37,7 +41,7 @@ export const Introduction = () => {
         <button
           className="choice-button start-adventure-button"
           onClick={handleStartAdventure}
-          data-testid="start-adventure-button"
+          data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
         >
           {introduction.action}
         </button>

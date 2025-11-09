@@ -4,6 +4,13 @@ import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import App from "../App";
 import { getPassageRoute } from "../constants/routes";
+import {
+  INTRODUCTION_TEST_IDS,
+  PASSAGE_TEST_IDS,
+  ERROR_TEST_IDS,
+  getPassageParagraphTestId,
+  getChoiceButtonTestId,
+} from "../constants/testIds";
 
 // Mock the story loader to return stable test data
 vi.mock("../data/storyLoader", () => ({
@@ -83,41 +90,43 @@ describe("Adventure Book Integration Tests", () => {
     renderApp();
 
     // Start at introduction
-    expect(screen.getByTestId("intro-title")).toBeInTheDocument();
-    expect(screen.getByTestId("intro-title")).toHaveTextContent(
+    expect(screen.getByTestId(INTRODUCTION_TEST_IDS.TITLE)).toBeInTheDocument();
+    expect(screen.getByTestId(INTRODUCTION_TEST_IDS.TITLE)).toHaveTextContent(
       "Test Adventure"
     );
 
     // Click start adventure
-    const startButton = screen.getByTestId("start-adventure-button");
+    const startButton = screen.getByTestId(INTRODUCTION_TEST_IDS.START_BUTTON);
     fireEvent.click(startButton);
 
     // Should be at passage 1
-    expect(screen.getByTestId("passage")).toBeInTheDocument();
-    expect(screen.getByTestId("passage-paragraph-0")).toHaveTextContent(
+    expect(screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER)).toBeInTheDocument();
+    expect(screen.getByTestId(getPassageParagraphTestId(0))).toHaveTextContent(
       "This is test passage 1."
     );
 
     // Choose the first choice (go to passage 2)
-    const firstChoice = screen.getByTestId("choice-button-0");
+    const firstChoice = screen.getByTestId(getChoiceButtonTestId(0));
     expect(firstChoice).toHaveAttribute("data-goto", "2");
     fireEvent.click(firstChoice);
 
     // Should be at passage 2
-    expect(screen.getByTestId("passage-paragraph-0")).toHaveTextContent(
+    expect(screen.getByTestId(getPassageParagraphTestId(0))).toHaveTextContent(
       "This is test passage 2."
     );
 
     // Choose the first choice (go to passage 4)
-    const nextChoice = screen.getByTestId("choice-button-0");
+    const nextChoice = screen.getByTestId(getChoiceButtonTestId(0));
     expect(nextChoice).toHaveAttribute("data-goto", "4");
     fireEvent.click(nextChoice);
 
     // Should be at ending passage 4
-    expect(screen.getByTestId("passage-paragraph-0")).toHaveTextContent(
+    expect(screen.getByTestId(getPassageParagraphTestId(0))).toHaveTextContent(
       "This is the ending passage."
     );
-    expect(screen.getByTestId("restart-button")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(PASSAGE_TEST_IDS.RESTART_BUTTON)
+    ).toBeInTheDocument();
   });
 
   it("handles error states in the flow", () => {
@@ -128,12 +137,14 @@ describe("Adventure Book Integration Tests", () => {
     );
 
     // Should show error page with invalid passage ID
-    expect(screen.getByTestId("error-invalid-id")).toBeInTheDocument();
+    expect(screen.getByTestId(ERROR_TEST_IDS.INVALID_ID)).toBeInTheDocument();
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
     expect(screen.getByText(/is not valid/)).toBeInTheDocument();
 
     // Should have button to go back to introduction
-    const goHomeButton = screen.getByTestId("go-to-introduction-button");
+    const goHomeButton = screen.getByTestId(
+      ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON
+    );
     expect(goHomeButton).toBeInTheDocument();
   });
 
@@ -145,18 +156,18 @@ describe("Adventure Book Integration Tests", () => {
     );
 
     // From passage 1, choose second option (go to passage 3)
-    const secondChoice = screen.getByTestId("choice-button-1");
+    const secondChoice = screen.getByTestId(getChoiceButtonTestId(1));
     expect(secondChoice).toHaveAttribute("data-goto", "3");
     fireEvent.click(secondChoice);
 
     // Should be at passage 3
-    expect(screen.getByTestId("passage-paragraph-0")).toHaveTextContent(
+    expect(screen.getByTestId(getPassageParagraphTestId(0))).toHaveTextContent(
       "This is test passage 3."
     );
 
     // Check that choices are available
-    expect(screen.getByTestId("choice-button-0")).toBeInTheDocument();
-    expect(screen.getByTestId("choice-button-1")).toBeInTheDocument();
+    expect(screen.getByTestId(getChoiceButtonTestId(0))).toBeInTheDocument();
+    expect(screen.getByTestId(getChoiceButtonTestId(1))).toBeInTheDocument();
   });
 
   it("handles the ending passage correctly", () => {
@@ -167,20 +178,26 @@ describe("Adventure Book Integration Tests", () => {
     );
 
     // Should show ending passage
-    expect(screen.getByTestId("passage")).toBeInTheDocument();
-    expect(screen.getByTestId("passage-paragraph-0")).toHaveTextContent(
+    expect(screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER)).toBeInTheDocument();
+    expect(screen.getByTestId(getPassageParagraphTestId(0))).toHaveTextContent(
       "This is the ending passage."
     );
 
     // Should have restart button
-    expect(screen.getByTestId("restart-button")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(PASSAGE_TEST_IDS.RESTART_BUTTON)
+    ).toBeInTheDocument();
   });
 
   it("maintains consistent styling across all pages", () => {
     // Test introduction styling
     renderApp();
-    expect(screen.getByTestId("introduction")).toBeInTheDocument();
-    expect(screen.getByTestId("introduction")).toHaveClass("introduction");
+    expect(
+      screen.getByTestId(INTRODUCTION_TEST_IDS.CONTAINER)
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(INTRODUCTION_TEST_IDS.CONTAINER)).toHaveClass(
+      "introduction"
+    );
 
     // Test passage styling
     rtlRender(
@@ -188,8 +205,10 @@ describe("Adventure Book Integration Tests", () => {
         <App />
       </MemoryRouter>
     );
-    expect(screen.getByTestId("passage")).toBeInTheDocument();
-    expect(screen.getByTestId("passage")).toHaveClass("passage");
+    expect(screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER)).toBeInTheDocument();
+    expect(screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER)).toHaveClass(
+      "passage"
+    );
 
     // Test error styling
     rtlRender(
@@ -197,7 +216,11 @@ describe("Adventure Book Integration Tests", () => {
         <App />
       </MemoryRouter>
     );
-    expect(screen.getByTestId("error-passage-not-found")).toBeInTheDocument();
-    expect(screen.getByTestId("error-passage-not-found")).toHaveClass("error");
+    expect(
+      screen.getByTestId(ERROR_TEST_IDS.PASSAGE_NOT_FOUND)
+    ).toBeInTheDocument();
+    expect(screen.getByTestId(ERROR_TEST_IDS.PASSAGE_NOT_FOUND)).toHaveClass(
+      "error"
+    );
   });
 });

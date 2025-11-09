@@ -6,6 +6,12 @@ import {
   clearCurrentPassageId,
 } from "../utils/localStorage";
 import { ROUTES, getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
+import {
+  PASSAGE_TEST_IDS,
+  ERROR_TEST_IDS,
+  getPassageParagraphTestId,
+  getChoiceButtonTestId,
+} from "../constants/testIds";
 import "./Passage.css";
 
 export const Passage = () => {
@@ -29,13 +35,13 @@ export const Passage = () => {
 
   if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
     return (
-      <div className="error" data-testid="error-invalid-id">
+      <div className="error" data-testid={ERROR_TEST_IDS.INVALID_ID}>
         <h2>Invalid passage ID</h2>
-        <p>The passage ID “{id}” is not valid. Please use a valid number.</p>
+        <p>The passage ID "{id}" is not valid. Please use a valid number.</p>
         <button
           className="choice-button"
           onClick={() => navigate(getPassageRoute(SPECIAL_PASSAGES.RESET))}
-          data-testid="go-to-introduction-button"
+          data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
         >
           Go to introduction
         </button>
@@ -47,7 +53,7 @@ export const Passage = () => {
   // the rest of the component from rendering while the redirect happens
   if (passageId === SPECIAL_PASSAGES.RESET) {
     return (
-      <div className="passage" data-testid="reset-passage">
+      <div className="passage" data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
         <div className="passage-text">
           <p className="passage-paragraph">Resetting your adventure…</p>
         </div>
@@ -59,13 +65,13 @@ export const Passage = () => {
 
   if (!currentPassage) {
     return (
-      <div className="error" data-testid="error-passage-not-found">
+      <div className="error" data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
         <h2>Passage not found</h2>
         <p>Passage #{passageId} does not exist in this adventure.</p>
         <button
           className="choice-button"
           onClick={() => navigate(getPassageRoute(SPECIAL_PASSAGES.RESET))}
-          data-testid="go-to-introduction-button"
+          data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
         >
           Go to introduction
         </button>
@@ -83,24 +89,24 @@ export const Passage = () => {
   };
 
   return (
-    <div className="passage" data-testid="passage">
-      <div className="passage-text" data-testid="passage-text">
+    <div className="passage" data-testid={PASSAGE_TEST_IDS.CONTAINER}>
+      <div className="passage-text" data-testid={PASSAGE_TEST_IDS.TEXT}>
         {currentPassage.paragraphs.map((paragraph, index) => (
           <p
             className="passage-paragraph"
             key={index}
-            data-testid={`passage-paragraph-${index}`}
+            data-testid={getPassageParagraphTestId(index)}
           >
             {paragraph}
           </p>
         ))}
       </div>
-      <div className="choices" data-testid="choices">
+      <div className="choices" data-testid={PASSAGE_TEST_IDS.CHOICES}>
         {currentPassage.ending ? (
           <button
             className="choice-button"
             onClick={handleRestartClick}
-            data-testid="restart-button"
+            data-testid={PASSAGE_TEST_IDS.RESTART_BUTTON}
           >
             Restart adventure
           </button>
@@ -110,7 +116,7 @@ export const Passage = () => {
               key={index}
               className="choice-button"
               onClick={() => handleChoiceClick(choice.goto)}
-              data-testid={`choice-button-${index}`}
+              data-testid={getChoiceButtonTestId(index)}
               data-goto={choice.goto}
             >
               {choice.text}
