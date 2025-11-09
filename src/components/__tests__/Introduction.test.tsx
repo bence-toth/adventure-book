@@ -70,7 +70,7 @@ describe("Introduction Component", () => {
     const button = screen.getByTestId(INTRODUCTION_TEST_IDS.START_BUTTON);
     expect(button).toBeInTheDocument();
     expect(button).toHaveTextContent("Begin your adventure");
-    expect(button).toHaveClass("choice-button", "start-adventure-button");
+    expect(button).toHaveClass("button", "button-primary");
   });
 
   it("navigates to passage 1 when start adventure button is clicked", () => {

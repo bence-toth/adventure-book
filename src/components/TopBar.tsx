@@ -1,6 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { Swords, Play, PenTool } from "lucide-react";
 import { ROUTES } from "../constants/routes";
+import { ButtonLink } from "./ButtonLink";
 import "./TopBar.css";
 
 export const TopBar = () => {
@@ -12,31 +13,29 @@ export const TopBar = () => {
 
   return (
     <header className="top-bar">
-      <div className="top-bar-logo">
+      <div className="top-bar-logo" data-testid="top-bar-logo">
         <span className="top-bar-logo-icon">
           <Swords size={32} strokeWidth={1.5} aria-hidden="true" />
         </span>
         <h1 className="top-bar-title">Adventure Book Companion</h1>
       </div>
       <nav className="top-bar-nav" aria-label="Main navigation">
-        <Link
+        <ButtonLink
           to={ROUTES.TEST}
-          className={`top-bar-nav-item ${
-            isActive(ROUTES.TEST) ? "active" : ""
-          }`}
+          selected={isActive(ROUTES.TEST)}
+          size="small"
+          icon={Play}
         >
-          <Play size={20} strokeWidth={1.5} aria-hidden="true" />
-          <span>Test</span>
-        </Link>
-        <Link
+          Test
+        </ButtonLink>
+        <ButtonLink
           to={ROUTES.EDIT}
-          className={`top-bar-nav-item ${
-            isActive(ROUTES.EDIT) ? "active" : ""
-          }`}
+          selected={isActive(ROUTES.EDIT)}
+          size="small"
+          icon={PenTool}
         >
-          <PenTool size={20} strokeWidth={1.5} aria-hidden="true" />
-          <span>Edit</span>
-        </Link>
+          Edit
+        </ButtonLink>
       </nav>
     </header>
   );

@@ -1,4 +1,5 @@
 .top-bar {
+  background: var(--color-background);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,26 +32,4 @@
 .top-bar-nav {
   display: flex;
   gap: var(--space-2);
-}
-
-.top-bar-nav-item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-  text-decoration: none;
-  background: var(--color-button-primary);
-  color: var(--color-on-primary);
-  border: 1px solid var(--color-button-border);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--space-1);
-  box-shadow: var(--shadow-default);
-}
-
-.top-bar-nav-item:hover {
-  background-color: var(--color-button-primary-hover);
-}
-
-.top-bar-nav-item.active {
-  border-color: var(--color-border-accent);
-  background-color: var(--color-background-accent);
 }

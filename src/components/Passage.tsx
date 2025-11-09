@@ -12,6 +12,7 @@ import {
   getPassageParagraphTestId,
   getChoiceButtonTestId,
 } from "../constants/testIds";
+import { Button } from "./Button";
 import "./Passage.css";
 
 export const Passage = () => {
@@ -38,13 +39,12 @@ export const Passage = () => {
       <div className="error" data-testid={ERROR_TEST_IDS.INVALID_ID}>
         <h2>Invalid passage ID</h2>
         <p>The passage ID "{id}" is not valid. Please use a valid number.</p>
-        <button
-          className="choice-button"
+        <Button
           onClick={() => navigate(getPassageRoute(SPECIAL_PASSAGES.RESET))}
           data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
         >
           Go to introduction
-        </button>
+        </Button>
       </div>
     );
   }
@@ -68,13 +68,12 @@ export const Passage = () => {
       <div className="error" data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
         <h2>Passage not found</h2>
         <p>Passage #{passageId} does not exist in this adventure.</p>
-        <button
-          className="choice-button"
+        <Button
           onClick={() => navigate(getPassageRoute(SPECIAL_PASSAGES.RESET))}
           data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
         >
           Go to introduction
-        </button>
+        </Button>
       </div>
     );
   }
@@ -103,24 +102,22 @@ export const Passage = () => {
       </div>
       <div className="choices" data-testid={PASSAGE_TEST_IDS.CHOICES}>
         {currentPassage.ending ? (
-          <button
-            className="choice-button"
+          <Button
             onClick={handleRestartClick}
             data-testid={PASSAGE_TEST_IDS.RESTART_BUTTON}
           >
             Restart adventure
-          </button>
+          </Button>
         ) : (
           currentPassage.choices!.map((choice, index) => (
-            <button
+            <Button
               key={index}
-              className="choice-button"
               onClick={() => handleChoiceClick(choice.goto)}
               data-testid={getChoiceButtonTestId(index)}
               data-goto={choice.goto}
             >
               {choice.text}
-            </button>
+            </Button>
           ))
         )}
       </div>

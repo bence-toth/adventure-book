@@ -89,9 +89,7 @@ button {
   );
 
   /* Shadow variables */
-  --shadow-default: 0 var(--space-1) var(--space-2) var(--shadow-primary);
-  --shadow-hover: 0 var(--space-1) var(--space-3) var(--shadow-secondary);
-  --shadow-active: 0 2px var(--space-1) var(--shadow-primary);
+  --shadow-default: 0 0 var(--space-2) var(--shadow-primary);
 
   /* Font family variables */
   --font-family-display: "Eagle Lake", serif;
@@ -124,47 +122,68 @@ button {
 
 @media (prefers-color-scheme: light) {
   :root {
-    --color-foreground: var(--color-gray-200);
+    /* Primary typography and layout colors */
+    --color-foreground: var(--color-gray-100);
     --color-background: var(--color-white);
+    --color-background-card: var(--color-gray-900);
     --color-border-hairline: color-mix(
       in srgb,
-      var(--color-gray-200) 50%,
+      var(--color-gray-700) 50%,
       transparent
     );
     --color-border-subtle: var(--color-gray-700);
-    --color-button-primary: var(--color-gray-200);
-    --color-button-primary-hover: var(--color-gray-300);
-    --color-button-border: var(--color-gray-300);
-    --color-error: var(--color-red-600);
-    --color-code-background: var(--color-white);
-    --color-code-border: var(--color-gray-900);
-    --color-on-primary: var(--color-white);
     --shadow-primary: var(--color-shadow-black);
     --shadow-secondary: var(--color-shadow-black-md);
-    --color-border-accent: var(--color-blue-500);
+
+    /* Error typography and layout colors */
+    --color-error-foreground: var(--color-red-400);
+    --color-error-background: var(--color-red-900);
+    --color-error-border-subtle: var(--color-red-600);
+
+    /* Primary interactive element colors */
+    --color-interactive-base: var(--color-gray-200);
+    --color-interactive-hover: var(--color-gray-300);
+    --color-interactive-active: var(--color-gray-400);
+    --color-interactive-focus: var(--color-blue-500);
+    --color-interactive-selected: var(--color-blue-400);
+    --color-interactive-selected-hover: var(--color-blue-500);
+    --color-interactive-selected-active: var(--color-blue-300);
+    --color-interactive-border: var(--color-gray-200);
+    --color-interactive-border-selected: var(--color-blue-300);
+    --color-interactive-text: var(--color-white);
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-foreground: var(--color-gray-800);
+    /* Primary typography and layout colors */
+    --color-foreground: var(--color-gray-900);
     --color-background: var(--color-gray-200);
+    --color-background-card: var(--color-gray-300);
     --color-border-hairline: color-mix(
       in srgb,
       var(--color-gray-300) 50%,
       transparent
     );
     --color-border-subtle: var(--color-gray-400);
-    --color-button-primary: var(--color-gray-400);
-    --color-button-primary-hover: var(--color-gray-500);
-    --color-button-border: var(--color-gray-500);
-    --color-error: var(--color-red-600);
-    --color-code-background: var(--color-gray-300);
-    --color-code-border: var(--color-gray-400);
-    --color-on-primary: var(--color-white);
     --shadow-primary: var(--color-shadow-black-md);
     --shadow-secondary: var(--color-shadow-black-lg);
-    --color-background-accent: var(--color-blue-200);
-    --color-border-accent: var(--color-blue-300);
+
+    /* Error typography and layout colors */
+    --color-error-foreground: var(--color-red-700);
+    --color-error-background: var(--color-red-100);
+    --color-error-border-subtle: var(--color-red-300);
+
+    /* Primary interactive element colors */
+    --color-interactive-base: var(--color-gray-100);
+    --color-interactive-hover: var(--color-gray-200);
+    --color-interactive-active: var(--color-gray-300);
+    --color-interactive-focus: var(--color-blue-800);
+    --color-interactive-selected: var(--color-blue-200);
+    --color-interactive-selected-hover: var(--color-blue-300);
+    --color-interactive-selected-active: var(--color-blue-400);
+    --color-interactive-border: var(--color-gray-500);
+    --color-interactive-border-selected: var(--color-blue-400);
+    --color-interactive-text: var(--color-white);
   }
 }

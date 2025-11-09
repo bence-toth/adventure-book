@@ -35,9 +35,9 @@ describe("TopBar Component", () => {
     it("renders the logo icon with correct accessibility attributes", () => {
       renderWithRouter();
 
-      const logoIcon = screen.getByRole("img", { name: "swords" });
+      const logoContainer = screen.getByTestId("top-bar-logo");
+      const logoIcon = logoContainer.querySelector(".top-bar-logo-icon");
       expect(logoIcon).toBeInTheDocument();
-      expect(logoIcon).toHaveClass("top-bar-logo-icon");
     });
 
     it("renders the navigation element", () => {
@@ -54,7 +54,7 @@ describe("TopBar Component", () => {
       const testLink = screen.getByRole("link", { name: /test/i });
       expect(testLink).toBeInTheDocument();
       expect(testLink).toHaveAttribute("href", ROUTES.TEST);
-      expect(testLink).toHaveClass("top-bar-nav-item");
+      expect(testLink).toHaveClass("button", "button-primary", "button-small");
     });
 
     it("renders Edit navigation link", () => {
@@ -63,7 +63,7 @@ describe("TopBar Component", () => {
       const editLink = screen.getByRole("link", { name: /edit/i });
       expect(editLink).toBeInTheDocument();
       expect(editLink).toHaveAttribute("href", ROUTES.EDIT);
-      expect(editLink).toHaveClass("top-bar-nav-item");
+      expect(editLink).toHaveClass("button", "button-primary", "button-small");
     });
   });
 
@@ -72,20 +72,20 @@ describe("TopBar Component", () => {
       renderWithRouter(ROUTES.TEST);
 
       const testLink = screen.getByRole("link", { name: /test/i });
-      expect(testLink).toHaveClass("active");
+      expect(testLink).toHaveClass("button-selected");
 
       const editLink = screen.getByRole("link", { name: /edit/i });
-      expect(editLink).not.toHaveClass("active");
+      expect(editLink).not.toHaveClass("button-selected");
     });
 
     it("applies active class to Edit link when on /edit route", () => {
       renderWithRouter(ROUTES.EDIT);
 
       const editLink = screen.getByRole("link", { name: /edit/i });
-      expect(editLink).toHaveClass("active");
+      expect(editLink).toHaveClass("button-selected");
 
       const testLink = screen.getByRole("link", { name: /test/i });
-      expect(testLink).not.toHaveClass("active");
+      expect(testLink).not.toHaveClass("button-selected");
     });
   });
 
@@ -94,27 +94,27 @@ describe("TopBar Component", () => {
       renderWithRouter(getPassageRoute(1));
 
       const testLink = screen.getByRole("link", { name: /test/i });
-      expect(testLink).toHaveClass("active");
+      expect(testLink).toHaveClass("button-selected");
 
       const editLink = screen.getByRole("link", { name: /edit/i });
-      expect(editLink).not.toHaveClass("active");
+      expect(editLink).not.toHaveClass("button-selected");
     });
 
     it("applies active class to Test link when on /test/intro route", () => {
       renderWithRouter(`${ROUTES.TEST}/intro`);
 
       const testLink = screen.getByRole("link", { name: /test/i });
-      expect(testLink).toHaveClass("active");
+      expect(testLink).toHaveClass("button-selected");
     });
 
     it("applies active class to Edit link when on nested /edit paths", () => {
       renderWithRouter(`${ROUTES.EDIT}/something`);
 
       const editLink = screen.getByRole("link", { name: /edit/i });
-      expect(editLink).toHaveClass("active");
+      expect(editLink).toHaveClass("button-selected");
 
       const testLink = screen.getByRole("link", { name: /test/i });
-      expect(testLink).not.toHaveClass("active");
+      expect(testLink).not.toHaveClass("button-selected");
     });
   });
 
@@ -125,8 +125,8 @@ describe("TopBar Component", () => {
       const testLink = screen.getByRole("link", { name: /test/i });
       const editLink = screen.getByRole("link", { name: /edit/i });
 
-      expect(testLink).not.toHaveClass("active");
-      expect(editLink).not.toHaveClass("active");
+      expect(testLink).not.toHaveClass("button-selected");
+      expect(editLink).not.toHaveClass("button-selected");
     });
 
     it("does not apply active class to any link when on unrelated route", () => {
@@ -135,8 +135,8 @@ describe("TopBar Component", () => {
       const testLink = screen.getByRole("link", { name: /test/i });
       const editLink = screen.getByRole("link", { name: /edit/i });
 
-      expect(testLink).not.toHaveClass("active");
-      expect(editLink).not.toHaveClass("active");
+      expect(testLink).not.toHaveClass("button-selected");
+      expect(editLink).not.toHaveClass("button-selected");
     });
   });
 

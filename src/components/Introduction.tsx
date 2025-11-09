@@ -7,6 +7,7 @@ import {
   INTRODUCTION_TEST_IDS,
   getIntroParagraphTestId,
 } from "../constants/testIds";
+import { Button } from "./Button";
 import "./Introduction.css";
 
 export const Introduction = () => {
@@ -38,13 +39,12 @@ export const Introduction = () => {
         ))}
       </div>
       <div className="intro-action">
-        <button
-          className="choice-button start-adventure-button"
+        <Button
           onClick={handleStartAdventure}
           data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
         >
           {introduction.action}
-        </button>
+        </Button>
       </div>
     </div>
   );
