@@ -17,7 +17,7 @@ export const TopBar = () => {
         </span>
         <h1 className="top-bar-title">Adventure Book Companion</h1>
       </div>
-      <nav className="top-bar-nav">
+      <nav className="top-bar-nav" aria-label="Main navigation">
         <Link
           to="/test"
           className={`top-bar-nav-item ${isActive("/test") ? "active" : ""}`}
