@@ -141,6 +141,7 @@ button {
     --color-on-primary: var(--color-white);
     --shadow-primary: var(--color-shadow-black);
     --shadow-secondary: var(--color-shadow-black-md);
+    --color-border-accent: var(--color-blue-500);
   }
 }
 
@@ -163,5 +164,7 @@ button {
     --color-on-primary: var(--color-white);
     --shadow-primary: var(--color-shadow-black-md);
     --shadow-secondary: var(--color-shadow-black-lg);
+    --color-background-accent: var(--color-blue-200);
+    --color-border-accent: var(--color-blue-300);
   }
 }
