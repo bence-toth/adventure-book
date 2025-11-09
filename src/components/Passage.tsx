@@ -28,18 +28,16 @@ export const Passage = () => {
 
   if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
     return (
-      <div className="adventure-book">
-        <div className="error" data-testid="error-invalid-id">
-          <h2>Invalid passage ID</h2>
-          <p>The passage ID “{id}” is not valid. Please use a valid number.</p>
-          <button
-            className="choice-button"
-            onClick={() => navigate("/test/passage/0")}
-            data-testid="go-to-introduction-button"
-          >
-            Go to introduction
-          </button>
-        </div>
+      <div className="error" data-testid="error-invalid-id">
+        <h2>Invalid passage ID</h2>
+        <p>The passage ID “{id}” is not valid. Please use a valid number.</p>
+        <button
+          className="choice-button"
+          onClick={() => navigate("/test/passage/0")}
+          data-testid="go-to-introduction-button"
+        >
+          Go to introduction
+        </button>
       </div>
     );
   }
@@ -48,11 +46,9 @@ export const Passage = () => {
   // the rest of the component from rendering while the redirect happens
   if (passageId === 0) {
     return (
-      <div className="adventure-book">
-        <div className="passage" data-testid="reset-passage">
-          <div className="passage-text">
-            <p className="passage-paragraph">Resetting your adventure…</p>
-          </div>
+      <div className="passage" data-testid="reset-passage">
+        <div className="passage-text">
+          <p className="passage-paragraph">Resetting your adventure…</p>
         </div>
       </div>
     );
@@ -62,18 +58,16 @@ export const Passage = () => {
 
   if (!currentPassage) {
     return (
-      <div className="adventure-book">
-        <div className="error" data-testid="error-passage-not-found">
-          <h2>Passage not found</h2>
-          <p>Passage #{passageId} does not exist in this adventure.</p>
-          <button
-            className="choice-button"
-            onClick={() => navigate("/test/passage/0")}
-            data-testid="go-to-introduction-button"
-          >
-            Go to introduction
-          </button>
-        </div>
+      <div className="error" data-testid="error-passage-not-found">
+        <h2>Passage not found</h2>
+        <p>Passage #{passageId} does not exist in this adventure.</p>
+        <button
+          className="choice-button"
+          onClick={() => navigate("/test/passage/0")}
+          data-testid="go-to-introduction-button"
+        >
+          Go to introduction
+        </button>
       </div>
     );
   }
@@ -88,42 +82,40 @@ export const Passage = () => {
   };
 
   return (
-    <div className="adventure-book">
-      <div className="passage" data-testid="passage">
-        <div className="passage-text" data-testid="passage-text">
-          {currentPassage.paragraphs.map((paragraph, index) => (
-            <p
-              className="passage-paragraph"
-              key={index}
-              data-testid={`passage-paragraph-${index}`}
-            >
-              {paragraph}
-            </p>
-          ))}
-        </div>
-        <div className="choices" data-testid="choices">
-          {currentPassage.ending ? (
+    <div className="passage" data-testid="passage">
+      <div className="passage-text" data-testid="passage-text">
+        {currentPassage.paragraphs.map((paragraph, index) => (
+          <p
+            className="passage-paragraph"
+            key={index}
+            data-testid={`passage-paragraph-${index}`}
+          >
+            {paragraph}
+          </p>
+        ))}
+      </div>
+      <div className="choices" data-testid="choices">
+        {currentPassage.ending ? (
+          <button
+            className="choice-button"
+            onClick={handleRestartClick}
+            data-testid="restart-button"
+          >
+            Restart adventure
+          </button>
+        ) : (
+          currentPassage.choices!.map((choice, index) => (
             <button
+              key={index}
               className="choice-button"
-              onClick={handleRestartClick}
-              data-testid="restart-button"
+              onClick={() => handleChoiceClick(choice.goto)}
+              data-testid={`choice-button-${index}`}
+              data-goto={choice.goto}
             >
-              Restart adventure
+              {choice.text}
             </button>
-          ) : (
-            currentPassage.choices!.map((choice, index) => (
-              <button
-                key={index}
-                className="choice-button"
-                onClick={() => handleChoiceClick(choice.goto)}
-                data-testid={`choice-button-${index}`}
-                data-goto={choice.goto}
-              >
-                {choice.text}
-              </button>
-            ))
-          )}
-        </div>
+          ))
+        )}
       </div>
     </div>
   );

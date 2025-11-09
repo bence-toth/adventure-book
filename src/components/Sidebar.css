@@ -1,9 +1,9 @@
 .sidebar {
   position: relative;
   z-index: 1;
-  width: var(--size-sidebar);
   background-color: var(--color-background);
   border-right: 1px solid var(--color-border-hairline);
   box-shadow: var(--shadow-default);
   overflow-y: auto;
+  min-height: 0;
 }
