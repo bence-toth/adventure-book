@@ -13,7 +13,7 @@ export const TopBar = () => {
   return (
     <header className="top-bar">
       <div className="top-bar-logo">
-        <span className="top-bar-logo-icon" role="img" aria-label="swords">
+        <span className="top-bar-logo-icon">
           <Swords size={32} strokeWidth={1.5} aria-hidden="true" />
         </span>
         <h1 className="top-bar-title">Adventure Book Companion</h1>
