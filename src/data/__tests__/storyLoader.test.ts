@@ -5,9 +5,16 @@ import { createMockStoryLoader } from "../../test/mockStoryData";
 vi.mock("../storyLoader", () => createMockStoryLoader());
 
 // Import after mocking
-const { loadStory, introduction, getPassage, getAllPassages } = await import(
-  "../storyLoader"
-);
+const {
+  loadStory,
+  introduction,
+  getPassage,
+  getAllPassages,
+  getInventoryItems,
+  getCurrentInventory,
+  addItemToInventory,
+  removeItemFromInventory,
+} = await import("../storyLoader");
 
 describe("StoryLoader", () => {
   describe("loadStory", () => {
@@ -272,6 +279,165 @@ describe("StoryLoader", () => {
         (p) => p.ending
       ).length;
       expect(endingCount).toBeGreaterThan(0);
+    });
+  });
+
+  describe("inventory management", () => {
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    describe("getInventoryItems", () => {
+      it("should return all available inventory items", () => {
+        const items = getInventoryItems();
+
+        expect(Array.isArray(items)).toBe(true);
+        items.forEach((item) => {
+          expect(item.id).toBeDefined();
+          expect(typeof item.id).toBe("string");
+          expect(item.name).toBeDefined();
+          expect(typeof item.name).toBe("string");
+        });
+      });
+
+      it("should return empty array if no inventory defined", () => {
+        const items = getInventoryItems();
+        expect(Array.isArray(items)).toBe(true);
+      });
+    });
+
+    describe("getCurrentInventory", () => {
+      it("should return empty array when no items collected", () => {
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual([]);
+      });
+
+      it("should return current inventory from localStorage", () => {
+        localStorage.setItem(
+          "adventure-book/inventory",
+          JSON.stringify(["item1", "item2"])
+        );
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual(["item1", "item2"]);
+      });
+    });
+
+    describe("addItemToInventory", () => {
+      it("should add an item to inventory", () => {
+        addItemToInventory("test_item");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toContain("test_item");
+      });
+
+      it("should not add duplicate items", () => {
+        addItemToInventory("test_item");
+        addItemToInventory("test_item");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual(["test_item"]);
+      });
+
+      it("should add multiple different items", () => {
+        addItemToInventory("item1");
+        addItemToInventory("item2");
+        addItemToInventory("item3");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual(["item1", "item2", "item3"]);
+      });
+
+      it("should preserve existing items when adding new ones", () => {
+        localStorage.setItem(
+          "adventure-book/inventory",
+          JSON.stringify(["existing_item"])
+        );
+
+        addItemToInventory("new_item");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toContain("existing_item");
+        expect(inventory).toContain("new_item");
+      });
+    });
+
+    describe("removeItemFromInventory", () => {
+      it("should remove an item from inventory", () => {
+        localStorage.setItem(
+          "adventure-book/inventory",
+          JSON.stringify(["item1", "item2"])
+        );
+
+        removeItemFromInventory("item1");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual(["item2"]);
+      });
+
+      it("should handle removing non-existent items", () => {
+        localStorage.setItem(
+          "adventure-book/inventory",
+          JSON.stringify(["item1"])
+        );
+
+        removeItemFromInventory("nonexistent");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual(["item1"]);
+      });
+
+      it("should remove all occurrences of an item", () => {
+        localStorage.setItem(
+          "adventure-book/inventory",
+          JSON.stringify(["item1", "item2", "item1"])
+        );
+
+        removeItemFromInventory("item1");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual(["item2"]);
+      });
+
+      it("should handle removing from empty inventory", () => {
+        removeItemFromInventory("item1");
+
+        const inventory = getCurrentInventory();
+        expect(inventory).toEqual([]);
+      });
+    });
+
+    describe("integration with story", () => {
+      it("should handle inventory items defined in story", () => {
+        const story = loadStory();
+        const inventoryItems = getInventoryItems();
+
+        // If story defines inventory items, they should be accessible
+        if (story.items && story.items.length > 0) {
+          expect(inventoryItems.length).toBeGreaterThan(0);
+
+          story.items.forEach((item) => {
+            expect(item.id).toBeTruthy();
+            expect(item.name).toBeTruthy();
+          });
+        }
+      });
+
+      it("should allow adding story-defined items", () => {
+        const items = getInventoryItems();
+
+        if (items.length > 0) {
+          const testItem = items[0];
+          addItemToInventory(testItem.id);
+
+          const inventory = getCurrentInventory();
+          expect(inventory).toContain(testItem.id);
+        }
+      });
     });
   });
 });

@@ -1,9 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { getPassage } from "../data/storyLoader";
+import {
+  getPassage,
+  addItemToInventory,
+  removeItemFromInventory,
+} from "../data/storyLoader";
 import {
   saveCurrentPassageId,
   clearCurrentPassageId,
+  clearInventory,
 } from "../utils/localStorage";
 import { ROUTES, getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
 import {
@@ -26,10 +31,26 @@ export const Passage = () => {
       if (passageId === SPECIAL_PASSAGES.RESET) {
         // Special case: passage 0 clears localStorage and redirects to introduction
         clearCurrentPassageId();
+        clearInventory();
         navigate(ROUTES.TEST);
         return;
       } else if (passageId >= 1) {
         saveCurrentPassageId(passageId);
+
+        // Execute effects for this passage
+        const passage = getPassage(passageId);
+        if (passage?.effects) {
+          passage.effects.forEach((effect) => {
+            if (effect.type === "add_item") {
+              addItemToInventory(effect.item);
+            } else if (effect.type === "remove_item") {
+              removeItemFromInventory(effect.item);
+            }
+          });
+
+          // Dispatch an event to notify other components
+          window.dispatchEvent(new Event("inventoryUpdate"));
+        }
       }
     }
   }, [passageId, navigate]);
@@ -84,6 +105,7 @@ export const Passage = () => {
 
   const handleRestartClick = () => {
     clearCurrentPassageId();
+    clearInventory();
     navigate(ROUTES.TEST);
   };
 

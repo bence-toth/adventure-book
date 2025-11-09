@@ -1,6 +1,12 @@
 /// <reference types="../vite-env" />
 import { StoryParser } from "./storyParser";
-import type { Story, Passage, IntroductionContent } from "./types";
+import type {
+  Story,
+  Passage,
+  IntroductionContent,
+  InventoryItem,
+} from "./types";
+import { getInventory, saveInventory } from "../utils/localStorage";
 
 // Import the YAML file as a string
 import storyYaml from "./story.yaml?raw";
@@ -27,11 +33,6 @@ export const reloadStory = (): Story => {
   return loadStory();
 };
 
-// Note: Using getters for lazy loading - these satisfy the IntroductionContent interface
-// but ensure the story is loaded on-demand when title/paragraphs are accessed.
-// This allows the introduction object to be exported immediately without requiring
-// the story to be loaded at module initialization time.
-// Errors are now handled by React Error Boundaries for better UX.
 export const introduction: IntroductionContent = {
   get title() {
     return loadStory().metadata.title;
@@ -54,4 +55,27 @@ export const getPassage = (id: number): Passage | undefined => {
 export const getAllPassages = (): Record<number, Passage> => {
   const story = loadStory();
   return story.passages;
+};
+
+export const getInventoryItems = (): InventoryItem[] => {
+  const story = loadStory();
+  return story.items;
+};
+
+export const getCurrentInventory = (): string[] => {
+  return getInventory();
+};
+
+export const addItemToInventory = (itemId: string): void => {
+  const currentInventory = getInventory();
+  if (!currentInventory.includes(itemId)) {
+    const updatedInventory = [...currentInventory, itemId];
+    saveInventory(updatedInventory);
+  }
+};
+
+export const removeItemFromInventory = (itemId: string): void => {
+  const currentInventory = getInventory();
+  const updatedInventory = currentInventory.filter((id) => id !== itemId);
+  saveInventory(updatedInventory);
 };

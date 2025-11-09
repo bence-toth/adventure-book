@@ -23,6 +23,8 @@ vi.mock("../data/storyLoader", () => ({
     ],
     action: "Begin your adventure",
   },
+  getInventoryItems: () => [],
+  getCurrentInventory: () => [],
   getPassage: (id: number) => {
     interface MockPassage {
       text: string;

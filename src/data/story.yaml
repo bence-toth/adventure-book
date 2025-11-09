@@ -3,6 +3,12 @@ metadata:
   author: "Adventure Writer"
   version: "1.0"
 
+items:
+  - id: "lambda_scroll"
+    name: "Ancient Lambda Scroll"
+  - id: "binary_compass"
+    name: "Binary Tree Compass"
+
 intro:
   text: |
     Welcome, brave adventurer, to a digital realm where code comes alive and algorithms dance through the very fabric of reality. You are about to embark on an interactive journey through the mystical world of programming concepts, where every choice you make will shape your understanding of the computational universe.
@@ -70,6 +76,11 @@ passages:
       The lambda whispers secrets of immutability and composition. Its voice carries the weight of countless transformations and the elegance of pure logic.
 
       “Remember,” it says, its form shimmering with mathematical beauty, “the power lies not in changing the world, but in creating new realities from the old. Each function should be a lens through which data flows unchanged but transformed.”
+
+      As it finishes speaking, the lambda hands you an ancient scroll containing the wisdom of functional programming. Its knowledge will serve you well on your journey.
+    effects:
+      - type: "add_item"
+        item: "lambda_scroll"
     choices:
       - text: "Ask about higher-order functions"
         goto: 10
@@ -92,6 +103,11 @@ passages:
       From the top of the binary tree, you can see the entire data structure kingdom. Balanced and unbalanced trees sway in the algorithmic wind, their branches reaching toward optimal performance.
 
       The view is spectacular — AVL trees maintain perfect balance with their rotations, while red-black trees display their colorful node patterns. In the distance, you can see heaps organizing themselves by priority, and graphs weaving complex networks of connections.
+
+      You discover a mysterious compass embedded in the tree's trunk. It points not to cardinal directions, but to the most efficient paths through binary trees. You take it with you.
+    effects:
+      - type: "add_item"
+        item: "binary_compass"
     choices:
       - text: "Enjoy the view and climb down"
         goto: 3
@@ -133,6 +149,11 @@ passages:
       You embrace the recursion and find yourself in an infinite loop of discovery. Each iteration reveals new patterns — the Tower of Hanoi unfolds its ancient puzzle, fractals bloom with self-similar beauty.
 
       But be careful not to lose yourself in the endless descent. Without a proper base case, even the most elegant recursion becomes a trap that consumes memory until the stack overflows.
+
+      As you spiral deeper into the recursion, the Lambda Scroll you carried begins to shimmer and dissolve, its wisdom absorbed into the infinite pattern. It has served its purpose, teaching you about the dangers of unbounded recursion.
+    effects:
+      - type: "remove_item"
+        item: "lambda_scroll"
     choices:
       - text: "Find the base case and return"
         goto: 6
@@ -166,6 +187,11 @@ passages:
       You practice with map, filter, and reduce, feeling the power of functional programming flow through your code. Arrays transform before your eyes like living entities, each element passing through the pipeline of transformation.
 
       You understand now the elegance of declarative programming — instead of telling the computer how to do something step by step, you describe what you want, and the higher-order functions handle the details. It’s like conducting an orchestra where each function plays its part in perfect harmony.
+
+      During your practice, you realize the Binary Compass you've been carrying uses imperative navigation logic. You decide to leave it behind in favor of the functional approach you've just mastered.
+    effects:
+      - type: "remove_item"
+        item: "binary_compass"
     choices:
       - text: "Master these concepts completely"
         goto: 15

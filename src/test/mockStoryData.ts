@@ -1,4 +1,5 @@
 import type { Story, Passage, IntroductionContent } from "../data/types";
+import { getInventory, saveInventory } from "../utils/localStorage";
 
 export const mockIntroduction: IntroductionContent = {
   title: "Mock Test Adventure",
@@ -77,6 +78,10 @@ export const mockStory: Story = {
     action: mockIntroduction.action,
   },
   passages: mockPassages,
+  items: [
+    { id: "mock_item_1", name: "Mock Item One" },
+    { id: "mock_item_2", name: "Mock Item Two" },
+  ],
 };
 
 // Factory function to create a mock story loader module
@@ -86,6 +91,20 @@ export const createMockStoryLoader = () => ({
   introduction: mockIntroduction,
   getPassage: (id: number) => mockPassages[id],
   getAllPassages: () => mockPassages,
+  getInventoryItems: () => mockStory.items,
+  getCurrentInventory: () => getInventory(),
+  addItemToInventory: (itemId: string) => {
+    const currentInventory = getInventory();
+    if (!currentInventory.includes(itemId)) {
+      const updatedInventory = [...currentInventory, itemId];
+      saveInventory(updatedInventory);
+    }
+  },
+  removeItemFromInventory: (itemId: string) => {
+    const currentInventory = getInventory();
+    const updatedInventory = currentInventory.filter((id) => id !== itemId);
+    saveInventory(updatedInventory);
+  },
 });
 
 // Create story loader mocks with custom data
@@ -102,6 +121,20 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
     introduction,
     getPassage: (id: number) => story.passages[id],
     getAllPassages: () => story.passages,
+    getInventoryItems: () => story.items,
+    getCurrentInventory: () => getInventory(),
+    addItemToInventory: (itemId: string) => {
+      const currentInventory = getInventory();
+      if (!currentInventory.includes(itemId)) {
+        const updatedInventory = [...currentInventory, itemId];
+        saveInventory(updatedInventory);
+      }
+    },
+    removeItemFromInventory: (itemId: string) => {
+      const currentInventory = getInventory();
+      const updatedInventory = currentInventory.filter((id) => id !== itemId);
+      saveInventory(updatedInventory);
+    },
   };
 };
 
