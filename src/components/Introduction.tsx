@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { introduction } from "../data/storyLoader";
 import { getCurrentPassageId } from "../utils/localStorage";
+import { getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
 import "./Introduction.css";
 
 export const Introduction = () => {
@@ -10,12 +11,12 @@ export const Introduction = () => {
   useEffect(() => {
     const savedPassageId = getCurrentPassageId();
     if (savedPassageId !== null) {
-      navigate(`/test/passage/${savedPassageId}`);
+      navigate(getPassageRoute(savedPassageId));
     }
   }, [navigate]);
 
   const handleStartAdventure = () => {
-    navigate("/test/passage/1");
+    navigate(getPassageRoute(SPECIAL_PASSAGES.START));
   };
 
   return (

@@ -2,6 +2,7 @@ import { screen, render as rtlRender } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { TopBar } from "../TopBar";
 import { MemoryRouter } from "react-router-dom";
+import { ROUTES, getPassageRoute } from "../../constants/routes";
 
 // Helper function to render TopBar with a specific route
 const renderWithRouter = (initialRoute = "/") => {
@@ -52,7 +53,7 @@ describe("TopBar Component", () => {
 
       const testLink = screen.getByRole("link", { name: /test/i });
       expect(testLink).toBeInTheDocument();
-      expect(testLink).toHaveAttribute("href", "/test");
+      expect(testLink).toHaveAttribute("href", ROUTES.TEST);
       expect(testLink).toHaveClass("top-bar-nav-item");
     });
 
@@ -61,14 +62,14 @@ describe("TopBar Component", () => {
 
       const editLink = screen.getByRole("link", { name: /edit/i });
       expect(editLink).toBeInTheDocument();
-      expect(editLink).toHaveAttribute("href", "/edit");
+      expect(editLink).toHaveAttribute("href", ROUTES.EDIT);
       expect(editLink).toHaveClass("top-bar-nav-item");
     });
   });
 
   describe("Active state - exact path match", () => {
     it("applies active class to Test link when on /test route", () => {
-      renderWithRouter("/test");
+      renderWithRouter(ROUTES.TEST);
 
       const testLink = screen.getByRole("link", { name: /test/i });
       expect(testLink).toHaveClass("active");
@@ -78,7 +79,7 @@ describe("TopBar Component", () => {
     });
 
     it("applies active class to Edit link when on /edit route", () => {
-      renderWithRouter("/edit");
+      renderWithRouter(ROUTES.EDIT);
 
       const editLink = screen.getByRole("link", { name: /edit/i });
       expect(editLink).toHaveClass("active");
@@ -90,7 +91,7 @@ describe("TopBar Component", () => {
 
   describe("Active state - nested paths", () => {
     it("applies active class to Test link when on /test/passage/1 route", () => {
-      renderWithRouter("/test/passage/1");
+      renderWithRouter(getPassageRoute(1));
 
       const testLink = screen.getByRole("link", { name: /test/i });
       expect(testLink).toHaveClass("active");
@@ -100,14 +101,14 @@ describe("TopBar Component", () => {
     });
 
     it("applies active class to Test link when on /test/intro route", () => {
-      renderWithRouter("/test/intro");
+      renderWithRouter(`${ROUTES.TEST}/intro`);
 
       const testLink = screen.getByRole("link", { name: /test/i });
       expect(testLink).toHaveClass("active");
     });
 
     it("applies active class to Edit link when on nested /edit paths", () => {
-      renderWithRouter("/edit/something");
+      renderWithRouter(`${ROUTES.EDIT}/something`);
 
       const editLink = screen.getByRole("link", { name: /edit/i });
       expect(editLink).toHaveClass("active");

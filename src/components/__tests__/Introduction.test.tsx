@@ -2,6 +2,7 @@ import { screen, fireEvent } from "@testing-library/react";
 import { vi } from "vitest";
 import { Introduction } from "../Introduction";
 import { render } from "../../test/testUtils";
+import { getPassageRoute, SPECIAL_PASSAGES } from "../../constants/routes";
 
 // Mock the story loader to return stable test data
 vi.mock("../../data/storyLoader", () => ({
@@ -74,7 +75,9 @@ describe("Introduction Component", () => {
     const button = screen.getByTestId("start-adventure-button");
     fireEvent.click(button);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/test/passage/1");
+    expect(mockNavigate).toHaveBeenCalledWith(
+      getPassageRoute(SPECIAL_PASSAGES.START)
+    );
     expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 

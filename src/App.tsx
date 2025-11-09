@@ -7,6 +7,7 @@ import {
   TopBar,
   Sidebar,
 } from "./components";
+import { ROUTES, PASSAGE_ROUTE_PATTERN } from "./constants/routes";
 
 const App = () => {
   return (
@@ -17,11 +18,17 @@ const App = () => {
         <main className="app-content">
           <ErrorBoundary>
             <Routes>
-              <Route path="/" element={<Navigate to="/test" replace />} />
-              <Route path="/test" element={<Introduction />} />
-              <Route path="/test/passage/:id" element={<Passage />} />
-              <Route path="/edit" element={<div>Edit view coming soon</div>} />
-              <Route path="*" element={<Navigate to="/test" replace />} />
+              <Route
+                path={ROUTES.ROOT}
+                element={<Navigate to={ROUTES.TEST} replace />}
+              />
+              <Route path={ROUTES.TEST} element={<Introduction />} />
+              <Route path={PASSAGE_ROUTE_PATTERN} element={<Passage />} />
+              <Route
+                path={ROUTES.EDIT}
+                element={<div>Edit view coming soon</div>}
+              />
+              <Route path="*" element={<Navigate to={ROUTES.TEST} replace />} />
             </Routes>
           </ErrorBoundary>
         </main>

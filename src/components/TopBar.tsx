@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Swords, Play, PenTool } from "lucide-react";
+import { ROUTES } from "../constants/routes";
 import "./TopBar.css";
 
 export const TopBar = () => {
@@ -19,15 +20,19 @@ export const TopBar = () => {
       </div>
       <nav className="top-bar-nav" aria-label="Main navigation">
         <Link
-          to="/test"
-          className={`top-bar-nav-item ${isActive("/test") ? "active" : ""}`}
+          to={ROUTES.TEST}
+          className={`top-bar-nav-item ${
+            isActive(ROUTES.TEST) ? "active" : ""
+          }`}
         >
           <Play size={20} strokeWidth={1.5} aria-hidden="true" />
           <span>Test</span>
         </Link>
         <Link
-          to="/edit"
-          className={`top-bar-nav-item ${isActive("/edit") ? "active" : ""}`}
+          to={ROUTES.EDIT}
+          className={`top-bar-nav-item ${
+            isActive(ROUTES.EDIT) ? "active" : ""
+          }`}
         >
           <PenTool size={20} strokeWidth={1.5} aria-hidden="true" />
           <span>Edit</span>

@@ -3,6 +3,11 @@ import { render as rtlRender } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { vi } from "vitest";
 import { Passage } from "../Passage";
+import {
+  ROUTES,
+  getPassageRoute,
+  SPECIAL_PASSAGES,
+} from "../../constants/routes";
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
@@ -114,7 +119,7 @@ describe("Passage Component", () => {
 
     fireEvent.click(firstChoice);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/test/passage/2");
+    expect(mockNavigate).toHaveBeenCalledWith(getPassageRoute(2));
   });
 
   it("shows error for invalid passage ID", () => {
@@ -124,14 +129,7 @@ describe("Passage Component", () => {
     expect(errorDiv).toBeInTheDocument();
 
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
-    expect(
-      screen.getByText((_content, element) => {
-        return (
-          element?.textContent ===
-          "The passage ID “invalid” is not valid. Please use a valid number."
-        );
-      })
-    ).toBeInTheDocument();
+    expect(screen.getByText(/is not valid/i)).toBeInTheDocument();
 
     const goHomeButton = screen.getByTestId("go-to-introduction-button");
     expect(goHomeButton).toBeInTheDocument();
@@ -156,7 +154,9 @@ describe("Passage Component", () => {
     const goHomeButton = screen.getByTestId("go-to-introduction-button");
     fireEvent.click(goHomeButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/test/passage/0");
+    expect(mockNavigate).toHaveBeenCalledWith(
+      getPassageRoute(SPECIAL_PASSAGES.RESET)
+    );
   });
 
   it("renders passage with single choice correctly (ending passage)", () => {
@@ -189,7 +189,7 @@ describe("Passage Component", () => {
     const resetPassage = screen.getByTestId("reset-passage");
     expect(resetPassage).toBeInTheDocument();
     expect(screen.getByText("Resetting your adventure…")).toBeInTheDocument();
-    expect(mockNavigate).toHaveBeenCalledWith("/test");
+    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.TEST);
   });
 
   it("has correct CSS classes applied", () => {

@@ -3,6 +3,7 @@ import { render as rtlRender } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import App from "../App";
+import { getPassageRoute } from "../constants/routes";
 
 // Mock the story loader with static mock data
 vi.mock("../data/storyLoader", () => ({
@@ -70,7 +71,7 @@ describe("App Component", () => {
   });
 
   it("renders Passage component on passage path", () => {
-    renderAppWithRoute("/test/passage/1");
+    renderAppWithRoute(getPassageRoute(1));
 
     // Check for mocked content from passage 1
     expect(screen.getByText(/This is mock passage 1/)).toBeInTheDocument();
@@ -87,7 +88,7 @@ describe("App Component", () => {
   });
 
   it("handles passage routes with parameters", () => {
-    renderAppWithRoute("/test/passage/2");
+    renderAppWithRoute(getPassageRoute(2));
 
     // Check for mocked content from passage 2
     expect(screen.getByText(/This is mock passage 2/)).toBeInTheDocument();

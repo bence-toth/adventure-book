@@ -5,6 +5,7 @@ import {
   saveCurrentPassageId,
   clearCurrentPassageId,
 } from "../utils/localStorage";
+import { ROUTES, getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
 import "./Passage.css";
 
 export const Passage = () => {
@@ -15,10 +16,10 @@ export const Passage = () => {
 
   useEffect(() => {
     if (!isNaN(passageId)) {
-      if (passageId === 0) {
+      if (passageId === SPECIAL_PASSAGES.RESET) {
         // Special case: passage 0 clears localStorage and redirects to introduction
         clearCurrentPassageId();
-        navigate("/test");
+        navigate(ROUTES.TEST);
         return;
       } else if (passageId >= 1) {
         saveCurrentPassageId(passageId);
@@ -33,7 +34,7 @@ export const Passage = () => {
         <p>The passage ID “{id}” is not valid. Please use a valid number.</p>
         <button
           className="choice-button"
-          onClick={() => navigate("/test/passage/0")}
+          onClick={() => navigate(getPassageRoute(SPECIAL_PASSAGES.RESET))}
           data-testid="go-to-introduction-button"
         >
           Go to introduction
@@ -44,7 +45,7 @@ export const Passage = () => {
 
   // Handle passage 0 (reset) - this will be handled in useEffect, but we need to prevent
   // the rest of the component from rendering while the redirect happens
-  if (passageId === 0) {
+  if (passageId === SPECIAL_PASSAGES.RESET) {
     return (
       <div className="passage" data-testid="reset-passage">
         <div className="passage-text">
@@ -63,7 +64,7 @@ export const Passage = () => {
         <p>Passage #{passageId} does not exist in this adventure.</p>
         <button
           className="choice-button"
-          onClick={() => navigate("/test/passage/0")}
+          onClick={() => navigate(getPassageRoute(SPECIAL_PASSAGES.RESET))}
           data-testid="go-to-introduction-button"
         >
           Go to introduction
@@ -73,12 +74,12 @@ export const Passage = () => {
   }
 
   const handleChoiceClick = (nextId: number) => {
-    navigate(`/test/passage/${nextId}`);
+    navigate(getPassageRoute(nextId));
   };
 
   const handleRestartClick = () => {
     clearCurrentPassageId();
-    navigate("/test");
+    navigate(ROUTES.TEST);
   };
 
   return (

@@ -3,6 +3,7 @@ import { render as rtlRender } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { vi } from "vitest";
 import App from "../App";
+import { getPassageRoute } from "../constants/routes";
 
 // Mock the story loader to return stable test data
 vi.mock("../data/storyLoader", () => ({
@@ -121,7 +122,7 @@ describe("Adventure Book Integration Tests", () => {
 
   it("handles error states in the flow", () => {
     rtlRender(
-      <MemoryRouter initialEntries={["/test/passage/invalid"]}>
+      <MemoryRouter initialEntries={[getPassageRoute("invalid")]}>
         <App />
       </MemoryRouter>
     );
@@ -138,7 +139,7 @@ describe("Adventure Book Integration Tests", () => {
 
   it("navigates through different story paths", () => {
     rtlRender(
-      <MemoryRouter initialEntries={["/test/passage/1"]}>
+      <MemoryRouter initialEntries={[getPassageRoute(1)]}>
         <App />
       </MemoryRouter>
     );
@@ -160,7 +161,7 @@ describe("Adventure Book Integration Tests", () => {
 
   it("handles the ending passage correctly", () => {
     rtlRender(
-      <MemoryRouter initialEntries={["/test/passage/4"]}>
+      <MemoryRouter initialEntries={[getPassageRoute(4)]}>
         <App />
       </MemoryRouter>
     );
@@ -183,7 +184,7 @@ describe("Adventure Book Integration Tests", () => {
 
     // Test passage styling
     rtlRender(
-      <MemoryRouter initialEntries={["/test/passage/1"]}>
+      <MemoryRouter initialEntries={[getPassageRoute(1)]}>
         <App />
       </MemoryRouter>
     );
@@ -192,7 +193,7 @@ describe("Adventure Book Integration Tests", () => {
 
     // Test error styling
     rtlRender(
-      <MemoryRouter initialEntries={["/test/passage/999"]}>
+      <MemoryRouter initialEntries={[getPassageRoute(999)]}>
         <App />
       </MemoryRouter>
     );
