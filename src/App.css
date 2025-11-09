@@ -17,7 +17,6 @@
   padding: var(--space-3);
   display: grid;
   place-items: center;
-  justify-content: center;
   background: var(--color-background);
   min-height: 0;
 }

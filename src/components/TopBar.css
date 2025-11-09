@@ -54,7 +54,3 @@
 .top-bar-nav-item.active {
   background-color: var(--color-button-primary-hover);
 }
-
-.top-bar-nav-icon {
-  font-size: var(--font-size-md);
-}
