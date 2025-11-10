@@ -29,51 +29,51 @@ button {
   /* Color variables */
   --color-white: #fff;
   --color-black: #000;
-  --color-gray-100: lch(10% 10.41 270.15deg);
-  --color-gray-200: lch(20% 10.41 270.15deg);
-  --color-gray-300: lch(30% 10.41 270.15deg);
-  --color-gray-400: lch(40% 10.41 270.15deg);
+  --color-gray-100: lch(90% 10.41 270.15deg);
+  --color-gray-200: lch(80% 10.41 270.15deg);
+  --color-gray-300: lch(70% 10.41 270.15deg);
+  --color-gray-400: lch(60% 10.41 270.15deg);
   --color-gray-500: lch(50% 10.41 270.15deg);
-  --color-gray-600: lch(60% 10.41 270.15deg);
-  --color-gray-700: lch(70% 10.41 270.15deg);
-  --color-gray-800: lch(80% 10.41 270.15deg);
-  --color-gray-900: lch(90% 10.41 270.15deg);
-  --color-red-100: lch(10% 49.527 26.8504deg);
-  --color-red-200: lch(20% 49.527 26.8504deg);
-  --color-red-300: lch(30% 49.527 26.8504deg);
-  --color-red-400: lch(40% 49.527 26.8504deg);
+  --color-gray-600: lch(40% 10.41 270.15deg);
+  --color-gray-700: lch(30% 10.41 270.15deg);
+  --color-gray-800: lch(20% 10.41 270.15deg);
+  --color-gray-900: lch(10% 10.41 270.15deg);
+  --color-red-100: lch(90% 49.527 26.8504deg);
+  --color-red-200: lch(80% 49.527 26.8504deg);
+  --color-red-300: lch(70% 49.527 26.8504deg);
+  --color-red-400: lch(60% 49.527 26.8504deg);
   --color-red-500: lch(50% 49.527 26.8504deg);
-  --color-red-600: lch(60% 49.527 26.8504deg);
-  --color-red-700: lch(70% 49.527 26.8504deg);
-  --color-red-800: lch(80% 49.527 26.8504deg);
-  --color-red-900: lch(90% 49.527 26.8504deg);
-  --color-yellow-100: lch(10% 44.1234 73.9212deg);
-  --color-yellow-200: lch(20% 44.1234 73.9212deg);
-  --color-yellow-300: lch(30% 44.1234 73.9212deg);
-  --color-yellow-400: lch(40% 44.1234 73.9212deg);
+  --color-red-600: lch(40% 49.527 26.8504deg);
+  --color-red-700: lch(30% 49.527 26.8504deg);
+  --color-red-800: lch(20% 49.527 26.8504deg);
+  --color-red-900: lch(10% 49.527 26.8504deg);
+  --color-yellow-100: lch(90% 44.1234 73.9212deg);
+  --color-yellow-200: lch(80% 44.1234 73.9212deg);
+  --color-yellow-300: lch(70% 44.1234 73.9212deg);
+  --color-yellow-400: lch(60% 44.1234 73.9212deg);
   --color-yellow-500: lch(50% 44.1234 73.9212deg);
-  --color-yellow-600: lch(60% 44.1234 73.9212deg);
-  --color-yellow-700: lch(70% 44.1234 73.9212deg);
-  --color-yellow-800: lch(80% 44.1234 73.9212deg);
-  --color-yellow-900: lch(90% 44.1234 73.9212deg);
-  --color-green-100: lch(10% 42.3209 116.25deg);
-  --color-green-200: lch(20% 42.3209 116.25deg);
-  --color-green-300: lch(30% 42.3209 116.25deg);
-  --color-green-400: lch(40% 42.3209 116.25deg);
+  --color-yellow-600: lch(40% 44.1234 73.9212deg);
+  --color-yellow-700: lch(30% 44.1234 73.9212deg);
+  --color-yellow-800: lch(20% 44.1234 73.9212deg);
+  --color-yellow-900: lch(10% 44.1234 73.9212deg);
+  --color-green-100: lch(90% 42.3209 116.25deg);
+  --color-green-200: lch(80% 42.3209 116.25deg);
+  --color-green-300: lch(70% 42.3209 116.25deg);
+  --color-green-400: lch(60% 42.3209 116.25deg);
   --color-green-500: lch(50% 42.3209 116.25deg);
-  --color-green-600: lch(60% 42.3209 116.25deg);
-  --color-green-700: lch(70% 42.3209 116.25deg);
-  --color-green-800: lch(80% 42.3209 116.25deg);
-  --color-green-900: lch(90% 42.3209 116.25deg);
-  --color-blue-100: lch(10% 21.0533 234.006deg);
-  --color-blue-200: lch(20% 21.0533 234.006deg);
-  --color-blue-300: lch(30% 21.0533 234.006deg);
-  --color-blue-400: lch(40% 21.0533 234.006deg);
+  --color-green-600: lch(40% 42.3209 116.25deg);
+  --color-green-700: lch(30% 42.3209 116.25deg);
+  --color-green-800: lch(20% 42.3209 116.25deg);
+  --color-green-900: lch(10% 42.3209 116.25deg);
+  --color-blue-100: lch(90% 21.0533 234.006deg);
+  --color-blue-200: lch(80% 21.0533 234.006deg);
+  --color-blue-300: lch(70% 21.0533 234.006deg);
+  --color-blue-400: lch(60% 21.0533 234.006deg);
   --color-blue-500: lch(50% 21.0533 234.006deg);
-  --color-blue-600: lch(60% 21.0533 234.006deg);
-  --color-blue-700: lch(70% 21.0533 234.006deg);
-  --color-blue-800: lch(80% 21.0533 234.006deg);
-  --color-blue-900: lch(90% 21.0533 234.006deg);
+  --color-blue-600: lch(40% 21.0533 234.006deg);
+  --color-blue-700: lch(30% 21.0533 234.006deg);
+  --color-blue-800: lch(20% 21.0533 234.006deg);
+  --color-blue-900: lch(10% 21.0533 234.006deg);
 
   /* Shadow color variables with opacity based on color variables */
   --color-shadow-black: color-mix(in srgb, var(--color-black) 10%, transparent);
@@ -124,34 +124,34 @@ button {
 @media (prefers-color-scheme: light) {
   :root {
     /* Primary typography and layout colors */
-    --color-foreground: var(--color-gray-100);
-    --color-foreground-muted: var(--color-gray-400);
+    --color-foreground: var(--color-gray-900);
+    --color-foreground-muted: var(--color-gray-600);
     --color-background: var(--color-white);
-    --color-background-card: var(--color-gray-900);
+    --color-background-card: var(--color-gray-100);
     --color-border-hairline: color-mix(
       in srgb,
-      var(--color-gray-700) 50%,
+      var(--color-gray-300) 50%,
       transparent
     );
-    --color-border-subtle: var(--color-gray-700);
+    --color-border-subtle: var(--color-gray-300);
     --shadow-primary: var(--color-shadow-black);
     --shadow-secondary: var(--color-shadow-black-md);
 
     /* Error typography and layout colors */
-    --color-error-foreground: var(--color-red-400);
-    --color-error-background: var(--color-red-900);
-    --color-error-border-subtle: var(--color-red-600);
+    --color-error-foreground: var(--color-red-600);
+    --color-error-background: var(--color-red-100);
+    --color-error-border-subtle: var(--color-red-400);
 
     /* Primary interactive element colors */
-    --color-interactive-base: var(--color-gray-200);
-    --color-interactive-hover: var(--color-gray-300);
-    --color-interactive-active: var(--color-gray-400);
+    --color-interactive-base: var(--color-gray-800);
+    --color-interactive-hover: var(--color-gray-700);
+    --color-interactive-active: var(--color-gray-600);
     --color-interactive-focus: var(--color-blue-500);
-    --color-interactive-selected: var(--color-blue-400);
+    --color-interactive-selected: var(--color-blue-600);
     --color-interactive-selected-hover: var(--color-blue-500);
-    --color-interactive-selected-active: var(--color-blue-300);
-    --color-interactive-border: var(--color-gray-200);
-    --color-interactive-border-selected: var(--color-blue-300);
+    --color-interactive-selected-active: var(--color-blue-700);
+    --color-interactive-border: var(--color-gray-800);
+    --color-interactive-border-selected: var(--color-blue-700);
     --color-interactive-text: var(--color-white);
   }
 }
@@ -159,34 +159,34 @@ button {
 @media (prefers-color-scheme: dark) {
   :root {
     /* Primary typography and layout colors */
-    --color-foreground: var(--color-gray-900);
-    --color-foreground-muted: var(--color-gray-600);
-    --color-background: var(--color-gray-200);
-    --color-background-card: var(--color-gray-300);
+    --color-foreground: var(--color-gray-100);
+    --color-foreground-muted: var(--color-gray-400);
+    --color-background: var(--color-gray-800);
+    --color-background-card: var(--color-gray-700);
     --color-border-hairline: color-mix(
       in srgb,
-      var(--color-gray-300) 50%,
+      var(--color-gray-700) 50%,
       transparent
     );
-    --color-border-subtle: var(--color-gray-400);
+    --color-border-subtle: var(--color-gray-600);
     --shadow-primary: var(--color-shadow-black-md);
     --shadow-secondary: var(--color-shadow-black-lg);
 
     /* Error typography and layout colors */
-    --color-error-foreground: var(--color-red-700);
-    --color-error-background: var(--color-red-100);
-    --color-error-border-subtle: var(--color-red-300);
+    --color-error-foreground: var(--color-red-300);
+    --color-error-background: var(--color-red-900);
+    --color-error-border-subtle: var(--color-red-700);
 
     /* Primary interactive element colors */
-    --color-interactive-base: var(--color-gray-100);
-    --color-interactive-hover: var(--color-gray-200);
-    --color-interactive-active: var(--color-gray-300);
-    --color-interactive-focus: var(--color-blue-800);
-    --color-interactive-selected: var(--color-blue-200);
-    --color-interactive-selected-hover: var(--color-blue-300);
-    --color-interactive-selected-active: var(--color-blue-400);
+    --color-interactive-base: var(--color-gray-900);
+    --color-interactive-hover: var(--color-gray-800);
+    --color-interactive-active: var(--color-gray-700);
+    --color-interactive-focus: var(--color-blue-200);
+    --color-interactive-selected: var(--color-blue-800);
+    --color-interactive-selected-hover: var(--color-blue-700);
+    --color-interactive-selected-active: var(--color-blue-600);
     --color-interactive-border: var(--color-gray-500);
-    --color-interactive-border-selected: var(--color-blue-400);
+    --color-interactive-border-selected: var(--color-blue-600);
     --color-interactive-text: var(--color-white);
   }
 }
