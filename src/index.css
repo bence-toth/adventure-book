@@ -99,6 +99,7 @@ button {
   /* Font size variables */
   --font-size-sm: 0.75rem;
   --font-size-md: 1rem;
+  --font-size-lg: 1.5rem;
   --font-size-xl: 1.75rem;
 
   /* Line height variables */
@@ -124,6 +125,7 @@ button {
   :root {
     /* Primary typography and layout colors */
     --color-foreground: var(--color-gray-100);
+    --color-foreground-muted: var(--color-gray-400);
     --color-background: var(--color-white);
     --color-background-card: var(--color-gray-900);
     --color-border-hairline: color-mix(
@@ -158,6 +160,7 @@ button {
   :root {
     /* Primary typography and layout colors */
     --color-foreground: var(--color-gray-900);
+    --color-foreground-muted: var(--color-gray-600);
     --color-background: var(--color-gray-200);
     --color-background-card: var(--color-gray-300);
     --color-border-hairline: color-mix(
