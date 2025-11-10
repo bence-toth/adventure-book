@@ -84,12 +84,10 @@ export const mockStory: Story = {
   ],
 };
 
-// Factory function to create a mock story loader module
-// This can be used in vi.mock() calls to replace the actual story loader
-export const createMockStoryLoader = () => {
-  // Lazy import to avoid circular dependency during module initialization
-  // These functions are imported from storyLoader only when actually called
-  const addItemToInventory = (itemId: string): void => {
+// Shared inventory management helper functions
+const createAddItemToInventory =
+  () =>
+  (itemId: string): void => {
     const currentInventory = getInventory();
     if (!currentInventory.includes(itemId)) {
       const updatedInventory = [...currentInventory, itemId];
@@ -97,11 +95,19 @@ export const createMockStoryLoader = () => {
     }
   };
 
-  const removeItemFromInventory = (itemId: string): void => {
+const createRemoveItemFromInventory =
+  () =>
+  (itemId: string): void => {
     const currentInventory = getInventory();
     const updatedInventory = currentInventory.filter((id) => id !== itemId);
     saveInventory(updatedInventory);
   };
+
+// Factory function to create a mock story loader module
+// This can be used in vi.mock() calls to replace the actual story loader
+export const createMockStoryLoader = () => {
+  const addItemToInventory = createAddItemToInventory();
+  const removeItemFromInventory = createRemoveItemFromInventory();
 
   return {
     loadStory: () => mockStory,
@@ -124,20 +130,8 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
     action: story.intro.action,
   };
 
-  // Lazy import to avoid circular dependency during module initialization
-  const addItemToInventory = (itemId: string): void => {
-    const currentInventory = getInventory();
-    if (!currentInventory.includes(itemId)) {
-      const updatedInventory = [...currentInventory, itemId];
-      saveInventory(updatedInventory);
-    }
-  };
-
-  const removeItemFromInventory = (itemId: string): void => {
-    const currentInventory = getInventory();
-    const updatedInventory = currentInventory.filter((id) => id !== itemId);
-    saveInventory(updatedInventory);
-  };
+  const addItemToInventory = createAddItemToInventory();
+  const removeItemFromInventory = createRemoveItemFromInventory();
 
   return {
     loadStory: () => story,
