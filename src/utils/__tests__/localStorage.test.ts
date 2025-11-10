@@ -67,6 +67,16 @@ describe("localStorage inventory utilities", () => {
       expect(retrieved).toEqual([]);
     });
 
+    it("should filter out non-string elements from array", () => {
+      localStorage.setItem(
+        "adventure-book/inventory",
+        JSON.stringify(["item1", 42, "item2", null, "item3", { obj: "value" }])
+      );
+
+      const retrieved = getInventory();
+      expect(retrieved).toEqual(["item1", "item2", "item3"]);
+    });
+
     it("should handle localStorage errors gracefully", () => {
       // Verify function doesn't throw even in edge cases
       expect(() => getInventory()).not.toThrow();

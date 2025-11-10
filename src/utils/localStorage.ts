@@ -47,7 +47,9 @@ export const getInventory = (): string[] => {
       return [];
     }
     const inventory = JSON.parse(saved);
-    return Array.isArray(inventory) ? inventory : [];
+    return Array.isArray(inventory)
+      ? inventory.filter((item) => typeof item === "string")
+      : [];
   } catch (error) {
     console.warn("Failed to get inventory from localStorage:", error);
     return [];
