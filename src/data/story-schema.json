@@ -60,6 +60,13 @@
       },
       "additionalProperties": false,
       "minProperties": 1
+    },
+    "items": {
+      "type": "array",
+      "description": "Optional list of items that can be collected or removed during the story",
+      "items": {
+        "$ref": "#/$defs/inventoryItem"
+      }
     }
   },
   "$defs": {
@@ -90,6 +97,13 @@
           "type": "string",
           "description": "Type of ending (only used with ending: true)",
           "enum": ["victory", "defeat", "neutral"]
+        },
+        "effects": {
+          "type": "array",
+          "description": "Optional effects that execute when this passage is reached",
+          "items": {
+            "$ref": "#/$defs/effect"
+          }
         }
       },
       "allOf": [
@@ -113,6 +127,16 @@
           "then": {
             "required": ["ending"]
           }
+        },
+        {
+          "if": {
+            "required": ["ending"]
+          },
+          "then": {
+            "not": {
+              "required": ["effects"]
+            }
+          }
         }
       ]
     },
@@ -131,6 +155,42 @@
           "type": "integer",
           "minimum": 1,
           "description": "ID of the passage this choice leads to"
+        }
+      }
+    },
+    "inventoryItem": {
+      "type": "object",
+      "description": "An item that can be collected or removed during the story",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for the item (used in effects)"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Display name shown to the player"
+        }
+      }
+    },
+    "effect": {
+      "type": "object",
+      "description": "An effect that executes when a passage is reached",
+      "required": ["type", "item"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Type of effect to apply",
+          "enum": ["add_item", "remove_item"]
+        },
+        "item": {
+          "type": "string",
+          "minLength": 1,
+          "description": "ID of the inventory item to add or remove"
         }
       }
     }

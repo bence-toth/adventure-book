@@ -24,7 +24,7 @@ jobs:
         run: npm ci
 
       - name: Run TypeScript type checking
-        run: npx tsc -b
+        run: npm run test:types
 
   lint:
     name: Lint

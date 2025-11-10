@@ -1,3 +1,8 @@
 export { Introduction } from "./Introduction";
 export { Passage } from "./Passage";
 export { ErrorBoundary } from "./ErrorBoundary";
+export { TopBar } from "./TopBar";
+export { Sidebar } from "./Sidebar";
+export { Button } from "./Button";
+export { ButtonLink } from "./ButtonLink";
+export { DetailsButton } from "./DetailsButton";

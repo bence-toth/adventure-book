@@ -1,0 +1,71 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: var(--line-height-dense);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--space-1);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button-small {
+  padding: var(--space-1) var(--space-2);
+}
+
+.button-primary {
+  background: var(--color-interactive-base);
+  color: var(--color-interactive-text);
+  border: 1px solid var(--color-interactive-border);
+  box-shadow: var(--shadow-default);
+}
+
+.button-primary:hover {
+  background: var(--color-interactive-hover);
+}
+
+.button-primary:active {
+  background: var(--color-interactive-active);
+}
+
+.button-primary:focus-visible {
+  outline: 2px solid var(--color-interactive-focus);
+  outline-offset: 2px;
+}
+
+.button-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button-primary.button-selected {
+  background: var(--color-interactive-selected);
+  border-color: var(--color-interactive-border-selected);
+}
+
+.button-primary.button-selected:hover {
+  background: var(--color-interactive-selected-hover);
+}
+
+.button-primary.button-selected:active {
+  background: var(--color-interactive-selected-active);
+}
+
+.button-primary.button-selected:focus-visible {
+  outline-color: var(--color-interactive-focus);
+}
+
+.button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.button-text {
+  display: inline-block;
+}

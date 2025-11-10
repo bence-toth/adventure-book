@@ -1,5 +1,5 @@
 import { parse } from "yaml";
-import type { Story, RawStory } from "./types";
+import type { Story, RawStory, InventoryItem } from "./types";
 
 export class StoryParser {
   static parseFromString(yamlContent: string): Story {
@@ -79,6 +79,48 @@ export class StoryParser {
       throw new Error("Invalid YAML: Missing or invalid passages object");
     }
     const passages = obj.passages as Record<string, unknown>;
+
+    // Validate inventory
+    const inventoryItems: InventoryItem[] = [];
+    if (obj.items !== undefined) {
+      if (!Array.isArray(obj.items)) {
+        throw new Error("Invalid YAML: items must be an array");
+      }
+
+      for (let i = 0; i < obj.items.length; i++) {
+        const item = obj.items[i];
+        if (!item || typeof item !== "object" || Array.isArray(item)) {
+          throw new Error(`Invalid YAML: items[${i}] must be an object`);
+        }
+
+        const itemObj = item as Record<string, unknown>;
+        if (typeof itemObj.id !== "string" || !itemObj.id.trim()) {
+          throw new Error(
+            `Invalid YAML: items[${i}] id must be a non-empty string`
+          );
+        }
+        if (typeof itemObj.name !== "string" || !itemObj.name.trim()) {
+          throw new Error(
+            `Invalid YAML: items[${i}] name must be a non-empty string`
+          );
+        }
+
+        inventoryItems.push({
+          id: itemObj.id,
+          name: itemObj.name,
+        });
+      }
+
+      const itemIds = inventoryItems.map((item) => item.id);
+      const duplicates = itemIds.filter(
+        (id, index) => itemIds.indexOf(id) !== index
+      );
+      if (duplicates.length > 0) {
+        throw new Error(
+          `Invalid YAML: Duplicate item IDs: ${duplicates.join(", ")}`
+        );
+      }
+    }
 
     for (const [passageId, passage] of Object.entries(passages)) {
       // Validate passage ID is numeric
@@ -188,6 +230,63 @@ export class StoryParser {
           );
         }
       }
+
+      // Validate optional effects array
+      if (passageObj.effects !== undefined) {
+        if (!Array.isArray(passageObj.effects)) {
+          throw new Error(
+            `Invalid YAML: Passage ${passageId} effects must be an array`
+          );
+        }
+
+        // Validate ending passages cannot have effects
+        if (passageObj.ending === true) {
+          throw new Error(
+            `Invalid YAML: Ending passage ${passageId} must not have effects`
+          );
+        }
+
+        for (let i = 0; i < passageObj.effects.length; i++) {
+          const effect = passageObj.effects[i];
+          if (!effect || typeof effect !== "object" || Array.isArray(effect)) {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} effect ${i} must be an object`
+            );
+          }
+
+          const effectObj = effect as Record<string, unknown>;
+          if (typeof effectObj.type !== "string") {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} effect ${i} type must be a string`
+            );
+          }
+
+          const validEffectTypes = ["add_item", "remove_item"];
+          if (!validEffectTypes.includes(effectObj.type)) {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} effect ${i} type must be one of: ${validEffectTypes.join(
+                ", "
+              )}`
+            );
+          }
+
+          if (typeof effectObj.item !== "string" || !effectObj.item.trim()) {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} effect ${i} item must be a non-empty string`
+            );
+          }
+
+          // Validate that the effect references a valid inventory item
+          const itemExists = inventoryItems.some(
+            (inventoryItem) => inventoryItem.id === effectObj.item
+          );
+          if (!itemExists) {
+            throw new Error(
+              `Invalid YAML: Passage ${passageId} effect ${i} references unknown item: ${effectObj.item}`
+            );
+          }
+        }
+      }
     }
 
     // Type assertion is now safe after validation
@@ -203,6 +302,7 @@ export class StoryParser {
         action: rawStory.intro.action,
       },
       passages: {},
+      items: rawStory.items || [],
     };
 
     // Process passage texts
@@ -210,7 +310,6 @@ export class StoryParser {
       const paragraphs = this.textToParagraphs(rawPassage.text);
 
       if (rawPassage.ending === true) {
-        // Ending passage
         processedStory.passages[Number(id)] = {
           paragraphs,
           ending: true,
@@ -221,6 +320,7 @@ export class StoryParser {
         processedStory.passages[Number(id)] = {
           paragraphs,
           choices: rawPassage.choices,
+          ...(rawPassage.effects && { effects: rawPassage.effects }),
         };
       }
     }

@@ -1,4 +1,9 @@
 import type { Story, Passage, IntroductionContent } from "../data/types";
+import { getInventory } from "../utils/localStorage";
+import {
+  addItemToInventory,
+  removeItemFromInventory,
+} from "../utils/inventoryManagement";
 
 export const mockIntroduction: IntroductionContent = {
   title: "Mock Test Adventure",
@@ -77,16 +82,26 @@ export const mockStory: Story = {
     action: mockIntroduction.action,
   },
   passages: mockPassages,
+  items: [
+    { id: "mock_item_1", name: "Mock Item One" },
+    { id: "mock_item_2", name: "Mock Item Two" },
+  ],
 };
 
 // Factory function to create a mock story loader module
 // This can be used in vi.mock() calls to replace the actual story loader
-export const createMockStoryLoader = () => ({
-  loadStory: () => mockStory,
-  introduction: mockIntroduction,
-  getPassage: (id: number) => mockPassages[id],
-  getAllPassages: () => mockPassages,
-});
+export const createMockStoryLoader = () => {
+  return {
+    loadStory: () => mockStory,
+    introduction: mockIntroduction,
+    getPassage: (id: number) => mockPassages[id],
+    getAllPassages: () => mockPassages,
+    getInventoryItems: () => mockStory.items,
+    getCurrentInventory: () => getInventory(),
+    addItemToInventory,
+    removeItemFromInventory,
+  };
+};
 
 // Create story loader mocks with custom data
 export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
@@ -102,6 +117,10 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
     introduction,
     getPassage: (id: number) => story.passages[id],
     getAllPassages: () => story.passages,
+    getInventoryItems: () => story.items,
+    getCurrentInventory: () => getInventory(),
+    addItemToInventory,
+    removeItemFromInventory,
   };
 };
 

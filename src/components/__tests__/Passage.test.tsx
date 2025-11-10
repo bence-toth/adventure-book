@@ -3,6 +3,17 @@ import { render as rtlRender } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { vi } from "vitest";
 import { Passage } from "../Passage";
+import {
+  ROUTES,
+  getPassageRoute,
+  SPECIAL_PASSAGES,
+} from "../../constants/routes";
+import {
+  PASSAGE_TEST_IDS,
+  ERROR_TEST_IDS,
+  getPassageParagraphTestId,
+  getChoiceButtonTestId,
+} from "../../constants/testIds";
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
@@ -89,83 +100,99 @@ describe("Passage Component", () => {
   it("renders the first passage correctly", () => {
     renderWithRoute("/passage/1");
 
-    const passage = screen.getByTestId("passage");
+    const passage = screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER);
     expect(passage).toBeInTheDocument();
 
-    const passageText = screen.getByTestId("passage-text");
+    const passageText = screen.getByTestId(PASSAGE_TEST_IDS.TEXT);
     expect(passageText).toBeInTheDocument();
 
     // Check that paragraphs are rendered
-    expect(screen.getByTestId("passage-paragraph-0")).toBeInTheDocument();
-    expect(screen.getByTestId("passage-paragraph-1")).toBeInTheDocument();
-    expect(screen.getByTestId("passage-paragraph-2")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(0))
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(1))
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(2))
+    ).toBeInTheDocument();
 
     // Check that choices are rendered
-    expect(screen.getByTestId("choice-button-0")).toBeInTheDocument();
-    expect(screen.getByTestId("choice-button-1")).toBeInTheDocument();
-    expect(screen.getByTestId("choice-button-2")).toBeInTheDocument();
+    expect(screen.getByTestId(getChoiceButtonTestId(0))).toBeInTheDocument();
+    expect(screen.getByTestId(getChoiceButtonTestId(1))).toBeInTheDocument();
+    expect(screen.getByTestId(getChoiceButtonTestId(2))).toBeInTheDocument();
   });
 
   it("navigates to correct passage when choice is clicked", () => {
     renderWithRoute("/passage/1");
 
-    const firstChoice = screen.getByTestId("choice-button-0");
+    const firstChoice = screen.getByTestId(getChoiceButtonTestId(0));
     expect(firstChoice).toHaveAttribute("data-goto", "2");
 
     fireEvent.click(firstChoice);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/passage/2");
+    expect(mockNavigate).toHaveBeenCalledWith(getPassageRoute(2));
   });
 
   it("shows error for invalid passage ID", () => {
     renderWithRoute("/passage/invalid");
 
-    const errorDiv = screen.getByTestId("error-invalid-id");
+    const errorDiv = screen.getByTestId(ERROR_TEST_IDS.INVALID_ID);
     expect(errorDiv).toBeInTheDocument();
 
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
-    expect(
-      screen.getByText(/The passage ID “invalid” is not valid/)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/is not valid/i)).toBeInTheDocument();
 
-    const goHomeButton = screen.getByTestId("go-to-introduction-button");
+    const goHomeButton = screen.getByTestId(
+      ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON
+    );
     expect(goHomeButton).toBeInTheDocument();
   });
 
   it("shows error for non-existent passage ID", () => {
     renderWithRoute("/passage/999");
 
-    const errorDiv = screen.getByTestId("error-passage-not-found");
+    const errorDiv = screen.getByTestId(ERROR_TEST_IDS.PASSAGE_NOT_FOUND);
     expect(errorDiv).toBeInTheDocument();
 
     expect(screen.getByText("Passage not found")).toBeInTheDocument();
     expect(screen.getByText(/Passage #999 does not exist/)).toBeInTheDocument();
 
-    const goHomeButton = screen.getByTestId("go-to-introduction-button");
+    const goHomeButton = screen.getByTestId(
+      ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON
+    );
     expect(goHomeButton).toBeInTheDocument();
   });
 
   it('navigates to introduction when "Go to Introduction" is clicked', () => {
     renderWithRoute("/passage/invalid");
 
-    const goHomeButton = screen.getByTestId("go-to-introduction-button");
+    const goHomeButton = screen.getByTestId(
+      ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON
+    );
     fireEvent.click(goHomeButton);
 
-    expect(mockNavigate).toHaveBeenCalledWith("/passage/0");
+    expect(mockNavigate).toHaveBeenCalledWith(
+      getPassageRoute(SPECIAL_PASSAGES.RESET)
+    );
   });
 
   it("renders passage with single choice correctly (ending passage)", () => {
     renderWithRoute("/passage/4"); // This passage is an ending passage
 
-    const passage = screen.getByTestId("passage");
+    const passage = screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER);
     expect(passage).toBeInTheDocument();
 
     // Check that this is the ending passage
-    expect(screen.getByTestId("passage-paragraph-0")).toBeInTheDocument();
-    expect(screen.getByTestId("passage-paragraph-1")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(0))
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(1))
+    ).toBeInTheDocument();
 
     // Should have restart button instead of choices
-    const restartButton = screen.getByTestId("restart-button");
+    const restartButton = screen.getByTestId(PASSAGE_TEST_IDS.RESTART_BUTTON);
     expect(restartButton).toBeInTheDocument();
     expect(restartButton).toHaveTextContent("Restart adventure");
   });
@@ -173,7 +200,7 @@ describe("Passage Component", () => {
   it("handles negative passage IDs as invalid", () => {
     renderWithRoute("/passage/-1");
 
-    const errorDiv = screen.getByTestId("error-invalid-id");
+    const errorDiv = screen.getByTestId(ERROR_TEST_IDS.INVALID_ID);
     expect(errorDiv).toBeInTheDocument();
     expect(screen.getByText("Invalid passage ID")).toBeInTheDocument();
   });
@@ -181,23 +208,20 @@ describe("Passage Component", () => {
   it("handles passage 0 by showing reset message and redirecting", () => {
     renderWithRoute("/passage/0");
 
-    const resetPassage = screen.getByTestId("reset-passage");
+    const resetPassage = screen.getByTestId(PASSAGE_TEST_IDS.RESET_PASSAGE);
     expect(resetPassage).toBeInTheDocument();
     expect(screen.getByText("Resetting your adventure…")).toBeInTheDocument();
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    expect(mockNavigate).toHaveBeenCalledWith(ROUTES.TEST);
   });
 
   it("has correct CSS classes applied", () => {
     renderWithRoute("/passage/1");
 
-    const passage = screen.getByTestId("passage");
+    const passage = screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER);
     expect(passage).toHaveClass("passage");
 
-    const adventureBook = passage.closest(".adventure-book");
-    expect(adventureBook).toBeInTheDocument();
-
     // Check that passage text is wrapped in the correct div
-    const passageTextDiv = screen.getByTestId("passage-text");
+    const passageTextDiv = screen.getByTestId(PASSAGE_TEST_IDS.TEXT);
     expect(passageTextDiv).toHaveClass("passage-text");
   });
 
@@ -205,9 +229,15 @@ describe("Passage Component", () => {
     renderWithRoute("/passage/1");
 
     // Check that all paragraphs from passage 1 are rendered with correct test IDs
-    expect(screen.getByTestId("passage-paragraph-0")).toBeInTheDocument();
-    expect(screen.getByTestId("passage-paragraph-1")).toBeInTheDocument();
-    expect(screen.getByTestId("passage-paragraph-2")).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(0))
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(1))
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId(getPassageParagraphTestId(2))
+    ).toBeInTheDocument();
 
     // Verify paragraph content matches test data
     const expectedParagraphs = [
@@ -217,7 +247,9 @@ describe("Passage Component", () => {
     ];
 
     expectedParagraphs.forEach((paragraph, index) => {
-      const paragraphElement = screen.getByTestId(`passage-paragraph-${index}`);
+      const paragraphElement = screen.getByTestId(
+        getPassageParagraphTestId(index)
+      );
       expect(paragraphElement).toHaveTextContent(paragraph);
     });
   });

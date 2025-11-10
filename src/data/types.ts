@@ -3,18 +3,35 @@ export interface Choice {
   goto: number;
 }
 
+export interface InventoryItem {
+  id: string;
+  name: string;
+}
+
+export type Effect =
+  | {
+      type: "add_item";
+      item: string;
+    }
+  | {
+      type: "remove_item";
+      item: string;
+    };
+
 export type RawPassage =
   | {
       text: string;
       ending: true;
       type?: "victory" | "defeat" | "neutral";
       choices?: never;
+      effects?: never;
     }
   | {
       text: string;
       choices: Choice[];
       ending?: never;
       type?: never;
+      effects?: Effect[];
     };
 
 export interface RawIntro {
@@ -30,6 +47,7 @@ export interface RawStory {
   };
   intro: RawIntro;
   passages: Record<number, RawPassage>;
+  items?: InventoryItem[];
 }
 
 export type Passage =
@@ -38,12 +56,14 @@ export type Passage =
       ending: true;
       type?: "victory" | "defeat" | "neutral";
       choices?: never;
+      effects?: never;
     }
   | {
       paragraphs: string[];
       choices: Choice[];
       ending?: never;
       type?: never;
+      effects?: Effect[];
     };
 
 export interface Intro {
@@ -59,6 +79,7 @@ export interface Story {
   };
   intro: Intro;
   passages: Record<number, Passage>;
+  items: InventoryItem[];
 }
 
 export interface IntroductionContent {

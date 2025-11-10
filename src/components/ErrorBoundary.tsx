@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import type { ReactNode } from "react";
+import { Button } from "./Button";
+import { DetailsButton } from "./DetailsButton";
 import "./ErrorBoundary.css";
 
 interface Props {
@@ -67,26 +69,21 @@ export class ErrorBoundary extends Component<Props, State> {
           <h1 className="error-boundary-title">A system error occurred</h1>
           <p className="error-boundary-description">{getErrorMessage()}</p>
           <div className="error-boundary-actions">
-            <button
-              className="error-boundary-button error-boundary-button-reload"
-              onClick={() => window.location.reload()}
-            >
+            <Button onClick={() => window.location.reload()}>
               Reload page
-            </button>
+            </Button>
           </div>
           <div className="error-boundary-help">
             <p className="error-boundary-help-text">
               If this problem persists, the story file may need to be fixed.
             </p>
             {error && (
-              <details
+              <DetailsButton
+                summary="Technical details"
                 className="error-boundary-details"
                 role="region"
                 aria-label="Technical details"
               >
-                <summary className="error-boundary-details-summary">
-                  Technical details
-                </summary>
                 <pre className="error-boundary-details-content error-boundary-details-content-error">
                   {error.message}
                 </pre>
@@ -98,7 +95,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 <p className="error-boundary-help-text">
                   Check the browser console for more details.
                 </p>
-              </details>
+              </DetailsButton>
             )}
           </div>
         </div>

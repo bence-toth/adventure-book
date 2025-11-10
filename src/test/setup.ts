@@ -1,19 +1,34 @@
 import "@testing-library/jest-dom";
-import { beforeEach, vi } from "vitest";
+import { beforeEach } from "vitest";
 
-// Mock localStorage for tests
+// Create a simple in-memory localStorage implementation for tests
+class LocalStorageMock {
+  private store: Record<string, string> = {};
+
+  getItem(key: string): string | null {
+    return this.store[key] || null;
+  }
+
+  setItem(key: string, value: string): void {
+    this.store[key] = value;
+  }
+
+  removeItem(key: string): void {
+    delete this.store[key];
+  }
+
+  clear(): void {
+    this.store = {};
+  }
+}
+
+// Mock localStorage for tests with a real implementation
 Object.defineProperty(window, "localStorage", {
-  value: {
-    getItem: vi.fn(() => null),
-    setItem: vi.fn(),
-    removeItem: vi.fn(),
-    clear: vi.fn(),
-  },
+  value: new LocalStorageMock(),
   writable: true,
 });
 
 // Clear localStorage before each test
 beforeEach(() => {
-  vi.mocked(localStorage.getItem).mockReturnValue(null);
-  vi.clearAllMocks();
+  localStorage.clear();
 });

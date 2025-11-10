@@ -90,6 +90,7 @@ npm run lint:styles:fix # Run Stylelint with auto-fix
 npm test                # Run tests in watch mode
 npm run test:run        # Run tests once
 npm run test:coverage   # Run tests with coverage report
+npm run test:types      # Check TypeScript types
 ```
 
 ## Core Principles

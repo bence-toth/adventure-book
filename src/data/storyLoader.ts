@@ -1,6 +1,16 @@
 /// <reference types="../vite-env" />
 import { StoryParser } from "./storyParser";
-import type { Story, Passage, IntroductionContent } from "./types";
+import type {
+  Story,
+  Passage,
+  IntroductionContent,
+  InventoryItem,
+} from "./types";
+import { getInventory } from "../utils/localStorage";
+import {
+  addItemToInventory,
+  removeItemFromInventory,
+} from "../utils/inventoryManagement";
 
 // Import the YAML file as a string
 import storyYaml from "./story.yaml?raw";
@@ -27,11 +37,6 @@ export const reloadStory = (): Story => {
   return loadStory();
 };
 
-// Note: Using getters for lazy loading - these satisfy the IntroductionContent interface
-// but ensure the story is loaded on-demand when title/paragraphs are accessed.
-// This allows the introduction object to be exported immediately without requiring
-// the story to be loaded at module initialization time.
-// Errors are now handled by React Error Boundaries for better UX.
 export const introduction: IntroductionContent = {
   get title() {
     return loadStory().metadata.title;
@@ -55,3 +60,15 @@ export const getAllPassages = (): Record<number, Passage> => {
   const story = loadStory();
   return story.passages;
 };
+
+export const getInventoryItems = (): InventoryItem[] => {
+  const story = loadStory();
+  return story.items;
+};
+
+export const getCurrentInventory = (): string[] => {
+  return getInventory();
+};
+
+// Re-export inventory management functions from the shared utility
+export { addItemToInventory, removeItemFromInventory };

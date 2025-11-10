@@ -1,8 +1,22 @@
-.adventure-book {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.app-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-main {
+  display: grid;
+  grid-template-columns: var(--size-sidebar) 1fr;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.app-content {
+  overflow-y: auto;
+  padding: var(--space-2);
+  display: grid;
+  place-items: center;
   background: var(--color-background);
-  padding: var(--space-3);
+  min-height: 0;
 }
