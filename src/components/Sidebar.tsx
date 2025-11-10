@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { getInventoryItems, getCurrentInventory } from "../data/storyLoader";
 import "./Sidebar.css";
 
 export const Sidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const inventoryItems = getInventoryItems();
+  const inventoryItems = useMemo(() => getInventoryItems(), []);
 
   useEffect(() => {
     // Load initial inventory from localStorage
