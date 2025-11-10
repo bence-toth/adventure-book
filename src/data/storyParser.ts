@@ -310,12 +310,10 @@ export class StoryParser {
       const paragraphs = this.textToParagraphs(rawPassage.text);
 
       if (rawPassage.ending === true) {
-        // Ending passage
         processedStory.passages[Number(id)] = {
           paragraphs,
           ending: true,
           ...(rawPassage.type && { type: rawPassage.type }),
-          ...(rawPassage.effects && { effects: rawPassage.effects }),
         };
       } else {
         // Regular passage with choices

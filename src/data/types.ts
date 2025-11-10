@@ -56,7 +56,7 @@ export type Passage =
       ending: true;
       type?: "victory" | "defeat" | "neutral";
       choices?: never;
-      effects?: Effect[];
+      effects?: never;
     }
   | {
       paragraphs: string[];

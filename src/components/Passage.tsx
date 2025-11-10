@@ -37,9 +37,9 @@ export const Passage = () => {
       } else if (passageId >= 1) {
         saveCurrentPassageId(passageId);
 
-        // Execute effects for this passage
+        // Execute effects for this passage (only non-ending passages have effects)
         const passage = getPassage(passageId);
-        if (passage?.effects) {
+        if (passage && !passage.ending && passage.effects) {
           passage.effects.forEach((effect) => {
             if (effect.type === "add_item") {
               addItemToInventory(effect.item);
