@@ -86,26 +86,34 @@ export const mockStory: Story = {
 
 // Factory function to create a mock story loader module
 // This can be used in vi.mock() calls to replace the actual story loader
-export const createMockStoryLoader = () => ({
-  loadStory: () => mockStory,
-  introduction: mockIntroduction,
-  getPassage: (id: number) => mockPassages[id],
-  getAllPassages: () => mockPassages,
-  getInventoryItems: () => mockStory.items,
-  getCurrentInventory: () => getInventory(),
-  addItemToInventory: (itemId: string) => {
+export const createMockStoryLoader = () => {
+  // Lazy import to avoid circular dependency during module initialization
+  // These functions are imported from storyLoader only when actually called
+  const addItemToInventory = (itemId: string): void => {
     const currentInventory = getInventory();
     if (!currentInventory.includes(itemId)) {
       const updatedInventory = [...currentInventory, itemId];
       saveInventory(updatedInventory);
     }
-  },
-  removeItemFromInventory: (itemId: string) => {
+  };
+
+  const removeItemFromInventory = (itemId: string): void => {
     const currentInventory = getInventory();
     const updatedInventory = currentInventory.filter((id) => id !== itemId);
     saveInventory(updatedInventory);
-  },
-});
+  };
+
+  return {
+    loadStory: () => mockStory,
+    introduction: mockIntroduction,
+    getPassage: (id: number) => mockPassages[id],
+    getAllPassages: () => mockPassages,
+    getInventoryItems: () => mockStory.items,
+    getCurrentInventory: () => getInventory(),
+    addItemToInventory,
+    removeItemFromInventory,
+  };
+};
 
 // Create story loader mocks with custom data
 export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
@@ -116,6 +124,21 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
     action: story.intro.action,
   };
 
+  // Lazy import to avoid circular dependency during module initialization
+  const addItemToInventory = (itemId: string): void => {
+    const currentInventory = getInventory();
+    if (!currentInventory.includes(itemId)) {
+      const updatedInventory = [...currentInventory, itemId];
+      saveInventory(updatedInventory);
+    }
+  };
+
+  const removeItemFromInventory = (itemId: string): void => {
+    const currentInventory = getInventory();
+    const updatedInventory = currentInventory.filter((id) => id !== itemId);
+    saveInventory(updatedInventory);
+  };
+
   return {
     loadStory: () => story,
     introduction,
@@ -123,18 +146,8 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
     getAllPassages: () => story.passages,
     getInventoryItems: () => story.items,
     getCurrentInventory: () => getInventory(),
-    addItemToInventory: (itemId: string) => {
-      const currentInventory = getInventory();
-      if (!currentInventory.includes(itemId)) {
-        const updatedInventory = [...currentInventory, itemId];
-        saveInventory(updatedInventory);
-      }
-    },
-    removeItemFromInventory: (itemId: string) => {
-      const currentInventory = getInventory();
-      const updatedInventory = currentInventory.filter((id) => id !== itemId);
-      saveInventory(updatedInventory);
-    },
+    addItemToInventory,
+    removeItemFromInventory,
   };
 };
 
