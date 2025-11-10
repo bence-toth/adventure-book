@@ -1,5 +1,9 @@
 import type { Story, Passage, IntroductionContent } from "../data/types";
-import { getInventory, saveInventory } from "../utils/localStorage";
+import { getInventory } from "../utils/localStorage";
+import {
+  addItemToInventory,
+  removeItemFromInventory,
+} from "../utils/inventoryManagement";
 
 export const mockIntroduction: IntroductionContent = {
   title: "Mock Test Adventure",
@@ -84,31 +88,9 @@ export const mockStory: Story = {
   ],
 };
 
-// Shared inventory management helper functions
-const createAddItemToInventory =
-  () =>
-  (itemId: string): void => {
-    const currentInventory = getInventory();
-    if (!currentInventory.includes(itemId)) {
-      const updatedInventory = [...currentInventory, itemId];
-      saveInventory(updatedInventory);
-    }
-  };
-
-const createRemoveItemFromInventory =
-  () =>
-  (itemId: string): void => {
-    const currentInventory = getInventory();
-    const updatedInventory = currentInventory.filter((id) => id !== itemId);
-    saveInventory(updatedInventory);
-  };
-
 // Factory function to create a mock story loader module
 // This can be used in vi.mock() calls to replace the actual story loader
 export const createMockStoryLoader = () => {
-  const addItemToInventory = createAddItemToInventory();
-  const removeItemFromInventory = createRemoveItemFromInventory();
-
   return {
     loadStory: () => mockStory,
     introduction: mockIntroduction,
@@ -129,9 +111,6 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
     paragraphs: story.intro.paragraphs,
     action: story.intro.action,
   };
-
-  const addItemToInventory = createAddItemToInventory();
-  const removeItemFromInventory = createRemoveItemFromInventory();
 
   return {
     loadStory: () => story,

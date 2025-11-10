@@ -6,7 +6,11 @@ import type {
   IntroductionContent,
   InventoryItem,
 } from "./types";
-import { getInventory, saveInventory } from "../utils/localStorage";
+import { getInventory } from "../utils/localStorage";
+import {
+  addItemToInventory,
+  removeItemFromInventory,
+} from "../utils/inventoryManagement";
 
 // Import the YAML file as a string
 import storyYaml from "./story.yaml?raw";
@@ -66,16 +70,5 @@ export const getCurrentInventory = (): string[] => {
   return getInventory();
 };
 
-export const addItemToInventory = (itemId: string): void => {
-  const currentInventory = getInventory();
-  if (!currentInventory.includes(itemId)) {
-    const updatedInventory = [...currentInventory, itemId];
-    saveInventory(updatedInventory);
-  }
-};
-
-export const removeItemFromInventory = (itemId: string): void => {
-  const currentInventory = getInventory();
-  const updatedInventory = currentInventory.filter((id) => id !== itemId);
-  saveInventory(updatedInventory);
-};
+// Re-export inventory management functions from the shared utility
+export { addItemToInventory, removeItemFromInventory };
