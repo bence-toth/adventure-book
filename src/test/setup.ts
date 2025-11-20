@@ -1,5 +1,6 @@
 import "@testing-library/jest-dom";
 import { beforeEach } from "vitest";
+import "fake-indexeddb/auto";
 
 // Create a simple in-memory localStorage implementation for tests
 class LocalStorageMock {

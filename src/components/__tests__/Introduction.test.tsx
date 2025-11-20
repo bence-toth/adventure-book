@@ -1,25 +1,15 @@
 import { screen, fireEvent } from "@testing-library/react";
-import { vi } from "vitest";
+import { vi, beforeEach, describe, it, expect } from "vitest";
 import { Introduction } from "../Introduction";
-import { render } from "../../test/testUtils";
+import { renderWithStory } from "../../test/testUtils";
+import { setupTestStory } from "../../test/mockStoryData";
 import { getPassageRoute, SPECIAL_PASSAGES } from "../../constants/routes";
 import {
   INTRODUCTION_TEST_IDS,
   getIntroParagraphTestId,
 } from "../../constants/testIds";
 
-// Mock the story loader to return stable test data
-vi.mock("../../data/storyLoader", () => ({
-  introduction: {
-    title: "Test Adventure",
-    paragraphs: [
-      "This is a test introduction paragraph.",
-      "This is a second test paragraph.",
-      "This is a third test paragraph.",
-    ],
-    action: "Begin your adventure",
-  },
-}));
+const TEST_STORY_ID = "test-story-id";
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
@@ -32,67 +22,73 @@ vi.mock("react-router-dom", async () => {
 });
 
 describe("Introduction Component", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     mockNavigate.mockClear();
+    await setupTestStory(TEST_STORY_ID);
   });
 
-  it("renders the introduction title", () => {
-    render(<Introduction />);
+  it("renders the introduction title", async () => {
+    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
 
-    const title = screen.getByTestId(INTRODUCTION_TEST_IDS.TITLE);
+    const title = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
     expect(title).toBeInTheDocument();
-    expect(title).toHaveTextContent("Test Adventure");
+    expect(title).toHaveTextContent("Mock Test Adventure");
   });
 
-  it("renders all introduction paragraphs", () => {
-    render(<Introduction />);
+  it("renders all introduction paragraphs", async () => {
+    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
 
-    const introText = screen.getByTestId(INTRODUCTION_TEST_IDS.TEXT);
+    const introText = await screen.findByTestId(INTRODUCTION_TEST_IDS.TEXT);
     expect(introText).toBeInTheDocument();
 
     // Check that the correct number of paragraphs are rendered
     const expectedParagraphs = [
-      "This is a test introduction paragraph.",
-      "This is a second test paragraph.",
-      "This is a third test paragraph.",
+      "This is the first mock introduction paragraph.",
+      "This is the second mock introduction paragraph.",
+      "This is the third mock introduction paragraph.",
     ];
 
-    expectedParagraphs.forEach((expectedText, index) => {
-      const paragraph = screen.getByTestId(getIntroParagraphTestId(index));
+    for (let index = 0; index < expectedParagraphs.length; index++) {
+      const paragraph = await screen.findByTestId(
+        getIntroParagraphTestId(index)
+      );
       expect(paragraph).toBeInTheDocument();
-      expect(paragraph).toHaveTextContent(expectedText);
-    });
+      expect(paragraph).toHaveTextContent(expectedParagraphs[index]);
+    }
   });
 
-  it("renders the start adventure button with correct text", () => {
-    render(<Introduction />);
+  it("renders the start adventure button with correct text", async () => {
+    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
 
-    const button = screen.getByTestId(INTRODUCTION_TEST_IDS.START_BUTTON);
+    const button = await screen.findByTestId(
+      INTRODUCTION_TEST_IDS.START_BUTTON
+    );
     expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent("Begin your adventure");
+    expect(button).toHaveTextContent("Begin your test adventure");
     expect(button).toHaveClass("button", "button-primary");
   });
 
-  it("navigates to passage 1 when start adventure button is clicked", () => {
-    render(<Introduction />);
+  it("navigates to passage 1 when start adventure button is clicked", async () => {
+    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
 
-    const button = screen.getByTestId(INTRODUCTION_TEST_IDS.START_BUTTON);
+    const button = await screen.findByTestId(
+      INTRODUCTION_TEST_IDS.START_BUTTON
+    );
     fireEvent.click(button);
 
     expect(mockNavigate).toHaveBeenCalledWith(
-      getPassageRoute(SPECIAL_PASSAGES.START)
+      getPassageRoute(TEST_STORY_ID, SPECIAL_PASSAGES.START)
     );
     expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 
-  it("has correct CSS classes applied", () => {
-    render(<Introduction />);
+  it("has correct CSS classes applied", async () => {
+    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
 
-    expect(
-      screen.getByTestId(INTRODUCTION_TEST_IDS.CONTAINER)
-    ).toBeInTheDocument();
-    expect(screen.getByTestId(INTRODUCTION_TEST_IDS.CONTAINER)).toHaveClass(
-      "introduction"
+    const container = await screen.findByTestId(
+      INTRODUCTION_TEST_IDS.CONTAINER
     );
+    expect(container).toBeInTheDocument();
+    expect(container).toHaveClass("introduction");
   });
 });

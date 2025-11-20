@@ -1,109 +1,102 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { screen } from "@testing-library/react";
+import { setupTestStory } from "../../test/mockStoryData";
+import { renderWithStory } from "../../test/testUtils";
+import { Sidebar } from "../Sidebar";
 
-// Mock the story loader before importing anything that uses it
-vi.mock("../../data/storyLoader", () => ({
-  getInventoryItems: vi.fn(() => [
-    { id: "mock_item_1", name: "Mock Item One" },
-    { id: "mock_item_2", name: "Mock Item Two" },
-  ]),
-  getCurrentInventory: vi.fn(() => {
-    const stored = localStorage.getItem("adventure-book/inventory");
-    return stored ? JSON.parse(stored) : [];
-  }),
-}));
-
-// Import Sidebar after mocking
-const { Sidebar } = await import("../Sidebar");
+const TEST_STORY_ID = "test-story-id";
 
 describe("Sidebar", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     localStorage.clear();
+    await setupTestStory(TEST_STORY_ID);
   });
 
   afterEach(() => {
     localStorage.clear();
   });
 
-  it("should render the inventory heading", () => {
-    render(<Sidebar />);
+  it("should render the inventory heading", async () => {
+    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
-    expect(screen.getByText("Inventory")).toBeInTheDocument();
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
   });
 
-  it("should show empty message when no items are collected", () => {
-    render(<Sidebar />);
+  it("should show empty message when no items are collected", async () => {
+    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
-    expect(screen.getByText("No items yet")).toBeInTheDocument();
+    expect(await screen.findByText("No items yet")).toBeInTheDocument();
   });
 
-  it("should display collected items", () => {
+  it("should display collected items", async () => {
     // Set up localStorage with collected items
     localStorage.setItem(
       "adventure-book/inventory",
       JSON.stringify(["mock_item_1"])
     );
 
-    render(<Sidebar />);
+    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
-    expect(screen.getByText("Mock Item One")).toBeInTheDocument();
+    expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("No items yet")).not.toBeInTheDocument();
   });
 
-  it("should display multiple collected items", () => {
+  it("should display multiple collected items", async () => {
     localStorage.setItem(
       "adventure-book/inventory",
       JSON.stringify(["mock_item_1", "mock_item_2"])
     );
 
-    render(<Sidebar />);
+    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
-    expect(screen.getByText("Mock Item One")).toBeInTheDocument();
-    expect(screen.getByText("Mock Item Two")).toBeInTheDocument();
+    expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
+    expect(await screen.findByText("Mock Item Two")).toBeInTheDocument();
   });
 
-  it("should not display items that are not collected", () => {
+  it("should not display items that are not collected", async () => {
     localStorage.setItem(
       "adventure-book/inventory",
       JSON.stringify(["mock_item_1"])
     );
 
-    render(<Sidebar />);
+    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
-    expect(screen.getByText("Mock Item One")).toBeInTheDocument();
+    expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("Mock Item Two")).not.toBeInTheDocument();
   });
 
-  it("should handle items not in story inventory gracefully", () => {
+  it("should handle items not in story inventory gracefully", async () => {
     // Set up localStorage with an item ID not in the story
     localStorage.setItem(
       "adventure-book/inventory",
       JSON.stringify(["unknown_item"])
     );
 
-    render(<Sidebar />);
+    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
     // Should not display the unknown item
-    expect(screen.getByText("No items yet")).toBeInTheDocument();
+    expect(await screen.findByText("No items yet")).toBeInTheDocument();
   });
 
-  it("should render inventory items as a list", () => {
+  it("should render inventory items as a list", async () => {
     localStorage.setItem(
       "adventure-book/inventory",
       JSON.stringify(["mock_item_1", "mock_item_2"])
     );
 
-    render(<Sidebar />);
+    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
-    const list = screen.getByRole("list");
+    const list = await screen.findByRole("list");
     expect(list).toBeInTheDocument();
     expect(list.children).toHaveLength(2);
   });
 
-  it("should update when storage event is triggered", () => {
-    const { rerender } = render(<Sidebar />);
+  it("should update when storage event is triggered", async () => {
+    const { rerender } = renderWithStory(<Sidebar />, {
+      storyId: TEST_STORY_ID,
+    });
 
-    expect(screen.getByText("No items yet")).toBeInTheDocument();
+    expect(await screen.findByText("No items yet")).toBeInTheDocument();
 
     // Simulate adding an item
     localStorage.setItem(
@@ -118,10 +111,12 @@ describe("Sidebar", () => {
     // so we rely on the inventoryUpdate event for same-window updates
   });
 
-  it("should update when inventoryUpdate event is triggered", () => {
-    const { rerender } = render(<Sidebar />);
+  it("should update when inventoryUpdate event is triggered", async () => {
+    const { rerender } = renderWithStory(<Sidebar />, {
+      storyId: TEST_STORY_ID,
+    });
 
-    expect(screen.getByText("No items yet")).toBeInTheDocument();
+    expect(await screen.findByText("No items yet")).toBeInTheDocument();
 
     // Simulate adding an item in the same window
     localStorage.setItem(
@@ -133,6 +128,6 @@ describe("Sidebar", () => {
     rerender(<Sidebar />);
 
     // Component should re-render with the new item
-    expect(screen.queryByText("Mock Item One")).toBeInTheDocument();
+    expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
   });
 });
