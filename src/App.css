@@ -20,3 +20,8 @@
   background: var(--color-background);
   min-height: 0;
 }
+
+.app-content-full {
+  padding: 0;
+  place-items: stretch;
+}

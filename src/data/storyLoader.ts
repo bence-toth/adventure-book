@@ -11,12 +11,47 @@ import {
   addItemToInventory,
   removeItemFromInventory,
 } from "../utils/inventoryManagement";
+import { getStory } from "./storyDatabase";
 
-// Import the YAML file as a string
+// Import the YAML file as a string (for backwards compatibility)
 import storyYaml from "./story.yaml?raw";
 
 let loadedStory: Story | null = null;
+let currentStoryId: string | null = null;
 
+/**
+ * Load a story from IndexedDB by ID
+ */
+export const loadStoryById = async (storyId: string): Promise<Story> => {
+  // Check if we already have this story loaded
+  if (loadedStory && currentStoryId === storyId) {
+    return loadedStory;
+  }
+
+  const storedStory = await getStory(storyId);
+
+  if (!storedStory) {
+    throw new Error(`Story with id ${storyId} not found`);
+  }
+
+  const story = StoryParser.parseFromString(storedStory.content);
+
+  // Validate the story
+  const errors = StoryParser.validateStory(story);
+  if (errors.length > 0) {
+    console.error("Story validation errors:", errors);
+    throw new Error(`Story validation failed: ${errors.join(", ")}`);
+  }
+
+  loadedStory = story;
+  currentStoryId = storyId;
+
+  return story;
+};
+
+/**
+ * Load the default story from the YAML file (for backwards compatibility)
+ */
 export const loadStory = (): Story => {
   if (!loadedStory) {
     loadedStory = StoryParser.parseFromString(storyYaml);
@@ -34,6 +69,7 @@ export const loadStory = (): Story => {
 
 export const reloadStory = (): Story => {
   loadedStory = null;
+  currentStoryId = null;
   return loadStory();
 };
 

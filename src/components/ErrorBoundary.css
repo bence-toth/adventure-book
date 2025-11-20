@@ -46,7 +46,7 @@
   font-family: var(--font-family-monospace);
   text-align: start;
   font-size: var(--font-size-sm);
-  background: var(--color-background-card);
+  background: var(--color-background-surface);
   border: 1px solid var(--color-border-subtle);
   border-radius: calc(var(--space-1) / 2);
   padding: var(--space-2);

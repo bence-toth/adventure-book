@@ -117,6 +117,7 @@ button {
   --space-5: calc(var(--space-base) * 5);
 
   /* Element sizing variables */
+  --size-top-bar: calc(var(--space-base) * 10);
   --size-content: calc(var(--space-base) * 96);
   --size-sidebar: calc(var(--space-base) * 48);
 }
@@ -127,7 +128,7 @@ button {
     --color-foreground: var(--color-gray-900);
     --color-foreground-muted: var(--color-gray-600);
     --color-background: var(--color-white);
-    --color-background-card: var(--color-gray-100);
+    --color-background-surface: var(--color-gray-100);
     --color-border-hairline: color-mix(
       in srgb,
       var(--color-gray-300) 50%,
@@ -161,8 +162,8 @@ button {
     /* Primary typography and layout colors */
     --color-foreground: var(--color-gray-100);
     --color-foreground-muted: var(--color-gray-400);
-    --color-background: var(--color-gray-800);
-    --color-background-card: var(--color-gray-700);
+    --color-background: var(--color-gray-900);
+    --color-background-surface: var(--color-gray-800);
     --color-border-hairline: color-mix(
       in srgb,
       var(--color-gray-700) 50%,
@@ -179,8 +180,8 @@ button {
 
     /* Primary interactive element colors */
     --color-interactive-base: var(--color-gray-900);
-    --color-interactive-hover: var(--color-gray-800);
-    --color-interactive-active: var(--color-gray-700);
+    --color-interactive-hover: var(--color-gray-700);
+    --color-interactive-active: var(--color-gray-600);
     --color-interactive-focus: var(--color-blue-200);
     --color-interactive-selected: var(--color-blue-800);
     --color-interactive-selected-hover: var(--color-blue-700);

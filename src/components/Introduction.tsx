@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { introduction } from "../data/storyLoader";
 import { getCurrentPassageId } from "../utils/localStorage";
 import { getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
 import {
@@ -8,27 +7,54 @@ import {
   getIntroParagraphTestId,
 } from "../constants/testIds";
 import { Button } from "./Button";
+import { useStory } from "../hooks/useStory";
 import "./Introduction.css";
 
 export const Introduction = () => {
   const navigate = useNavigate();
+  const { story, storyId, loading, error } = useStory();
 
   useEffect(() => {
+    if (!storyId) return;
+
     const savedPassageId = getCurrentPassageId();
     if (savedPassageId !== null) {
-      navigate(getPassageRoute(savedPassageId));
+      navigate(getPassageRoute(storyId, savedPassageId));
     }
-  }, [navigate]);
+  }, [navigate, storyId]);
 
   const handleStartAdventure = () => {
-    navigate(getPassageRoute(SPECIAL_PASSAGES.START));
+    if (!storyId) return;
+    navigate(getPassageRoute(storyId, SPECIAL_PASSAGES.START));
   };
+
+  if (loading) {
+    return (
+      <div
+        className="introduction"
+        data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
+      >
+        <p>Loading story...</p>
+      </div>
+    );
+  }
+
+  if (error || !story) {
+    return (
+      <div
+        className="introduction"
+        data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
+      >
+        <p>Error loading story: {error || "Story not found"}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="introduction" data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-      <h1 data-testid={INTRODUCTION_TEST_IDS.TITLE}>{introduction.title}</h1>
+      <h1 data-testid={INTRODUCTION_TEST_IDS.TITLE}>{story.metadata.title}</h1>
       <div className="intro-text" data-testid={INTRODUCTION_TEST_IDS.TEXT}>
-        {introduction.paragraphs.map((paragraph, index) => (
+        {story.intro.paragraphs.map((paragraph, index) => (
           <p
             className="intro-paragraph"
             key={index}
@@ -43,7 +69,7 @@ export const Introduction = () => {
           onClick={handleStartAdventure}
           data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
         >
-          {introduction.action}
+          {story.intro.action}
         </Button>
       </div>
     </div>

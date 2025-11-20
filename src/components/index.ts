@@ -6,3 +6,4 @@ export { Sidebar } from "./Sidebar";
 export { Button } from "./Button";
 export { ButtonLink } from "./ButtonLink";
 export { DetailsButton } from "./DetailsButton";
+export { DocumentManager } from "./DocumentManager";

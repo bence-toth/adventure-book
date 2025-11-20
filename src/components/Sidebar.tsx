@@ -1,10 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
-import { getInventoryItems, getCurrentInventory } from "../data/storyLoader";
+import { useState, useEffect } from "react";
+import { getCurrentInventory } from "../data/storyLoader";
+import { useStory } from "../hooks/useStory";
 import "./Sidebar.css";
 
 export const Sidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const inventoryItems = useMemo(() => getInventoryItems(), []);
+  const { story } = useStory();
 
   useEffect(() => {
     // Load initial inventory from localStorage
@@ -30,7 +31,11 @@ export const Sidebar = () => {
     };
   }, []);
 
-  const currentItems = inventoryItems.filter((item) =>
+  if (!story) {
+    return null;
+  }
+
+  const currentItems = story.items.filter((item) =>
     currentInventoryIds.includes(item.id)
   );
 
