@@ -1,52 +1,92 @@
 // Unique key for this GitHub Pages project to avoid conflicts
-const STORAGE_KEY = "adventure-book/currentPassageId";
-const INVENTORY_STORAGE_KEY = "adventure-book/inventory";
+const STORAGE_KEY = "adventure-book/progress";
 
-export const saveCurrentPassageId = (passageId: number): void => {
+interface StoryProgress {
+  passageId: number | null;
+  inventory: string[];
+}
+
+interface ProgressData {
+  [storyId: string]: StoryProgress;
+}
+
+const getProgressData = (): ProgressData => {
   try {
-    localStorage.setItem(STORAGE_KEY, passageId.toString());
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === null) {
+      return {};
+    }
+    const data = JSON.parse(saved);
+    return typeof data === "object" && data !== null ? data : {};
+  } catch (error) {
+    console.warn("Failed to get progress data from localStorage:", error);
+    return {};
+  }
+};
+
+const saveProgressData = (data: ProgressData): void => {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch (error) {
+    console.warn("Failed to save progress data to localStorage:", error);
+  }
+};
+
+const getStoryProgress = (storyId: string): StoryProgress => {
+  const data = getProgressData();
+  return data[storyId] || { passageId: null, inventory: [] };
+};
+
+export const saveCurrentPassageId = (
+  storyId: string,
+  passageId: number
+): void => {
+  try {
+    const data = getProgressData();
+    const storyProgress = data[storyId] || { passageId: null, inventory: [] };
+    data[storyId] = { ...storyProgress, passageId };
+    saveProgressData(data);
   } catch (error) {
     console.warn("Failed to save passage ID to localStorage:", error);
   }
 };
 
-export const getCurrentPassageId = (): number | null => {
+export const getCurrentPassageId = (storyId: string): number | null => {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === null) {
-      return null;
-    }
-    const passageId = parseInt(saved, 10);
-    return isNaN(passageId) ? null : passageId;
+    const storyProgress = getStoryProgress(storyId);
+    return storyProgress.passageId;
   } catch (error) {
     console.warn("Failed to get passage ID from localStorage:", error);
     return null;
   }
 };
 
-export const clearCurrentPassageId = (): void => {
+export const clearCurrentPassageId = (storyId: string): void => {
   try {
-    localStorage.removeItem(STORAGE_KEY);
+    const data = getProgressData();
+    const storyProgress = data[storyId] || { passageId: null, inventory: [] };
+    data[storyId] = { ...storyProgress, passageId: null };
+    saveProgressData(data);
   } catch (error) {
     console.warn("Failed to clear passage ID from localStorage:", error);
   }
 };
 
-export const saveInventory = (itemIds: string[]): void => {
+export const saveInventory = (storyId: string, itemIds: string[]): void => {
   try {
-    localStorage.setItem(INVENTORY_STORAGE_KEY, JSON.stringify(itemIds));
+    const data = getProgressData();
+    const storyProgress = data[storyId] || { passageId: null, inventory: [] };
+    data[storyId] = { ...storyProgress, inventory: itemIds };
+    saveProgressData(data);
   } catch (error) {
     console.warn("Failed to save inventory to localStorage:", error);
   }
 };
 
-export const getInventory = (): string[] => {
+export const getInventory = (storyId: string): string[] => {
   try {
-    const saved = localStorage.getItem(INVENTORY_STORAGE_KEY);
-    if (saved === null) {
-      return [];
-    }
-    const inventory = JSON.parse(saved);
+    const storyProgress = getStoryProgress(storyId);
+    const inventory = storyProgress.inventory;
     return Array.isArray(inventory)
       ? inventory.filter((item) => typeof item === "string")
       : [];
@@ -56,9 +96,12 @@ export const getInventory = (): string[] => {
   }
 };
 
-export const clearInventory = (): void => {
+export const clearInventory = (storyId: string): void => {
   try {
-    localStorage.removeItem(INVENTORY_STORAGE_KEY);
+    const data = getProgressData();
+    const storyProgress = data[storyId] || { passageId: null, inventory: [] };
+    data[storyId] = { ...storyProgress, inventory: [] };
+    saveProgressData(data);
   } catch (error) {
     console.warn("Failed to clear inventory from localStorage:", error);
   }

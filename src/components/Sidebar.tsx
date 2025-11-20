@@ -5,22 +5,24 @@ import "./Sidebar.css";
 
 export const Sidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const { story } = useStory();
+  const { story, storyId } = useStory();
 
   useEffect(() => {
+    if (!storyId) return;
+
     // Load initial inventory from localStorage
-    setCurrentInventoryIds(getCurrentInventory());
+    setCurrentInventoryIds(getCurrentInventory(storyId));
 
     // Set up a listener for storage changes
     const handleStorageChange = () => {
-      setCurrentInventoryIds(getCurrentInventory());
+      setCurrentInventoryIds(getCurrentInventory(storyId));
     };
 
     window.addEventListener("storage", handleStorageChange);
 
     // Also listen for custom events from the same window
     const handleInventoryUpdate = () => {
-      setCurrentInventoryIds(getCurrentInventory());
+      setCurrentInventoryIds(getCurrentInventory(storyId));
     };
 
     window.addEventListener("inventoryUpdate", handleInventoryUpdate);
@@ -29,7 +31,7 @@ export const Sidebar = () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("inventoryUpdate", handleInventoryUpdate);
     };
-  }, []);
+  }, [storyId]);
 
   if (!story) {
     return null;

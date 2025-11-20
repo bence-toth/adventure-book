@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { getCurrentPassageId } from "../utils/localStorage";
 import { getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
 import {
   INTRODUCTION_TEST_IDS,
@@ -13,15 +11,6 @@ import "./Introduction.css";
 export const Introduction = () => {
   const navigate = useNavigate();
   const { story, storyId, loading, error } = useStory();
-
-  useEffect(() => {
-    if (!storyId) return;
-
-    const savedPassageId = getCurrentPassageId();
-    if (savedPassageId !== null) {
-      navigate(getPassageRoute(storyId, savedPassageId));
-    }
-  }, [navigate, storyId]);
 
   const handleStartAdventure = () => {
     if (!storyId) return;

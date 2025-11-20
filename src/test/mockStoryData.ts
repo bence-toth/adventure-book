@@ -186,6 +186,8 @@ export const setupTestStory = async (
 // Factory function to create a mock story loader module
 // This can be used in vi.mock() calls to replace the actual story loader
 export const createMockStoryLoader = () => {
+  const testStoryId = "test-story-id";
+
   return {
     loadStory: () => mockStory,
     loadStoryById: async () => mockStory,
@@ -193,14 +195,18 @@ export const createMockStoryLoader = () => {
     getPassage: (id: number) => mockPassages[id],
     getAllPassages: () => mockPassages,
     getInventoryItems: () => mockStory.items,
-    getCurrentInventory: () => getInventory(),
-    addItemToInventory,
-    removeItemFromInventory,
+    getCurrentInventory: (storyId: string = testStoryId) =>
+      getInventory(storyId),
+    addItemToInventory: (storyId: string, itemId: string) =>
+      addItemToInventory(storyId, itemId),
+    removeItemFromInventory: (storyId: string, itemId: string) =>
+      removeItemFromInventory(storyId, itemId),
   };
 };
 
 // Create story loader mocks with custom data
 export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
+  const testStoryId = "test-story-id";
   const story = { ...mockStory, ...customStory };
   const introduction: IntroductionContent = {
     title: story.metadata.title,
@@ -215,9 +221,12 @@ export const createCustomMockStoryLoader = (customStory: Partial<Story>) => {
     getPassage: (id: number) => story.passages[id],
     getAllPassages: () => story.passages,
     getInventoryItems: () => story.items,
-    getCurrentInventory: () => getInventory(),
-    addItemToInventory,
-    removeItemFromInventory,
+    getCurrentInventory: (storyId: string = testStoryId) =>
+      getInventory(storyId),
+    addItemToInventory: (storyId: string, itemId: string) =>
+      addItemToInventory(storyId, itemId),
+    removeItemFromInventory: (storyId: string, itemId: string) =>
+      removeItemFromInventory(storyId, itemId),
   };
 };
 

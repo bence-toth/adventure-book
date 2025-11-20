@@ -17,6 +17,16 @@ const {
 } = await import("../storyLoader");
 
 describe("StoryLoader", () => {
+  const testStoryId = "test-story-id";
+
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
   describe("loadStory", () => {
     it("should load and return a valid story object", () => {
       const story = loadStory();
@@ -312,55 +322,61 @@ describe("StoryLoader", () => {
 
     describe("getCurrentInventory", () => {
       it("should return empty array when no items collected", () => {
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual([]);
       });
 
       it("should return current inventory from localStorage", () => {
-        localStorage.setItem(
-          "adventure-book/inventory",
-          JSON.stringify(["item1", "item2"])
-        );
+        const data = {
+          [testStoryId]: {
+            passageId: null,
+            inventory: ["item1", "item2"],
+          },
+        };
+        localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual(["item1", "item2"]);
       });
     });
 
     describe("addItemToInventory", () => {
       it("should add an item to inventory", () => {
-        addItemToInventory("test_item");
+        addItemToInventory(testStoryId, "test_item");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toContain("test_item");
       });
 
       it("should not add duplicate items", () => {
-        addItemToInventory("test_item");
-        addItemToInventory("test_item");
+        addItemToInventory(testStoryId, "test_item");
+        addItemToInventory(testStoryId, "test_item");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual(["test_item"]);
       });
 
       it("should add multiple different items", () => {
-        addItemToInventory("item1");
-        addItemToInventory("item2");
-        addItemToInventory("item3");
+        addItemToInventory(testStoryId, "item1");
+        addItemToInventory(testStoryId, "item2");
+        addItemToInventory(testStoryId, "item3");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual(["item1", "item2", "item3"]);
       });
 
       it("should preserve existing items when adding new ones", () => {
-        localStorage.setItem(
-          "adventure-book/inventory",
-          JSON.stringify(["existing_item"])
-        );
+        const data = {
+          [testStoryId]: {
+            passageId: null,
+            inventory: ["existing_item"],
+          },
+        };
+        localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-        addItemToInventory("new_item");
+        addItemToInventory(testStoryId, "new_item");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toContain("existing_item");
         expect(inventory).toContain("new_item");
       });
@@ -368,45 +384,54 @@ describe("StoryLoader", () => {
 
     describe("removeItemFromInventory", () => {
       it("should remove an item from inventory", () => {
-        localStorage.setItem(
-          "adventure-book/inventory",
-          JSON.stringify(["item1", "item2"])
-        );
+        const data = {
+          [testStoryId]: {
+            passageId: null,
+            inventory: ["item1", "item2"],
+          },
+        };
+        localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-        removeItemFromInventory("item1");
+        removeItemFromInventory(testStoryId, "item1");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual(["item2"]);
       });
 
       it("should handle removing non-existent items", () => {
-        localStorage.setItem(
-          "adventure-book/inventory",
-          JSON.stringify(["item1"])
-        );
+        const data = {
+          [testStoryId]: {
+            passageId: null,
+            inventory: ["item1"],
+          },
+        };
+        localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-        removeItemFromInventory("nonexistent");
+        removeItemFromInventory(testStoryId, "nonexistent");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual(["item1"]);
       });
 
       it("should remove all occurrences of an item", () => {
-        localStorage.setItem(
-          "adventure-book/inventory",
-          JSON.stringify(["item1", "item2", "item1"])
-        );
+        const data = {
+          [testStoryId]: {
+            passageId: null,
+            inventory: ["item1", "item2", "item1"],
+          },
+        };
+        localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-        removeItemFromInventory("item1");
+        removeItemFromInventory(testStoryId, "item1");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual(["item2"]);
       });
 
       it("should handle removing from empty inventory", () => {
-        removeItemFromInventory("item1");
+        removeItemFromInventory(testStoryId, "item1");
 
-        const inventory = getCurrentInventory();
+        const inventory = getCurrentInventory(testStoryId);
         expect(inventory).toEqual([]);
       });
     });
@@ -432,9 +457,9 @@ describe("StoryLoader", () => {
 
         if (items.length > 0) {
           const testItem = items[0];
-          addItemToInventory(testItem.id);
+          addItemToInventory(testStoryId, testItem.id);
 
-          const inventory = getCurrentInventory();
+          const inventory = getCurrentInventory(testStoryId);
           expect(inventory).toContain(testItem.id);
         }
       });

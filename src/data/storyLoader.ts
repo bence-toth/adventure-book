@@ -102,9 +102,10 @@ export const getInventoryItems = (): InventoryItem[] => {
   return story.items;
 };
 
-export const getCurrentInventory = (): string[] => {
-  return getInventory();
+export const getCurrentInventory = (storyId: string): string[] => {
+  return getInventory(storyId);
 };
 
 // Re-export inventory management functions from the shared utility
+// Note: These now require a storyId parameter
 export { addItemToInventory, removeItemFromInventory };

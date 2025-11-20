@@ -37,21 +37,21 @@ export const Passage = () => {
     if (!isNaN(passageId)) {
       if (passageId === SPECIAL_PASSAGES.RESET) {
         // Special case: passage 0 clears localStorage and redirects to introduction
-        clearCurrentPassageId();
-        clearInventory();
+        clearCurrentPassageId(storyId);
+        clearInventory(storyId);
         navigate(getStoryTestRoute(storyId));
         return;
       } else if (passageId >= 1) {
-        saveCurrentPassageId(passageId);
+        saveCurrentPassageId(storyId, passageId);
 
         // Execute effects for this passage (only non-ending passages have effects)
         const passage = story.passages[passageId];
         if (passage && !passage.ending && passage.effects) {
           passage.effects.forEach((effect) => {
             if (effect.type === "add_item") {
-              addItemToInventory(effect.item);
+              addItemToInventory(storyId, effect.item);
             } else if (effect.type === "remove_item") {
-              removeItemFromInventory(effect.item);
+              removeItemFromInventory(storyId, effect.item);
             }
           });
 
@@ -132,9 +132,9 @@ export const Passage = () => {
   };
 
   const handleRestartClick = () => {
-    clearCurrentPassageId();
-    clearInventory();
-    navigate(getStoryTestRoute(storyId));
+    clearCurrentPassageId(storyId!);
+    clearInventory(storyId!);
+    navigate(getStoryTestRoute(storyId!));
   };
 
   return (

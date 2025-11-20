@@ -30,10 +30,13 @@ describe("Sidebar", () => {
 
   it("should display collected items", async () => {
     // Set up localStorage with collected items
-    localStorage.setItem(
-      "adventure-book/inventory",
-      JSON.stringify(["mock_item_1"])
-    );
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
     renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
@@ -42,10 +45,13 @@ describe("Sidebar", () => {
   });
 
   it("should display multiple collected items", async () => {
-    localStorage.setItem(
-      "adventure-book/inventory",
-      JSON.stringify(["mock_item_1", "mock_item_2"])
-    );
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1", "mock_item_2"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
     renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
@@ -54,10 +60,13 @@ describe("Sidebar", () => {
   });
 
   it("should not display items that are not collected", async () => {
-    localStorage.setItem(
-      "adventure-book/inventory",
-      JSON.stringify(["mock_item_1"])
-    );
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
     renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
@@ -67,10 +76,13 @@ describe("Sidebar", () => {
 
   it("should handle items not in story inventory gracefully", async () => {
     // Set up localStorage with an item ID not in the story
-    localStorage.setItem(
-      "adventure-book/inventory",
-      JSON.stringify(["unknown_item"])
-    );
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["unknown_item"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
     renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
@@ -79,10 +91,13 @@ describe("Sidebar", () => {
   });
 
   it("should render inventory items as a list", async () => {
-    localStorage.setItem(
-      "adventure-book/inventory",
-      JSON.stringify(["mock_item_1", "mock_item_2"])
-    );
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1", "mock_item_2"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
     renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
 
@@ -99,10 +114,13 @@ describe("Sidebar", () => {
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
 
     // Simulate adding an item
-    localStorage.setItem(
-      "adventure-book/inventory",
-      JSON.stringify(["mock_item_1"])
-    );
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
     window.dispatchEvent(new Event("storage"));
 
     rerender(<Sidebar />);
@@ -119,10 +137,13 @@ describe("Sidebar", () => {
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
 
     // Simulate adding an item in the same window
-    localStorage.setItem(
-      "adventure-book/inventory",
-      JSON.stringify(["mock_item_1"])
-    );
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
     window.dispatchEvent(new Event("inventoryUpdate"));
 
     rerender(<Sidebar />);

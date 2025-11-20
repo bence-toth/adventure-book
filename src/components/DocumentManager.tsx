@@ -21,7 +21,8 @@ import {
 } from "../data/storyDatabase";
 import { Button } from "./Button";
 import storyTemplate from "../data/story.yaml?raw";
-import { getStoryTestRoute } from "../constants/routes";
+import { getStoryTestRoute, getPassageRoute } from "../constants/routes";
+import { getCurrentPassageId } from "../utils/localStorage";
 import "./DocumentManager.css";
 
 export const DocumentManager = () => {
@@ -85,7 +86,16 @@ export const DocumentManager = () => {
   }, [storyToDelete]);
 
   const handleOpenStory = (id: string) => {
-    navigate(getStoryTestRoute(id));
+    // Check if there's a saved passage for this story
+    const savedPassageId = getCurrentPassageId(id);
+
+    if (savedPassageId !== null) {
+      // Navigate directly to the saved passage
+      navigate(getPassageRoute(id, savedPassageId));
+    } else {
+      // Navigate to the introduction if no saved progress
+      navigate(getStoryTestRoute(id));
+    }
   };
 
   const handleMenuClick = (
