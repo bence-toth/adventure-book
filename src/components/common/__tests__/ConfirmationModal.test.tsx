@@ -191,8 +191,8 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      const overlay = document.querySelector(".modal-overlay");
-      fireEvent.click(overlay!);
+      const overlay = screen.getByTestId("modal-overlay");
+      fireEvent.click(overlay);
 
       expect(handleCancel).toHaveBeenCalledTimes(1);
     });
@@ -211,8 +211,8 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      const dialog = document.querySelector(".confirmation-dialog");
-      fireEvent.click(dialog!);
+      const dialog = screen.getByTestId("confirmation-dialog");
+      fireEvent.click(dialog);
 
       expect(handleCancel).not.toHaveBeenCalled();
     });
@@ -355,8 +355,8 @@ describe("ConfirmationModal Component", () => {
     });
   });
 
-  describe("CSS Classes", () => {
-    it("applies modal-overlay class", () => {
+  describe("Component Structure", () => {
+    it("renders modal overlay element", () => {
       render(
         <ConfirmationModal
           open={true}
@@ -368,10 +368,10 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(document.querySelector(".modal-overlay")).toBeInTheDocument();
+      expect(screen.getByTestId("modal-overlay")).toBeInTheDocument();
     });
 
-    it("applies confirmation-dialog class", () => {
+    it("renders dialog element", () => {
       render(
         <ConfirmationModal
           open={true}
@@ -383,12 +383,10 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(
-        document.querySelector(".confirmation-dialog")
-      ).toBeInTheDocument();
+      expect(screen.getByTestId("confirmation-dialog")).toBeInTheDocument();
     });
 
-    it("applies confirmation-dialog-content class", () => {
+    it("renders dialog content element", () => {
       render(
         <ConfirmationModal
           open={true}
@@ -400,12 +398,10 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(
-        document.querySelector(".confirmation-dialog-content")
-      ).toBeInTheDocument();
+      expect(screen.getByTestId("dialog-content")).toBeInTheDocument();
     });
 
-    it("applies confirmation-dialog-message class", () => {
+    it("renders dialog message element", () => {
       render(
         <ConfirmationModal
           open={true}
@@ -417,12 +413,10 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(
-        document.querySelector(".confirmation-dialog-message")
-      ).toBeInTheDocument();
+      expect(screen.getByTestId("dialog-message")).toBeInTheDocument();
     });
 
-    it("applies confirmation-dialog-actions class", () => {
+    it("renders dialog actions element", () => {
       render(
         <ConfirmationModal
           open={true}
@@ -434,9 +428,7 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(
-        document.querySelector(".confirmation-dialog-actions")
-      ).toBeInTheDocument();
+      expect(screen.getByTestId("dialog-actions")).toBeInTheDocument();
     });
   });
 
@@ -629,10 +621,8 @@ describe("ConfirmationModal Component", () => {
       const confirmButton = screen.getByRole("button", { name: "Confirm" });
 
       // Get positions to verify order
-      const dialogActions = document.querySelector(
-        ".confirmation-dialog-actions"
-      );
-      const buttons = Array.from(dialogActions!.querySelectorAll("button"));
+      const dialogActions = screen.getByTestId("dialog-actions");
+      const buttons = Array.from(dialogActions.querySelectorAll("button"));
 
       expect(buttons[0]).toBe(cancelButton);
       expect(buttons[1]).toBe(confirmButton);
