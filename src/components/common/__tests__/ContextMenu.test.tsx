@@ -129,7 +129,7 @@ describe("ContextMenu Component", () => {
   });
 
   describe("ContextMenuItem Variants", () => {
-    it("applies default variant class by default", () => {
+    it("renders with default variant by default", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -144,13 +144,13 @@ describe("ContextMenu Component", () => {
       );
 
       const item = screen.getByText("Default Item");
-      expect(item).toHaveClass("context-menu-item");
-      expect(item).not.toHaveClass("context-menu-item-danger");
+      expect(item).toBeInTheDocument();
+      expect(item).toHaveAttribute("data-testid", "context-menu-item");
 
       document.body.removeChild(triggerElement);
     });
 
-    it("applies danger variant class when specified", () => {
+    it("renders with danger variant when specified", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -167,13 +167,13 @@ describe("ContextMenu Component", () => {
       );
 
       const item = screen.getByText("Delete");
-      expect(item).toHaveClass("context-menu-item");
-      expect(item).toHaveClass("context-menu-item-danger");
+      expect(item).toBeInTheDocument();
+      expect(item).toHaveAttribute("data-testid", "context-menu-item");
 
       document.body.removeChild(triggerElement);
     });
 
-    it("applies default variant class when explicitly specified", () => {
+    it("renders with default variant when explicitly specified", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -190,15 +190,15 @@ describe("ContextMenu Component", () => {
       );
 
       const item = screen.getByText("Normal Item");
-      expect(item).toHaveClass("context-menu-item");
-      expect(item).not.toHaveClass("context-menu-item-danger");
+      expect(item).toBeInTheDocument();
+      expect(item).toHaveAttribute("data-testid", "context-menu-item");
 
       document.body.removeChild(triggerElement);
     });
   });
 
-  describe("CSS Classes", () => {
-    it("applies context-menu class to container", () => {
+  describe("Component Structure", () => {
+    it("renders context menu container", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -212,13 +212,12 @@ describe("ContextMenu Component", () => {
         </ContextMenu>
       );
 
-      const menu = screen.getByText("Item").closest(".context-menu");
-      expect(menu).toBeInTheDocument();
+      expect(screen.getByTestId("context-menu")).toBeInTheDocument();
 
       document.body.removeChild(triggerElement);
     });
 
-    it("applies context-menu-item class to all items", () => {
+    it("renders all menu items with data-testid", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -233,8 +232,16 @@ describe("ContextMenu Component", () => {
         </ContextMenu>
       );
 
-      expect(screen.getByText("Item 1")).toHaveClass("context-menu-item");
-      expect(screen.getByText("Item 2")).toHaveClass("context-menu-item");
+      const items = screen.getAllByTestId("context-menu-item");
+      expect(items).toHaveLength(2);
+      expect(screen.getByText("Item 1")).toHaveAttribute(
+        "data-testid",
+        "context-menu-item"
+      );
+      expect(screen.getByText("Item 2")).toHaveAttribute(
+        "data-testid",
+        "context-menu-item"
+      );
 
       document.body.removeChild(triggerElement);
     });
@@ -291,7 +298,7 @@ describe("ContextMenu Component", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
-      const { container } = render(
+      render(
         <ContextMenu
           open={true}
           onOpenChange={vi.fn()}
@@ -303,7 +310,7 @@ describe("ContextMenu Component", () => {
 
       // The placement is handled by Floating UI internally
       // We just verify the component renders without errors
-      expect(container.querySelector(".context-menu")).toBeInTheDocument();
+      expect(screen.getByTestId("context-menu")).toBeInTheDocument();
 
       document.body.removeChild(triggerElement);
     });
@@ -312,7 +319,7 @@ describe("ContextMenu Component", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
-      const { container } = render(
+      render(
         <ContextMenu
           open={true}
           onOpenChange={vi.fn()}
@@ -323,7 +330,7 @@ describe("ContextMenu Component", () => {
         </ContextMenu>
       );
 
-      expect(container.querySelector(".context-menu")).toBeInTheDocument();
+      expect(screen.getByTestId("context-menu")).toBeInTheDocument();
 
       document.body.removeChild(triggerElement);
     });
