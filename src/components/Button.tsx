@@ -7,7 +7,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   selected?: boolean;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
-  variant?: "primary";
+  variant?: "primary" | "danger";
   size?: "default" | "small";
 }
 

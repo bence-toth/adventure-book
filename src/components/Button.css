@@ -69,3 +69,27 @@
 .button-text {
   display: inline-block;
 }
+
+.button-danger {
+  background: var(--color-interactive-background-default-danger);
+  color: var(--color-interactive-foreground-default-danger);
+  border-color: var(--color-interactive-border-default-danger);
+}
+
+.button-danger:hover {
+  background: var(--color-interactive-background-hover-danger);
+  color: var(--color-interactive-foreground-hover-danger);
+  border-color: var(--color-interactive-border-hover-danger);
+}
+
+.button-danger:active {
+  background: var(--color-interactive-background-active-danger);
+  color: var(--color-interactive-foreground-active-danger);
+  border-color: var(--color-interactive-border-active-danger);
+}
+
+.button-danger:focus-visible {
+  background: var(--color-interactive-background-focus-danger);
+  color: var(--color-interactive-foreground-focus-danger);
+  border-color: var(--color-interactive-border-focus-danger);
+}

@@ -275,7 +275,9 @@ export const DocumentManager = () => {
               </p>
               <div className="delete-dialog-actions">
                 <Button onClick={cancelDelete}>Cancel</Button>
-                <Button onClick={confirmDelete}>Delete</Button>
+                <Button variant="danger" onClick={confirmDelete}>
+                  Delete
+                </Button>
               </div>
             </div>
           </dialog>
