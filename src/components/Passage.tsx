@@ -20,7 +20,7 @@ import {
   getPassageParagraphTestId,
   getChoiceButtonTestId,
 } from "../constants/testIds";
-import { Button } from "./common/Button";
+import { Button } from "./common";
 import { useStory } from "../hooks/useStory";
 import "./Passage.css";
 

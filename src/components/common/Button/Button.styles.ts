@@ -1,35 +1,25 @@
-import type { ReactNode } from "react";
-import { useEffect } from "react";
-import {
-  useFloating,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-  useClick,
-  useDismiss,
-  useRole,
-  useInteractions,
-  FloatingFocusManager,
-  type Placement,
-} from "@floating-ui/react";
 import styled from "styled-components";
 
-const MenuContainer = styled.div`
-  box-shadow: var(--shadow-surface-elevated-neutral);
-  min-width: 150px;
-  z-index: 1000;
-`;
-
-const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
-  display: block;
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  text-align: left;
-  cursor: pointer;
-  font-size: var(--font-size-base);
-  transition: background-color 0.15s ease;
+export const StyledButton = styled.button<{
+  $variant: "primary" | "danger";
+  $size: "default" | "small";
+  $selected: boolean;
+}>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: var(--line-height-dense);
+  padding: ${(props) =>
+    props.$size === "small"
+      ? "var(--space-1) var(--space-2)"
+      : "var(--space-2) var(--space-3)"};
   border-radius: var(--space-1);
+  cursor: pointer;
+  text-decoration: none;
   background: ${(props) =>
     props.$variant === "danger"
       ? "var(--color-interactive-background-default-danger)"
@@ -91,76 +81,13 @@ const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
   }
 `;
 
-export interface ContextMenuProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  triggerRef: HTMLElement | null;
-  children: ReactNode;
-  placement?: Placement;
-}
+export const IconWrapper = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+`;
 
-export const ContextMenu = ({
-  open,
-  onOpenChange,
-  triggerRef,
-  children,
-  placement = "top-end",
-}: ContextMenuProps) => {
-  const { refs, floatingStyles, context } = useFloating({
-    open,
-    onOpenChange,
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
-    whileElementsMounted: autoUpdate,
-    placement,
-  });
-
-  const click = useClick(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context);
-
-  const { getFloatingProps } = useInteractions([click, dismiss, role]);
-
-  // Set the reference element when it changes
-  useEffect(() => {
-    if (triggerRef) {
-      refs.setReference(triggerRef);
-    }
-  }, [triggerRef, refs]);
-
-  if (!open) return null;
-
-  return (
-    <FloatingFocusManager context={context} modal={false}>
-      <MenuContainer
-        ref={refs.setFloating}
-        style={floatingStyles}
-        data-testid="context-menu"
-        {...getFloatingProps()}
-      >
-        {children}
-      </MenuContainer>
-    </FloatingFocusManager>
-  );
-};
-
-export interface ContextMenuItemProps {
-  onClick: () => void;
-  children: ReactNode;
-  variant?: "default" | "danger";
-}
-
-export const ContextMenuItem = ({
-  onClick,
-  children,
-  variant = "default",
-}: ContextMenuItemProps) => {
-  return (
-    <MenuItem
-      $variant={variant}
-      onClick={onClick}
-      data-testid="context-menu-item"
-    >
-      {children}
-    </MenuItem>
-  );
-};
+export const TextWrapper = styled.span`
+  display: inline-block;
+`;

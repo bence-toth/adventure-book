@@ -7,9 +7,12 @@ import {
   createStory,
   type StoredStory,
 } from "../data/storyDatabase";
-import { Button } from "./common/Button";
-import { ContextMenu, ContextMenuItem } from "./common/ContextMenu";
-import { ConfirmationModal } from "./common/ConfirmationModal";
+import {
+  Button,
+  ContextMenu,
+  ContextMenuItem,
+  ConfirmationModal,
+} from "./common";
 import storyTemplate from "../data/story.yaml?raw";
 import { getStoryTestRoute, getPassageRoute } from "../constants/routes";
 import { getCurrentPassageId } from "../utils/localStorage";

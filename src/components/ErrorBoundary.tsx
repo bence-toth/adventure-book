@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import type { ReactNode } from "react";
-import { Button } from "./common/Button";
-import { DetailsButton } from "./common/DetailsButton";
+import { Button, DetailsButton } from "./common";
 import "./ErrorBoundary.css";
 
 interface Props {

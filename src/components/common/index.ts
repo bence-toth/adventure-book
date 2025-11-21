@@ -1,9 +1,12 @@
-export { Button } from "./Button";
-export type { ButtonProps } from "./Button";
-export { ButtonLink } from "./ButtonLink";
-export { ConfirmationModal } from "./ConfirmationModal";
-export type { ConfirmationModalProps } from "./ConfirmationModal";
-export { ContextMenu, ContextMenuItem } from "./ContextMenu";
-export type { ContextMenuProps, ContextMenuItemProps } from "./ContextMenu";
-export { DetailsButton } from "./DetailsButton";
-export type { DetailsButtonProps } from "./DetailsButton";
+export { Button } from "./Button/Button";
+export type { ButtonProps } from "./Button/Button";
+export { ButtonLink } from "./ButtonLink/ButtonLink";
+export { ConfirmationModal } from "./ConfirmationModal/ConfirmationModal";
+export type { ConfirmationModalProps } from "./ConfirmationModal/ConfirmationModal";
+export { ContextMenu, ContextMenuItem } from "./ContextMenu/ContextMenu";
+export type {
+  ContextMenuProps,
+  ContextMenuItemProps,
+} from "./ContextMenu/ContextMenu";
+export { DetailsButton } from "./DetailsButton/DetailsButton";
+export type { DetailsButtonProps } from "./DetailsButton/DetailsButton";

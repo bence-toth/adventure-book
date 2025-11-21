@@ -1,10 +1,8 @@
-import type { ReactNode, ComponentType, DetailsHTMLAttributes } from "react";
-import { createElement } from "react";
 import styled from "styled-components";
 
-const StyledDetails = styled.details``;
+export const StyledDetails = styled.details``;
 
-const StyledSummary = styled.summary<{ $variant: "primary" }>`
+export const StyledSummary = styled.summary<{ $variant: "primary" }>`
   list-style: none;
   cursor: pointer;
   user-select: none;
@@ -74,51 +72,13 @@ const StyledSummary = styled.summary<{ $variant: "primary" }>`
   }
 `;
 
-const IconWrapper = styled.span`
+export const IconWrapper = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
 `;
 
-const TextWrapper = styled.span`
+export const TextWrapper = styled.span`
   display: inline-block;
 `;
-
-export interface DetailsButtonProps
-  extends DetailsHTMLAttributes<HTMLDetailsElement> {
-  summary: string;
-  children: ReactNode;
-  icon?: ComponentType<Record<string, unknown>>;
-  className?: string;
-  summaryClassName?: string;
-  variant?: "primary";
-}
-
-export const DetailsButton = ({
-  summary,
-  children,
-  icon,
-  className = "",
-  summaryClassName = "",
-  variant = "primary",
-  ...props
-}: DetailsButtonProps) => {
-  const iconElement = icon
-    ? createElement(icon, {
-        size: 20,
-        strokeWidth: 1.5,
-        "aria-hidden": true,
-      })
-    : null;
-
-  return (
-    <StyledDetails className={className} {...props}>
-      <StyledSummary $variant={variant} className={summaryClassName}>
-        {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
-        <TextWrapper>{summary}</TextWrapper>
-      </StyledSummary>
-      {children}
-    </StyledDetails>
-  );
-};

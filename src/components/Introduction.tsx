@@ -4,7 +4,7 @@ import {
   INTRODUCTION_TEST_IDS,
   getIntroParagraphTestId,
 } from "../constants/testIds";
-import { Button } from "./common/Button";
+import { Button } from "./common";
 import { useStory } from "../hooks/useStory";
 import "./Introduction.css";
 

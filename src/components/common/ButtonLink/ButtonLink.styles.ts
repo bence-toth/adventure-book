@@ -1,19 +1,7 @@
-import type { ReactNode, ComponentType } from "react";
-import { createElement } from "react";
-import { Link } from "react-router-dom";
-import type { LinkProps } from "react-router-dom";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
-export interface ButtonLinkProps extends Omit<LinkProps, "className"> {
-  children: ReactNode;
-  selected?: boolean;
-  icon?: ComponentType<Record<string, unknown>>;
-  className?: string;
-  variant?: "primary";
-  size?: "default" | "small";
-}
-
-const StyledLink = styled(Link)<{
+export const StyledLink = styled(Link)<{
   $size: "default" | "small";
   $selected: boolean;
 }>`
@@ -57,43 +45,13 @@ const StyledLink = styled(Link)<{
   }
 `;
 
-const IconWrapper = styled.span`
+export const IconWrapper = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
   line-height: 1;
 `;
 
-const TextWrapper = styled.span`
+export const TextWrapper = styled.span`
   display: inline-block;
 `;
-
-export const ButtonLink = ({
-  children,
-  selected = false,
-  icon,
-  className = "",
-  variant = "primary",
-  size = "default",
-  ...props
-}: ButtonLinkProps) => {
-  const iconElement = icon
-    ? createElement(icon, {
-        size: 20,
-        strokeWidth: 1.5,
-        "aria-hidden": true,
-      })
-    : null;
-
-  return (
-    <StyledLink
-      className={className}
-      $size={size}
-      $selected={selected}
-      {...props}
-    >
-      {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
-      <TextWrapper>{children}</TextWrapper>
-    </StyledLink>
-  );
-};

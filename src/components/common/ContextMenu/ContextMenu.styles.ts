@@ -1,36 +1,20 @@
-import type { ReactNode, ButtonHTMLAttributes, ComponentType } from "react";
-import { createElement, forwardRef } from "react";
 import styled from "styled-components";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
-  selected?: boolean;
-  icon?: ComponentType<Record<string, unknown>>;
-  className?: string;
-  variant?: "primary" | "danger";
-  size?: "default" | "small";
-}
+export const MenuContainer = styled.div`
+  box-shadow: var(--shadow-surface-elevated-neutral);
+  min-width: 150px;
+  z-index: 1000;
+`;
 
-const StyledButton = styled.button<{
-  $variant: "primary" | "danger";
-  $size: "default" | "small";
-  $selected: boolean;
-}>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-1);
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 400;
-  line-height: var(--line-height-dense);
-  padding: ${(props) =>
-    props.$size === "small"
-      ? "var(--space-1) var(--space-2)"
-      : "var(--space-2) var(--space-3)"};
-  border-radius: var(--space-1);
+export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
+  display: block;
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
   cursor: pointer;
-  text-decoration: none;
+  font-size: var(--font-size-base);
+  transition: background-color 0.15s ease;
+  border-radius: var(--space-1);
   background: ${(props) =>
     props.$variant === "danger"
       ? "var(--color-interactive-background-default-danger)"
@@ -91,53 +75,3 @@ const StyledButton = styled.button<{
     outline-offset: var(--space-1);
   }
 `;
-
-const IconWrapper = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-`;
-
-const TextWrapper = styled.span`
-  display: inline-block;
-`;
-
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      children,
-      selected = false,
-      icon,
-      className = "",
-      variant = "primary",
-      size = "default",
-      ...props
-    },
-    ref
-  ) => {
-    const iconElement = icon
-      ? createElement(icon, {
-          size: 20,
-          strokeWidth: 1.5,
-          "aria-hidden": true,
-        })
-      : null;
-
-    return (
-      <StyledButton
-        ref={ref}
-        className={className}
-        $variant={variant}
-        $size={size}
-        $selected={selected}
-        {...props}
-      >
-        {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
-        <TextWrapper>{children}</TextWrapper>
-      </StyledButton>
-    );
-  }
-);
-
-Button.displayName = "Button";
