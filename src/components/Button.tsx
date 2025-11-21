@@ -1,5 +1,5 @@
 import type { ReactNode, ButtonHTMLAttributes, ComponentType } from "react";
-import { createElement } from "react";
+import { createElement, forwardRef } from "react";
 import "./Button.css";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -11,37 +11,44 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "default" | "small";
 }
 
-export const Button = ({
-  children,
-  selected = false,
-  icon,
-  className = "",
-  variant = "primary",
-  size = "default",
-  ...props
-}: ButtonProps) => {
-  const classes = [
-    "button",
-    `button-${variant}`,
-    size === "small" && "button-small",
-    selected && "button-selected",
-    className,
-  ]
-    .filter(Boolean)
-    .join(" ");
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      children,
+      selected = false,
+      icon,
+      className = "",
+      variant = "primary",
+      size = "default",
+      ...props
+    },
+    ref
+  ) => {
+    const classes = [
+      "button",
+      `button-${variant}`,
+      size === "small" && "button-small",
+      selected && "button-selected",
+      className,
+    ]
+      .filter(Boolean)
+      .join(" ");
 
-  const iconElement = icon
-    ? createElement(icon, {
-        size: 20,
-        strokeWidth: 1.5,
-        "aria-hidden": true,
-      })
-    : null;
+    const iconElement = icon
+      ? createElement(icon, {
+          size: 20,
+          strokeWidth: 1.5,
+          "aria-hidden": true,
+        })
+      : null;
 
-  return (
-    <button className={classes} {...props}>
-      {iconElement && <span className="button-icon">{iconElement}</span>}
-      <span className="button-text">{children}</span>
-    </button>
-  );
-};
+    return (
+      <button ref={ref} className={classes} {...props}>
+        {iconElement && <span className="button-icon">{iconElement}</span>}
+        <span className="button-text">{children}</span>
+      </button>
+    );
+  }
+);
+
+Button.displayName = "Button";

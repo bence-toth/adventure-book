@@ -55,6 +55,27 @@ export const DocumentManager = () => {
 
   const { getFloatingProps } = useInteractions([click, dismiss, role]);
 
+  // Floating UI setup for delete confirmation modal
+  const { refs: modalRefs, context: modalContext } = useFloating({
+    open: !!storyToDelete,
+    onOpenChange: (open) => {
+      if (!open) {
+        cancelDelete();
+      }
+    },
+  });
+
+  const modalDismiss = useDismiss(modalContext, {
+    escapeKey: true,
+    outsidePress: true,
+  });
+  const modalRole = useRole(modalContext);
+
+  const { getFloatingProps: getModalFloatingProps } = useInteractions([
+    modalDismiss,
+    modalRole,
+  ]);
+
   const loadStories = async () => {
     try {
       setLoading(true);
@@ -261,27 +282,31 @@ export const DocumentManager = () => {
 
       {/* Modal Overlay */}
       {storyToDelete && (
-        <div className="modal-overlay" onClick={cancelDelete}>
-          <dialog
-            open
-            className="delete-dialog"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="delete-dialog-content">
-              <h2>Delete Story</h2>
-              <p>
-                Are you sure you want to delete "{storyToDelete.title}"? This
-                action cannot be undone.
-              </p>
-              <div className="delete-dialog-actions">
-                <Button onClick={cancelDelete}>Cancel</Button>
-                <Button variant="danger" onClick={confirmDelete}>
-                  Delete
-                </Button>
+        <FloatingFocusManager context={modalContext} modal initialFocus={0}>
+          <div className="modal-overlay" onClick={cancelDelete}>
+            <dialog
+              ref={modalRefs.setFloating}
+              open
+              className="delete-dialog"
+              onClick={(e) => e.stopPropagation()}
+              {...getModalFloatingProps()}
+            >
+              <div className="delete-dialog-content">
+                <h2>Delete Story</h2>
+                <p>
+                  Are you sure you want to delete "{storyToDelete.title}"? This
+                  action cannot be undone.
+                </p>
+                <div className="delete-dialog-actions">
+                  <Button onClick={cancelDelete}>Cancel</Button>
+                  <Button variant="danger" onClick={confirmDelete}>
+                    Delete
+                  </Button>
+                </div>
               </div>
-            </div>
-          </dialog>
-        </div>
+            </dialog>
+          </div>
+        </FloatingFocusManager>
       )}
     </div>
   );
