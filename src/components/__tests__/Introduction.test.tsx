@@ -65,7 +65,6 @@ describe("Introduction Component", () => {
     );
     expect(button).toBeInTheDocument();
     expect(button).toHaveTextContent("Begin your test adventure");
-    expect(button).toHaveClass("button", "button-primary");
   });
 
   it("navigates to passage 1 when start adventure button is clicked", async () => {

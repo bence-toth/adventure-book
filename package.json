@@ -24,6 +24,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.5",
+    "styled-components": "^6.1.19",
     "yaml": "^2.8.1"
   },
   "devDependencies": {
@@ -35,6 +36,7 @@
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "^5.1.36",
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/coverage-v8": "^4.0.7",
     "eslint": "^9.36.0",
