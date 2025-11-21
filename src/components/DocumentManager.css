@@ -7,26 +7,11 @@
 
 .document-manager-header {
   text-align: center;
-  margin-bottom: 3rem;
-}
-
-.document-manager-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  color: var(--color-text-primary);
-}
-
-.document-manager-subtitle {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 1.5rem;
 }
 
 .document-manager-loading,
 .document-manager-error {
   text-align: center;
-  padding: 3rem;
-  color: var(--color-text-secondary);
 }
 
 .document-manager-error {
@@ -36,29 +21,18 @@
   gap: 1rem;
 }
 
-.document-manager-empty {
-  text-align: center;
-  padding: 3rem;
-  color: var(--color-text-secondary);
-  font-size: 1.125rem;
-}
-
 .document-manager-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: var(--space-4);
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 .story-card {
   background: var(--color-background-surface);
-  border: 1px solid var(--color-border-hairline);
-  border-radius: var(--border-radius-medium);
+  border-radius: var(--space-1);
   position: relative;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-medium);
 
   /* A4 ratio is approximately 1:1.414 */
   aspect-ratio: 1 / 1.414;
@@ -69,48 +43,83 @@
   display: flex;
   flex-direction: column;
   padding: var(--space-3);
-  background: none;
-  border: none;
   cursor: pointer;
   text-align: left;
-  color: inherit;
-  font: inherit;
   width: 100%;
   min-height: 0;
+  border-radius: var(--space-1);
+  background: var(--color-interactive-background-default-neutral);
+  color: var(--color-interactive-foreground-default-neutral);
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-default-neutral);
+}
+
+.story-card-clickable:hover {
+  background: var(--color-interactive-background-hover-neutral);
+  color: var(--color-interactive-foreground-hover-neutral);
+  border-color: var(--color-interactive-border-hover-neutral);
+}
+
+.story-card-clickable:active {
+  background: var(--color-interactive-background-active-neutral);
+  color: var(--color-interactive-foreground-active-neutral);
+  border-color: var(--color-interactive-border-active-neutral);
+}
+
+.story-card-clickable:focus-visible {
+  background: var(--color-interactive-background-focus-neutral);
+  color: var(--color-interactive-foreground-focus-neutral);
+  border-color: var(--color-interactive-border-focus-neutral);
+  outline-offset: var(--space-1);
 }
 
 .story-card-footer {
   position: absolute;
-  bottom: 1px;
-  right: 1px;
-  left: 1px;
+  bottom: 0;
+  right: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--space-2) var(--space-3);
-  border-top: 1px solid var(--color-border);
+  border-top: var(--border-width-hairline) solid var(--color-border);
   background: var(--color-background);
   gap: var(--space-2);
 }
 
 .story-card-menu {
-  background: transparent;
-  border: none;
   cursor: pointer;
   line-height: 1;
-  color: var(--color-foreground-muted);
   z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-1);
-  border-radius: var(--border-radius-small);
   flex-shrink: 0;
+  border-radius: var(--space-1);
+  background: var(--color-interactive-background-default-neutral);
+  color: var(--color-interactive-foreground-default-neutral);
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-default-neutral);
 }
 
 .story-card-menu:hover {
-  background: var(--color-background-subtle);
-  color: var(--color-foreground);
+  background: var(--color-interactive-background-hover-neutral);
+  color: var(--color-interactive-foreground-hover-neutral);
+  border-color: var(--color-interactive-border-hover-neutral);
+}
+
+.story-card-menu:active {
+  background: var(--color-interactive-background-active-neutral);
+  color: var(--color-interactive-foreground-active-neutral);
+  border-color: var(--color-interactive-border-active-neutral);
+}
+
+.story-card-menu:focus-visible {
+  background: var(--color-interactive-background-focus-neutral);
+  color: var(--color-interactive-foreground-focus-neutral);
+  border-color: var(--color-interactive-border-focus-neutral);
+  outline-offset: var(--space-1);
 }
 
 .story-card-content {
@@ -127,8 +136,6 @@
 
 .story-card-date {
   font-size: var(--font-size-sm);
-  color: var(--color-foreground-muted);
-  margin: 0;
   flex: 1;
 }
 
@@ -145,6 +152,29 @@
   justify-content: center;
   padding: var(--space-3);
   gap: var(--space-2);
+  background: var(--color-interactive-background-default-neutral);
+  color: var(--color-interactive-foreground-default-neutral);
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-default-neutral);
+}
+
+.story-card-new:hover {
+  background: var(--color-interactive-background-hover-neutral);
+  color: var(--color-interactive-foreground-hover-neutral);
+  border-color: var(--color-interactive-border-hover-neutral);
+}
+
+.story-card-new:active {
+  background: var(--color-interactive-background-active-neutral);
+  color: var(--color-interactive-foreground-active-neutral);
+  border-color: var(--color-interactive-border-active-neutral);
+}
+
+.story-card-new:focus-visible {
+  background: var(--color-interactive-background-focus-neutral);
+  color: var(--color-interactive-foreground-focus-neutral);
+  border-color: var(--color-interactive-border-focus-neutral);
+  outline-offset: var(--space-1);
 }
 
 .story-card-new .story-card-title {
@@ -153,38 +183,43 @@
 
 /* Context Menu */
 .context-menu {
-  background: var(--color-background-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-small);
-  box-shadow: var(--shadow-elevated);
+  box-shadow: var(--shadow-surface-elevated-neutral);
   min-width: 150px;
   z-index: 1000;
-  overflow: hidden;
 }
 
 .context-menu-item {
   display: block;
   width: 100%;
   padding: var(--space-2) var(--space-3);
-  background: none;
-  border: none;
   text-align: left;
   cursor: pointer;
   font-size: var(--font-size-base);
-  color: var(--color-foreground);
   transition: background-color 0.15s ease;
+  border-radius: var(--space-1);
+  background: var(--color-interactive-background-default-neutral);
+  color: var(--color-interactive-foreground-default-neutral);
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-default-neutral);
 }
 
 .context-menu-item:hover {
-  background: var(--color-background-subtle);
+  background: var(--color-interactive-background-hover-neutral);
+  color: var(--color-interactive-foreground-hover-neutral);
+  border-color: var(--color-interactive-border-hover-neutral);
 }
 
-.context-menu-item-danger {
-  color: var(--color-danger, #e11d48);
+.context-menu-item:active {
+  background: var(--color-interactive-background-active-neutral);
+  color: var(--color-interactive-foreground-active-neutral);
+  border-color: var(--color-interactive-border-active-neutral);
 }
 
-.context-menu-item-danger:hover {
-  background: var(--color-danger-subtle, rgb(225 29 72 / 10%));
+.context-menu-item:focus-visible {
+  background: var(--color-interactive-background-focus-neutral);
+  color: var(--color-interactive-foreground-focus-neutral);
+  border-color: var(--color-interactive-border-focus-neutral);
+  outline-offset: var(--space-1);
 }
 
 /* Modal Overlay */
@@ -200,12 +235,13 @@
 
 /* Delete Confirmation Dialog */
 .delete-dialog {
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-medium);
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-default-neutral);
+  border-radius: var(--space-1);
   padding: 0;
   max-width: 500px;
-  box-shadow: var(--shadow-elevated);
-  background: var(--color-background);
+  box-shadow: var(--shadow-surface-elevated-neutral);
+  background: var(--color-background-surface-neutral);
   position: relative;
   margin: 0;
   z-index: 2001;
@@ -227,7 +263,6 @@
 
 .delete-dialog-content p {
   margin: 0 0 var(--space-3);
-  color: var(--color-foreground-muted);
   line-height: 1.5;
 }
 
@@ -235,18 +270,4 @@
   display: flex;
   gap: var(--space-2);
   justify-content: flex-end;
-}
-
-@media (width <= 768px) {
-  .document-manager {
-    padding: 1rem;
-  }
-
-  .document-manager-header h1 {
-    font-size: 2rem;
-  }
-
-  .document-manager-list {
-    grid-template-columns: 1fr;
-  }
 }

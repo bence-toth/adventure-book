@@ -9,7 +9,6 @@
 
 .passage-paragraph {
   line-height: var(--line-height-relaxed);
-  color: var(--color-foreground);
   margin-bottom: var(--space-2);
 }
 
@@ -28,7 +27,7 @@
 .error h2 {
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
-  color: var(--color-error-foreground);
+  color: var(--color-foreground-danger);
   margin-top: 0;
   margin-bottom: var(--space-3);
 }

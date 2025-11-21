@@ -15,8 +15,8 @@ button {
 
 :root {
   color-scheme: light dark;
-  color: var(--color-foreground);
-  background-color: var(--color-background);
+  color: var(--color-foreground-neutral);
+  background-color: var(--color-background-neutral);
   font-family: var(--font-family-default);
   font-optical-sizing: auto;
   font-style: normal;
@@ -27,69 +27,133 @@ button {
   -moz-osx-font-smoothing: grayscale;
 
   /* Color variables */
-  --color-white: #fff;
-  --color-black: #000;
-  --color-gray-100: lch(90% 10.41 270.15deg);
-  --color-gray-200: lch(80% 10.41 270.15deg);
-  --color-gray-300: lch(70% 10.41 270.15deg);
-  --color-gray-400: lch(60% 10.41 270.15deg);
-  --color-gray-500: lch(50% 10.41 270.15deg);
-  --color-gray-600: lch(40% 10.41 270.15deg);
-  --color-gray-700: lch(30% 10.41 270.15deg);
-  --color-gray-800: lch(20% 10.41 270.15deg);
-  --color-gray-900: lch(10% 10.41 270.15deg);
-  --color-red-100: lch(90% 49.527 26.8504deg);
-  --color-red-200: lch(80% 49.527 26.8504deg);
-  --color-red-300: lch(70% 49.527 26.8504deg);
-  --color-red-400: lch(60% 49.527 26.8504deg);
-  --color-red-500: lch(50% 49.527 26.8504deg);
-  --color-red-600: lch(40% 49.527 26.8504deg);
-  --color-red-700: lch(30% 49.527 26.8504deg);
-  --color-red-800: lch(20% 49.527 26.8504deg);
-  --color-red-900: lch(10% 49.527 26.8504deg);
-  --color-yellow-100: lch(90% 44.1234 73.9212deg);
-  --color-yellow-200: lch(80% 44.1234 73.9212deg);
-  --color-yellow-300: lch(70% 44.1234 73.9212deg);
-  --color-yellow-400: lch(60% 44.1234 73.9212deg);
-  --color-yellow-500: lch(50% 44.1234 73.9212deg);
-  --color-yellow-600: lch(40% 44.1234 73.9212deg);
-  --color-yellow-700: lch(30% 44.1234 73.9212deg);
-  --color-yellow-800: lch(20% 44.1234 73.9212deg);
-  --color-yellow-900: lch(10% 44.1234 73.9212deg);
-  --color-green-100: lch(90% 42.3209 116.25deg);
-  --color-green-200: lch(80% 42.3209 116.25deg);
-  --color-green-300: lch(70% 42.3209 116.25deg);
-  --color-green-400: lch(60% 42.3209 116.25deg);
-  --color-green-500: lch(50% 42.3209 116.25deg);
-  --color-green-600: lch(40% 42.3209 116.25deg);
-  --color-green-700: lch(30% 42.3209 116.25deg);
-  --color-green-800: lch(20% 42.3209 116.25deg);
-  --color-green-900: lch(10% 42.3209 116.25deg);
-  --color-blue-100: lch(90% 21.0533 234.006deg);
-  --color-blue-200: lch(80% 21.0533 234.006deg);
-  --color-blue-300: lch(70% 21.0533 234.006deg);
-  --color-blue-400: lch(60% 21.0533 234.006deg);
-  --color-blue-500: lch(50% 21.0533 234.006deg);
-  --color-blue-600: lch(40% 21.0533 234.006deg);
-  --color-blue-700: lch(30% 21.0533 234.006deg);
-  --color-blue-800: lch(20% 21.0533 234.006deg);
-  --color-blue-900: lch(10% 21.0533 234.006deg);
+  --color-gray-0: oklch(100% 0 257.671deg);
+  --color-gray-50: oklch(95.833% 0.018 257.671deg);
+  --color-gray-100: oklch(92.708% 0.018 257.671deg);
+  --color-gray-150: oklch(88.542% 0.028 257.671deg);
+  --color-gray-200: oklch(84.375% 0.028 257.671deg);
+  --color-gray-250: oklch(80.208% 0.028 257.671deg);
+  --color-gray-300: oklch(76.042% 0.028 257.671deg);
+  --color-gray-350: oklch(72.917% 0.028 257.671deg);
+  --color-gray-400: oklch(68.75% 0.028 257.671deg);
+  --color-gray-450: oklch(63.542% 0.028 257.671deg);
+  --color-gray-500: oklch(59.375% 0.028 257.671deg);
+  --color-gray-550: oklch(55.208% 0.028 257.671deg);
+  --color-gray-600: oklch(51.042% 0.028 257.671deg);
+  --color-gray-650: oklch(46.875% 0.028 257.671deg);
+  --color-gray-700: oklch(41.667% 0.028 257.671deg);
+  --color-gray-750: oklch(37.5% 0.028 257.671deg);
+  --color-gray-800: oklch(32.292% 0.028 257.671deg);
+  --color-gray-850: oklch(27.083% 0.028 257.671deg);
+  --color-gray-900: oklch(21.875% 0.028 257.671deg);
+  --color-gray-950: oklch(15.625% 0.028 257.671deg);
+  --color-gray-1000: oklch(8.333% 0.028 257.671deg);
+  --color-red-0: oklch(100% 0 22.982deg);
+  --color-red-50: oklch(95.833% 0 22.982deg);
+  --color-red-100: oklch(92.708% 0.035 22.982deg);
+  --color-red-150: oklch(88.542% 0.035 22.982deg);
+  --color-red-200: oklch(85.417% 0.071 22.982deg);
+  --color-red-250: oklch(81.25% 0.095 22.982deg);
+  --color-red-300: oklch(78.125% 0.118 22.982deg);
+  --color-red-350: oklch(73.958% 0.142 22.982deg);
+  --color-red-400: oklch(69.792% 0.142 22.982deg);
+  --color-red-450: oklch(65.625% 0.142 22.982deg);
+  --color-red-500: oklch(61.458% 0.142 22.982deg);
+  --color-red-550: oklch(57.292% 0.142 22.982deg);
+  --color-red-600: oklch(53.125% 0.142 22.982deg);
+  --color-red-650: oklch(47.917% 0.142 22.982deg);
+  --color-red-700: oklch(43.75% 0.142 22.982deg);
+  --color-red-750: oklch(38.542% 0.142 22.982deg);
+  --color-red-800: oklch(35.417% 0.142 22.982deg);
+  --color-red-850: oklch(32.292% 0.13 22.982deg);
+  --color-red-900: oklch(27.083% 0.106 22.982deg);
+  --color-red-950: oklch(23.958% 0.095 22.982deg);
+  --color-red-1000: oklch(20.833% 0.083 22.982deg);
+  --color-yellow-0: oklch(100% 0 71.911deg);
+  --color-yellow-50: oklch(95.833% 0 71.911deg);
+  --color-yellow-100: oklch(92.708% 0.052 71.911deg);
+  --color-yellow-150: oklch(88.542% 0.086 71.911deg);
+  --color-yellow-200: oklch(84.375% 0.077 71.911deg);
+  --color-yellow-250: oklch(81.25% 0.103 71.911deg);
+  --color-yellow-300: oklch(77.083% 0.103 71.911deg);
+  --color-yellow-350: oklch(72.917% 0.103 71.911deg);
+  --color-yellow-400: oklch(68.75% 0.103 71.911deg);
+  --color-yellow-450: oklch(64.583% 0.103 71.911deg);
+  --color-yellow-500: oklch(60.417% 0.103 71.911deg);
+  --color-yellow-550: oklch(56.25% 0.103 71.911deg);
+  --color-yellow-600: oklch(51.042% 0.103 71.911deg);
+  --color-yellow-650: oklch(46.875% 0.095 71.911deg);
+  --color-yellow-700: oklch(42.708% 0.086 71.911deg);
+  --color-yellow-750: oklch(37.5% 0.077 71.911deg);
+  --color-yellow-800: oklch(32.292% 0.069 71.911deg);
+  --color-yellow-850: oklch(28.125% 0.06 71.911deg);
+  --color-yellow-900: oklch(25% 0.052 71.911deg);
+  --color-yellow-950: oklch(20.833% 0.043 71.911deg);
+  --color-yellow-1000: oklch(20.833% 0.043 71.911deg);
+  --color-green-0: oklch(100% 0 145.033deg);
+  --color-green-50: oklch(95.833% 0.055 145.033deg);
+  --color-green-100: oklch(90.625% 0.132 145.033deg);
+  --color-green-150: oklch(87.5% 0.121 145.033deg);
+  --color-green-200: oklch(83.333% 0.132 145.033deg);
+  --color-green-250: oklch(79.167% 0.132 145.033deg);
+  --color-green-300: oklch(75% 0.132 145.033deg);
+  --color-green-350: oklch(70.833% 0.132 145.033deg);
+  --color-green-400: oklch(66.667% 0.132 145.033deg);
+  --color-green-450: oklch(62.5% 0.132 145.033deg);
+  --color-green-500: oklch(58.333% 0.132 145.033deg);
+  --color-green-550: oklch(54.167% 0.132 145.033deg);
+  --color-green-600: oklch(50% 0.132 145.033deg);
+  --color-green-650: oklch(44.792% 0.132 145.033deg);
+  --color-green-700: oklch(40.625% 0.121 145.033deg);
+  --color-green-750: oklch(36.458% 0.11 145.033deg);
+  --color-green-800: oklch(32.292% 0.099 145.033deg);
+  --color-green-850: oklch(28.125% 0.088 145.033deg);
+  --color-green-900: oklch(25% 0.077 145.033deg);
+  --color-green-950: oklch(21.875% 0.066 145.033deg);
+  --color-green-1000: oklch(17.708% 0.055 145.033deg);
+  --color-blue-0: oklch(100% 0 224.452deg);
+  --color-blue-50: oklch(95.833% 0.022 224.452deg);
+  --color-blue-100: oklch(91.667% 0.05 224.452deg);
+  --color-blue-150: oklch(88.542% 0.039 224.452deg);
+  --color-blue-200: oklch(84.375% 0.067 224.452deg);
+  --color-blue-250: oklch(80.208% 0.067 224.452deg);
+  --color-blue-300: oklch(76.042% 0.067 224.452deg);
+  --color-blue-350: oklch(71.875% 0.067 224.452deg);
+  --color-blue-400: oklch(67.708% 0.067 224.452deg);
+  --color-blue-450: oklch(63.542% 0.067 224.452deg);
+  --color-blue-500: oklch(59.375% 0.067 224.452deg);
+  --color-blue-550: oklch(55.208% 0.067 224.452deg);
+  --color-blue-600: oklch(51.042% 0.067 224.452deg);
+  --color-blue-650: oklch(45.833% 0.067 224.452deg);
+  --color-blue-700: oklch(41.667% 0.067 224.452deg);
+  --color-blue-750: oklch(36.458% 0.067 224.452deg);
+  --color-blue-800: oklch(33.333% 0.062 224.452deg);
+  --color-blue-850: oklch(30.208% 0.056 224.452deg);
+  --color-blue-900: oklch(23.958% 0.045 224.452deg);
+  --color-blue-950: oklch(20.833% 0.039 224.452deg);
+  --color-blue-1000: oklch(20.833% 0.039 224.452deg);
 
   /* Shadow color variables with opacity based on color variables */
-  --color-shadow-black: color-mix(in srgb, var(--color-black) 10%, transparent);
+  --color-shadow-black: color-mix(
+    in srgb,
+    var(--color-gray-1000) 10%,
+    transparent
+  );
   --color-shadow-black-md: color-mix(
     in srgb,
-    var(--color-black) 20%,
+    var(--color-gray-1000) 20%,
     transparent
   );
   --color-shadow-black-lg: color-mix(
     in srgb,
-    var(--color-black) 30%,
+    var(--color-gray-1000) 30%,
     transparent
   );
 
   /* Shadow variables */
-  --shadow-default: 0 0 var(--space-2) var(--shadow-primary);
+  --shadow-surface-neutral: 0 0 var(--space-2) var(--color-shadow-neutral);
+  --shadow-surface-elevated-neutral: 0 var(--space-1) var(--space-2)
+    var(--space-1) var(--color-shadow-neutral);
 
   /* Font family variables */
   --font-family-display: "Eagle Lake", serif;
@@ -110,11 +174,16 @@ button {
 
   /* Spacing variables */
   --space-base: 8px;
+  --space-0-25: calc(var(--space-base) * 0.25);
+  --space-0-5: calc(var(--space-base) * 0.5);
   --space-1: calc(var(--space-base) * 1);
   --space-2: calc(var(--space-base) * 2);
   --space-3: calc(var(--space-base) * 3);
   --space-4: calc(var(--space-base) * 4);
   --space-5: calc(var(--space-base) * 5);
+
+  /* Border variables */
+  --border-width-hairline: 1px;
 
   /* Element sizing variables */
   --size-top-bar: calc(var(--space-base) * 10);
@@ -124,70 +193,100 @@ button {
 
 @media (prefers-color-scheme: light) {
   :root {
-    /* Primary typography and layout colors */
-    --color-foreground: var(--color-gray-900);
-    --color-foreground-muted: var(--color-gray-600);
-    --color-background: var(--color-white);
-    --color-background-surface: var(--color-gray-100);
-    --color-border-hairline: color-mix(
+    /* Neutral colors */
+    --color-background-neutral: var(--color-gray-100);
+    --color-foreground-neutral: var(--color-gray-900);
+    --color-background-surface-neutral: var(--color-gray-200);
+    --color-border-surface-neutral: var(--color-gray-300);
+    --color-interactive-background-default-neutral: var(--color-gray-300);
+    --color-interactive-foreground-default-neutral: var(--color-gray-900);
+    --color-interactive-border-default-neutral: var(--color-gray-400);
+    --color-interactive-background-hover-neutral: var(--color-gray-400);
+    --color-interactive-foreground-hover-neutral: var(--color-gray-900);
+    --color-interactive-border-hover-neutral: var(--color-gray-500);
+    --color-interactive-background-active-neutral: var(--color-gray-500);
+    --color-interactive-foreground-active-neutral: var(--color-gray-900);
+    --color-interactive-border-active-neutral: var(--color-gray-600);
+    --color-interactive-background-focus-neutral: var(--color-gray-400);
+    --color-interactive-foreground-focus-neutral: var(--color-gray-900);
+    --color-interactive-border-focus-neutral: var(--color-gray-500);
+    --color-shadow-neutral: color-mix(
       in srgb,
-      var(--color-gray-300) 50%,
+      var(--color-gray-1000) 25%,
       transparent
     );
-    --color-border-subtle: var(--color-gray-300);
-    --shadow-primary: var(--color-shadow-black);
-    --shadow-secondary: var(--color-shadow-black-md);
 
-    /* Error typography and layout colors */
-    --color-error-foreground: var(--color-red-600);
-    --color-error-background: var(--color-red-100);
-    --color-error-border-subtle: var(--color-red-400);
-
-    /* Primary interactive element colors */
-    --color-interactive-base: var(--color-gray-800);
-    --color-interactive-hover: var(--color-gray-700);
-    --color-interactive-active: var(--color-gray-600);
-    --color-interactive-focus: var(--color-blue-500);
-    --color-interactive-selected: var(--color-blue-600);
-    --color-interactive-selected-hover: var(--color-blue-500);
-    --color-interactive-selected-active: var(--color-blue-700);
-    --color-interactive-border: var(--color-gray-800);
-    --color-interactive-border-selected: var(--color-blue-700);
-    --color-interactive-text: var(--color-white);
+    /* Danger colors */
+    --color-background-danger: var(--color-red-100);
+    --color-foreground-danger: var(--color-red-900);
+    --color-background-surface-danger: var(--color-red-200);
+    --color-border-surface-danger: var(--color-red-300);
+    --color-interactive-background-default-danger: var(--color-red-300);
+    --color-interactive-foreground-default-danger: var(--color-red-900);
+    --color-interactive-border-default-danger: var(--color-red-400);
+    --color-interactive-background-hover-danger: var(--color-red-400);
+    --color-interactive-foreground-hover-danger: var(--color-red-900);
+    --color-interactive-border-hover-danger: var(--color-red-500);
+    --color-interactive-background-active-danger: var(--color-red-500);
+    --color-interactive-foreground-active-danger: var(--color-red-900);
+    --color-interactive-border-active-danger: var(--color-red-600);
+    --color-interactive-background-focus-danger: var(--color-red-400);
+    --color-interactive-foreground-focus-danger: var(--color-red-900);
+    --color-interactive-border-focus-danger: var(--color-red-500);
+    --color-shadow-danger: color-mix(
+      in srgb,
+      var(--color-red-1000) 25%,
+      transparent
+    );
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Primary typography and layout colors */
-    --color-foreground: var(--color-gray-100);
-    --color-foreground-muted: var(--color-gray-400);
-    --color-background: var(--color-gray-900);
-    --color-background-surface: var(--color-gray-800);
-    --color-border-hairline: color-mix(
+    /* Neutral colors */
+    --color-background-neutral: var(--color-gray-900);
+    --color-foreground-neutral: var(--color-gray-100);
+    --color-background-surface-neutral: var(--color-gray-800);
+    --color-border-surface-neutral: var(--color-gray-700);
+    --color-interactive-background-default-neutral: var(--color-gray-700);
+    --color-interactive-foreground-default-neutral: var(--color-gray-100);
+    --color-interactive-border-default-neutral: var(--color-gray-600);
+    --color-interactive-background-hover-neutral: var(--color-gray-600);
+    --color-interactive-foreground-hover-neutral: var(--color-gray-100);
+    --color-interactive-border-hover-neutral: var(--color-gray-500);
+    --color-interactive-background-active-neutral: var(--color-gray-500);
+    --color-interactive-foreground-active-neutral: var(--color-gray-100);
+    --color-interactive-border-active-neutral: var(--color-gray-400);
+    --color-interactive-background-focus-neutral: var(--color-gray-600);
+    --color-interactive-foreground-focus-neutral: var(--color-gray-100);
+    --color-interactive-border-focus-neutral: var(--color-gray-500);
+    --color-shadow-neutral: color-mix(
       in srgb,
-      var(--color-gray-700) 50%,
+      var(--color-gray-1000) 25%,
       transparent
     );
-    --color-border-subtle: var(--color-gray-600);
-    --shadow-primary: var(--color-shadow-black-md);
-    --shadow-secondary: var(--color-shadow-black-lg);
 
-    /* Error typography and layout colors */
-    --color-error-foreground: var(--color-red-300);
-    --color-error-background: var(--color-red-900);
-    --color-error-border-subtle: var(--color-red-700);
-
-    /* Primary interactive element colors */
-    --color-interactive-base: var(--color-gray-900);
-    --color-interactive-hover: var(--color-gray-700);
-    --color-interactive-active: var(--color-gray-600);
-    --color-interactive-focus: var(--color-blue-200);
-    --color-interactive-selected: var(--color-blue-800);
-    --color-interactive-selected-hover: var(--color-blue-700);
-    --color-interactive-selected-active: var(--color-blue-600);
-    --color-interactive-border: var(--color-gray-500);
-    --color-interactive-border-selected: var(--color-blue-600);
-    --color-interactive-text: var(--color-white);
+    /* Danger colors */
+    --color-background-danger: var(--color-red-900);
+    --color-foreground-danger: var(--color-red-100);
+    --color-background-surface-danger: var(--color-red-800);
+    --color-border-surface-danger: var(--color-red-700);
+    --color-interactive-background-default-danger: var(--color-red-700);
+    --color-interactive-foreground-default-danger: var(--color-red-100);
+    --color-interactive-border-default-danger: var(--color-red-600);
+    --color-interactive-background-hover-danger: var(--color-red-600);
+    --color-interactive-foreground-hover-danger: var(--color-red-100);
+    --color-interactive-border-hover-danger: var(--color-red-500);
+    --color-interactive-background-active-danger: var(--color-red-500);
+    --color-interactive-foreground-active-danger: var(--color-red-100);
+    --color-interactive-border-active-danger: var(--color-red-400);
+    --color-interactive-background-focus-danger: var(--color-red-600);
+    --color-interactive-foreground-focus-danger: var(--color-red-100);
+    --color-interactive-border-focus-danger: var(--color-red-500);
+    --color-shadow-danger: color-mix(
+      in srgb,
+      var(--color-red-1000) 25%,
+      transparent
+    );
   }
 }

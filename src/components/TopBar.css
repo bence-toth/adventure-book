@@ -1,11 +1,12 @@
 .top-bar {
-  background: var(--color-background-surface);
+  background: var(--color-background-surface-neutral);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: var(--space-1) var(--space-2);
-  border-bottom: 1px solid var(--color-border-hairline);
-  box-shadow: var(--shadow-default);
+  border-bottom: var(--border-width-hairline) solid
+    var(--color-border-surface-neutral);
+  box-shadow: var(--shadow-surface-neutral);
   position: relative;
   z-index: 2;
   height: var(--size-top-bar);
@@ -37,22 +38,23 @@
   font-weight: 400;
   line-height: var(--line-height-dense);
   background: transparent;
-  border: none;
+  border: var(--border-width-hairline) solid transparent;
   padding: var(--space-0) var(--space-1);
   margin: calc(-1 * var(--space-0)) calc(-1 * var(--space-1));
-  color: var(--color-foreground);
+  color: var(--color-foreground-neutral);
   min-width: 200px;
   field-sizing: content;
 }
 
 .top-bar-title-input:hover {
-  outline: 2px solid var(--color-interactive-hover);
-  outline-offset: 2px;
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-hover-neutral);
 }
 
-.top-bar-title-input:focus {
-  outline: 2px solid var(--color-interactive-focus);
-  outline-offset: 2px;
+.top-bar-title-input:focus-visible {
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-focus-neutral);
+  outline-offset: var(--space-1);
 }
 
 .top-bar-nav {

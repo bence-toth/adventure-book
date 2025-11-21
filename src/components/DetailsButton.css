@@ -11,18 +11,27 @@ summary.button::marker {
 
 /* Apply selected styling when details is open */
 details[open] > summary.button.button-primary {
-  background: var(--color-interactive-selected);
-  border-color: var(--color-interactive-border-selected);
+  background: var(--color-interactive-background-default-neutral);
+  color: var(--color-interactive-foreground-default-neutral);
+  border: var(--border-width-hairline) solid
+    var(--color-interactive-border-default-neutral);
 }
 
 details[open] > summary.button.button-primary:hover {
-  background: var(--color-interactive-selected-hover);
+  background: var(--color-interactive-background-hover-neutral);
+  color: var(--color-interactive-foreground-hover-neutral);
+  border-color: var(--color-interactive-border-hover-neutral);
 }
 
 details[open] > summary.button.button-primary:active {
-  background: var(--color-interactive-selected-active);
+  background: var(--color-interactive-background-active-neutral);
+  color: var(--color-interactive-foreground-active-neutral);
+  border-color: var(--color-interactive-border-active-neutral);
 }
 
 details[open] > summary.button.button-primary:focus-visible {
-  outline-color: var(--color-interactive-focus);
+  background: var(--color-interactive-background-focus-neutral);
+  color: var(--color-interactive-foreground-focus-neutral);
+  border-color: var(--color-interactive-border-focus-neutral);
+  outline-offset: var(--space-1);
 }

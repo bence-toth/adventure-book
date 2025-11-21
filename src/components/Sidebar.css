@@ -1,9 +1,10 @@
 .sidebar {
   position: relative;
   z-index: 1;
-  background-color: var(--color-background-surface);
-  border-right: 1px solid var(--color-border-hairline);
-  box-shadow: var(--shadow-default);
+  background-color: var(--color-background-surface-neutral);
+  border-right: var(--border-width-hairline) solid
+    var(--color-border-surface-neutral);
+  box-shadow: var(--shadow-surface-neutral);
   overflow-y: auto;
   min-height: 0;
   padding: var(--space-2);
@@ -16,7 +17,6 @@
 }
 
 .sidebar-inventory-empty {
-  color: var(--color-foreground-muted);
   margin: var(--space-2) 0;
 }
 
