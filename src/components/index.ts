@@ -3,9 +3,21 @@ export { Passage } from "./Passage";
 export { ErrorBoundary } from "./ErrorBoundary";
 export { TopBar } from "./TopBar";
 export { Sidebar } from "./Sidebar";
-export { Button } from "./Button";
-export { ButtonLink } from "./ButtonLink";
-export { DetailsButton } from "./DetailsButton";
 export { DocumentManager } from "./DocumentManager";
-export { ContextMenu, ContextMenuItem } from "./ContextMenu";
-export { ConfirmationModal } from "./ConfirmationModal";
+
+// Re-export common components
+export {
+  Button,
+  ButtonLink,
+  ConfirmationModal,
+  ContextMenu,
+  ContextMenuItem,
+  DetailsButton,
+} from "./common";
+export type {
+  ButtonProps,
+  ConfirmationModalProps,
+  ContextMenuProps,
+  ContextMenuItemProps,
+  DetailsButtonProps,
+} from "./common";
