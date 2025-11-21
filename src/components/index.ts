@@ -7,3 +7,5 @@ export { Button } from "./Button";
 export { ButtonLink } from "./ButtonLink";
 export { DetailsButton } from "./DetailsButton";
 export { DocumentManager } from "./DocumentManager";
+export { ContextMenu, ContextMenuItem } from "./ContextMenu";
+export { ConfirmationModal } from "./ConfirmationModal";

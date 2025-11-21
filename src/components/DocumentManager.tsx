@@ -2,24 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SquarePlus, EllipsisVertical } from "lucide-react";
 import {
-  useFloating,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-  useClick,
-  useDismiss,
-  useRole,
-  useInteractions,
-  FloatingFocusManager,
-} from "@floating-ui/react";
-import {
   listStories,
   deleteStory,
   createStory,
   type StoredStory,
 } from "../data/storyDatabase";
 import { Button } from "./Button";
+import { ContextMenu, ContextMenuItem } from "./ContextMenu";
+import { ConfirmationModal } from "./ConfirmationModal";
 import storyTemplate from "../data/story.yaml?raw";
 import { getStoryTestRoute, getPassageRoute } from "../constants/routes";
 import { getCurrentPassageId } from "../utils/localStorage";
@@ -34,47 +24,13 @@ export const DocumentManager = () => {
     title: string;
   } | null>(null);
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [contextMenuTrigger, setContextMenuTrigger] =
+    useState<HTMLElement | null>(null);
   const [contextMenuStory, setContextMenuStory] = useState<{
     id: string;
     title: string;
   } | null>(null);
   const navigate = useNavigate();
-
-  // Floating UI setup for context menu
-  const { refs, floatingStyles, context } = useFloating({
-    open: contextMenuOpen,
-    onOpenChange: setContextMenuOpen,
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
-    whileElementsMounted: autoUpdate,
-    placement: "top-end",
-  });
-
-  const click = useClick(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context);
-
-  const { getFloatingProps } = useInteractions([click, dismiss, role]);
-
-  // Floating UI setup for delete confirmation modal
-  const { refs: modalRefs, context: modalContext } = useFloating({
-    open: !!storyToDelete,
-    onOpenChange: (open) => {
-      if (!open) {
-        cancelDelete();
-      }
-    },
-  });
-
-  const modalDismiss = useDismiss(modalContext, {
-    escapeKey: true,
-    outsidePress: true,
-  });
-  const modalRole = useRole(modalContext);
-
-  const { getFloatingProps: getModalFloatingProps } = useInteractions([
-    modalDismiss,
-    modalRole,
-  ]);
 
   const loadStories = async () => {
     try {
@@ -93,18 +49,6 @@ export const DocumentManager = () => {
   useEffect(() => {
     loadStories();
   }, []);
-
-  // Lock scroll when modal is open
-  useEffect(() => {
-    if (storyToDelete) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [storyToDelete]);
 
   const handleOpenStory = (id: string) => {
     // Check if there's a saved passage for this story
@@ -127,7 +71,7 @@ export const DocumentManager = () => {
   ) => {
     e.stopPropagation();
     setContextMenuStory({ id, title });
-    refs.setReference(buttonRef);
+    setContextMenuTrigger(buttonRef);
     setContextMenuOpen(true);
   };
 
@@ -261,53 +205,32 @@ export const DocumentManager = () => {
         ))}
       </div>
 
-      {/* Context Menu */}
-      {contextMenuOpen && (
-        <FloatingFocusManager context={context} modal={false}>
-          <div
-            ref={refs.setFloating}
-            className="context-menu"
-            style={floatingStyles}
-            {...getFloatingProps()}
-          >
-            <button
-              className="context-menu-item context-menu-item-danger"
-              onClick={handleDeleteClick}
-            >
-              Delete
-            </button>
-          </div>
-        </FloatingFocusManager>
-      )}
+      <ContextMenu
+        open={contextMenuOpen}
+        onOpenChange={setContextMenuOpen}
+        triggerRef={contextMenuTrigger}
+      >
+        <ContextMenuItem onClick={handleDeleteClick}>Delete</ContextMenuItem>
+      </ContextMenu>
 
-      {/* Modal Overlay */}
-      {storyToDelete && (
-        <FloatingFocusManager context={modalContext} modal initialFocus={0}>
-          <div className="modal-overlay" onClick={cancelDelete}>
-            <dialog
-              ref={modalRefs.setFloating}
-              open
-              className="delete-dialog"
-              onClick={(e) => e.stopPropagation()}
-              {...getModalFloatingProps()}
-            >
-              <div className="delete-dialog-content">
-                <h2>Delete Story</h2>
-                <p>
-                  Are you sure you want to delete "{storyToDelete.title}"? This
-                  action cannot be undone.
-                </p>
-                <div className="delete-dialog-actions">
-                  <Button onClick={cancelDelete}>Cancel</Button>
-                  <Button variant="danger" onClick={confirmDelete}>
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </dialog>
-          </div>
-        </FloatingFocusManager>
-      )}
+      <ConfirmationModal
+        open={!!storyToDelete}
+        onOpenChange={(open) => {
+          if (!open) cancelDelete();
+        }}
+        title="Delete Story"
+        message={
+          <p>
+            Are you sure you want to delete "{storyToDelete?.title}"? This
+            action cannot be undone.
+          </p>
+        }
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        variant="danger"
+      />
     </div>
   );
 };
