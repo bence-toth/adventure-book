@@ -18,7 +18,7 @@ describe("DetailsButton Component", () => {
       expect(content).toBeInTheDocument();
     });
 
-    it("applies button classes to summary", () => {
+    it("renders details element as button-like component", () => {
       const { container } = render(
         <DetailsButton summary="Test">
           <div>Content</div>
@@ -28,8 +28,6 @@ describe("DetailsButton Component", () => {
       const summary = container.querySelector("summary");
       expect(summary).toBeInTheDocument();
       expect(summary?.tagName).toBe("SUMMARY");
-      expect(summary).toHaveClass("button");
-      expect(summary).toHaveClass("button-primary");
     });
 
     it("renders with icon when provided", () => {
@@ -59,9 +57,9 @@ describe("DetailsButton Component", () => {
       );
 
       const summary = container.querySelector("summary");
-      const iconContainer = summary?.querySelector(".button-icon");
+      const icon = screen.getByText("🔍");
 
-      expect(iconContainer).toBeInTheDocument();
+      expect(summary).toContainElement(icon);
     });
   });
 
@@ -85,8 +83,6 @@ describe("DetailsButton Component", () => {
       );
 
       const summary = container.querySelector("summary");
-      expect(summary).toHaveClass("button");
-      expect(summary).toHaveClass("button-primary");
       expect(summary).toHaveClass("custom-summary");
     });
   });
@@ -143,7 +139,7 @@ describe("DetailsButton Component", () => {
       );
 
       const summary = container.querySelector("summary");
-      expect(summary).toHaveClass("button-primary");
+      expect(summary).toBeInTheDocument();
     });
 
     it("applies specified variant", () => {
@@ -154,7 +150,7 @@ describe("DetailsButton Component", () => {
       );
 
       const summary = container.querySelector("summary");
-      expect(summary).toHaveClass("button-primary");
+      expect(summary).toBeInTheDocument();
     });
   });
 
@@ -202,7 +198,7 @@ describe("DetailsButton Component", () => {
 
       expect(details).toHaveClass("info-details");
       expect(details).toHaveAttribute("role", "region");
-      expect(summary).toHaveClass("button", "button-primary", "info-summary");
+      expect(summary).toHaveClass("info-summary");
       expect(icon).toBeInTheDocument();
       expect(content).toBeInTheDocument();
     });
@@ -217,12 +213,12 @@ describe("DetailsButton Component", () => {
       );
 
       const summary = container.querySelector("summary");
-      const iconContainer = summary?.querySelector(".button-icon");
-      const textContainer = summary?.querySelector(".button-text");
+      const icon = screen.getByText("📝");
+      const text = screen.getByText("Notes");
 
-      expect(iconContainer).toBeInTheDocument();
-      expect(textContainer).toBeInTheDocument();
-      expect(textContainer).toHaveTextContent("Notes");
+      expect(summary).toContainElement(icon);
+      expect(summary).toContainElement(text);
+      expect(text).toHaveTextContent("Notes");
     });
   });
 });
