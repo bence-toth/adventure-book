@@ -9,6 +9,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   variant?: "primary" | "danger";
   size?: "default" | "small";
+  "data-testid"?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

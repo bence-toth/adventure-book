@@ -12,8 +12,7 @@ export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
   padding: var(--space-2) var(--space-3);
   text-align: left;
   cursor: pointer;
-  font-size: var(--font-size-base);
-  transition: background-color 0.15s ease;
+  font-size: inherit;
   border-radius: var(--space-1);
   background: ${(props) =>
     props.$variant === "danger"

@@ -8,8 +8,8 @@ export interface ButtonLinkProps extends Omit<LinkProps, "className"> {
   selected?: boolean;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
-  variant?: "primary";
   size?: "default" | "small";
+  "data-testid"?: string;
 }
 
 export const ButtonLink = ({
@@ -17,8 +17,8 @@ export const ButtonLink = ({
   selected = false,
   icon,
   className = "",
-  variant = "primary",
   size = "default",
+  "data-testid": dataTestId,
   ...props
 }: ButtonLinkProps) => {
   const iconElement = icon
@@ -34,6 +34,7 @@ export const ButtonLink = ({
       className={className}
       $size={size}
       $selected={selected}
+      data-testid={dataTestId}
       {...props}
     >
       {iconElement && <IconWrapper>{iconElement}</IconWrapper>}

@@ -21,6 +21,7 @@ export interface ContextMenuProps {
   triggerRef: HTMLElement | null;
   children: ReactNode;
   placement?: Placement;
+  "data-testid"?: string;
 }
 
 export const ContextMenu = ({
@@ -28,7 +29,8 @@ export const ContextMenu = ({
   onOpenChange,
   triggerRef,
   children,
-  placement = "top-end",
+  placement = "bottom-start",
+  "data-testid": dataTestId,
 }: ContextMenuProps) => {
   const { refs, floatingStyles, context } = useFloating({
     open,
@@ -58,7 +60,7 @@ export const ContextMenu = ({
       <MenuContainer
         ref={refs.setFloating}
         style={floatingStyles}
-        data-testid="context-menu"
+        data-testid={dataTestId || "context-menu"}
         {...getFloatingProps()}
       >
         {children}
@@ -71,18 +73,20 @@ export interface ContextMenuItemProps {
   onClick: () => void;
   children: ReactNode;
   variant?: "default" | "danger";
+  "data-testid"?: string;
 }
 
 export const ContextMenuItem = ({
   onClick,
   children,
   variant = "default",
+  "data-testid": dataTestId,
 }: ContextMenuItemProps) => {
   return (
     <MenuItem
       $variant={variant}
       onClick={onClick}
-      data-testid="context-menu-item"
+      data-testid={dataTestId || "context-menu-item"}
     >
       {children}
     </MenuItem>

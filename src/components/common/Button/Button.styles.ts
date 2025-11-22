@@ -9,9 +9,6 @@ export const StyledButton = styled.button<{
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 400;
   line-height: var(--line-height-dense);
   padding: ${(props) =>
     props.$size === "small"
@@ -85,7 +82,7 @@ export const IconWrapper = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
-  line-height: 1;
+  line-height: var(--line-height-dense);
 `;
 
 export const TextWrapper = styled.span`

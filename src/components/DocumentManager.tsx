@@ -212,6 +212,7 @@ export const DocumentManager = () => {
         open={contextMenuOpen}
         onOpenChange={setContextMenuOpen}
         triggerRef={contextMenuTrigger}
+        placement="top-end"
       >
         <ContextMenuItem onClick={handleDeleteClick}>Delete</ContextMenuItem>
       </ContextMenu>

@@ -15,6 +15,7 @@ export interface DetailsButtonProps
   className?: string;
   summaryClassName?: string;
   variant?: "primary";
+  "data-testid"?: string;
 }
 
 export const DetailsButton = ({

@@ -21,11 +21,12 @@ export interface ConfirmationModalProps {
   onOpenChange: (open: boolean) => void;
   title: string;
   message: ReactNode;
-  confirmLabel?: string;
-  cancelLabel?: string;
+  confirmLabel: string;
+  cancelLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
   variant?: "danger" | "primary";
+  "data-testid"?: string;
 }
 
 export const ConfirmationModal = ({
@@ -33,11 +34,12 @@ export const ConfirmationModal = ({
   onOpenChange,
   title,
   message,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   onConfirm,
   onCancel,
   variant = "primary",
+  "data-testid": dataTestId,
 }: ConfirmationModalProps) => {
   const { refs, context } = useFloating({
     open,
@@ -73,7 +75,7 @@ export const ConfirmationModal = ({
           ref={refs.setFloating}
           open
           onClick={(e) => e.stopPropagation()}
-          data-testid="confirmation-dialog"
+          data-testid={dataTestId || "confirmation-dialog"}
           {...getFloatingProps()}
         >
           <DialogContent data-testid="dialog-content">
