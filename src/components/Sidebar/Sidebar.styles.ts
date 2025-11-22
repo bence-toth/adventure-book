@@ -4,7 +4,7 @@ export const SidebarContainer = styled.div`
   position: relative;
   z-index: 1;
   background-color: var(--color-background-surface-neutral);
-  border-right: var(--border-width-surface) solid
+  border-inline-end: var(--border-width-surface) solid
     var(--color-border-surface-neutral);
   box-shadow: var(--shadow-surface-neutral);
   overflow-y: auto;

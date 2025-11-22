@@ -11,7 +11,7 @@ export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
   display: block;
   width: 100%;
   padding: var(--space-2) var(--space-3);
-  text-align: left;
+  text-align: start;
   cursor: pointer;
   font-size: inherit;
   border-radius: var(--space-1);

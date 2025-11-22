@@ -128,8 +128,8 @@ export const StoryCardContent = styled.div`
 `;
 
 export const StoryCardTitle = styled.h2`
-  font-size: var(--font-size-xl);
-  margin: 0 0 var(--space-1);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
   color: var(--color-foreground);
   overflow-wrap: break-word;
   font-family: var(--font-family-display);
@@ -149,6 +149,7 @@ export const StoryCardActions = styled.div`
 export const StoryCardNew = styled.button`
   text-align: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: var(--space-3);
@@ -179,9 +180,5 @@ export const StoryCardNew = styled.button`
     color: var(--color-interactive-foreground-focus-neutral);
     border-color: var(--color-interactive-border-focus-neutral);
     outline-offset: var(--space-1);
-  }
-
-  ${StoryCardTitle} {
-    font-size: var(--font-size-xl);
   }
 `;
