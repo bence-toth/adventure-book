@@ -21,8 +21,8 @@ export interface ConfirmationModalProps {
   onOpenChange: (open: boolean) => void;
   title: string;
   message: ReactNode;
-  confirmLabel: string;
-  cancelLabel: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
   onConfirm: () => void;
   onCancel: () => void;
   variant?: "danger" | "primary";
@@ -34,8 +34,8 @@ export const ConfirmationModal = ({
   onOpenChange,
   title,
   message,
-  confirmLabel,
-  cancelLabel,
+  confirmLabel = "Confirm",
+  cancelLabel = "Cancel",
   onConfirm,
   onCancel,
   variant = "primary",
