@@ -97,12 +97,4 @@ describe("Adventure Book Integration Tests", () => {
     });
     expect(restartButton).toBeInTheDocument();
   });
-
-  it("maintains consistent styling across all pages", async () => {
-    renderApp(`/adventure/${TEST_STORY_ID}/test`);
-
-    // Check that the app container exists
-    const intro = await screen.findByTestId(INTRODUCTION_TEST_IDS.CONTAINER);
-    expect(intro).toHaveClass("introduction");
-  });
 });

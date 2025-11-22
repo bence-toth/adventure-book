@@ -1,4 +1,6 @@
-.top-bar {
+import styled from "styled-components";
+
+export const TopBarContainer = styled.div`
   background: var(--color-background-surface-neutral);
   display: flex;
   justify-content: space-between;
@@ -10,28 +12,28 @@
   position: relative;
   z-index: 2;
   height: var(--size-top-bar);
-}
+`;
 
-.top-bar-logo {
+export const TopBarLogo = styled.div`
   display: flex;
   align-items: center;
   gap: var(--space-1);
   flex-grow: 1;
-}
+`;
 
-.top-bar-logo-icon {
+export const TopBarLogoIcon = styled.div`
   display: flex;
   font-size: var(--font-size-xl);
   line-height: 1;
-}
+`;
 
-.top-bar-title {
+export const TopBarTitle = styled.h1`
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
   line-height: var(--line-height-dense);
-}
+`;
 
-.top-bar-title-input {
+export const TopBarTitleInput = styled.input`
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
   line-height: var(--line-height-dense);
@@ -42,18 +44,18 @@
   color: var(--color-foreground-neutral);
   min-width: var(--size-title-input-min-width);
   field-sizing: content;
-}
 
-.top-bar-title-input:hover {
-  border-color: var(--color-interactive-border-hover-neutral);
-}
+  &:hover {
+    border-color: var(--color-interactive-border-hover-neutral);
+  }
 
-.top-bar-title-input:focus-visible {
-  border-color: var(--color-interactive-border-focus-neutral);
-  outline-offset: var(--space-1);
-}
+  &:focus-visible {
+    border-color: var(--color-interactive-border-focus-neutral);
+    outline-offset: var(--space-1);
+  }
+`;
 
-.top-bar-nav {
+export const TopBarNav = styled.nav`
   display: flex;
   gap: var(--space-2);
-}
+`;

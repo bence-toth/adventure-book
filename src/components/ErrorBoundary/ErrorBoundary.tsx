@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import type { ReactNode } from "react";
 import { Button, DetailsButton } from "../common";
-import "./ErrorBoundary.css";
+import {
+  ErrorBoundaryContainer,
+  ErrorBoundaryTitle,
+  ErrorBoundaryDescription,
+  ErrorBoundaryActions,
+  ErrorBoundaryHelp,
+  ErrorBoundaryHelpText,
+  ErrorBoundaryDetailsContent,
+} from "./ErrorBoundary.styles";
 
 interface Props {
   children: ReactNode;
@@ -64,18 +72,20 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return (
       <div className="adventure-book">
-        <div className="error-boundary">
-          <h1 className="error-boundary-title">A system error occurred</h1>
-          <p className="error-boundary-description">{getErrorMessage()}</p>
-          <div className="error-boundary-actions">
+        <ErrorBoundaryContainer>
+          <ErrorBoundaryTitle>A system error occurred</ErrorBoundaryTitle>
+          <ErrorBoundaryDescription>
+            {getErrorMessage()}
+          </ErrorBoundaryDescription>
+          <ErrorBoundaryActions>
             <Button onClick={() => window.location.reload()}>
               Reload page
             </Button>
-          </div>
-          <div className="error-boundary-help">
-            <p className="error-boundary-help-text">
+          </ErrorBoundaryActions>
+          <ErrorBoundaryHelp>
+            <ErrorBoundaryHelpText>
               If this problem persists, the story file may need to be fixed.
-            </p>
+            </ErrorBoundaryHelpText>
             {error && (
               <DetailsButton
                 summary="Technical details"
@@ -83,21 +93,21 @@ export class ErrorBoundary extends Component<Props, State> {
                 role="region"
                 aria-label="Technical details"
               >
-                <pre className="error-boundary-details-content error-boundary-details-content-error">
+                <ErrorBoundaryDetailsContent $isError>
                   {error.message}
-                </pre>
+                </ErrorBoundaryDetailsContent>
                 {error.stack && (
-                  <pre className="error-boundary-details-content error-boundary-details-content-stack">
+                  <ErrorBoundaryDetailsContent>
                     {error.stack}
-                  </pre>
+                  </ErrorBoundaryDetailsContent>
                 )}
-                <p className="error-boundary-help-text">
+                <ErrorBoundaryHelpText>
                   Check the browser console for more details.
-                </p>
+                </ErrorBoundaryHelpText>
               </DetailsButton>
             )}
-          </div>
-        </div>
+          </ErrorBoundaryHelp>
+        </ErrorBoundaryContainer>
       </div>
     );
   };

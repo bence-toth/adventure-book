@@ -16,30 +16,21 @@ describe("TopBar Component", () => {
   });
 
   describe("Rendering", () => {
-    it("renders the header element with correct class", async () => {
+    it("renders the header element", async () => {
       renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
       const header = await screen.findByRole("banner");
       expect(header).toBeInTheDocument();
-      expect(header).toHaveClass("top-bar");
     });
 
     it("renders the story title input field", async () => {
       renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
       const titleInput = await screen.findByLabelText("Story title");
       expect(titleInput).toBeInTheDocument();
-      expect(titleInput).toHaveClass("top-bar-title-input");
 
       // Wait for the title to load from IndexedDB
       await waitFor(() => {
         expect(titleInput).toHaveValue("Mock Test Adventure");
       });
-    });
-
-    it("renders the logo icon", async () => {
-      renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
-      const logoContainer = await screen.findByTestId("top-bar-logo");
-      const logoIcon = logoContainer.querySelector(".top-bar-logo-icon");
-      expect(logoIcon).toBeInTheDocument();
     });
 
     it("renders Test navigation link", async () => {

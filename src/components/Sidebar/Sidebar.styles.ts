@@ -1,4 +1,6 @@
-.sidebar {
+import styled from "styled-components";
+
+export const SidebarContainer = styled.div`
   position: relative;
   z-index: 1;
   background-color: var(--color-background-surface-neutral);
@@ -8,22 +10,22 @@
   overflow-y: auto;
   min-height: 0;
   padding: var(--space-2);
-}
+`;
 
-.sidebar h2 {
+export const SidebarTitle = styled.h2`
   margin-top: 0;
   margin-bottom: var(--space-2);
   font-size: var(--font-size-lg);
-}
+`;
 
-.sidebar-inventory-empty {
+export const SidebarInventoryEmpty = styled.p`
   margin: var(--space-2) 0;
-}
+`;
 
-.sidebar-inventory {
+export const SidebarInventory = styled.ul`
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   margin: var(--space-2) 0;
-}
+`;

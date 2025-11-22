@@ -1,31 +1,33 @@
-.introduction-page-content {
+import styled from "styled-components";
+
+export const IntroductionPageContent = styled.div`
   display: grid;
   place-items: center;
   padding: var(--space-4);
-}
+`;
 
-.introduction {
+export const IntroductionContainer = styled.div`
   max-width: var(--size-content);
   padding: var(--space-5);
   text-align: center;
-}
+`;
 
-.introduction h1 {
+export const IntroductionTitle = styled.h1`
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
   margin-bottom: var(--space-4);
   text-wrap: balance;
-}
+`;
 
-.intro-text {
+export const IntroText = styled.div`
   margin-bottom: var(--space-5);
   text-align: start;
-}
+`;
 
-.intro-paragraph {
+export const IntroParagraph = styled.p`
   margin-bottom: var(--space-2);
-}
+`;
 
-.intro-action {
+export const IntroAction = styled.div`
   text-align: center;
-}
+`;

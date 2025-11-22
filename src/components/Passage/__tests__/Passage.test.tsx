@@ -74,14 +74,6 @@ describe("Passage Component", () => {
     );
   });
 
-  it("has correct CSS classes applied", async () => {
-    renderWithStory(<Passage />, { storyId: TEST_STORY_ID });
-
-    const container = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
-    expect(container).toBeInTheDocument();
-    expect(container).toHaveClass("passage");
-  });
-
   it("renders multiple paragraphs correctly", async () => {
     renderWithStory(<Passage />, { storyId: TEST_STORY_ID });
 
@@ -93,7 +85,6 @@ describe("Passage Component", () => {
 
     paragraphs.forEach((paragraph) => {
       expect(paragraph).toBeInTheDocument();
-      expect(paragraph).toHaveClass("passage-paragraph");
     });
   });
 });

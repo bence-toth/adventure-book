@@ -6,7 +6,14 @@ import {
 } from "../../constants/testIds";
 import { Button } from "../common";
 import { useStory } from "../../hooks/useStory";
-import "./Introduction.css";
+import {
+  IntroductionPageContent,
+  IntroductionContainer,
+  IntroductionTitle,
+  IntroText,
+  IntroParagraph,
+  IntroAction,
+} from "./Introduction.styles";
 
 export const Introduction = () => {
   const navigate = useNavigate();
@@ -19,59 +26,49 @@ export const Introduction = () => {
 
   if (loading) {
     return (
-      <div className="introduction-page-content">
-        <div
-          className="introduction"
-          data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
-        >
+      <IntroductionPageContent>
+        <IntroductionContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
           <p>Loading story...</p>
-        </div>
-      </div>
+        </IntroductionContainer>
+      </IntroductionPageContent>
     );
   }
 
   if (error || !story) {
     return (
-      <div className="introduction-page-content">
-        <div
-          className="introduction"
-          data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
-        >
+      <IntroductionPageContent>
+        <IntroductionContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
           <p>Error loading story: {error || "Story not found"}</p>
-        </div>
-      </div>
+        </IntroductionContainer>
+      </IntroductionPageContent>
     );
   }
 
   return (
-    <div className="introduction-page-content">
-      <div
-        className="introduction"
-        data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
-      >
-        <h1 data-testid={INTRODUCTION_TEST_IDS.TITLE}>
+    <IntroductionPageContent>
+      <IntroductionContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
+        <IntroductionTitle data-testid={INTRODUCTION_TEST_IDS.TITLE}>
           {story.metadata.title}
-        </h1>
-        <div className="intro-text" data-testid={INTRODUCTION_TEST_IDS.TEXT}>
+        </IntroductionTitle>
+        <IntroText data-testid={INTRODUCTION_TEST_IDS.TEXT}>
           {story.intro.paragraphs.map((paragraph, index) => (
-            <p
-              className="intro-paragraph"
+            <IntroParagraph
               key={index}
               data-testid={getIntroParagraphTestId(index)}
             >
               {paragraph}
-            </p>
+            </IntroParagraph>
           ))}
-        </div>
-        <div className="intro-action">
+        </IntroText>
+        <IntroAction>
           <Button
             onClick={handleStartAdventure}
             data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
           >
             {story.intro.action}
           </Button>
-        </div>
-      </div>
-    </div>
+        </IntroAction>
+      </IntroductionContainer>
+    </IntroductionPageContent>
   );
 };

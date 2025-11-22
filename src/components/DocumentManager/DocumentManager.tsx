@@ -16,7 +16,20 @@ import {
 import storyTemplate from "../../data/story.yaml?raw";
 import { getStoryTestRoute, getPassageRoute } from "../../constants/routes";
 import { getCurrentPassageId } from "../../utils/localStorage";
-import "./DocumentManager.css";
+import {
+  DocumentManagerContainer,
+  DocumentManagerLoading,
+  DocumentManagerError,
+  DocumentManagerList,
+  StoryCard,
+  StoryCardNew,
+  StoryCardClickable,
+  StoryCardContent,
+  StoryCardTitle,
+  StoryCardFooter,
+  StoryCardDate,
+  StoryCardMenu,
+} from "./DocumentManager.styles";
 
 export const DocumentManager = () => {
   const [stories, setStories] = useState<StoredStory[]>([]);
@@ -144,53 +157,48 @@ export const DocumentManager = () => {
 
   if (loading) {
     return (
-      <div className="document-manager">
-        <div className="document-manager-loading">Loading stories...</div>
-      </div>
+      <DocumentManagerContainer>
+        <DocumentManagerLoading>Loading stories...</DocumentManagerLoading>
+      </DocumentManagerContainer>
     );
   }
 
   if (error) {
     return (
-      <div className="document-manager">
-        <div className="document-manager-error">
+      <DocumentManagerContainer>
+        <DocumentManagerError>
           {error}
           <Button onClick={loadStories}>Retry</Button>
-        </div>
-      </div>
+        </DocumentManagerError>
+      </DocumentManagerContainer>
     );
   }
 
   return (
-    <div className="document-manager">
-      <div className="document-manager-list">
+    <DocumentManagerContainer>
+      <DocumentManagerList>
         {/* New Story Card */}
-        <button
-          className="story-card story-card-new"
-          onClick={handleCreateStory}
-        >
+        <StoryCardNew onClick={handleCreateStory}>
           <SquarePlus size={48} strokeWidth={1.5} />
-          <p>Create a new adventure</p>
-        </button>
+          <StoryCardTitle>Create a new adventure</StoryCardTitle>
+        </StoryCardNew>
 
         {/* Existing Stories */}
         {stories.map((story) => (
-          <div key={story.id} className="story-card">
-            <button
-              className="story-card-clickable"
+          <StoryCard key={story.id}>
+            <StoryCardClickable
               onClick={() => handleOpenStory(story.id)}
               aria-label={`Open ${story.title}`}
             >
-              <div className="story-card-content">
-                <h2 className="story-card-title">{story.title}</h2>
-              </div>
-            </button>
-            <div className="story-card-footer">
-              <p className="story-card-date">
+              <StoryCardContent>
+                <StoryCardTitle>{story.title}</StoryCardTitle>
+              </StoryCardContent>
+            </StoryCardClickable>
+            <StoryCardFooter>
+              <StoryCardDate>
                 Last edited {formatDate(story.lastEdited)}
-              </p>
-              <button
-                className="story-card-menu"
+              </StoryCardDate>
+              <StoryCardMenu
                 onClick={(e) =>
                   handleMenuClick(
                     e,
@@ -202,11 +210,11 @@ export const DocumentManager = () => {
                 aria-label={`Open menu for ${story.title}`}
               >
                 <EllipsisVertical size={20} strokeWidth={2} />
-              </button>
-            </div>
-          </div>
+              </StoryCardMenu>
+            </StoryCardFooter>
+          </StoryCard>
         ))}
-      </div>
+      </DocumentManagerList>
 
       <ContextMenu
         open={contextMenuOpen}
@@ -235,6 +243,6 @@ export const DocumentManager = () => {
         onCancel={cancelDelete}
         variant="danger"
       />
-    </div>
+    </DocumentManagerContainer>
   );
 };

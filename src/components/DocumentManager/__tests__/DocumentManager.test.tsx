@@ -123,8 +123,8 @@ describe("DocumentManager Component", () => {
       const title1 = await screen.findByText("Adventure One");
       const title2 = screen.getByText("Adventure Two");
 
-      expect(title1).toHaveClass("story-card-title");
-      expect(title2).toHaveClass("story-card-title");
+      expect(title1).toBeInTheDocument();
+      expect(title2).toBeInTheDocument();
     });
 
     it("displays last edited dates in relative format", async () => {
@@ -468,30 +468,6 @@ describe("DocumentManager Component", () => {
 
       expect(await screen.findByText(/1 minute ago/)).toBeInTheDocument();
       expect(screen.queryByText(/1 minutes ago/)).not.toBeInTheDocument();
-    });
-  });
-
-  describe("CSS Classes", () => {
-    beforeEach(() => {
-      vi.mocked(storyDatabase.listStories).mockResolvedValue(mockStories);
-    });
-
-    it("applies correct CSS classes to story cards", async () => {
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure One");
-
-      const storyCards = document.querySelectorAll(".story-card");
-      expect(storyCards.length).toBeGreaterThan(0);
-    });
-
-    it("applies special class to new story card", async () => {
-      render(<DocumentManager />);
-
-      const newStoryCard = await screen.findByText("Create a new adventure");
-      const cardElement = newStoryCard.closest(".story-card");
-
-      expect(cardElement).toHaveClass("story-card-new");
     });
   });
 

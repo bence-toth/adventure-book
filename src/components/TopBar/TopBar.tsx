@@ -4,7 +4,14 @@ import { Swords, Play, PenTool } from "lucide-react";
 import { getStoryTestRoute, getStoryEditRoute } from "../../constants/routes";
 import { ButtonLink } from "../common";
 import { updateStoryTitle, getStory } from "../../data/storyDatabase";
-import "./TopBar.css";
+import {
+  TopBarContainer,
+  TopBarLogo,
+  TopBarLogoIcon,
+  TopBarTitle,
+  TopBarTitleInput,
+  TopBarNav,
+} from "./TopBar.styles";
 
 export const TopBar = () => {
   const location = useLocation();
@@ -54,14 +61,14 @@ export const TopBar = () => {
   if (!isStoryRoute) {
     // DocumentManager view
     return (
-      <header className="top-bar">
-        <div className="top-bar-logo" data-testid="top-bar-logo">
-          <span className="top-bar-logo-icon">
+      <TopBarContainer as="header">
+        <TopBarLogo data-testid="top-bar-logo">
+          <TopBarLogoIcon>
             <Swords size={32} strokeWidth={1.5} aria-hidden="true" />
-          </span>
-          <h1 className="top-bar-title">Adventure Book Companion</h1>
-        </div>
-      </header>
+          </TopBarLogoIcon>
+          <TopBarTitle>Adventure Book Companion</TopBarTitle>
+        </TopBarLogo>
+      </TopBarContainer>
     );
   }
 
@@ -69,14 +76,13 @@ export const TopBar = () => {
   const editRoute = getStoryEditRoute(storyId);
 
   return (
-    <header className="top-bar">
-      <div className="top-bar-logo" data-testid="top-bar-logo">
-        <span className="top-bar-logo-icon">
+    <TopBarContainer as="header">
+      <TopBarLogo data-testid="top-bar-logo">
+        <TopBarLogoIcon>
           <Swords size={32} strokeWidth={1.5} aria-hidden="true" />
-        </span>
-        <input
+        </TopBarLogoIcon>
+        <TopBarTitleInput
           type="text"
-          className="top-bar-title-input"
           value={storyTitle}
           onChange={handleTitleChange}
           onBlur={handleTitleBlur}
@@ -84,8 +90,8 @@ export const TopBar = () => {
           placeholder="Untitled adventure"
           aria-label="Story title"
         />
-      </div>
-      <nav className="top-bar-nav" aria-label="Main navigation">
+      </TopBarLogo>
+      <TopBarNav as="nav" aria-label="Main navigation">
         <ButtonLink
           to={testRoute}
           selected={isActive(testRoute)}
@@ -102,7 +108,7 @@ export const TopBar = () => {
         >
           Edit
         </ButtonLink>
-      </nav>
-    </header>
+      </TopBarNav>
+    </TopBarContainer>
   );
 };

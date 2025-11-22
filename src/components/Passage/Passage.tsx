@@ -23,7 +23,17 @@ import {
 import { Button } from "../common";
 import { useStory } from "../../hooks/useStory";
 import { Sidebar } from "../Sidebar/Sidebar";
-import "./Passage.css";
+import {
+  PageLayout,
+  PageContent,
+  PassageContainer,
+  PassageText,
+  PassageParagraph,
+  Choices,
+  ErrorContainer,
+  ErrorTitle,
+  ErrorMessage,
+} from "./Passage.styles";
 
 export const Passage = () => {
   const { id, storyId } = useParams<{ id: string; storyId: string }>();
@@ -65,41 +75,41 @@ export const Passage = () => {
 
   if (loading) {
     return (
-      <div className="page-layout">
+      <PageLayout>
         <Sidebar />
-        <div className="page-content">
-          <div className="passage" data-testid={PASSAGE_TEST_IDS.CONTAINER}>
+        <PageContent>
+          <PassageContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
             <p>Loading passage...</p>
-          </div>
-        </div>
-      </div>
+          </PassageContainer>
+        </PageContent>
+      </PageLayout>
     );
   }
 
   if (error || !story || !storyId) {
     return (
-      <div className="page-layout">
+      <PageLayout>
         <Sidebar />
-        <div className="page-content">
-          <div className="error" data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
-            <h2>Error</h2>
-            <p>{error || "Story not found"}</p>
-          </div>
-        </div>
-      </div>
+        <PageContent>
+          <ErrorContainer data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
+            <ErrorTitle>Error</ErrorTitle>
+            <ErrorMessage>{error || "Story not found"}</ErrorMessage>
+          </ErrorContainer>
+        </PageContent>
+      </PageLayout>
     );
   }
 
   if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
     return (
-      <div className="page-layout">
+      <PageLayout>
         <Sidebar />
-        <div className="page-content">
-          <div className="error" data-testid={ERROR_TEST_IDS.INVALID_ID}>
-            <h2>Invalid passage ID</h2>
-            <p>
+        <PageContent>
+          <ErrorContainer data-testid={ERROR_TEST_IDS.INVALID_ID}>
+            <ErrorTitle>Invalid passage ID</ErrorTitle>
+            <ErrorMessage>
               The passage ID "{id}" is not valid. Please use a valid number.
-            </p>
+            </ErrorMessage>
             <Button
               onClick={() =>
                 navigate(getPassageRoute(storyId, SPECIAL_PASSAGES.RESET))
@@ -108,9 +118,9 @@ export const Passage = () => {
             >
               Go to introduction
             </Button>
-          </div>
-        </div>
-      </div>
+          </ErrorContainer>
+        </PageContent>
+      </PageLayout>
     );
   }
 
@@ -118,16 +128,16 @@ export const Passage = () => {
   // the rest of the component from rendering while the redirect happens
   if (passageId === SPECIAL_PASSAGES.RESET) {
     return (
-      <div className="page-layout">
+      <PageLayout>
         <Sidebar />
-        <div className="page-content">
-          <div className="passage" data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
-            <div className="passage-text">
-              <p className="passage-paragraph">Resetting your adventure…</p>
-            </div>
-          </div>
-        </div>
-      </div>
+        <PageContent>
+          <PassageContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
+            <PassageText>
+              <PassageParagraph>Resetting your adventure…</PassageParagraph>
+            </PassageText>
+          </PassageContainer>
+        </PageContent>
+      </PageLayout>
     );
   }
 
@@ -135,12 +145,14 @@ export const Passage = () => {
 
   if (!currentPassage) {
     return (
-      <div className="page-layout">
+      <PageLayout>
         <Sidebar />
-        <div className="page-content">
-          <div className="error" data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
-            <h2>Passage not found</h2>
-            <p>Passage #{passageId} does not exist in this adventure.</p>
+        <PageContent>
+          <ErrorContainer data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
+            <ErrorTitle>Passage not found</ErrorTitle>
+            <ErrorMessage>
+              Passage #{passageId} does not exist in this adventure.
+            </ErrorMessage>
             <Button
               onClick={() =>
                 navigate(getPassageRoute(storyId, SPECIAL_PASSAGES.RESET))
@@ -149,9 +161,9 @@ export const Passage = () => {
             >
               Go to introduction
             </Button>
-          </div>
-        </div>
-      </div>
+          </ErrorContainer>
+        </PageContent>
+      </PageLayout>
     );
   }
 
@@ -166,22 +178,21 @@ export const Passage = () => {
   };
 
   return (
-    <div className="page-layout">
+    <PageLayout>
       <Sidebar />
-      <div className="page-content">
-        <div className="passage" data-testid={PASSAGE_TEST_IDS.CONTAINER}>
-          <div className="passage-text" data-testid={PASSAGE_TEST_IDS.TEXT}>
+      <PageContent>
+        <PassageContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
+          <PassageText data-testid={PASSAGE_TEST_IDS.TEXT}>
             {currentPassage.paragraphs.map((paragraph, index) => (
-              <p
-                className="passage-paragraph"
+              <PassageParagraph
                 key={index}
                 data-testid={getPassageParagraphTestId(index)}
               >
                 {paragraph}
-              </p>
+              </PassageParagraph>
             ))}
-          </div>
-          <div className="choices" data-testid={PASSAGE_TEST_IDS.CHOICES}>
+          </PassageText>
+          <Choices data-testid={PASSAGE_TEST_IDS.CHOICES}>
             {currentPassage.ending ? (
               <Button
                 onClick={handleRestartClick}
@@ -201,9 +212,9 @@ export const Passage = () => {
                 </Button>
               ))
             )}
-          </div>
-        </div>
-      </div>
-    </div>
+          </Choices>
+        </PassageContainer>
+      </PageContent>
+    </PageLayout>
   );
 };

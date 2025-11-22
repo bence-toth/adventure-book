@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { getCurrentInventory } from "../../data/storyLoader";
 import { useStory } from "../../hooks/useStory";
-import "./Sidebar.css";
+import {
+  SidebarContainer,
+  SidebarTitle,
+  SidebarInventoryEmpty,
+  SidebarInventory,
+} from "./Sidebar.styles";
 
 export const Sidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
@@ -42,17 +47,17 @@ export const Sidebar = () => {
   );
 
   return (
-    <aside className="sidebar">
-      <h2>Inventory</h2>
+    <SidebarContainer as="aside">
+      <SidebarTitle>Inventory</SidebarTitle>
       {currentItems.length === 0 ? (
-        <p className="sidebar-inventory-empty">No items yet</p>
+        <SidebarInventoryEmpty>No items yet</SidebarInventoryEmpty>
       ) : (
-        <ul className="sidebar-inventory">
+        <SidebarInventory>
           {currentItems.map((item) => (
             <li key={item.id}>{item.name}</li>
           ))}
-        </ul>
+        </SidebarInventory>
       )}
-    </aside>
+    </SidebarContainer>
   );
 };

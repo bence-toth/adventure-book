@@ -80,14 +80,4 @@ describe("Introduction Component", () => {
     );
     expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
-
-  it("has correct CSS classes applied", async () => {
-    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
-
-    const container = await screen.findByTestId(
-      INTRODUCTION_TEST_IDS.CONTAINER
-    );
-    expect(container).toBeInTheDocument();
-    expect(container).toHaveClass("introduction");
-  });
 });
