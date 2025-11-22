@@ -36,6 +36,9 @@ const App = () => {
               </StoryProvider>
             }
           />
+
+          {/* Catch-all route redirects to root */}
+          <Route path="*" element={<Navigate to={ROUTES.ROOT} replace />} />
         </Routes>
       </main>
     </div>

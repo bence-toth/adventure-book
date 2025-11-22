@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { screen } from "@testing-library/react";
+import { screen, act } from "@testing-library/react";
 import { setupTestStory } from "../../test/mockStoryData";
 import { renderWithStory } from "../../test/testUtils";
 import { Sidebar } from "../Sidebar";
@@ -121,7 +121,10 @@ describe("Sidebar", () => {
       },
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
-    window.dispatchEvent(new Event("storage"));
+
+    await act(async () => {
+      window.dispatchEvent(new Event("storage"));
+    });
 
     rerender(<Sidebar />);
 
@@ -144,7 +147,10 @@ describe("Sidebar", () => {
       },
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
-    window.dispatchEvent(new Event("inventoryUpdate"));
+
+    await act(async () => {
+      window.dispatchEvent(new Event("inventoryUpdate"));
+    });
 
     rerender(<Sidebar />);
 
