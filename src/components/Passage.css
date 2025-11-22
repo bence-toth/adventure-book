@@ -8,7 +8,6 @@
 }
 
 .passage-paragraph {
-  line-height: var(--line-height-relaxed);
   margin-bottom: var(--space-2);
 }
 
@@ -34,5 +33,4 @@
 
 .error p {
   margin-bottom: var(--space-4);
-  line-height: var(--line-height-normal);
 }

@@ -8,7 +8,6 @@
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
   margin-bottom: var(--space-4);
-  font-weight: bold;
   text-wrap: balance;
 }
 
@@ -18,7 +17,6 @@
 }
 
 .intro-paragraph {
-  line-height: var(--line-height-relaxed);
   margin-bottom: var(--space-2);
 }
 

@@ -4,13 +4,16 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  line-height: var(--line-height-dense);
 }
 
 button {
   font-family: inherit;
   cursor: pointer;
   font-size: inherit;
+}
+
+p {
+  line-height: var(--line-height-normal);
 }
 
 :root {
@@ -25,6 +28,7 @@ button {
   text-rendering: optimizelegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: var(--line-height-dense);
 
   /* Color variables */
   --color-gray-0: oklch(100% 0 257.671deg);

@@ -28,14 +28,12 @@
 .top-bar-title {
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
-  font-weight: 400;
   line-height: var(--line-height-dense);
 }
 
 .top-bar-title-input {
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
-  font-weight: 400;
   line-height: var(--line-height-dense);
   background: transparent;
   border: var(--border-width-hairline) solid transparent;

@@ -12,7 +12,6 @@
 }
 
 .error-boundary-description {
-  line-height: var(--line-height-normal);
   margin-bottom: var(--space-4);
   color: var(--color-foreground);
   text-wrap: balance;
@@ -34,7 +33,6 @@
 }
 
 .error-boundary-help-text {
-  line-height: var(--line-height-normal);
   margin: 0;
 }
 
