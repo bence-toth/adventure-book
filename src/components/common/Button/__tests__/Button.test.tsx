@@ -247,5 +247,34 @@ describe("Button Component", () => {
       expect(button).toHaveClass("home-button");
       expect(button).toHaveTextContent("Home");
     });
+
+    it("renders icon-only button without children", () => {
+      const TestIcon = () => <span data-testid="icon-only">★</span>;
+
+      render(
+        <Button
+          icon={TestIcon}
+          aria-label="Favorite"
+          data-testid="icon-only-btn"
+        />
+      );
+
+      const button = screen.getByTestId("icon-only-btn");
+      const icon = screen.getByTestId("icon-only");
+
+      expect(button).toBeInTheDocument();
+      expect(icon).toBeInTheDocument();
+      expect(button).toHaveAttribute("aria-label", "Favorite");
+    });
+
+    it("icon-only button is accessible with aria-label", () => {
+      const TestIcon = () => <span data-testid="back-icon">←</span>;
+
+      render(<Button icon={TestIcon} aria-label="Go back" size="small" />);
+
+      const button = screen.getByRole("button", { name: "Go back" });
+      expect(button).toBeInTheDocument();
+      expect(screen.getByTestId("back-icon")).toBeInTheDocument();
+    });
   });
 });

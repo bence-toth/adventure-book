@@ -1,8 +1,12 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Swords, Play, PenTool } from "lucide-react";
-import { getStoryTestRoute, getStoryEditRoute } from "../../constants/routes";
-import { ButtonLink } from "../common";
+import { Swords, Play, PenTool, ArrowLeft } from "lucide-react";
+import {
+  getStoryTestRoute,
+  getStoryEditRoute,
+  ROUTES,
+} from "../../constants/routes";
+import { Button, ButtonLink } from "../common";
 import { updateStoryTitle, getStory } from "../../data/storyDatabase";
 import {
   TopBarContainer,
@@ -15,6 +19,7 @@ import {
 
 export const TopBar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [storyTitle, setStoryTitle] = useState<string>("");
 
   // Extract storyId from pathname
@@ -75,12 +80,20 @@ export const TopBar = () => {
   const testRoute = getStoryTestRoute(storyId);
   const editRoute = getStoryEditRoute(storyId);
 
+  const handleBackClick = () => {
+    navigate(ROUTES.ROOT);
+  };
+
   return (
     <TopBarContainer as="header">
       <TopBarLogo data-testid="top-bar-logo">
-        <TopBarLogoIcon>
-          <Swords size={32} strokeWidth={1.5} aria-hidden="true" />
-        </TopBarLogoIcon>
+        <Button
+          onClick={handleBackClick}
+          icon={ArrowLeft}
+          aria-label="Back to document manager"
+          data-testid="top-bar-back-button"
+          size="small"
+        />
         <TopBarTitleInput
           type="text"
           value={storyTitle}

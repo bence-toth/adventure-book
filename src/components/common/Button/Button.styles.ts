@@ -4,16 +4,23 @@ export const StyledButton = styled.button<{
   $variant: "primary" | "danger";
   $size: "default" | "small";
   $selected: boolean;
+  $hasChildren: boolean;
 }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
   line-height: var(--line-height-dense);
-  padding: ${(props) =>
-    props.$size === "small"
-      ? "var(--space-1) var(--space-2)"
-      : "var(--space-2) var(--space-3)"};
+  padding: ${(props) => {
+    if (props.$size === "small") {
+      return props.$hasChildren
+        ? "var(--space-1) var(--space-2)"
+        : "var(--space-1)";
+    }
+    return props.$hasChildren
+      ? "var(--space-2) var(--space-3)"
+      : "var(--space-2)";
+  }};
   border-radius: var(--space-1);
   cursor: pointer;
   text-decoration: none;

@@ -1,17 +1,30 @@
 import { screen, waitFor } from "@testing-library/react";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { TopBar } from "../TopBar";
 import {
   getStoryTestRoute,
   getStoryEditRoute,
+  ROUTES,
 } from "../../../constants/routes";
 import { renderWithStory } from "../../../test/testUtils";
 import { setupTestStory } from "../../../test/mockStoryData";
 
 const TEST_STORY_ID = "test-story-id";
 
+// Mock react-router-dom navigate function
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
 describe("TopBar Component", () => {
   beforeEach(async () => {
+    mockNavigate.mockClear();
     await setupTestStory(TEST_STORY_ID);
   });
 
@@ -51,6 +64,39 @@ describe("TopBar Component", () => {
         "href",
         getStoryEditRoute(TEST_STORY_ID)
       );
+    });
+
+    it("renders back button instead of logo in story routes", async () => {
+      renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
+      const backButton = await screen.findByRole("button", {
+        name: /back to document manager/i,
+      });
+      expect(backButton).toBeInTheDocument();
+    });
+
+    it("does not render back button in document manager route", async () => {
+      renderWithStory(<TopBar />, { route: ROUTES.ROOT });
+      const backButton = screen.queryByRole("button", {
+        name: /back to document manager/i,
+      });
+      expect(backButton).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Navigation", () => {
+    it("navigates to document manager when back button is clicked", async () => {
+      const user = userEvent.setup();
+      renderWithStory(<TopBar />, {
+        storyId: TEST_STORY_ID,
+      });
+
+      const backButton = await screen.findByRole("button", {
+        name: /back to document manager/i,
+      });
+
+      await user.click(backButton);
+
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.ROOT);
     });
   });
 });

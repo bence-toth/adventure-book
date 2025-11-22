@@ -41,15 +41,30 @@ export const renderWithStory = (
   ui: ReactElement,
   {
     storyId = "test-story-id",
+    route,
     ...options
-  }: Omit<RenderOptions, "wrapper"> & { storyId?: string } = {}
-) =>
-  rtlRender(ui, {
+  }: Omit<RenderOptions, "wrapper"> & {
+    storyId?: string;
+    route?: string;
+  } = {}
+) => {
+  const initialRoute = route || `/adventure/${storyId}/test`;
+
+  return rtlRender(ui, {
     wrapper: ({ children }) => (
-      <StoryTestWrapper storyId={storyId}>{children}</StoryTestWrapper>
+      <MemoryRouter initialEntries={[initialRoute]}>
+        <Routes>
+          <Route path="/" element={children} />
+          <Route
+            path="/adventure/:storyId/*"
+            element={<StoryProvider>{children}</StoryProvider>}
+          />
+        </Routes>
+      </MemoryRouter>
     ),
     ...options,
   });
+};
 
 // Re-export specific testing utilities to avoid export * issues
 export {

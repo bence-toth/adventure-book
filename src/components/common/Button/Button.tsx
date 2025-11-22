@@ -3,13 +3,14 @@ import { createElement, forwardRef } from "react";
 import { StyledButton, IconWrapper, TextWrapper } from "./Button.styles";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  children: ReactNode;
+  children?: ReactNode;
   selected?: boolean;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
   variant?: "primary" | "danger";
   size?: "default" | "small";
   "data-testid"?: string;
+  "aria-label"?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -40,10 +41,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         $variant={variant}
         $size={size}
         $selected={selected}
+        $hasChildren={!!children}
         {...props}
       >
         {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
-        <TextWrapper>{children}</TextWrapper>
+        {children && <TextWrapper>{children}</TextWrapper>}
       </StyledButton>
     );
   }
