@@ -1,9 +1,9 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { DocumentManager } from "../DocumentManager";
-import { render } from "../../test/testUtils";
-import * as storyDatabase from "../../data/storyDatabase";
-import type { StoredStory } from "../../data/storyDatabase";
+import { render } from "../../../test/testUtils";
+import * as storyDatabase from "../../../data/storyDatabase";
+import type { StoredStory } from "../../../data/storyDatabase";
 
 // Mock react-router-dom
 const mockNavigate = vi.fn();
@@ -16,8 +16,8 @@ vi.mock("react-router-dom", async () => {
 });
 
 // Mock storyDatabase
-vi.mock("../../data/storyDatabase", async () => {
-  const actual = await vi.importActual("../../data/storyDatabase");
+vi.mock("../../../data/storyDatabase", async () => {
+  const actual = await vi.importActual("../../../data/storyDatabase");
   return {
     ...actual,
     listStories: vi.fn(),

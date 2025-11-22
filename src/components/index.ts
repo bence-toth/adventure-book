@@ -1,9 +1,9 @@
-export { Introduction } from "./Introduction";
-export { Passage } from "./Passage";
-export { ErrorBoundary } from "./ErrorBoundary";
-export { TopBar } from "./TopBar";
-export { Sidebar } from "./Sidebar";
-export { DocumentManager } from "./DocumentManager";
+export { Introduction } from "./Introduction/Introduction";
+export { Passage } from "./Passage/Passage";
+export { ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
+export { TopBar } from "./TopBar/TopBar";
+export { Sidebar } from "./Sidebar/Sidebar";
+export { DocumentManager } from "./DocumentManager/DocumentManager";
 
 // Re-export common components
 export {

@@ -1,9 +1,9 @@
 import { useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Swords, Play, PenTool } from "lucide-react";
-import { getStoryTestRoute, getStoryEditRoute } from "../constants/routes";
-import { ButtonLink } from "./common";
-import { updateStoryTitle, getStory } from "../data/storyDatabase";
+import { getStoryTestRoute, getStoryEditRoute } from "../../constants/routes";
+import { ButtonLink } from "../common";
+import { updateStoryTitle, getStory } from "../../data/storyDatabase";
 import "./TopBar.css";
 
 export const TopBar = () => {

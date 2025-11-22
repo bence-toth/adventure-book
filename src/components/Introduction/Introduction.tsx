@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { getPassageRoute, SPECIAL_PASSAGES } from "../constants/routes";
+import { getPassageRoute, SPECIAL_PASSAGES } from "../../constants/routes";
 import {
   INTRODUCTION_TEST_IDS,
   getIntroParagraphTestId,
-} from "../constants/testIds";
-import { Button } from "./common";
-import { useStory } from "../hooks/useStory";
+} from "../../constants/testIds";
+import { Button } from "../common";
+import { useStory } from "../../hooks/useStory";
 import "./Introduction.css";
 
 export const Introduction = () => {

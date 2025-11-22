@@ -1,14 +1,14 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { Passage } from "../Passage";
-import { renderWithStory } from "../../test/testUtils";
-import { setupTestStory } from "../../test/mockStoryData";
-import { getPassageRoute } from "../../constants/routes";
+import { renderWithStory } from "../../../test/testUtils";
+import { setupTestStory } from "../../../test/mockStoryData";
+import { getPassageRoute } from "../../../constants/routes";
 import {
   PASSAGE_TEST_IDS,
   getPassageParagraphTestId,
   getChoiceButtonTestId,
-} from "../../constants/testIds";
+} from "../../../constants/testIds";
 
 const TEST_STORY_ID = "test-story-id";
 
