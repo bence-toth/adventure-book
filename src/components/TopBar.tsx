@@ -1,21 +1,23 @@
 import { useLocation } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Swords, Play, PenTool } from "lucide-react";
 import { getStoryTestRoute, getStoryEditRoute } from "../constants/routes";
 import { ButtonLink } from "./common";
-import { StoryContext } from "../context/StoryContext";
 import { updateStoryTitle, getStory } from "../data/storyDatabase";
 import "./TopBar.css";
 
 export const TopBar = () => {
   const location = useLocation();
-  const context = useContext(StoryContext);
-  const storyId = context?.storyId ?? null;
   const [storyTitle, setStoryTitle] = useState<string>("");
+
+  // Extract storyId from pathname
+  // Matches both /adventure/abc123/... and /abc123/... (for tests)
+  const storyId = location.pathname.match(/^\/(?:adventure\/)?([^/]+)/)?.[1];
+  const isStoryRoute = storyId && storyId !== "" && location.pathname !== "/";
 
   useEffect(() => {
     const loadStoryTitle = async () => {
-      if (storyId) {
+      if (isStoryRoute) {
         const story = await getStory(storyId);
         if (story) {
           setStoryTitle(story.title);
@@ -23,7 +25,7 @@ export const TopBar = () => {
       }
     };
     loadStoryTitle();
-  }, [storyId]);
+  }, [storyId, isStoryRoute]);
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setStoryTitle(e.target.value);
@@ -49,7 +51,7 @@ export const TopBar = () => {
     return location.pathname === path || location.pathname.startsWith(path);
   };
 
-  if (!storyId) {
+  if (!isStoryRoute) {
     // DocumentManager view
     return (
       <header className="top-bar">

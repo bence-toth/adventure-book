@@ -19,7 +19,7 @@ export const StyledLink = styled(Link)<{
   text-decoration: none;
   background: var(--color-interactive-background-default-neutral);
   color: var(--color-interactive-foreground-default-neutral);
-  border: var(--border-width-hairline) solid
+  border: var(--border-width-interactive) solid
     var(--color-interactive-border-default-neutral);
 
   &:hover {

@@ -187,12 +187,17 @@ p {
   --space-5: calc(var(--space-base) * 5);
 
   /* Border variables */
-  --border-width-hairline: 1px;
+  --border-width-surface: 1px;
+  --border-width-interactive: 2px;
 
   /* Element sizing variables */
   --size-top-bar: calc(var(--space-base) * 10);
   --size-content: calc(var(--space-base) * 96);
   --size-sidebar: calc(var(--space-base) * 48);
+  --size-document-card: calc(var(--space-base) * 32);
+  --size-title-input-min-width: calc(var(--space-base) * 24);
+  --size-modal-dialog-max-width: calc(var(--space-base) * 72);
+  --size-context-menu-min-width: calc(var(--space-base) * 20);
 }
 
 @media (prefers-color-scheme: light) {
@@ -200,20 +205,20 @@ p {
     /* Neutral colors */
     --color-background-neutral: var(--color-gray-100);
     --color-foreground-neutral: var(--color-gray-900);
-    --color-background-surface-neutral: var(--color-gray-200);
-    --color-border-surface-neutral: var(--color-gray-300);
-    --color-interactive-background-default-neutral: var(--color-gray-300);
+    --color-background-surface-neutral: var(--color-gray-150);
+    --color-border-surface-neutral: var(--color-gray-200);
+    --color-interactive-background-default-neutral: var(--color-gray-200);
     --color-interactive-foreground-default-neutral: var(--color-gray-900);
-    --color-interactive-border-default-neutral: var(--color-gray-400);
-    --color-interactive-background-hover-neutral: var(--color-gray-400);
+    --color-interactive-border-default-neutral: var(--color-gray-250);
+    --color-interactive-background-hover-neutral: var(--color-gray-250);
     --color-interactive-foreground-hover-neutral: var(--color-gray-900);
-    --color-interactive-border-hover-neutral: var(--color-gray-500);
-    --color-interactive-background-active-neutral: var(--color-gray-500);
+    --color-interactive-border-hover-neutral: var(--color-gray-300);
+    --color-interactive-background-active-neutral: var(--color-gray-300);
     --color-interactive-foreground-active-neutral: var(--color-gray-900);
-    --color-interactive-border-active-neutral: var(--color-gray-600);
-    --color-interactive-background-focus-neutral: var(--color-gray-400);
+    --color-interactive-border-active-neutral: var(--color-gray-350);
+    --color-interactive-background-focus-neutral: var(--color-gray-250);
     --color-interactive-foreground-focus-neutral: var(--color-gray-900);
-    --color-interactive-border-focus-neutral: var(--color-gray-500);
+    --color-interactive-border-focus-neutral: var(--color-gray-300);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
@@ -223,20 +228,20 @@ p {
     /* Danger colors */
     --color-background-danger: var(--color-red-100);
     --color-foreground-danger: var(--color-red-900);
-    --color-background-surface-danger: var(--color-red-200);
-    --color-border-surface-danger: var(--color-red-300);
-    --color-interactive-background-default-danger: var(--color-red-300);
+    --color-background-surface-danger: var(--color-red-150);
+    --color-border-surface-danger: var(--color-red-200);
+    --color-interactive-background-default-danger: var(--color-red-200);
     --color-interactive-foreground-default-danger: var(--color-red-900);
-    --color-interactive-border-default-danger: var(--color-red-400);
-    --color-interactive-background-hover-danger: var(--color-red-400);
+    --color-interactive-border-default-danger: var(--color-red-250);
+    --color-interactive-background-hover-danger: var(--color-red-250);
     --color-interactive-foreground-hover-danger: var(--color-red-900);
-    --color-interactive-border-hover-danger: var(--color-red-500);
-    --color-interactive-background-active-danger: var(--color-red-500);
+    --color-interactive-border-hover-danger: var(--color-red-300);
+    --color-interactive-background-active-danger: var(--color-red-300);
     --color-interactive-foreground-active-danger: var(--color-red-900);
-    --color-interactive-border-active-danger: var(--color-red-600);
-    --color-interactive-background-focus-danger: var(--color-red-400);
+    --color-interactive-border-active-danger: var(--color-red-350);
+    --color-interactive-background-focus-danger: var(--color-red-250);
     --color-interactive-foreground-focus-danger: var(--color-red-900);
-    --color-interactive-border-focus-danger: var(--color-red-500);
+    --color-interactive-border-focus-danger: var(--color-red-300);
     --color-shadow-danger: color-mix(
       in srgb,
       var(--color-red-1000) 25%,
@@ -250,20 +255,20 @@ p {
     /* Neutral colors */
     --color-background-neutral: var(--color-gray-900);
     --color-foreground-neutral: var(--color-gray-100);
-    --color-background-surface-neutral: var(--color-gray-800);
-    --color-border-surface-neutral: var(--color-gray-700);
-    --color-interactive-background-default-neutral: var(--color-gray-700);
+    --color-background-surface-neutral: var(--color-gray-850);
+    --color-border-surface-neutral: var(--color-gray-800);
+    --color-interactive-background-default-neutral: var(--color-gray-800);
     --color-interactive-foreground-default-neutral: var(--color-gray-100);
-    --color-interactive-border-default-neutral: var(--color-gray-600);
-    --color-interactive-background-hover-neutral: var(--color-gray-600);
+    --color-interactive-border-default-neutral: var(--color-gray-750);
+    --color-interactive-background-hover-neutral: var(--color-gray-750);
     --color-interactive-foreground-hover-neutral: var(--color-gray-100);
-    --color-interactive-border-hover-neutral: var(--color-gray-500);
-    --color-interactive-background-active-neutral: var(--color-gray-500);
+    --color-interactive-border-hover-neutral: var(--color-gray-700);
+    --color-interactive-background-active-neutral: var(--color-gray-700);
     --color-interactive-foreground-active-neutral: var(--color-gray-100);
-    --color-interactive-border-active-neutral: var(--color-gray-400);
-    --color-interactive-background-focus-neutral: var(--color-gray-600);
+    --color-interactive-border-active-neutral: var(--color-gray-650);
+    --color-interactive-background-focus-neutral: var(--color-gray-750);
     --color-interactive-foreground-focus-neutral: var(--color-gray-100);
-    --color-interactive-border-focus-neutral: var(--color-gray-500);
+    --color-interactive-border-focus-neutral: var(--color-gray-700);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
@@ -273,20 +278,20 @@ p {
     /* Danger colors */
     --color-background-danger: var(--color-red-900);
     --color-foreground-danger: var(--color-red-100);
-    --color-background-surface-danger: var(--color-red-800);
-    --color-border-surface-danger: var(--color-red-700);
-    --color-interactive-background-default-danger: var(--color-red-700);
+    --color-background-surface-danger: var(--color-red-850);
+    --color-border-surface-danger: var(--color-red-800);
+    --color-interactive-background-default-danger: var(--color-red-800);
     --color-interactive-foreground-default-danger: var(--color-red-100);
-    --color-interactive-border-default-danger: var(--color-red-600);
-    --color-interactive-background-hover-danger: var(--color-red-600);
+    --color-interactive-border-default-danger: var(--color-red-750);
+    --color-interactive-background-hover-danger: var(--color-red-750);
     --color-interactive-foreground-hover-danger: var(--color-red-100);
-    --color-interactive-border-hover-danger: var(--color-red-500);
-    --color-interactive-background-active-danger: var(--color-red-500);
+    --color-interactive-border-hover-danger: var(--color-red-700);
+    --color-interactive-background-active-danger: var(--color-red-700);
     --color-interactive-foreground-active-danger: var(--color-red-100);
-    --color-interactive-border-active-danger: var(--color-red-400);
-    --color-interactive-background-focus-danger: var(--color-red-600);
+    --color-interactive-border-active-danger: var(--color-red-650);
+    --color-interactive-background-focus-danger: var(--color-red-750);
     --color-interactive-foreground-focus-danger: var(--color-red-100);
-    --color-interactive-border-focus-danger: var(--color-red-500);
+    --color-interactive-border-focus-danger: var(--color-red-700);
     --color-shadow-danger: color-mix(
       in srgb,
       var(--color-red-1000) 25%,

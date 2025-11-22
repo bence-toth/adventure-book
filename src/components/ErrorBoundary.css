@@ -28,7 +28,7 @@
 .error-boundary-help {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
-  border-top: var(--border-width-hairline) solid
+  border-top: var(--border-width-surface) solid
     var(--color-border-surface-neutral);
 }
 
@@ -46,7 +46,7 @@
   text-align: start;
   font-size: var(--font-size-sm);
   background: var(--color-background-surface);
-  border: var(--border-width-hairline) solid var(--color-border-surface-neutral);
+  border: var(--border-width-surface) solid var(--color-border-surface-neutral);
   border-radius: calc(var(--space-1) / 2);
   padding: var(--space-2);
   margin: var(--space-2) 0;

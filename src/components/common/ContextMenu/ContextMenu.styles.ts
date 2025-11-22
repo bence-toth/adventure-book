@@ -2,8 +2,9 @@ import styled from "styled-components";
 
 export const MenuContainer = styled.div`
   box-shadow: var(--shadow-surface-elevated-neutral);
-  min-width: 150px;
-  z-index: 1000;
+  min-width: var(--size-context-menu-min-width);
+  border-radius: var(--space-1);
+  z-index: 1;
 `;
 
 export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
@@ -22,7 +23,7 @@ export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
     props.$variant === "danger"
       ? "var(--color-interactive-foreground-default-danger)"
       : "var(--color-interactive-foreground-default-neutral)"};
-  border: var(--border-width-hairline) solid
+  border: var(--border-width-interactive) solid
     ${(props) =>
       props.$variant === "danger"
         ? "var(--color-interactive-border-default-danger)"

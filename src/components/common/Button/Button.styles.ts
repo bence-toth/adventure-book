@@ -25,7 +25,7 @@ export const StyledButton = styled.button<{
     props.$variant === "danger"
       ? "var(--color-interactive-foreground-default-danger)"
       : "var(--color-interactive-foreground-default-neutral)"};
-  border: var(--border-width-hairline) solid
+  border: var(--border-width-interactive) solid
     ${(props) =>
       props.$variant === "danger"
         ? "var(--color-interactive-border-default-danger)"

@@ -4,23 +4,23 @@ export const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
   background: rgb(0 0 0 / 50%);
-  z-index: 2000;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
 export const Dialog = styled.dialog`
-  border: var(--border-width-hairline) solid
+  border: var(--border-width-surface) solid
     var(--color-interactive-border-default-neutral);
   border-radius: var(--space-1);
   padding: 0;
-  max-width: 500px;
+  max-width: var(--size-modal-dialog-max-width);
   box-shadow: var(--shadow-surface-elevated-neutral);
   background: var(--color-background-surface-neutral);
   position: relative;
   margin: 0;
-  z-index: 2001;
+  z-index: 2;
 
   &::backdrop {
     display: none;
