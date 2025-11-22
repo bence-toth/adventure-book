@@ -1,3 +1,20 @@
+.page-layout {
+  display: grid;
+  grid-template-columns: var(--size-sidebar) 1fr;
+  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+}
+
+.page-content {
+  overflow-y: auto;
+  display: grid;
+  place-items: center;
+  background: var(--color-background-neutral);
+  min-height: 0;
+  padding: var(--space-4);
+}
+
 .passage {
   max-width: var(--size-content);
   padding: var(--space-5);

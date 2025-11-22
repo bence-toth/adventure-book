@@ -14,14 +14,8 @@
 
 .app-content {
   overflow-y: auto;
-  padding: var(--space-2);
   display: grid;
-  place-items: center;
+  place-items: stretch;
   background: var(--color-background-neutral);
   min-height: 0;
-}
-
-.app-content-full {
-  padding: 0;
-  place-items: stretch;
 }

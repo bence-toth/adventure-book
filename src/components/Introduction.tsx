@@ -19,47 +19,58 @@ export const Introduction = () => {
 
   if (loading) {
     return (
-      <div
-        className="introduction"
-        data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
-      >
-        <p>Loading story...</p>
+      <div className="introduction-page-content">
+        <div
+          className="introduction"
+          data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
+        >
+          <p>Loading story...</p>
+        </div>
       </div>
     );
   }
 
   if (error || !story) {
     return (
-      <div
-        className="introduction"
-        data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
-      >
-        <p>Error loading story: {error || "Story not found"}</p>
+      <div className="introduction-page-content">
+        <div
+          className="introduction"
+          data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
+        >
+          <p>Error loading story: {error || "Story not found"}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="introduction" data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-      <h1 data-testid={INTRODUCTION_TEST_IDS.TITLE}>{story.metadata.title}</h1>
-      <div className="intro-text" data-testid={INTRODUCTION_TEST_IDS.TEXT}>
-        {story.intro.paragraphs.map((paragraph, index) => (
-          <p
-            className="intro-paragraph"
-            key={index}
-            data-testid={getIntroParagraphTestId(index)}
+    <div className="introduction-page-content">
+      <div
+        className="introduction"
+        data-testid={INTRODUCTION_TEST_IDS.CONTAINER}
+      >
+        <h1 data-testid={INTRODUCTION_TEST_IDS.TITLE}>
+          {story.metadata.title}
+        </h1>
+        <div className="intro-text" data-testid={INTRODUCTION_TEST_IDS.TEXT}>
+          {story.intro.paragraphs.map((paragraph, index) => (
+            <p
+              className="intro-paragraph"
+              key={index}
+              data-testid={getIntroParagraphTestId(index)}
+            >
+              {paragraph}
+            </p>
+          ))}
+        </div>
+        <div className="intro-action">
+          <Button
+            onClick={handleStartAdventure}
+            data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
           >
-            {paragraph}
-          </p>
-        ))}
-      </div>
-      <div className="intro-action">
-        <Button
-          onClick={handleStartAdventure}
-          data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
-        >
-          {story.intro.action}
-        </Button>
+            {story.intro.action}
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,9 @@
+.introduction-page-content {
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+}
+
 .introduction {
   max-width: var(--size-content);
   padding: var(--space-5);
