@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { getCurrentInventory } from "../../data/storyLoader";
-import { useStory } from "../../hooks/useStory";
+import { getCurrentInventory } from "../../../data/storyLoader";
+import { useStory } from "../../../hooks/useStory";
 import {
   SidebarContainer,
   SidebarTitle,

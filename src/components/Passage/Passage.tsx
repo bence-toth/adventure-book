@@ -22,7 +22,7 @@ import {
 } from "../../constants/testIds";
 import { Button } from "../common";
 import { useStory } from "../../hooks/useStory";
-import { Sidebar } from "../Sidebar/Sidebar";
+import { Sidebar } from "./Sidebar/Sidebar";
 import {
   PageLayout,
   PageContent,
