@@ -7,6 +7,13 @@ export const ErrorBoundaryContainer = styled.div`
   margin: 0 auto;
 `;
 
+export const ErrorBoundaryIcon = styled.div`
+  color: var(--color-foreground-danger);
+  margin-bottom: var(--space-3);
+  display: flex;
+  justify-content: center;
+`;
+
 export const ErrorBoundaryTitle = styled.h1`
   color: var(--color-foreground-danger);
   margin-bottom: var(--space-3);

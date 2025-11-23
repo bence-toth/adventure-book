@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import type { ReactNode } from "react";
+import { Bug } from "lucide-react";
 import { Button, DetailsButton } from "@/components/common";
 import {
   ErrorBoundaryContainer,
+  ErrorBoundaryIcon,
   ErrorBoundaryTitle,
   ErrorBoundaryDescription,
   ErrorBoundaryActions,
@@ -60,6 +62,9 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return (
       <ErrorBoundaryContainer>
+        <ErrorBoundaryIcon>
+          <Bug size={48} strokeWidth={1} />
+        </ErrorBoundaryIcon>
         <ErrorBoundaryTitle>A system error occurred</ErrorBoundaryTitle>
         <ErrorBoundaryDescription>{errorMessage}</ErrorBoundaryDescription>
         <ErrorBoundaryActions>
