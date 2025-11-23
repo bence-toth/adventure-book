@@ -12,6 +12,7 @@ import {
   StoryCreateError,
   StoryDeleteError,
 } from "@/utils/errors";
+import userEvent from "@testing-library/user-event";
 
 // Component that throws an error for testing
 const ThrowError = ({ error }: { error?: Error }) => {
@@ -267,6 +268,71 @@ describe("ErrorBoundary", () => {
     );
 
     // Technical details should show the error type
+    expect(screen.getByText("Show technical details")).toBeInTheDocument();
+
+    consoleSpy.mockRestore();
+  });
+
+  it("toggles technical details when clicked", async () => {
+    const user = userEvent.setup();
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(
+      <ErrorBoundary>
+        <ThrowError error={new Error("Test error with details")} />
+      </ErrorBoundary>
+    );
+
+    const detailsButton = screen.getByText("Show technical details");
+    expect(detailsButton).toBeInTheDocument();
+
+    // Click to show details
+    await user.click(detailsButton);
+
+    // Should change text
+    expect(screen.getByText("Hide technical details")).toBeInTheDocument();
+
+    // Technical details should be visible
+    expect(screen.getByText("Error type:")).toBeInTheDocument();
+    expect(screen.getByText("Error message:")).toBeInTheDocument();
+
+    // Click again to hide
+    await user.click(screen.getByText("Hide technical details"));
+
+    // Should change text back
+    expect(screen.getByText("Show technical details")).toBeInTheDocument();
+
+    consoleSpy.mockRestore();
+  });
+
+  it("renders error without error object gracefully", () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    // Force the error boundary to have no error object
+    const { container } = render(
+      <ErrorBoundary>
+        <ThrowError />
+      </ErrorBoundary>
+    );
+
+    // Component should render normally when no error
+    expect(container.textContent).toContain("No error");
+
+    consoleSpy.mockRestore();
+  });
+
+  it("shows stack trace when available", () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const errorWithStack = new Error("Error with stack");
+    errorWithStack.stack = "Error: Error with stack\n    at test.ts:1:1";
+
+    render(
+      <ErrorBoundary>
+        <ThrowError error={errorWithStack} />
+      </ErrorBoundary>
+    );
+
     expect(screen.getByText("Show technical details")).toBeInTheDocument();
 
     consoleSpy.mockRestore();

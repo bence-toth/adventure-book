@@ -143,5 +143,21 @@ describe("Passage Component", () => {
 
       consoleSpy.mockRestore();
     });
+
+    // Note: Testing invalid passage IDs and non-existent passages requires
+    // dynamic mocking of useParams which is complex in vitest.
+    // These scenarios are better covered by integration tests.
+  });
+
+  describe("Loading State", () => {
+    it("shows loading message while adventure is loading", async () => {
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        loading: true,
+      });
+
+      const container = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
+      expect(container).toHaveTextContent("Loading passage...");
+    });
   });
 });
