@@ -35,11 +35,11 @@ export const ConfirmationModal = ({
   onOpenChange,
   title,
   message,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   onConfirm,
   onCancel,
-  variant = "primary",
+  variant,
   "data-testid": dataTestId,
 }: ConfirmationModalProps) => {
   const { refs, context } = useFloating({
@@ -96,9 +96,9 @@ export const ConfirmationModal = ({
             <DialogActions
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS}
             >
-              <Button onClick={onCancel}>{cancelLabel}</Button>
-              <Button variant={variant} onClick={onConfirm}>
-                {confirmLabel}
+              <Button onClick={onCancel}>{cancelLabel ?? "Cancel"}</Button>
+              <Button variant={variant ?? "primary"} onClick={onConfirm}>
+                {confirmLabel ?? "Confirm"}
               </Button>
             </DialogActions>
           </DialogContent>

@@ -14,10 +14,10 @@ export interface ButtonLinkProps extends Omit<LinkProps, "className"> {
 
 export const ButtonLink = ({
   children,
-  selected = false,
+  selected,
   icon,
-  className = "",
-  size = "default",
+  className,
+  size,
   "data-testid": dataTestId,
   ...props
 }: ButtonLinkProps) => {
@@ -32,8 +32,8 @@ export const ButtonLink = ({
   return (
     <StyledLink
       className={className}
-      $size={size}
-      $selected={selected}
+      $size={size ?? "default"}
+      $selected={selected ?? false}
       data-testid={dataTestId}
       aria-current={selected ? "page" : undefined}
       {...props}

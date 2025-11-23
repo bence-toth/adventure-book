@@ -358,6 +358,33 @@ describe("Passage Component", () => {
       expect(mockAddItemToInventory).not.toHaveBeenCalled();
       expect(mockRemoveItemFromInventory).not.toHaveBeenCalled();
     });
+
+    it("does not execute effects when passageId is NaN", async () => {
+      const { addItemToInventory } = await import("@/data/adventureLoader");
+      const mockAddItemToInventory = vi.mocked(addItemToInventory);
+
+      mockParams = { id: "not-a-number", adventureId: TEST_STORY_ID };
+
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      renderWithAdventure(
+        <ErrorBoundary>
+          <Passage />
+        </ErrorBoundary>,
+        {
+          adventureId: TEST_STORY_ID,
+          adventure: mockAdventure,
+        }
+      );
+
+      // Should not call addItemToInventory when passageId is invalid
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      expect(mockAddItemToInventory).not.toHaveBeenCalled();
+
+      consoleSpy.mockRestore();
+    });
   });
 
   describe("Error Handling", () => {

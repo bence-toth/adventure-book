@@ -157,4 +157,13 @@ describe("Sidebar", () => {
     // Component should re-render with the new item
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
   });
+
+  it("should return null when adventureId is not available", () => {
+    const { container } = renderWithAdventure(<Sidebar />, {
+      adventureId: undefined as unknown as string,
+    });
+
+    // Component should not render anything
+    expect(container.firstChild).toBeNull();
+  });
 });

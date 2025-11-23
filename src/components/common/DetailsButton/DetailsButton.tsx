@@ -22,9 +22,9 @@ export const DetailsButton = ({
   summary,
   children,
   icon,
-  className = "",
-  summaryClassName = "",
-  variant = "primary",
+  className,
+  summaryClassName,
+  variant,
   ...props
 }: DetailsButtonProps) => {
   const iconElement = icon
@@ -37,7 +37,10 @@ export const DetailsButton = ({
 
   return (
     <StyledDetails className={className} {...props}>
-      <StyledSummary $variant={variant} className={summaryClassName}>
+      <StyledSummary
+        $variant={variant ?? "primary"}
+        className={summaryClassName}
+      >
         {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
         <TextWrapper>{summary}</TextWrapper>
       </StyledSummary>

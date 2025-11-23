@@ -54,7 +54,7 @@ export const AdventureProvider = ({
     <AdventureContext.Provider
       value={{
         adventure,
-        adventureId: adventureId ?? null,
+        adventureId: adventureId || null,
         loading,
         error,
       }}
