@@ -388,6 +388,33 @@ describe("Passage Component", () => {
   });
 
   describe("Error Handling", () => {
+    it("throws InvalidPassageIdError when id param is undefined", async () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      renderWithAdventure(
+        <ErrorBoundary>
+          <Passage />
+        </ErrorBoundary>,
+        {
+          adventureId: TEST_STORY_ID,
+          adventure: mockAdventure,
+        }
+      );
+
+      const errorMessages = await screen.findAllByText(/is not valid/);
+      expect(errorMessages.length).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+    });
+
     it("throws AdventureLoadError when there is a load error", async () => {
       const consoleSpy = vi
         .spyOn(console, "error")

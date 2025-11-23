@@ -47,9 +47,9 @@ export const TopBar = () => {
     <TopBarContainer as="header">
       <TopBarLogo data-testid={TOP_BAR_TEST_IDS.LOGO}>
         <BackButton />
-        <AdventureTitleInput adventureId={extractedAdventureId!} />
+        <AdventureTitleInput adventureId={extractedAdventureId} />
       </TopBarLogo>
-      <AdventureNavigation adventureId={extractedAdventureId!} />
+      <AdventureNavigation adventureId={extractedAdventureId} />
     </TopBarContainer>
   );
 };

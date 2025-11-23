@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "fake-indexeddb/auto";
 import { AdventureProvider, AdventureContext } from "../AdventureContext";
 import { saveAdventure, type StoredAdventure } from "@/data/adventureDatabase";
+import * as adventureLoader from "@/data/adventureLoader";
 import { useContext } from "react";
 
 // Sample valid adventure YAML
@@ -255,6 +256,47 @@ describe("AdventureContext", () => {
     expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
 
     consoleSpy.mockRestore();
+  });
+
+  it("should handle non-Error exceptions with fallback message", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    // Mock loadAdventureById to throw a non-Error value
+    const mockLoadAdventureById = vi
+      .spyOn(adventureLoader, "loadAdventureById")
+      .mockRejectedValueOnce("string error" as never);
+
+    render(
+      <MemoryRouter initialEntries={["/adventure/error-test"]}>
+        <Routes>
+          <Route
+            path="/adventure/:adventureId"
+            element={
+              <AdventureProvider>
+                <TestConsumer />
+              </AdventureProvider>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("loading-state")).toHaveTextContent(
+          "not-loading"
+        );
+      },
+      { timeout: 3000 }
+    );
+
+    expect(screen.getByTestId("error-state")).toHaveTextContent(
+      "Failed to load adventure"
+    );
+    expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
+
+    consoleSpy.mockRestore();
+    mockLoadAdventureById.mockRestore();
   });
 
   // Note: Testing adventureId changes with rerender is complex due to

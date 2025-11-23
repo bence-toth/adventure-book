@@ -9,7 +9,7 @@ import { ButtonLink } from "@/components/common";
 import { TopBarNav } from "./AdventureNavigation.styles";
 
 export interface AdventureNavigationProps {
-  adventureId: string;
+  adventureId: string | null;
 }
 
 export const AdventureNavigation = ({
@@ -28,6 +28,7 @@ export const AdventureNavigation = ({
     () => getAdventureTestRoute(adventureId),
     [adventureId]
   );
+
   const editRoute = useMemo(
     () => getAdventureEditRoute(adventureId),
     [adventureId]

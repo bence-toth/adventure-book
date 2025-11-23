@@ -58,7 +58,7 @@ export class ErrorBoundary extends Component<Props, State> {
     const { error } = this.state;
 
     // For AdventureBookError instances, use their message directly
-    const errorMessage = error!.message;
+    const errorMessage = error?.message ?? "An unexpected error occurred";
 
     return (
       <ErrorBoundaryContainer>

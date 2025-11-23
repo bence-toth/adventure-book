@@ -21,7 +21,7 @@ export const Introduction = () => {
   const { adventure, adventureId, loading, error } = useAdventure();
 
   const handleStartAdventure = () => {
-    navigate(getPassageRoute(adventureId!, SPECIAL_PASSAGES.START));
+    navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.START));
   };
 
   if (loading) {
@@ -38,7 +38,7 @@ export const Introduction = () => {
     throw new AdventureLoadError(error);
   }
 
-  if (!adventure) {
+  if (!adventure || !adventureId) {
     throw new AdventureNotFoundError();
   }
 

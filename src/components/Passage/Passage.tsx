@@ -42,7 +42,10 @@ export const Passage = () => {
   const navigate = useNavigate();
   const { adventure, loading, error } = useAdventure();
 
-  const passageId = parseInt(id!, 10);
+  if (!id) {
+    throw new InvalidPassageIdError("undefined");
+  }
+  const passageId = parseInt(id, 10);
 
   useEffect(() => {
     if (!adventureId || !adventure) return;
@@ -97,7 +100,7 @@ export const Passage = () => {
   }
 
   if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
-    throw new InvalidPassageIdError(id!);
+    throw new InvalidPassageIdError(id);
   }
 
   // Handle passage 0 (reset) - this will be handled in useEffect, but we need to prevent

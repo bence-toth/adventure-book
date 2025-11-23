@@ -40,7 +40,11 @@ export const AdventureProvider = ({
         const loadedAdventure = await loadAdventureById(adventureId);
         setAdventure(loadedAdventure);
       } catch (err) {
-        setError((err as Error).message);
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to load adventure");
+        }
         setAdventure(null);
       } finally {
         setLoading(false);
@@ -54,7 +58,7 @@ export const AdventureProvider = ({
     <AdventureContext.Provider
       value={{
         adventure,
-        adventureId: adventureId || null,
+        adventureId: adventureId ?? null,
         loading,
         error,
       }}

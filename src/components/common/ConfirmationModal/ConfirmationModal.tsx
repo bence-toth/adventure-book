@@ -22,11 +22,11 @@ export interface ConfirmationModalProps {
   onOpenChange: () => void;
   title: string;
   message: ReactNode;
-  confirmLabel?: string;
-  cancelLabel?: string;
+  confirmLabel: string;
+  cancelLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
-  variant?: "danger" | "primary";
+  variant: "primary" | "danger";
   "data-testid"?: string;
 }
 
@@ -96,9 +96,9 @@ export const ConfirmationModal = ({
             <DialogActions
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS}
             >
-              <Button onClick={onCancel}>{cancelLabel ?? "Cancel"}</Button>
-              <Button variant={variant ?? "primary"} onClick={onConfirm}>
-                {confirmLabel ?? "Confirm"}
+              <Button onClick={onCancel}>{cancelLabel}</Button>
+              <Button variant={variant} onClick={onConfirm}>
+                {confirmLabel}
               </Button>
             </DialogActions>
           </DialogContent>

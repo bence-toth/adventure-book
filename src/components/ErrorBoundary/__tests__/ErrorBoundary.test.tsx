@@ -72,6 +72,36 @@ describe("ErrorBoundary", () => {
     consoleSpy.mockRestore();
   });
 
+  it("shows fallback message when error has no message", () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    // TypeScript class that creates an error-like object
+    class CustomError extends Error {
+      constructor() {
+        super();
+        this.name = "CustomError";
+        Object.defineProperty(this, "message", {
+          get() {
+            return undefined;
+          },
+        });
+      }
+    }
+
+    render(
+      <ErrorBoundary>
+        <ThrowError error={new CustomError()} />
+      </ErrorBoundary>
+    );
+
+    expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+    expect(
+      screen.getByText("An unexpected error occurred")
+    ).toBeInTheDocument();
+
+    consoleSpy.mockRestore();
+  });
+
   describe("Custom Error Types", () => {
     it("handles AdventureLoadError correctly", () => {
       const consoleSpy = vi

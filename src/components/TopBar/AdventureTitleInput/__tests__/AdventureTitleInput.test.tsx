@@ -24,6 +24,14 @@ describe("AdventureTitleInput", () => {
     });
   });
 
+  it("handles null adventureId gracefully", () => {
+    render(<AdventureTitleInput adventureId={null} />);
+
+    const input = screen.getByLabelText("Adventure title");
+    expect(input).toHaveValue("");
+    expect(adventureDatabase.getAdventure).not.toHaveBeenCalled();
+  });
+
   it("loads and displays adventure title", async () => {
     render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
