@@ -7,6 +7,7 @@ import {
   ROUTES,
 } from "../../constants/routes";
 import { Button, ButtonLink } from "../common";
+import { TOP_BAR_TEST_IDS } from "../../constants/testIds";
 import { updateStoryTitle, getStory } from "../../data/storyDatabase";
 import {
   TopBarContainer,
@@ -67,7 +68,7 @@ export const TopBar = () => {
     // DocumentManager view
     return (
       <TopBarContainer as="header">
-        <TopBarLogo data-testid="top-bar-logo">
+        <TopBarLogo data-testid={TOP_BAR_TEST_IDS.LOGO}>
           <TopBarLogoIcon>
             <Swords size={32} strokeWidth={1.5} aria-hidden="true" />
           </TopBarLogoIcon>
@@ -86,12 +87,12 @@ export const TopBar = () => {
 
   return (
     <TopBarContainer as="header">
-      <TopBarLogo data-testid="top-bar-logo">
+      <TopBarLogo data-testid={TOP_BAR_TEST_IDS.LOGO}>
         <Button
           onClick={handleBackClick}
           icon={ArrowLeft}
           aria-label="Back to document manager"
-          data-testid="top-bar-back-button"
+          data-testid={TOP_BAR_TEST_IDS.BACK_BUTTON}
           size="small"
         />
         <TopBarTitleInput

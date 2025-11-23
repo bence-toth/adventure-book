@@ -30,3 +30,16 @@ export const ERROR_TEST_IDS = {
   PASSAGE_NOT_FOUND: "error-passage-not-found",
   GO_TO_INTRODUCTION_BUTTON: "go-to-introduction-button",
 } as const;
+
+export const DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS = {
+  OVERLAY: "confirmation-modal-overlay",
+  DIALOG: "confirmation-modal-dialog",
+  CONTENT: "confirmation-modal-content",
+  MESSAGE: "confirmation-modal-message",
+  ACTIONS: "confirmation-modal-actions",
+} as const;
+
+export const TOP_BAR_TEST_IDS = {
+  LOGO: "top-bar-logo",
+  BACK_BUTTON: "top-bar-back-button",
+} as const;

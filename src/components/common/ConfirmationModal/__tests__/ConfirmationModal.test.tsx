@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ConfirmationModal } from "../ConfirmationModal";
+import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "../../../../constants/testIds";
 
 describe("ConfirmationModal Component", () => {
   let originalOverflow: string;
@@ -191,7 +192,9 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      const overlay = screen.getByTestId("modal-overlay");
+      const overlay = screen.getByTestId(
+        DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.OVERLAY
+      );
       fireEvent.click(overlay);
 
       expect(handleCancel).toHaveBeenCalledTimes(1);
@@ -211,7 +214,9 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      const dialog = screen.getByTestId("confirmation-dialog");
+      const dialog = screen.getByTestId(
+        DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.DIALOG
+      );
       fireEvent.click(dialog);
 
       expect(handleCancel).not.toHaveBeenCalled();
@@ -368,7 +373,9 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(screen.getByTestId("modal-overlay")).toBeInTheDocument();
+      expect(
+        screen.getByTestId(DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.OVERLAY)
+      ).toBeInTheDocument();
     });
 
     it("renders dialog element", () => {
@@ -383,7 +390,9 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(screen.getByTestId("confirmation-dialog")).toBeInTheDocument();
+      expect(
+        screen.getByTestId(DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.DIALOG)
+      ).toBeInTheDocument();
     });
 
     it("renders dialog content element", () => {
@@ -398,7 +407,9 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(screen.getByTestId("dialog-content")).toBeInTheDocument();
+      expect(
+        screen.getByTestId(DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.CONTENT)
+      ).toBeInTheDocument();
     });
 
     it("renders dialog message element", () => {
@@ -413,7 +424,9 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(screen.getByTestId("dialog-message")).toBeInTheDocument();
+      expect(
+        screen.getByTestId(DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.MESSAGE)
+      ).toBeInTheDocument();
     });
 
     it("renders dialog actions element", () => {
@@ -428,7 +441,9 @@ describe("ConfirmationModal Component", () => {
         />
       );
 
-      expect(screen.getByTestId("dialog-actions")).toBeInTheDocument();
+      expect(
+        screen.getByTestId(DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS)
+      ).toBeInTheDocument();
     });
   });
 
@@ -621,7 +636,9 @@ describe("ConfirmationModal Component", () => {
       const confirmButton = screen.getByRole("button", { name: "Confirm" });
 
       // Get positions to verify order
-      const dialogActions = screen.getByTestId("dialog-actions");
+      const dialogActions = screen.getByTestId(
+        DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS
+      );
       const buttons = Array.from(dialogActions.querySelectorAll("button"));
 
       expect(buttons[0]).toBe(cancelButton);

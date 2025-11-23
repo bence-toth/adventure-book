@@ -7,6 +7,7 @@ import {
   FloatingFocusManager,
 } from "@floating-ui/react";
 import { Button } from "../Button/Button";
+import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "../../../constants/testIds";
 import {
   ModalOverlay,
   Dialog,
@@ -70,20 +71,31 @@ export const ConfirmationModal = ({
 
   return (
     <FloatingFocusManager context={context} modal initialFocus={0}>
-      <ModalOverlay onClick={onCancel} data-testid="modal-overlay">
+      <ModalOverlay
+        onClick={onCancel}
+        data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.OVERLAY}
+      >
         <Dialog
           ref={refs.setFloating}
           open
           onClick={(e) => e.stopPropagation()}
-          data-testid={dataTestId || "confirmation-dialog"}
+          data-testid={
+            dataTestId || DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.DIALOG
+          }
           {...getFloatingProps()}
         >
-          <DialogContent data-testid="dialog-content">
+          <DialogContent
+            data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.CONTENT}
+          >
             <DialogTitle>{title}</DialogTitle>
-            <DialogMessage data-testid="dialog-message">
+            <DialogMessage
+              data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.MESSAGE}
+            >
               {message}
             </DialogMessage>
-            <DialogActions data-testid="dialog-actions">
+            <DialogActions
+              data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS}
+            >
               <Button onClick={onCancel}>{cancelLabel}</Button>
               <Button variant={variant} onClick={onConfirm}>
                 {confirmLabel}
