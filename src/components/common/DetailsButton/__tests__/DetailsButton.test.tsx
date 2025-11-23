@@ -130,30 +130,6 @@ describe("DetailsButton Component", () => {
     });
   });
 
-  describe("Variants", () => {
-    it("applies primary variant by default", () => {
-      const { container } = render(
-        <DetailsButton summary="Default">
-          <div>Content</div>
-        </DetailsButton>
-      );
-
-      const summary = container.querySelector("summary");
-      expect(summary).toBeInTheDocument();
-    });
-
-    it("applies specified variant", () => {
-      const { container } = render(
-        <DetailsButton summary="Primary" variant="primary">
-          <div>Content</div>
-        </DetailsButton>
-      );
-
-      const summary = container.querySelector("summary");
-      expect(summary).toBeInTheDocument();
-    });
-  });
-
   describe("Interaction", () => {
     it("can be toggled open and closed", () => {
       const { container } = render(

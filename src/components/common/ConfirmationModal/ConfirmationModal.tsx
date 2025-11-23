@@ -26,7 +26,7 @@ export interface ConfirmationModalProps {
   cancelLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
-  variant: "primary" | "danger";
+  variant: "neutral" | "danger";
   "data-testid"?: string;
 }
 

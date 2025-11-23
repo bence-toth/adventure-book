@@ -51,17 +51,17 @@ export const ErrorBoundaryDetails = styled.div`
   margin-block: var(--space-3);
 `;
 
-export const ErrorBoundaryDetailsContent = styled.pre<{ isError?: boolean }>`
+export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
   font-family: var(--font-family-monospace);
   text-align: start;
   font-size: var(--font-size-sm);
   background: ${(props) =>
-    props.isError
+    props.$isError
       ? "var(--color-background-surface-danger)"
       : "var(--color-background-surface-neutral)"};
   border: var(--border-width-surface) solid
     ${(props) =>
-      props.isError
+      props.$isError
         ? "var(--color-border-surface-danger)"
         : "var(--color-border-surface-neutral)"};
   border-radius: calc(var(--space-1) / 2);
@@ -71,12 +71,11 @@ export const ErrorBoundaryDetailsContent = styled.pre<{ isError?: boolean }>`
   white-space: pre-wrap;
   overflow-wrap: break-word;
   color: ${(props) =>
-    props.isError
+    props.$isError
       ? "var(--color-foreground-danger)"
       : "var(--color-foreground)"};
   line-height: ${(props) =>
-    props.isError ? "var(--line-height-normal)" : "var(--line-height-loose)"};
-
+    props.$isError ? "var(--line-height-normal)" : "var(--line-height-loose)"};
   pre {
     font-family: inherit;
   }

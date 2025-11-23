@@ -26,7 +26,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -45,7 +45,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -66,7 +66,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -84,7 +84,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -107,7 +107,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -126,7 +126,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="No, go back"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -145,7 +145,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -172,7 +172,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={handleConfirm}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -194,7 +194,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={handleCancel}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -216,7 +216,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={handleCancel}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -241,7 +241,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={handleCancel}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -266,7 +266,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -325,7 +325,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -341,7 +341,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -361,7 +361,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -379,7 +379,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -399,7 +399,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -425,7 +425,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -445,7 +445,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -465,7 +465,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -485,7 +485,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -505,7 +505,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -527,7 +527,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -547,7 +547,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -569,7 +569,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -591,7 +591,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -625,7 +625,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -648,7 +648,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -666,7 +666,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -686,7 +686,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -703,7 +703,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 
@@ -726,7 +726,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
-          variant="primary"
+          variant="neutral"
         />
       );
 

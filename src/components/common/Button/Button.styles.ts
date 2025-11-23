@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const StyledButton = styled.button<{
-  $variant: "primary" | "danger";
+  $variant: "neutral" | "danger";
   $size: "default" | "small";
   $selected: boolean;
   $hasChildren: boolean;

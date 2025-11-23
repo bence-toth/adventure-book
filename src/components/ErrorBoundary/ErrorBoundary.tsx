@@ -86,10 +86,10 @@ export class ErrorBoundary extends Component<Props, State> {
               aria-label="Technical details"
               onToggle={this.handleDetailsToggle}
             >
-              <ErrorBoundaryDetailsContent isError>
+              <ErrorBoundaryDetailsContent $isError>
                 <strong>Error type:</strong> {error.name}
               </ErrorBoundaryDetailsContent>
-              <ErrorBoundaryDetailsContent isError>
+              <ErrorBoundaryDetailsContent $isError>
                 <strong>Error message:</strong> {error.message}
               </ErrorBoundaryDetailsContent>
               {error.stack && (

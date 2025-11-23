@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const StyledDetails = styled.details``;
 
-export const StyledSummary = styled.summary<{ $variant: "primary" }>`
+export const StyledSummary = styled.summary`
   list-style: none;
   cursor: pointer;
   user-select: none;
