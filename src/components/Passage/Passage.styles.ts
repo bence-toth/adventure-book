@@ -35,21 +35,3 @@ export const Choices = styled.div`
   flex-direction: column;
   gap: var(--space-2);
 `;
-
-export const ErrorContainer = styled.div`
-  text-align: center;
-  padding: var(--space-4);
-  max-width: var(--size-content);
-`;
-
-export const ErrorTitle = styled.h2`
-  font-family: var(--font-family-display);
-  font-size: var(--font-size-xl);
-  color: var(--color-foreground-danger);
-  margin-top: 0;
-  margin-bottom: var(--space-3);
-`;
-
-export const ErrorMessage = styled.p`
-  margin-bottom: var(--space-4);
-`;

@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log the error for debugging
-    console.error("Adventure loading error caught by boundary:", error);
+    console.error("Error caught by boundary:", error);
     console.error("Error details:", errorInfo);
   }
 
@@ -48,35 +48,16 @@ export class ErrorBoundary extends Component<Props, State> {
   private renderErrorFallback = () => {
     const { error } = this.state;
 
-    const getErrorMessage = () => {
-      if (!error) {
-        return "An unexpected error occurred while loading the adventure.";
-      }
-
-      const message = error.message;
-
-      if (message.includes("YAML") || message.includes("parsing")) {
-        return "There was an error parsing the adventure file. The adventure format may be invalid.";
-      }
-
-      if (message.includes("validation")) {
-        return "The adventure file contains validation errors and cannot be loaded.";
-      }
-
-      if (message.includes("fetch") || message.includes("load")) {
-        return "Unable to load the adventure file. Please check your connection.";
-      }
-
-      return "An error occurred while loading the adventure.";
-    };
+    // For AdventureBookError instances, use their message directly
+    // Otherwise, provide a generic fallback message
+    const errorMessage =
+      error?.message || "An unexpected error occurred in the application.";
 
     return (
       <div className="adventure-book">
         <ErrorBoundaryContainer>
           <ErrorBoundaryTitle>A system error occurred</ErrorBoundaryTitle>
-          <ErrorBoundaryDescription>
-            {getErrorMessage()}
-          </ErrorBoundaryDescription>
+          <ErrorBoundaryDescription>{errorMessage}</ErrorBoundaryDescription>
           <ErrorBoundaryActions>
             <Button onClick={() => window.location.reload()}>
               Reload page
@@ -94,11 +75,15 @@ export class ErrorBoundary extends Component<Props, State> {
                 aria-label="Technical details"
               >
                 <ErrorBoundaryDetailsContent $isError>
-                  {error.message}
+                  <strong>Error type:</strong> {error.name}
+                </ErrorBoundaryDetailsContent>
+                <ErrorBoundaryDetailsContent $isError>
+                  <strong>Error message:</strong> {error.message}
                 </ErrorBoundaryDetailsContent>
                 {error.stack && (
                   <ErrorBoundaryDetailsContent>
-                    {error.stack}
+                    <strong>Stack trace:</strong>
+                    <pre>{error.stack}</pre>
                   </ErrorBoundaryDetailsContent>
                 )}
                 <ErrorBoundaryHelpText>

@@ -2,6 +2,7 @@ import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { AdventureManager } from "../AdventureManager";
 import { render } from "@/__tests__/testUtils";
+import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 import * as adventureDatabase from "@/data/adventureDatabase";
 import type { StoredAdventure } from "@/data/adventureDatabase";
 
@@ -64,36 +65,28 @@ describe("AdventureManager Component", () => {
   });
 
   describe("Error State", () => {
-    it("shows error message when loading fails", async () => {
+    it("throws StoriesLoadError when loading fails", async () => {
+      // Mock console.error to avoid noise
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
       vi.mocked(adventureDatabase.listStories).mockRejectedValue(
         new Error("Failed to load")
       );
 
-      render(<AdventureManager />);
+      render(
+        <ErrorBoundary>
+          <AdventureManager />
+        </ErrorBoundary>
+      );
 
       expect(
-        await screen.findByText("Failed to load stories")
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: /retry/i })
-      ).toBeInTheDocument();
-    });
+        (await screen.findAllByText("Failed to load stories.")).length
+      ).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
 
-    it("retries loading when retry button is clicked", async () => {
-      vi.mocked(adventureDatabase.listStories)
-        .mockRejectedValueOnce(new Error("Failed to load"))
-        .mockResolvedValueOnce(mockStories);
-
-      render(<AdventureManager />);
-
-      expect(
-        await screen.findByText("Failed to load stories")
-      ).toBeInTheDocument();
-
-      const retryButton = screen.getByRole("button", { name: /retry/i });
-      fireEvent.click(retryButton);
-
-      expect(await screen.findByText("Adventure One")).toBeInTheDocument();
+      consoleSpy.mockRestore();
     });
   });
 
@@ -173,12 +166,21 @@ describe("AdventureManager Component", () => {
       });
     });
 
-    it("shows error message when adventure creation fails", async () => {
+    it("throws StoryCreateError when adventure creation fails", async () => {
+      // Mock console.error to avoid noise
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
       vi.mocked(adventureDatabase.createAdventure).mockRejectedValue(
         new Error("Failed to create")
       );
 
-      render(<AdventureManager />);
+      render(
+        <ErrorBoundary>
+          <AdventureManager />
+        </ErrorBoundary>
+      );
 
       const newAdventureButton = await screen.findByText(
         "Create a new adventure"
@@ -186,8 +188,11 @@ describe("AdventureManager Component", () => {
       fireEvent.click(newAdventureButton);
 
       expect(
-        await screen.findByText("Failed to create adventure")
-      ).toBeInTheDocument();
+        (await screen.findAllByText("Failed to create adventure.")).length
+      ).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
     });
   });
 
@@ -246,12 +251,21 @@ describe("AdventureManager Component", () => {
       expect(adventureDatabase.listStories).toHaveBeenCalledTimes(2);
     });
 
-    it("shows error message when deletion fails", async () => {
+    it("throws StoryDeleteError when deletion fails", async () => {
+      // Mock console.error to avoid noise
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
       vi.mocked(adventureDatabase.deleteAdventure).mockRejectedValue(
         new Error("Failed to delete")
       );
 
-      render(<AdventureManager />);
+      render(
+        <ErrorBoundary>
+          <AdventureManager />
+        </ErrorBoundary>
+      );
 
       await screen.findByText("Adventure One");
 
@@ -265,8 +279,11 @@ describe("AdventureManager Component", () => {
       fireEvent.click(confirmButton);
 
       expect(
-        await screen.findByText("Failed to delete adventure")
-      ).toBeInTheDocument();
+        (await screen.findAllByText("Failed to delete adventure.")).length
+      ).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
     });
   });
 

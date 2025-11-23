@@ -191,6 +191,7 @@ export const createMockAdventureLoader = () => {
   return {
     loadAdventure: () => mockAdventure,
     loadAdventureById: async () => mockAdventure,
+    reloadAdventure: () => mockAdventure,
     introduction: mockIntroduction,
     getPassage: (id: number) => mockPassages[id],
     getAllPassages: () => mockPassages,
@@ -219,6 +220,7 @@ export const createCustomMockAdventureLoader = (
   return {
     loadAdventure: () => adventure,
     loadAdventureById: async () => adventure,
+    reloadAdventure: () => adventure,
     introduction,
     getPassage: (id: number) => adventure.passages[id],
     getAllPassages: () => adventure.passages,

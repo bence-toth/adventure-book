@@ -10,19 +10,23 @@ import { Button } from "@/components/common";
 import adventureTemplate from "@/data/adventure.yaml?raw";
 import { getAdventureTestRoute, getPassageRoute } from "@/constants/routes";
 import { getCurrentPassageId } from "@/utils/localStorage";
+import {
+  StoriesLoadError,
+  StoryCreateError,
+  StoryDeleteError,
+} from "@/utils/errors";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
 import {
   AdventureManagerContainer,
   AdventureManagerLoading,
-  AdventureManagerError,
   AdventureManagerList,
 } from "./AdventureManager.styles";
 
 export const AdventureManager = () => {
   const [stories, setStories] = useState<StoredAdventure[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<"load" | "create" | "delete" | null>(null);
   const navigate = useNavigate();
 
   const loadStories = useCallback(async () => {
@@ -32,8 +36,8 @@ export const AdventureManager = () => {
       const loadedStories = await listStories();
       setStories(loadedStories);
     } catch (err) {
-      setError("Failed to load stories");
       console.error("Error loading stories:", err);
+      setError("load");
     } finally {
       setLoading(false);
     }
@@ -65,15 +69,15 @@ export const AdventureManager = () => {
     try {
       // Use the adventure.yaml template and replace the title
       const contentWithNewTitle = adventureTemplate.replace(
-        /title:\s*"[^"]*"/,
+        /title:\s*"[^\"]*"/,
         `title: "${title}"`
       );
 
       const id = await createAdventure(title, contentWithNewTitle);
       navigate(getAdventureTestRoute(id));
     } catch (err) {
-      setError("Failed to create adventure");
       console.error("Error creating adventure:", err);
+      setError("create");
     }
   }, [navigate]);
 
@@ -83,8 +87,8 @@ export const AdventureManager = () => {
         await deleteAdventure(adventureId);
         await loadStories();
       } catch (err) {
-        setError("Failed to delete adventure");
         console.error("Error deleting adventure:", err);
+        setError("delete");
       }
     },
     [loadStories]
@@ -98,15 +102,15 @@ export const AdventureManager = () => {
     );
   }
 
-  if (error) {
-    return (
-      <AdventureManagerContainer>
-        <AdventureManagerError>
-          {error}
-          <Button onClick={loadStories}>Retry</Button>
-        </AdventureManagerError>
-      </AdventureManagerContainer>
-    );
+  // Throw appropriate error based on error type
+  if (error === "load") {
+    throw new StoriesLoadError();
+  }
+  if (error === "create") {
+    throw new StoryCreateError();
+  }
+  if (error === "delete") {
+    throw new StoryDeleteError();
   }
 
   return (
