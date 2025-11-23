@@ -4,17 +4,17 @@ A low-code tool for creating and testing interactive choose-your-own-adventure s
 
 ## Creating Your Adventure Book
 
-### Editing Story Content
+### Editing Adventure Content
 
 The adventure book system supports authoring stories in YAML format, making it easy for writers to create interactive narratives without touching code.
 
 #### Basic YAML Structure
 
-A story YAML file has three main sections:
+An adventure YAML file has three main sections:
 
 ```yaml
 metadata:
-  title: "Your Story Title"
+  title: "Your Adventure Title"
   author: "Author Name"
   version: "1.0"
 
@@ -56,11 +56,11 @@ passages:
 
 #### File Location
 
-Your story content is defined in:
+Your adventure content is defined in:
 
-- `src/data/story.yaml` - The main story file
+- `src/data/adventure.yaml` - The main adventure file
 
-To modify your story, simply edit this YAML file and the changes will be reflected immediately in development mode.
+To modify your adventure, simply edit this YAML file and the changes will be reflected immediately in development mode.
 
 ### Writing Guidelines
 
@@ -77,7 +77,7 @@ To modify your story, simply edit this YAML file and the changes will be reflect
 - Broken references will show errors in the console
 - The YAML is parsed and validated automatically
 
-### Testing Your Story
+### Testing Your Adventure
 
 After editing content, you can immediately test your changes:
 
@@ -85,7 +85,7 @@ After editing content, you can immediately test your changes:
 npm run dev  # Start the development server
 ```
 
-The application will automatically reload with your new content, allowing you to navigate through your story and verify all paths work correctly.
+The application will automatically reload with your new content, allowing you to navigate through your adventure and verify all paths work correctly.
 
 ## Getting Started
 

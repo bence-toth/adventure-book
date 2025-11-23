@@ -1,15 +1,21 @@
 import { getInventory, saveInventory } from "./localStorage";
 
-export const addItemToInventory = (itemId: string): void => {
-  const currentInventory = getInventory();
+export const addItemToInventory = (
+  adventureId: string,
+  itemId: string
+): void => {
+  const currentInventory = getInventory(adventureId);
   if (!currentInventory.includes(itemId)) {
     const updatedInventory = [...currentInventory, itemId];
-    saveInventory(updatedInventory);
+    saveInventory(adventureId, updatedInventory);
   }
 };
 
-export const removeItemFromInventory = (itemId: string): void => {
-  const currentInventory = getInventory();
+export const removeItemFromInventory = (
+  adventureId: string,
+  itemId: string
+): void => {
+  const currentInventory = getInventory(adventureId);
   const updatedInventory = currentInventory.filter((id) => id !== itemId);
-  saveInventory(updatedInventory);
+  saveInventory(adventureId, updatedInventory);
 };

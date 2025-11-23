@@ -38,9 +38,9 @@ npm run dev
 ### Your First Contribution
 
 1. **Explore the application**: Open http://localhost:5173 and play through the adventure
-2. **Understand the structure**: Look at `src/data/story.yaml` to see how stories are defined
+2. **Understand the structure**: Look at `src/data/adventure.yaml` to see how stories are defined
 3. **Run the test suite**: Execute `npm run test:run` to see all tests pass
-4. **Make a small change**: Try modifying story content or fixing a small UI issue
+4. **Make a small change**: Try modifying adventure content or fixing a small UI issue
 5. **Verify your change**: Ensure tests still pass with `npm test`
 
 ### Development Loop
@@ -59,7 +59,7 @@ npm run build         # Verify production build works
 ### Key Principles to Remember
 
 - **Test-Driven Development**: Write tests first, then implement features
-- **Content Independence**: Never hardcode specific story content in tests or components
+- **Content Independence**: Never hardcode specific adventure content in tests or components
 - **Type Safety**: Leverage TypeScript throughout - no `any` types
 - **Pure Functions**: Prefer stateless, predictable functions
 
@@ -111,7 +111,7 @@ npm run test:types      # Check TypeScript types
 
 ### User Experience
 
-- **Interactive Storytelling**: Creating engaging narratives with meaningful choices and consequences
+- **Interactive Adventuretelling**: Creating engaging narratives with meaningful choices and consequences
 - **Responsive Design**: Ensuring the application works across different devices and screen sizes
 - **Error Resilience**: Handling edge cases gracefully and providing helpful feedback
 - **Performance-Conscious**: Optimizing for fast loading and smooth interactions
@@ -129,7 +129,7 @@ npm run test:types      # Check TypeScript types
 
 - **Component Testing**: Verify individual components render correctly and handle user interactions
 - **Integration Testing**: Test complete user journeys and component interactions
-- **Data Validation**: Ensure story content and application data maintain structural integrity
+- **Data Validation**: Ensure adventure content and application data maintain structural integrity
 - **Error Handling**: Validate graceful handling of edge cases and invalid states
 
 ### Testing Tools and Setup
@@ -156,11 +156,11 @@ npm run test:types      # Check TypeScript types
 - **Build Optimization**: Production builds optimized for performance and bundle size
 - **Development vs Production**: Different configurations optimized for each environment
 
-### Story and Content Management
+### Adventure and Content Management
 
-- **Data-Driven Narrative**: Story content separated from presentation logic
-- **Extensible Structure**: Architecture supports easy addition of new story paths and content
-- **Type-Safe Content**: Story data validated through TypeScript interfaces
+- **Data-Driven Narrative**: Adventure content separated from presentation logic
+- **Extensible Structure**: Architecture supports easy addition of new adventure paths and content
+- **Type-Safe Content**: Adventure data validated through TypeScript interfaces
 - **Dynamic Routing**: URL-based navigation that supports bookmarking and sharing
 
 ## Development Guidelines

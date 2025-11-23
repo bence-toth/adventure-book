@@ -39,7 +39,7 @@ export interface RawIntro {
   action: string;
 }
 
-export interface RawStory {
+export interface RawAdventure {
   metadata: {
     title: string;
     author: string;
@@ -71,7 +71,7 @@ export interface Intro {
   action: string;
 }
 
-export interface Story {
+export interface Adventure {
   metadata: {
     title: string;
     author: string;

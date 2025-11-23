@@ -14,9 +14,8 @@
 
 .app-content {
   overflow-y: auto;
-  padding: var(--space-2);
   display: grid;
-  place-items: center;
-  background: var(--color-background);
+  place-items: stretch;
+  background: var(--color-background-neutral);
   min-height: 0;
 }
