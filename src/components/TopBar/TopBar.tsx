@@ -29,7 +29,7 @@ export const TopBar = () => {
     return !!extractedAdventureId;
   }, [extractedAdventureId]);
 
-  if (!isAdventureRoute) {
+  if (!isAdventureRoute || extractedAdventureId === null) {
     // AdventureManager view
     return (
       <TopBarContainer as="header">

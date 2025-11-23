@@ -166,4 +166,78 @@ describe("Sidebar", () => {
     // Component should not render anything
     expect(container.firstChild).toBeNull();
   });
+
+  it("should return null when adventure is not loaded yet", () => {
+    const { container } = renderWithAdventure(<Sidebar />, {
+      adventureId: TEST_STORY_ID,
+      adventure: null,
+    });
+
+    // Component should not render anything when adventure is null
+    expect(container.firstChild).toBeNull();
+  });
+
+  it("should not set up event listeners when adventureId is null", () => {
+    const addEventListenerSpy = vi.spyOn(window, "addEventListener");
+
+    renderWithAdventure(<Sidebar />, {
+      adventureId: null,
+      adventure: null,
+    });
+
+    // Verify that addEventListener was not called when adventureId is null
+    expect(addEventListenerSpy).not.toHaveBeenCalled();
+
+    addEventListenerSpy.mockRestore();
+  });
+
+  it("should only depend on adventureId in effect, not adventure object", async () => {
+    // Set up initial inventory
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
+
+    const mockAdventure = await setupTestAdventure(TEST_STORY_ID);
+
+    // Track how many times the effect runs by monitoring addEventListener calls
+    let addEventListenerCallCount = 0;
+    const originalAddEventListener = window.addEventListener;
+    const addEventListenerSpy = vi.fn(
+      (event: string, handler: EventListener) => {
+        if (event === "storage" || event === "inventoryUpdate") {
+          addEventListenerCallCount++;
+        }
+        return originalAddEventListener.call(window, event, handler);
+      }
+    );
+    window.addEventListener = addEventListenerSpy as any;
+
+    const { rerender } = renderWithAdventure(<Sidebar />, {
+      adventureId: TEST_STORY_ID,
+      adventure: mockAdventure,
+    });
+
+    expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
+
+    // Effect should have run once, adding 2 listeners (storage + inventoryUpdate)
+    const initialCallCount = addEventListenerCallCount;
+    expect(initialCallCount).toBe(2);
+
+    // Create a new adventure object with the same content but different reference
+    const newAdventureObject = { ...mockAdventure };
+
+    // Re-render with new adventure object but same adventureId
+    await act(async () => {
+      rerender(<Sidebar />);
+    });
+
+    // Effect should NOT re-run because adventureId hasn't changed
+    expect(addEventListenerCallCount).toBe(initialCallCount);
+
+    window.addEventListener = originalAddEventListener;
+  });
 });

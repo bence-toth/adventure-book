@@ -13,7 +13,7 @@ export const Sidebar = () => {
   const { adventure, adventureId } = useAdventure();
 
   useEffect(() => {
-    if (!adventure || !adventureId) {
+    if (!adventureId) {
       return;
     }
 
@@ -38,7 +38,7 @@ export const Sidebar = () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("inventoryUpdate", handleInventoryUpdate);
     };
-  }, [adventure, adventureId]);
+  }, [adventureId]);
 
   if (!adventure) {
     return null;
