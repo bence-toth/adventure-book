@@ -337,4 +337,29 @@ describe("ErrorBoundary", () => {
 
     consoleSpy.mockRestore();
   });
+
+  it("reloads page when Reload page button is clicked", async () => {
+    const user = userEvent.setup();
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const reloadMock = vi.fn();
+
+    // Mock window.location.reload
+    Object.defineProperty(window, "location", {
+      value: { reload: reloadMock },
+      writable: true,
+    });
+
+    render(
+      <ErrorBoundary>
+        <ThrowError error={new Error("Test error")} />
+      </ErrorBoundary>
+    );
+
+    const reloadButton = screen.getByRole("button", { name: /reload page/i });
+    await user.click(reloadButton);
+
+    expect(reloadMock).toHaveBeenCalledTimes(1);
+
+    consoleSpy.mockRestore();
+  });
 });

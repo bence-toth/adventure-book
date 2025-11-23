@@ -1,32 +1,59 @@
-import { screen, fireEvent } from "@testing-library/react";
+import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { Passage } from "../Passage";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
-import { getPassageRoute } from "@/constants/routes";
+import { getPassageRoute, getAdventureTestRoute } from "@/constants/routes";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 import {
   PASSAGE_TEST_IDS,
   getPassageParagraphTestId,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
+import * as localStorage from "@/utils/localStorage";
+import type { Adventure } from "@/data/types";
 
 const TEST_STORY_ID = "test-adventure-id";
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
+let mockParams = { id: "1", adventureId: TEST_STORY_ID };
+
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
     useNavigate: () => mockNavigate,
-    useParams: () => ({ id: "1", adventureId: TEST_STORY_ID }),
+    useParams: () => mockParams,
+  };
+});
+
+// Mock localStorage utilities
+vi.mock("@/utils/localStorage", async () => {
+  const actual = await vi.importActual("@/utils/localStorage");
+  return {
+    ...actual,
+    saveCurrentPassageId: vi.fn(),
+    clearCurrentPassageId: vi.fn(),
+    clearInventory: vi.fn(),
+  };
+});
+
+// Mock adventureLoader
+vi.mock("@/data/adventureLoader", async () => {
+  const actual = await vi.importActual("@/data/adventureLoader");
+  return {
+    ...actual,
+    addItemToInventory: vi.fn(),
+    removeItemFromInventory: vi.fn(),
   };
 });
 
 describe("Passage Component", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    vi.clearAllMocks();
+    mockParams = { id: "1", adventureId: TEST_STORY_ID };
   });
 
   it("renders the first passage correctly", async () => {
@@ -97,6 +124,242 @@ describe("Passage Component", () => {
     });
   });
 
+  describe("Ending Passages", () => {
+    it("renders restart button for ending passages", async () => {
+      mockParams = { id: "4", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      const restartButton = await screen.findByTestId(
+        PASSAGE_TEST_IDS.RESTART_BUTTON
+      );
+      expect(restartButton).toBeInTheDocument();
+      expect(restartButton).toHaveTextContent("Restart adventure");
+    });
+
+    it("clears progress and navigates to introduction when restart is clicked", async () => {
+      mockParams = { id: "4", adventureId: TEST_STORY_ID };
+
+      const mockClearCurrentPassageId = vi.mocked(
+        localStorage.clearCurrentPassageId
+      );
+      const mockClearInventory = vi.mocked(localStorage.clearInventory);
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      const restartButton = await screen.findByTestId(
+        PASSAGE_TEST_IDS.RESTART_BUTTON
+      );
+      fireEvent.click(restartButton);
+
+      expect(mockClearCurrentPassageId).toHaveBeenCalledWith(TEST_STORY_ID);
+      expect(mockClearInventory).toHaveBeenCalledWith(TEST_STORY_ID);
+      expect(mockNavigate).toHaveBeenCalledWith(
+        getAdventureTestRoute(TEST_STORY_ID)
+      );
+    });
+  });
+
+  describe("Special Passages", () => {
+    it("handles passage 0 (reset) by clearing progress and redirecting", async () => {
+      mockParams = { id: "0", adventureId: TEST_STORY_ID };
+
+      const mockClearCurrentPassageId = vi.mocked(
+        localStorage.clearCurrentPassageId
+      );
+      const mockClearInventory = vi.mocked(localStorage.clearInventory);
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      // Should show the reset message
+      const resetPassage = await screen.findByTestId(
+        PASSAGE_TEST_IDS.RESET_PASSAGE
+      );
+      expect(resetPassage).toBeInTheDocument();
+      expect(screen.getByText("Resetting your adventure…")).toBeInTheDocument();
+
+      // Should clear localStorage and navigate
+      await waitFor(() => {
+        expect(mockClearCurrentPassageId).toHaveBeenCalledWith(TEST_STORY_ID);
+        expect(mockClearInventory).toHaveBeenCalledWith(TEST_STORY_ID);
+        expect(mockNavigate).toHaveBeenCalledWith(
+          getAdventureTestRoute(TEST_STORY_ID)
+        );
+      });
+    });
+  });
+
+  describe("Effects Handling", () => {
+    it("handles add_item effects for regular passages", async () => {
+      const { addItemToInventory } = await import("@/data/adventureLoader");
+      const mockAddItemToInventory = vi.mocked(addItemToInventory);
+
+      const adventureWithEffects: Adventure = {
+        ...mockAdventure,
+        passages: {
+          ...mockAdventure.passages,
+          7: {
+            paragraphs: ["You found a magical sword!"],
+            choices: [{ text: "Continue", goto: 1 }],
+            effects: [{ type: "add_item", item: "sword" }],
+          },
+        },
+      };
+
+      mockParams = { id: "7", adventureId: TEST_STORY_ID };
+
+      // Spy on window.dispatchEvent
+      const dispatchEventSpy = vi.spyOn(window, "dispatchEvent");
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: adventureWithEffects,
+      });
+
+      await waitFor(() => {
+        expect(mockAddItemToInventory).toHaveBeenCalledWith(
+          TEST_STORY_ID,
+          "sword"
+        );
+        expect(dispatchEventSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ type: "inventoryUpdate" })
+        );
+      });
+
+      dispatchEventSpy.mockRestore();
+    });
+
+    it("handles remove_item effects for regular passages", async () => {
+      const { removeItemFromInventory } = await import(
+        "@/data/adventureLoader"
+      );
+      const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
+
+      const adventureWithEffects: Adventure = {
+        ...mockAdventure,
+        passages: {
+          ...mockAdventure.passages,
+          8: {
+            paragraphs: ["You used the healing potion."],
+            choices: [{ text: "Continue", goto: 1 }],
+            effects: [{ type: "remove_item", item: "potion" }],
+          },
+        },
+      };
+
+      mockParams = { id: "8", adventureId: TEST_STORY_ID };
+
+      // Spy on window.dispatchEvent
+      const dispatchEventSpy = vi.spyOn(window, "dispatchEvent");
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: adventureWithEffects,
+      });
+
+      await waitFor(() => {
+        expect(mockRemoveItemFromInventory).toHaveBeenCalledWith(
+          TEST_STORY_ID,
+          "potion"
+        );
+        expect(dispatchEventSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ type: "inventoryUpdate" })
+        );
+      });
+
+      dispatchEventSpy.mockRestore();
+    });
+
+    it("handles multiple effects in a passage", async () => {
+      const { addItemToInventory, removeItemFromInventory } = await import(
+        "@/data/adventureLoader"
+      );
+      const mockAddItemToInventory = vi.mocked(addItemToInventory);
+      const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
+
+      const adventureWithEffects: Adventure = {
+        ...mockAdventure,
+        passages: {
+          ...mockAdventure.passages,
+          9: {
+            paragraphs: ["You traded the gem for a key."],
+            choices: [{ text: "Continue", goto: 1 }],
+            effects: [
+              { type: "remove_item", item: "gem" },
+              { type: "add_item", item: "key" },
+            ],
+          },
+        },
+      };
+
+      mockParams = { id: "9", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: adventureWithEffects,
+      });
+
+      await waitFor(() => {
+        expect(mockRemoveItemFromInventory).toHaveBeenCalledWith(
+          TEST_STORY_ID,
+          "gem"
+        );
+        expect(mockAddItemToInventory).toHaveBeenCalledWith(
+          TEST_STORY_ID,
+          "key"
+        );
+      });
+    });
+
+    it("does not apply effects for ending passages", async () => {
+      const { addItemToInventory } = await import("@/data/adventureLoader");
+      const mockAddItemToInventory = vi.mocked(addItemToInventory);
+
+      mockParams = { id: "4", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      await screen.findByTestId(PASSAGE_TEST_IDS.RESTART_BUTTON);
+
+      // Should not call add or remove item functions for ending passages
+      expect(mockAddItemToInventory).not.toHaveBeenCalled();
+    });
+
+    it("handles passages without effects", async () => {
+      const { addItemToInventory, removeItemFromInventory } = await import(
+        "@/data/adventureLoader"
+      );
+      const mockAddItemToInventory = vi.mocked(addItemToInventory);
+      const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
+
+      // Use existing passage 1 which has no effects
+      mockParams = { id: "1", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
+
+      // Should not call any inventory functions when no effects
+      expect(mockAddItemToInventory).not.toHaveBeenCalled();
+      expect(mockRemoveItemFromInventory).not.toHaveBeenCalled();
+    });
+  });
+
   describe("Error Handling", () => {
     it("throws AdventureLoadError when there is a load error", async () => {
       const consoleSpy = vi
@@ -144,9 +407,77 @@ describe("Passage Component", () => {
       consoleSpy.mockRestore();
     });
 
-    // Note: Testing invalid passage IDs and non-existent passages requires
-    // dynamic mocking of useParams which is complex in vitest.
-    // These scenarios are better covered by integration tests.
+    it("throws InvalidPassageIdError for non-numeric passage IDs", async () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      mockParams = { id: "invalid", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(
+        <ErrorBoundary>
+          <Passage />
+        </ErrorBoundary>,
+        {
+          adventureId: TEST_STORY_ID,
+          adventure: mockAdventure,
+        }
+      );
+
+      const errorMessages = await screen.findAllByText(/is not valid/);
+      expect(errorMessages.length).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+    });
+
+    it("throws InvalidPassageIdError for negative passage IDs", async () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      mockParams = { id: "-5", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(
+        <ErrorBoundary>
+          <Passage />
+        </ErrorBoundary>,
+        {
+          adventureId: TEST_STORY_ID,
+          adventure: mockAdventure,
+        }
+      );
+
+      const errorMessages = await screen.findAllByText(/is not valid/);
+      expect(errorMessages.length).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+    });
+
+    it("throws PassageNotFoundError when passage does not exist", async () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      mockParams = { id: "999", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(
+        <ErrorBoundary>
+          <Passage />
+        </ErrorBoundary>,
+        {
+          adventureId: TEST_STORY_ID,
+          adventure: mockAdventure,
+        }
+      );
+
+      const errorMessages = await screen.findAllByText(/does not exist/);
+      expect(errorMessages.length).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+    });
   });
 
   describe("Loading State", () => {
@@ -158,6 +489,25 @@ describe("Passage Component", () => {
 
       const container = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
       expect(container).toHaveTextContent("Loading passage...");
+    });
+  });
+
+  describe("LocalStorage Integration", () => {
+    it("saves current passage ID for regular passages", async () => {
+      const mockSaveCurrentPassageId = vi.mocked(
+        localStorage.saveCurrentPassageId
+      );
+
+      mockParams = { id: "2", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<Passage />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      await waitFor(() => {
+        expect(mockSaveCurrentPassageId).toHaveBeenCalledWith(TEST_STORY_ID, 2);
+      });
     });
   });
 });

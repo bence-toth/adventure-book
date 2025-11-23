@@ -402,4 +402,41 @@ describe("AdventureManager Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  describe("Saved Progress Navigation", () => {
+    it("navigates to saved passage when progress exists", async () => {
+      const adventure: StoredAdventure = {
+        id: "test-id",
+        title: "Adventure with Progress",
+        content: "mock content",
+        lastEdited: new Date(),
+        createdAt: new Date(),
+      };
+      vi.mocked(adventureDatabase.listStories).mockResolvedValue([adventure]);
+
+      // Mock saved progress
+      localStorage.setItem(
+        "adventure-book/progress",
+        JSON.stringify({
+          "test-id": {
+            passageId: 5,
+            inventory: [],
+          },
+        })
+      );
+
+      render(<AdventureManager />);
+
+      const openButton = await screen.findByLabelText(
+        "Open Adventure with Progress"
+      );
+      fireEvent.click(openButton);
+
+      await waitFor(() => {
+        expect(mockNavigate).toHaveBeenCalledWith(
+          "/adventure/test-id/test/passage/5"
+        );
+      });
+    });
+  });
 });

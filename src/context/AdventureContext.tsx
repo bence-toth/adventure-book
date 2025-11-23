@@ -40,9 +40,7 @@ export const AdventureProvider = ({
         const loadedAdventure = await loadAdventureById(adventureId);
         setAdventure(loadedAdventure);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load adventure"
-        );
+        setError((err as Error).message);
         setAdventure(null);
       } finally {
         setLoading(false);

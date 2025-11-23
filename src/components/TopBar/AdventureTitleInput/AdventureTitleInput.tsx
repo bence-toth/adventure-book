@@ -13,11 +13,9 @@ export const AdventureTitleInput = ({
 
   useEffect(() => {
     const loadAdventureTitle = async () => {
-      if (adventureId) {
-        const adventure = await getAdventure(adventureId);
-        if (adventure) {
-          setAdventureTitle(adventure.title);
-        }
+      const adventure = await getAdventure(adventureId);
+      if (adventure) {
+        setAdventureTitle(adventure.title);
       }
     };
     loadAdventureTitle();

@@ -1,6 +1,15 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import "fake-indexeddb/auto";
-import { loadAdventureById, reloadAdventure } from "../adventureLoader";
+import {
+  loadAdventureById,
+  reloadAdventure,
+  loadAdventure,
+  introduction,
+  getPassage,
+  getAllPassages,
+  getInventoryItems,
+  getCurrentInventory,
+} from "../adventureLoader";
 import { saveAdventure, type StoredAdventure } from "../adventureDatabase";
 import { AdventureParser } from "../adventureParser";
 
@@ -244,6 +253,131 @@ passages:
       // Validate that the adventure is valid
       const errors = AdventureParser.validateAdventure(adventure);
       expect(errors.length).toBe(0);
+    });
+  });
+
+  describe("Default adventure functions", () => {
+    describe("loadAdventure", () => {
+      it("should load the default adventure from YAML file", () => {
+        const adventure = loadAdventure();
+
+        expect(adventure).toBeDefined();
+        expect(adventure.metadata).toBeDefined();
+        expect(adventure.metadata.title).toBeDefined();
+        expect(adventure.intro).toBeDefined();
+        expect(adventure.passages).toBeDefined();
+      });
+
+      it("should cache the loaded adventure", () => {
+        const adventure1 = loadAdventure();
+        const adventure2 = loadAdventure();
+
+        expect(adventure1).toBe(adventure2);
+      });
+
+      it("should throw error if default adventure validation fails", () => {
+        // First, clear cache and load successfully to ensure we have a clean state
+        reloadAdventure();
+
+        // Now mock the parser to simulate a validation error
+        const originalValidate = AdventureParser.validateAdventure;
+        AdventureParser.validateAdventure = vi
+          .fn()
+          .mockReturnValue(["Test validation error"]);
+
+        // Mock console.error to verify it's called
+        const consoleSpy = vi
+          .spyOn(console, "error")
+          .mockImplementation(() => {});
+
+        // Clear the cache to force a new load with the mocked validator
+        try {
+          reloadAdventure();
+          // If we get here, the test should fail
+          expect.fail("Expected reloadAdventure to throw an error");
+        } catch (error) {
+          // This should throw because validation returns errors
+          expect((error as Error).message).toContain(
+            "Adventure validation failed"
+          );
+          expect(consoleSpy).toHaveBeenCalledWith(
+            "Adventure validation errors:",
+            ["Test validation error"]
+          );
+        } finally {
+          // Restore mocks
+          AdventureParser.validateAdventure = originalValidate;
+          consoleSpy.mockRestore();
+
+          // Reload to get back to valid state
+          reloadAdventure();
+        }
+      });
+    });
+
+    describe("introduction", () => {
+      it("should return introduction properties from default adventure", () => {
+        expect(introduction.title).toBeDefined();
+        expect(typeof introduction.title).toBe("string");
+
+        expect(introduction.paragraphs).toBeDefined();
+        expect(Array.isArray(introduction.paragraphs)).toBe(true);
+
+        expect(introduction.action).toBeDefined();
+        expect(typeof introduction.action).toBe("string");
+      });
+    });
+
+    describe("getPassage", () => {
+      it("should return passage from default adventure", () => {
+        const passage = getPassage(1);
+
+        expect(passage).toBeDefined();
+        expect(passage?.paragraphs).toBeDefined();
+      });
+
+      it("should return undefined for non-existent passage", () => {
+        const passage = getPassage(999999);
+
+        expect(passage).toBeUndefined();
+      });
+    });
+
+    describe("getAllPassages", () => {
+      it("should return all passages from default adventure", () => {
+        const passages = getAllPassages();
+
+        expect(passages).toBeDefined();
+        expect(typeof passages).toBe("object");
+        expect(Object.keys(passages).length).toBeGreaterThan(0);
+      });
+    });
+
+    describe("getInventoryItems", () => {
+      it("should return inventory items from default adventure", () => {
+        const items = getInventoryItems();
+
+        expect(Array.isArray(items)).toBe(true);
+        // The default adventure may or may not have inventory items
+        items.forEach((item) => {
+          expect(item.id).toBeDefined();
+          expect(item.name).toBeDefined();
+        });
+      });
+    });
+
+    describe("getCurrentInventory", () => {
+      it("should return current inventory for an adventure", () => {
+        const inventory = getCurrentInventory("test-adventure");
+
+        expect(Array.isArray(inventory)).toBe(true);
+      });
+
+      it("should return empty array for new adventure", () => {
+        const inventory = getCurrentInventory("brand-new-adventure");
+
+        expect(inventory).toEqual([]);
+      });
     });
   });
 });

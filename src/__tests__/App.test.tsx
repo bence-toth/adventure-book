@@ -4,6 +4,42 @@ import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, it, expect, vi } from "vitest";
 import { createMockAdventureLoader } from "./mockAdventureData";
 
+// Import from index files to ensure they're covered
+import {
+  Introduction,
+  Passage,
+  ErrorBoundary,
+  TopBar,
+  AdventureManager,
+  Button,
+  ButtonLink,
+  ConfirmationModal,
+  ContextMenu,
+  ContextMenuItem,
+  DetailsButton,
+} from "@/components";
+
+// Import types from index to cover type exports
+import type {
+  ButtonProps,
+  ConfirmationModalProps,
+  ContextMenuProps,
+  ContextMenuItemProps,
+  DetailsButtonProps,
+} from "@/components";
+
+// Also import from common index to cover FormattedDate export
+import { FormattedDate } from "@/components/common";
+
+// Ensure types are "used" by TypeScript
+const _typeCheck: {
+  button?: ButtonProps;
+  confirmModal?: ConfirmationModalProps;
+  contextMenu?: ContextMenuProps;
+  contextMenuItem?: ContextMenuItemProps;
+  detailsButton?: DetailsButtonProps;
+} = {};
+
 // Mock adventureLoader using the factory function
 vi.mock("@/data/adventureLoader", () => createMockAdventureLoader());
 

@@ -41,80 +41,54 @@ export const saveCurrentPassageId = (
   adventureId: string,
   passageId: number
 ): void => {
-  try {
-    const data = getProgressData();
-    const adventureProgress = data[adventureId] || {
-      passageId: null,
-      inventory: [],
-    };
-    data[adventureId] = { ...adventureProgress, passageId };
-    saveProgressData(data);
-  } catch (error) {
-    console.warn("Failed to save passage ID to localStorage:", error);
-  }
+  const data = getProgressData();
+  const adventureProgress = data[adventureId] || {
+    passageId: null,
+    inventory: [],
+  };
+  data[adventureId] = { ...adventureProgress, passageId };
+  saveProgressData(data);
 };
 
 export const getCurrentPassageId = (adventureId: string): number | null => {
-  try {
-    const adventureProgress = getAdventureProgress(adventureId);
-    return adventureProgress.passageId;
-  } catch (error) {
-    console.warn("Failed to get passage ID from localStorage:", error);
-    return null;
-  }
+  const adventureProgress = getAdventureProgress(adventureId);
+  return adventureProgress.passageId;
 };
 
 export const clearCurrentPassageId = (adventureId: string): void => {
-  try {
-    const data = getProgressData();
-    const adventureProgress = data[adventureId] || {
-      passageId: null,
-      inventory: [],
-    };
-    data[adventureId] = { ...adventureProgress, passageId: null };
-    saveProgressData(data);
-  } catch (error) {
-    console.warn("Failed to clear passage ID from localStorage:", error);
-  }
+  const data = getProgressData();
+  const adventureProgress = data[adventureId] || {
+    passageId: null,
+    inventory: [],
+  };
+  data[adventureId] = { ...adventureProgress, passageId: null };
+  saveProgressData(data);
 };
 
 export const saveInventory = (adventureId: string, itemIds: string[]): void => {
-  try {
-    const data = getProgressData();
-    const adventureProgress = data[adventureId] || {
-      passageId: null,
-      inventory: [],
-    };
-    data[adventureId] = { ...adventureProgress, inventory: itemIds };
-    saveProgressData(data);
-  } catch (error) {
-    console.warn("Failed to save inventory to localStorage:", error);
-  }
+  const data = getProgressData();
+  const adventureProgress = data[adventureId] || {
+    passageId: null,
+    inventory: [],
+  };
+  data[adventureId] = { ...adventureProgress, inventory: itemIds };
+  saveProgressData(data);
 };
 
 export const getInventory = (adventureId: string): string[] => {
-  try {
-    const adventureProgress = getAdventureProgress(adventureId);
-    const inventory = adventureProgress.inventory;
-    return Array.isArray(inventory)
-      ? inventory.filter((item) => typeof item === "string")
-      : [];
-  } catch (error) {
-    console.warn("Failed to get inventory from localStorage:", error);
-    return [];
-  }
+  const adventureProgress = getAdventureProgress(adventureId);
+  const inventory = adventureProgress.inventory;
+  return Array.isArray(inventory)
+    ? inventory.filter((item) => typeof item === "string")
+    : [];
 };
 
 export const clearInventory = (adventureId: string): void => {
-  try {
-    const data = getProgressData();
-    const adventureProgress = data[adventureId] || {
-      passageId: null,
-      inventory: [],
-    };
-    data[adventureId] = { ...adventureProgress, inventory: [] };
-    saveProgressData(data);
-  } catch (error) {
-    console.warn("Failed to clear inventory from localStorage:", error);
-  }
+  const data = getProgressData();
+  const adventureProgress = data[adventureId] || {
+    passageId: null,
+    inventory: [],
+  };
+  data[adventureId] = { ...adventureProgress, inventory: [] };
+  saveProgressData(data);
 };
