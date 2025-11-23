@@ -61,6 +61,11 @@ describe("Adventure Book Integration Tests", () => {
   });
 
   it("handles error states in the flow", async () => {
+    // Suppress console.error for this test since we're intentionally triggering an error
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
     renderApp(`/adventure/${TEST_STORY_ID}/test/passage/999`);
 
     // Should show error for non-existent passage
@@ -68,6 +73,9 @@ describe("Adventure Book Integration Tests", () => {
       /Passage #999 does not exist/
     );
     expect(errorMessages.length).toBeGreaterThan(0);
+
+    // Restore console.error
+    consoleErrorSpy.mockRestore();
   });
 
   it("navigates through different adventure paths", async () => {
