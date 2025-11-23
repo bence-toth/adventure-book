@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, it, expect } from "vitest";
 import App from "../App";
-import { setupTestStory } from "../test/mockStoryData";
+import { setupTestStory } from "./mockStoryData";
 
 const TEST_STORY_ID = "test-story-id";
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { createMockStoryLoader } from "../../test/mockStoryData";
+import { createMockStoryLoader } from "../../__tests__/mockStoryData";
 
 // Mock the story loader to avoid content dependencies
 vi.mock("../storyLoader", () => createMockStoryLoader());

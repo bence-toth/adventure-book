@@ -7,8 +7,8 @@ import {
   getStoryEditRoute,
   ROUTES,
 } from "../../../constants/routes";
-import { renderWithStory } from "../../../test/testUtils";
-import { setupTestStory } from "../../../test/mockStoryData";
+import { renderWithStory } from "../../../__tests__/testUtils";
+import { setupTestStory } from "../../../__tests__/mockStoryData";
 
 const TEST_STORY_ID = "test-story-id";
 

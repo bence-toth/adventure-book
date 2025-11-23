@@ -1,8 +1,8 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { Passage } from "../Passage";
-import { renderWithStory } from "../../../test/testUtils";
-import { setupTestStory } from "../../../test/mockStoryData";
+import { renderWithStory } from "../../../__tests__/testUtils";
+import { setupTestStory } from "../../../__tests__/mockStoryData";
 import { getPassageRoute } from "../../../constants/routes";
 import {
   PASSAGE_TEST_IDS,
