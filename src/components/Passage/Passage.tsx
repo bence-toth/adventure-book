@@ -21,7 +21,7 @@ import {
   getChoiceButtonTestId,
 } from "../../constants/testIds";
 import { Button } from "../common";
-import { useStory } from "../../hooks/useStory";
+import { useStory } from "../../context/useStory";
 import { Sidebar } from "./Sidebar/Sidebar";
 import {
   PageLayout,

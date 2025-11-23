@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { StoryContext, type StoryContextType } from "../context/StoryContext";
+import { StoryContext, type StoryContextType } from "./StoryContext";
 
 export const useStory = (): StoryContextType => {
   const context = useContext(StoryContext);

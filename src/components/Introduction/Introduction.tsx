@@ -5,7 +5,7 @@ import {
   getIntroParagraphTestId,
 } from "../../constants/testIds";
 import { Button } from "../common";
-import { useStory } from "../../hooks/useStory";
+import { useStory } from "../../context/useStory";
 import {
   IntroductionPageContent,
   IntroductionContainer,
