@@ -54,46 +54,42 @@ export class ErrorBoundary extends Component<Props, State> {
       error?.message || "An unexpected error occurred in the application.";
 
     return (
-      <div className="adventure-book">
-        <ErrorBoundaryContainer>
-          <ErrorBoundaryTitle>A system error occurred</ErrorBoundaryTitle>
-          <ErrorBoundaryDescription>{errorMessage}</ErrorBoundaryDescription>
-          <ErrorBoundaryActions>
-            <Button onClick={() => window.location.reload()}>
-              Reload page
-            </Button>
-          </ErrorBoundaryActions>
-          <ErrorBoundaryHelp>
-            <ErrorBoundaryHelpText>
-              If this problem persists, the adventure file may need to be fixed.
-            </ErrorBoundaryHelpText>
-            {error && (
-              <DetailsButton
-                summary="Technical details"
-                className="error-boundary-details"
-                role="region"
-                aria-label="Technical details"
-              >
-                <ErrorBoundaryDetailsContent $isError>
-                  <strong>Error type:</strong> {error.name}
+      <ErrorBoundaryContainer>
+        <ErrorBoundaryTitle>A system error occurred</ErrorBoundaryTitle>
+        <ErrorBoundaryDescription>{errorMessage}</ErrorBoundaryDescription>
+        <ErrorBoundaryActions>
+          <Button onClick={() => window.location.reload()}>Reload page</Button>
+        </ErrorBoundaryActions>
+        <ErrorBoundaryHelp>
+          <ErrorBoundaryHelpText>
+            If this problem persists, the adventure file may need to be fixed.
+          </ErrorBoundaryHelpText>
+          {error && (
+            <DetailsButton
+              summary="Technical details"
+              className="error-boundary-details"
+              role="region"
+              aria-label="Technical details"
+            >
+              <ErrorBoundaryDetailsContent isError>
+                <strong>Error type:</strong> {error.name}
+              </ErrorBoundaryDetailsContent>
+              <ErrorBoundaryDetailsContent isError>
+                <strong>Error message:</strong> {error.message}
+              </ErrorBoundaryDetailsContent>
+              {error.stack && (
+                <ErrorBoundaryDetailsContent>
+                  <strong>Stack trace:</strong>
+                  <pre>{error.stack}</pre>
                 </ErrorBoundaryDetailsContent>
-                <ErrorBoundaryDetailsContent $isError>
-                  <strong>Error message:</strong> {error.message}
-                </ErrorBoundaryDetailsContent>
-                {error.stack && (
-                  <ErrorBoundaryDetailsContent>
-                    <strong>Stack trace:</strong>
-                    <pre>{error.stack}</pre>
-                  </ErrorBoundaryDetailsContent>
-                )}
-                <ErrorBoundaryHelpText>
-                  Check the browser console for more details.
-                </ErrorBoundaryHelpText>
-              </DetailsButton>
-            )}
-          </ErrorBoundaryHelp>
-        </ErrorBoundaryContainer>
-      </div>
+              )}
+              <ErrorBoundaryHelpText>
+                Check the browser console for more details.
+              </ErrorBoundaryHelpText>
+            </DetailsButton>
+          )}
+        </ErrorBoundaryHelp>
+      </ErrorBoundaryContainer>
     );
   };
 }
