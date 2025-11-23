@@ -35,6 +35,7 @@ export const ButtonLink = ({
       $size={size}
       $selected={selected}
       data-testid={dataTestId}
+      aria-current={selected ? "page" : undefined}
       {...props}
     >
       {iconElement && <IconWrapper>{iconElement}</IconWrapper>}

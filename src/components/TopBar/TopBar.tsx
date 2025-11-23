@@ -1,68 +1,33 @@
-import { useLocation, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import { Swords, Play, PenTool, ArrowLeft } from "lucide-react";
-import {
-  getStoryTestRoute,
-  getStoryEditRoute,
-  ROUTES,
-} from "@/constants/routes";
-import { Button, ButtonLink } from "@/components/common";
+import { useLocation, useParams } from "react-router-dom";
+import { useMemo } from "react";
+import { Swords } from "lucide-react";
 import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
-import { updateStoryTitle, getStory } from "@/data/storyDatabase";
+import { BackButton } from "./BackButton/BackButton";
+import { StoryTitleInput } from "./StoryTitleInput/StoryTitleInput";
+import { StoryNavigation } from "./StoryNavigation/StoryNavigation";
 import {
   TopBarContainer,
   TopBarLogo,
   TopBarLogoIcon,
   TopBarTitle,
-  TopBarTitleInput,
-  TopBarNav,
 } from "./TopBar.styles";
 
 export const TopBar = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  const [storyTitle, setStoryTitle] = useState<string>("");
+  const { storyId } = useParams<{ storyId: string }>();
 
-  // Extract storyId from pathname
-  // Matches both /adventure/abc123/... and /abc123/... (for tests)
-  const storyId = location.pathname.match(/^\/(?:adventure\/)?([^/]+)/)?.[1];
-  const isStoryRoute = storyId && storyId !== "" && location.pathname !== "/";
+  const extractedStoryId = useMemo(() => {
+    // First try to get storyId from params (works in nested routes)
+    if (storyId) return storyId;
 
-  useEffect(() => {
-    const loadStoryTitle = async () => {
-      if (isStoryRoute) {
-        const story = await getStory(storyId);
-        if (story) {
-          setStoryTitle(story.title);
-        }
-      }
-    };
-    loadStoryTitle();
-  }, [storyId, isStoryRoute]);
+    // Otherwise, extract from pathname
+    const match = location.pathname.match(/^\/adventure\/([^/]+)/);
+    return match ? match[1] : null;
+  }, [storyId, location.pathname]);
 
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStoryTitle(e.target.value);
-  };
-
-  const handleTitleBlur = async () => {
-    if (storyId && storyTitle.trim()) {
-      try {
-        await updateStoryTitle(storyId, storyTitle.trim());
-      } catch (err) {
-        console.error("Failed to update story title:", err);
-      }
-    }
-  };
-
-  const handleTitleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      e.currentTarget.blur();
-    }
-  };
-
-  const isActive = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(path);
-  };
+  const isStoryRoute = useMemo(() => {
+    return !!extractedStoryId;
+  }, [extractedStoryId]);
 
   if (!isStoryRoute) {
     // DocumentManager view
@@ -78,51 +43,13 @@ export const TopBar = () => {
     );
   }
 
-  const testRoute = getStoryTestRoute(storyId);
-  const editRoute = getStoryEditRoute(storyId);
-
-  const handleBackClick = () => {
-    navigate(ROUTES.ROOT);
-  };
-
   return (
     <TopBarContainer as="header">
       <TopBarLogo data-testid={TOP_BAR_TEST_IDS.LOGO}>
-        <Button
-          onClick={handleBackClick}
-          icon={ArrowLeft}
-          aria-label="Back to document manager"
-          data-testid={TOP_BAR_TEST_IDS.BACK_BUTTON}
-          size="small"
-        />
-        <TopBarTitleInput
-          type="text"
-          value={storyTitle}
-          onChange={handleTitleChange}
-          onBlur={handleTitleBlur}
-          onKeyDown={handleTitleKeyDown}
-          placeholder="Untitled adventure"
-          aria-label="Story title"
-        />
+        <BackButton />
+        <StoryTitleInput storyId={extractedStoryId!} />
       </TopBarLogo>
-      <TopBarNav as="nav" aria-label="Main navigation">
-        <ButtonLink
-          to={testRoute}
-          selected={isActive(testRoute)}
-          size="small"
-          icon={Play}
-        >
-          Test
-        </ButtonLink>
-        <ButtonLink
-          to={editRoute}
-          selected={isActive(editRoute)}
-          size="small"
-          icon={PenTool}
-        >
-          Edit
-        </ButtonLink>
-      </TopBarNav>
+      <StoryNavigation storyId={extractedStoryId!} />
     </TopBarContainer>
   );
 };

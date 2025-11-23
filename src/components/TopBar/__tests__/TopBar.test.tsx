@@ -1,30 +1,14 @@
-import { screen, waitFor } from "@testing-library/react";
-import { describe, it, expect, beforeEach, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
+import { screen } from "@testing-library/react";
+import { describe, it, expect, beforeEach } from "vitest";
 import { TopBar } from "../TopBar";
-import {
-  getStoryTestRoute,
-  getStoryEditRoute,
-  ROUTES,
-} from "@/constants/routes";
+import { ROUTES } from "@/constants/routes";
 import { renderWithStory } from "@/__tests__/testUtils";
 import { setupTestStory } from "@/__tests__/mockStoryData";
 
 const TEST_STORY_ID = "test-story-id";
 
-// Mock react-router-dom navigate function
-const mockNavigate = vi.fn();
-vi.mock("react-router-dom", async () => {
-  const actual = await vi.importActual("react-router-dom");
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
-});
-
 describe("TopBar Component", () => {
   beforeEach(async () => {
-    mockNavigate.mockClear();
     await setupTestStory(TEST_STORY_ID);
   });
 
@@ -35,68 +19,44 @@ describe("TopBar Component", () => {
       expect(header).toBeInTheDocument();
     });
 
-    it("renders the story title input field", async () => {
+    it("renders story view with back button, title input, and navigation in story routes", async () => {
       renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
-      const titleInput = await screen.findByLabelText("Story title");
-      expect(titleInput).toBeInTheDocument();
 
-      // Wait for the title to load from IndexedDB
-      await waitFor(() => {
-        expect(titleInput).toHaveValue("Mock Test Adventure");
-      });
-    });
-
-    it("renders Test navigation link", async () => {
-      renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
-      const testLink = await screen.findByRole("link", { name: /test/i });
-      expect(testLink).toBeInTheDocument();
-      expect(testLink).toHaveAttribute(
-        "href",
-        getStoryTestRoute(TEST_STORY_ID)
-      );
-    });
-
-    it("renders Edit navigation link", async () => {
-      renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
-      const editLink = await screen.findByRole("link", { name: /edit/i });
-      expect(editLink).toBeInTheDocument();
-      expect(editLink).toHaveAttribute(
-        "href",
-        getStoryEditRoute(TEST_STORY_ID)
-      );
-    });
-
-    it("renders back button instead of logo in story routes", async () => {
-      renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
+      // Should have back button
       const backButton = await screen.findByRole("button", {
         name: /back to document manager/i,
       });
       expect(backButton).toBeInTheDocument();
+
+      // Should have title input
+      const titleInput = await screen.findByLabelText("Story title");
+      expect(titleInput).toBeInTheDocument();
+
+      // Should have navigation links
+      const testLink = await screen.findByRole("link", { name: /test/i });
+      const editLink = await screen.findByRole("link", { name: /edit/i });
+      expect(testLink).toBeInTheDocument();
+      expect(editLink).toBeInTheDocument();
     });
 
-    it("does not render back button in document manager route", async () => {
+    it("renders document manager view with logo and title on root route", async () => {
       renderWithStory(<TopBar />, { route: ROUTES.ROOT });
+
+      // Should NOT have back button
       const backButton = screen.queryByRole("button", {
         name: /back to document manager/i,
       });
       expect(backButton).not.toBeInTheDocument();
-    });
-  });
 
-  describe("Navigation", () => {
-    it("navigates to document manager when back button is clicked", async () => {
-      const user = userEvent.setup();
-      renderWithStory(<TopBar />, {
-        storyId: TEST_STORY_ID,
-      });
+      // Should have the app title
+      const title = screen.getByText("Adventure Book Companion");
+      expect(title).toBeInTheDocument();
 
-      const backButton = await screen.findByRole("button", {
-        name: /back to document manager/i,
-      });
-
-      await user.click(backButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.ROOT);
+      // Should NOT have navigation links
+      const testLink = screen.queryByRole("link", { name: /test/i });
+      const editLink = screen.queryByRole("link", { name: /edit/i });
+      expect(testLink).not.toBeInTheDocument();
+      expect(editLink).not.toBeInTheDocument();
     });
   });
 });
