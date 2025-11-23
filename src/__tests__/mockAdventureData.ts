@@ -166,11 +166,9 @@ items:
     name: "Mock Item Two"
 `;
 
-/**
- * Setup a test adventure in IndexedDB
- * @param adventureId The ID to use for the test adventure (defaults to "test-adventure-id")
- * @returns Promise that resolves when the adventure is saved
- */
+// Setup a test adventure in IndexedDB
+// @param adventureId The ID to use for the test adventure (defaults to "test-adventure-id")
+// @returns Promise that resolves when the adventure is saved
 export const setupTestAdventure = async (
   adventureId = "test-adventure-id"
 ): Promise<void> => {

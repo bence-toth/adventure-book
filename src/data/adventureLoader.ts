@@ -19,9 +19,7 @@ import adventureYaml from "./adventure.yaml?raw";
 let loadedAdventure: Adventure | null = null;
 let currentAdventureId: string | null = null;
 
-/**
- * Load an adventure from IndexedDB by ID
- */
+// Load an adventure from IndexedDB by ID
 export const loadAdventureById = async (
   adventureId: string
 ): Promise<Adventure> => {
@@ -51,9 +49,7 @@ export const loadAdventureById = async (
   return adventure;
 };
 
-/**
- * Load the default adventure from the YAML file (for backwards compatibility)
- */
+// Load the default adventure from the YAML file
 export const loadAdventure = (): Adventure => {
   if (!loadedAdventure) {
     loadedAdventure = AdventureParser.parseFromString(adventureYaml);
@@ -109,5 +105,4 @@ export const getCurrentInventory = (adventureId: string): string[] => {
 };
 
 // Re-export inventory management functions from the shared utility
-// Note: These now require an adventureId parameter
 export { addItemToInventory, removeItemFromInventory };

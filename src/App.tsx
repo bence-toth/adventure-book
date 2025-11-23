@@ -36,7 +36,6 @@ const App = () => {
               }
             />
 
-            {/* Catch-all route redirects to root */}
             <Route path="*" element={<Navigate to={ROUTES.ROOT} replace />} />
           </Routes>
         </AppContent>
