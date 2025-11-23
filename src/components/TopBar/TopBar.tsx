@@ -5,10 +5,10 @@ import {
   getStoryTestRoute,
   getStoryEditRoute,
   ROUTES,
-} from "../../constants/routes";
-import { Button, ButtonLink } from "../common";
-import { TOP_BAR_TEST_IDS } from "../../constants/testIds";
-import { updateStoryTitle, getStory } from "../../data/storyDatabase";
+} from "@/constants/routes";
+import { Button, ButtonLink } from "@/components/common";
+import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
+import { updateStoryTitle, getStory } from "@/data/storyDatabase";
 import {
   TopBarContainer,
   TopBarLogo,

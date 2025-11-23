@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { screen, act } from "@testing-library/react";
-import { setupTestStory } from "../../../../__tests__/mockStoryData";
-import { renderWithStory } from "../../../../__tests__/testUtils";
+import { setupTestStory } from "@/__tests__/mockStoryData";
+import { renderWithStory } from "@/__tests__/testUtils";
 import { Sidebar } from "../Sidebar";
 
 const TEST_STORY_ID = "test-story-id";

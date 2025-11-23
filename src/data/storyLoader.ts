@@ -6,11 +6,11 @@ import type {
   IntroductionContent,
   InventoryItem,
 } from "./types";
-import { getInventory } from "../utils/localStorage";
+import { getInventory } from "@/utils/localStorage";
 import {
   addItemToInventory,
   removeItemFromInventory,
-} from "../utils/inventoryManagement";
+} from "@/utils/inventoryManagement";
 import { getStory } from "./storyDatabase";
 
 // Import the YAML file as a string (for backwards compatibility)

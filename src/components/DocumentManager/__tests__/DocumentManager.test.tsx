@@ -1,9 +1,9 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { DocumentManager } from "../DocumentManager";
-import { render } from "../../../__tests__/testUtils";
-import * as storyDatabase from "../../../data/storyDatabase";
-import type { StoredStory } from "../../../data/storyDatabase";
+import { render } from "@/__tests__/testUtils";
+import * as storyDatabase from "@/data/storyDatabase";
+import type { StoredStory } from "@/data/storyDatabase";
 
 // Mock react-router-dom
 const mockNavigate = vi.fn();

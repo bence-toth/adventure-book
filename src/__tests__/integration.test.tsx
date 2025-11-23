@@ -8,7 +8,7 @@ import {
   INTRODUCTION_TEST_IDS,
   PASSAGE_TEST_IDS,
   getChoiceButtonTestId,
-} from "../constants/testIds";
+} from "@/constants/testIds";
 
 const TEST_STORY_ID = "test-story-id";
 

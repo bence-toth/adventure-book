@@ -6,16 +6,16 @@ import {
   deleteStory,
   createStory,
   type StoredStory,
-} from "../../data/storyDatabase";
+} from "@/data/storyDatabase";
 import {
   Button,
   ContextMenu,
   ContextMenuItem,
   ConfirmationModal,
-} from "../common";
-import storyTemplate from "../../data/story.yaml?raw";
-import { getStoryTestRoute, getPassageRoute } from "../../constants/routes";
-import { getCurrentPassageId } from "../../utils/localStorage";
+} from "@/components/common";
+import storyTemplate from "@/data/story.yaml?raw";
+import { getStoryTestRoute, getPassageRoute } from "@/constants/routes";
+import { getCurrentPassageId } from "@/utils/localStorage";
 import {
   DocumentManagerContainer,
   DocumentManagerLoading,

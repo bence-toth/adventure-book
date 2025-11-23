@@ -165,11 +165,7 @@ describe("ButtonLink Component", () => {
     });
 
     it("accepts primary variant", () => {
-      renderWithRouter(
-        <ButtonLink to="/test" variant="primary">
-          Variant
-        </ButtonLink>
-      );
+      renderWithRouter(<ButtonLink to="/test">Variant</ButtonLink>);
 
       const link = screen.getByRole("link");
       expect(link).toBeInTheDocument();

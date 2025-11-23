@@ -1,10 +1,10 @@
-import type { Story, Passage, IntroductionContent } from "../data/types";
-import { getInventory } from "../utils/localStorage";
+import type { Story, Passage, IntroductionContent } from "@/data/types";
+import { getInventory } from "@/utils/localStorage";
 import {
   addItemToInventory,
   removeItemFromInventory,
-} from "../utils/inventoryManagement";
-import { saveStory } from "../data/storyDatabase";
+} from "@/utils/inventoryManagement";
+import { saveStory } from "@/data/storyDatabase";
 
 export const mockIntroduction: IntroductionContent = {
   title: "Mock Test Adventure",

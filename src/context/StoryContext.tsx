@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { loadStoryById } from "../data/storyLoader";
-import type { Story } from "../data/types";
+import { loadStoryById } from "@/data/storyLoader";
+import type { Story } from "@/data/types";
 
 export interface StoryContextType {
   story: Story | null;

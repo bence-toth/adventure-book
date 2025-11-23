@@ -5,9 +5,9 @@ import {
   ErrorBoundary,
   TopBar,
   DocumentManager,
-} from "./components";
-import { ROUTES } from "./constants/routes";
-import { StoryProvider } from "./context/StoryContext";
+} from "@/components";
+import { ROUTES } from "@/constants/routes";
+import { StoryProvider } from "@/context/StoryContext";
 import { AppContainer, AppContent } from "./App.styles";
 
 const App = () => {

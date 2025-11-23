@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import type { ReactNode } from "react";
-import { Button, DetailsButton } from "../common";
+import { Button, DetailsButton } from "@/components/common";
 import {
   ErrorBoundaryContainer,
   ErrorBoundaryTitle,

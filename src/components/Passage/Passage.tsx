@@ -3,25 +3,25 @@ import { useEffect } from "react";
 import {
   addItemToInventory,
   removeItemFromInventory,
-} from "../../data/storyLoader";
+} from "@/data/storyLoader";
 import {
   saveCurrentPassageId,
   clearCurrentPassageId,
   clearInventory,
-} from "../../utils/localStorage";
+} from "@/utils/localStorage";
 import {
   getPassageRoute,
   SPECIAL_PASSAGES,
   getStoryTestRoute,
-} from "../../constants/routes";
+} from "@/constants/routes";
 import {
   PASSAGE_TEST_IDS,
   ERROR_TEST_IDS,
   getPassageParagraphTestId,
   getChoiceButtonTestId,
-} from "../../constants/testIds";
-import { Button } from "../common";
-import { useStory } from "../../context/useStory";
+} from "@/constants/testIds";
+import { Button } from "@/components/common";
+import { useStory } from "@/context/useStory";
 import { Sidebar } from "./Sidebar/Sidebar";
 import {
   PageLayout,

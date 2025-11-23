@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ConfirmationModal } from "../ConfirmationModal";
-import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "../../../../constants/testIds";
+import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "@/constants/testIds";
 
 describe("ConfirmationModal Component", () => {
   let originalOverflow: string;

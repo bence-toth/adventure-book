@@ -6,9 +6,9 @@ import {
   getStoryTestRoute,
   getStoryEditRoute,
   ROUTES,
-} from "../../../constants/routes";
-import { renderWithStory } from "../../../__tests__/testUtils";
-import { setupTestStory } from "../../../__tests__/mockStoryData";
+} from "@/constants/routes";
+import { renderWithStory } from "@/__tests__/testUtils";
+import { setupTestStory } from "@/__tests__/mockStoryData";
 
 const TEST_STORY_ID = "test-story-id";
 

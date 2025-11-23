@@ -3,7 +3,7 @@ import { render as rtlRender } from "@testing-library/react";
 import type { RenderOptions } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
-import { StoryProvider } from "../context/StoryContext";
+import { StoryProvider } from "@/context/StoryContext";
 
 // Wrapper component for providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
