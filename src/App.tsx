@@ -1,5 +1,4 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import "./App.css";
 import {
   Passage,
   Introduction,
@@ -9,12 +8,13 @@ import {
 } from "./components";
 import { ROUTES } from "./constants/routes";
 import { StoryProvider } from "./context/StoryContext";
+import { AppContainer, AppContent } from "./App.styles";
 
 const App = () => {
   return (
-    <div className="app-container">
+    <AppContainer>
       <TopBar />
-      <main className="app-content">
+      <AppContent as="main">
         <Routes>
           <Route path={ROUTES.ROOT} element={<DocumentManager />} />
 
@@ -40,8 +40,8 @@ const App = () => {
           {/* Catch-all route redirects to root */}
           <Route path="*" element={<Navigate to={ROUTES.ROOT} replace />} />
         </Routes>
-      </main>
-    </div>
+      </AppContent>
+    </AppContainer>
   );
 };
 
