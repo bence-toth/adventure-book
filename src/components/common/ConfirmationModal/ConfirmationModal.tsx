@@ -19,7 +19,7 @@ import {
 
 export interface ConfirmationModalProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: () => void;
   title: string;
   message: ReactNode;
   confirmLabel?: string;
