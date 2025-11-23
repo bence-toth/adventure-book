@@ -34,13 +34,13 @@ describe("ErrorBoundary", () => {
     // Check that error UI is rendered
     expect(screen.getByText("A system error occurred")).toBeInTheDocument();
     expect(
-      screen.getByText(/An error occurred while loading the story/)
+      screen.getByText(/An error occurred while loading the adventure/)
     ).toBeInTheDocument();
     expect(screen.getByText("Reload page")).toBeInTheDocument();
 
     // Verify console.error was called
     expect(consoleSpy).toHaveBeenCalledWith(
-      "Story loading error caught by boundary:",
+      "Adventure loading error caught by boundary:",
       expect.any(Error)
     );
 
@@ -77,7 +77,7 @@ describe("ErrorBoundary", () => {
 
     expect(
       screen.getByText(
-        /There was an error parsing the story file. The story format may be invalid./
+        /There was an error parsing the adventure file. The adventure format may be invalid./
       )
     ).toBeInTheDocument();
 
@@ -86,7 +86,7 @@ describe("ErrorBoundary", () => {
 
   it("categorizes validation errors correctly", () => {
     const ValidationError = () => {
-      throw new Error("Story validation failed: missing title");
+      throw new Error("Adventure validation failed: missing title");
     };
 
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -99,7 +99,7 @@ describe("ErrorBoundary", () => {
 
     expect(
       screen.getByText(
-        /The story file contains validation errors and cannot be loaded./
+        /The adventure file contains validation errors and cannot be loaded./
       )
     ).toBeInTheDocument();
 
@@ -120,7 +120,7 @@ describe("ErrorBoundary", () => {
     );
 
     expect(
-      screen.getByText(/An error occurred while loading the story/)
+      screen.getByText(/An error occurred while loading the adventure/)
     ).toBeInTheDocument();
 
     consoleSpy.mockRestore();

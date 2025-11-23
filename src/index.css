@@ -194,7 +194,7 @@ p {
   --size-top-bar: calc(var(--space-base) * 10);
   --size-content: calc(var(--space-base) * 96);
   --size-sidebar: calc(var(--space-base) * 48);
-  --size-document-card: calc(var(--space-base) * 32);
+  --size-adventure-card: calc(var(--space-base) * 32);
   --size-title-input-min-width: calc(var(--space-base) * 24);
   --size-modal-dialog-max-width: calc(var(--space-base) * 72);
   --size-context-menu-min-width: calc(var(--space-base) * 20);

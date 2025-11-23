@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import {
   addItemToInventory,
   removeItemFromInventory,
-} from "@/data/storyLoader";
+} from "@/data/adventureLoader";
 import {
   saveCurrentPassageId,
   clearCurrentPassageId,
@@ -12,7 +12,7 @@ import {
 import {
   getPassageRoute,
   SPECIAL_PASSAGES,
-  getStoryTestRoute,
+  getAdventureTestRoute,
 } from "@/constants/routes";
 import {
   PASSAGE_TEST_IDS,
@@ -21,7 +21,7 @@ import {
   getChoiceButtonTestId,
 } from "@/constants/testIds";
 import { Button } from "@/components/common";
-import { useStory } from "@/context/useStory";
+import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "./Sidebar/Sidebar";
 import {
   PageLayout,
@@ -36,33 +36,33 @@ import {
 } from "./Passage.styles";
 
 export const Passage = () => {
-  const { id, storyId } = useParams<{ id: string; storyId: string }>();
+  const { id, adventureId } = useParams<{ id: string; adventureId: string }>();
   const navigate = useNavigate();
-  const { story, loading, error } = useStory();
+  const { adventure, loading, error } = useAdventure();
 
   const passageId = parseInt(id ?? "1", 10);
 
   useEffect(() => {
-    if (!storyId || !story) return;
+    if (!adventureId || !adventure) return;
 
     if (!isNaN(passageId)) {
       if (passageId === SPECIAL_PASSAGES.RESET) {
         // Special case: passage 0 clears localStorage and redirects to introduction
-        clearCurrentPassageId(storyId);
-        clearInventory(storyId);
-        navigate(getStoryTestRoute(storyId));
+        clearCurrentPassageId(adventureId);
+        clearInventory(adventureId);
+        navigate(getAdventureTestRoute(adventureId));
         return;
       } else if (passageId >= 1) {
-        saveCurrentPassageId(storyId, passageId);
+        saveCurrentPassageId(adventureId, passageId);
 
         // Execute effects for this passage (only non-ending passages have effects)
-        const passage = story.passages[passageId];
+        const passage = adventure.passages[passageId];
         if (passage && !passage.ending && passage.effects) {
           passage.effects.forEach((effect) => {
             if (effect.type === "add_item") {
-              addItemToInventory(storyId, effect.item);
+              addItemToInventory(adventureId, effect.item);
             } else if (effect.type === "remove_item") {
-              removeItemFromInventory(storyId, effect.item);
+              removeItemFromInventory(adventureId, effect.item);
             }
           });
 
@@ -71,7 +71,7 @@ export const Passage = () => {
         }
       }
     }
-  }, [passageId, navigate, storyId, story]);
+  }, [passageId, navigate, adventureId, adventure]);
 
   if (loading) {
     return (
@@ -86,14 +86,14 @@ export const Passage = () => {
     );
   }
 
-  if (error || !story || !storyId) {
+  if (error || !adventure || !adventureId) {
     return (
       <PageLayout>
         <Sidebar />
         <PageContent>
           <ErrorContainer data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
             <ErrorTitle>Error</ErrorTitle>
-            <ErrorMessage>{error || "Story not found"}</ErrorMessage>
+            <ErrorMessage>{error || "Adventure not found"}</ErrorMessage>
           </ErrorContainer>
         </PageContent>
       </PageLayout>
@@ -112,7 +112,7 @@ export const Passage = () => {
             </ErrorMessage>
             <Button
               onClick={() =>
-                navigate(getPassageRoute(storyId, SPECIAL_PASSAGES.RESET))
+                navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.RESET))
               }
               data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
             >
@@ -141,7 +141,7 @@ export const Passage = () => {
     );
   }
 
-  const currentPassage = story.passages[passageId];
+  const currentPassage = adventure.passages[passageId];
 
   if (!currentPassage) {
     return (
@@ -155,7 +155,7 @@ export const Passage = () => {
             </ErrorMessage>
             <Button
               onClick={() =>
-                navigate(getPassageRoute(storyId, SPECIAL_PASSAGES.RESET))
+                navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.RESET))
               }
               data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
             >
@@ -168,13 +168,13 @@ export const Passage = () => {
   }
 
   const handleChoiceClick = (nextId: number) => {
-    navigate(getPassageRoute(storyId, nextId));
+    navigate(getPassageRoute(adventureId, nextId));
   };
 
   const handleRestartClick = () => {
-    clearCurrentPassageId(storyId!);
-    clearInventory(storyId!);
-    navigate(getStoryTestRoute(storyId!));
+    clearCurrentPassageId(adventureId!);
+    clearInventory(adventureId!);
+    navigate(getAdventureTestRoute(adventureId!));
   };
 
   return (

@@ -3,27 +3,27 @@ import { render as rtlRender } from "@testing-library/react";
 import type { RenderOptions } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
-import { StoryProvider } from "@/context/StoryContext";
+import { AdventureProvider } from "@/context/AdventureContext";
 
 // Wrapper component for providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
   return <BrowserRouter>{children}</BrowserRouter>;
 };
 
-// Wrapper for components that need StoryContext
-export const StoryTestWrapper = ({
+// Wrapper for components that need AdventureContext
+export const AdventureTestWrapper = ({
   children,
-  storyId = "test-story-id",
+  adventureId = "test-adventure-id",
 }: {
   children: React.ReactNode;
-  storyId?: string;
+  adventureId?: string;
 }) => {
   return (
-    <MemoryRouter initialEntries={[`/${storyId}/test`]}>
+    <MemoryRouter initialEntries={[`/${adventureId}/test`]}>
       <Routes>
         <Route
-          path="/:storyId/*"
-          element={<StoryProvider>{children}</StoryProvider>}
+          path="/:adventureId/*"
+          element={<AdventureProvider>{children}</AdventureProvider>}
         />
       </Routes>
     </MemoryRouter>
@@ -36,19 +36,19 @@ const customRender = (
   options?: Omit<RenderOptions, "wrapper">
 ) => rtlRender(ui, { wrapper: AllTheProviders, ...options });
 
-// Custom render function with StoryContext
-export const renderWithStory = (
+// Custom render function with AdventureContext
+export const renderWithAdventure = (
   ui: ReactElement,
   {
-    storyId = "test-story-id",
+    adventureId = "test-adventure-id",
     route,
     ...options
   }: Omit<RenderOptions, "wrapper"> & {
-    storyId?: string;
+    adventureId?: string;
     route?: string;
   } = {}
 ) => {
-  const initialRoute = route || `/adventure/${storyId}/test`;
+  const initialRoute = route || `/adventure/${adventureId}/test`;
 
   return rtlRender(ui, {
     wrapper: ({ children }) => (
@@ -56,8 +56,8 @@ export const renderWithStory = (
         <Routes>
           <Route path="/" element={children} />
           <Route
-            path="/adventure/:storyId/*"
-            element={<StoryProvider>{children}</StoryProvider>}
+            path="/adventure/:adventureId/*"
+            element={<AdventureProvider>{children}</AdventureProvider>}
           />
         </Routes>
       </MemoryRouter>

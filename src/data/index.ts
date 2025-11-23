@@ -1,3 +1,3 @@
 export * from "./types";
-export * from "./storyParser";
-export * from "./storyLoader";
+export * from "./adventureParser";
+export * from "./adventureLoader";

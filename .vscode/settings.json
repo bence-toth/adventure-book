@@ -4,8 +4,8 @@
     "*.yml": "yaml"
   },
   "yaml.schemas": {
-    "./src/data/story-schema.json": [
-      "src/data/story.yaml",
+    "./src/data/adventure-schema.json": [
+      "src/data/adventure.yaml",
       "src/data/*.yaml",
       "stories/*.yaml",
       "examples/*.yaml"

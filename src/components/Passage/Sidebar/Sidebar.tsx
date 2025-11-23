@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { getCurrentInventory } from "@/data/storyLoader";
-import { useStory } from "@/context/useStory";
+import { getCurrentInventory } from "@/data/adventureLoader";
+import { useAdventure } from "@/context/useAdventure";
 import {
   SidebarContainer,
   SidebarTitle,
@@ -10,24 +10,24 @@ import {
 
 export const Sidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const { story, storyId } = useStory();
+  const { adventure, adventureId } = useAdventure();
 
   useEffect(() => {
-    if (!storyId) return;
+    if (!adventureId) return;
 
     // Load initial inventory from localStorage
-    setCurrentInventoryIds(getCurrentInventory(storyId));
+    setCurrentInventoryIds(getCurrentInventory(adventureId));
 
     // Set up a listener for storage changes
     const handleStorageChange = () => {
-      setCurrentInventoryIds(getCurrentInventory(storyId));
+      setCurrentInventoryIds(getCurrentInventory(adventureId));
     };
 
     window.addEventListener("storage", handleStorageChange);
 
     // Also listen for custom events from the same window
     const handleInventoryUpdate = () => {
-      setCurrentInventoryIds(getCurrentInventory(storyId));
+      setCurrentInventoryIds(getCurrentInventory(adventureId));
     };
 
     window.addEventListener("inventoryUpdate", handleInventoryUpdate);
@@ -36,13 +36,13 @@ export const Sidebar = () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("inventoryUpdate", handleInventoryUpdate);
     };
-  }, [storyId]);
+  }, [adventureId]);
 
-  if (!story) {
+  if (!adventure) {
     return null;
   }
 
-  const currentItems = story.items.filter((item) =>
+  const currentItems = adventure.items.filter((item) =>
     currentInventoryIds.includes(item.id)
   );
 

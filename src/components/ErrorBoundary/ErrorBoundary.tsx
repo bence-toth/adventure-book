@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log the error for debugging
-    console.error("Story loading error caught by boundary:", error);
+    console.error("Adventure loading error caught by boundary:", error);
     console.error("Error details:", errorInfo);
   }
 
@@ -50,24 +50,24 @@ export class ErrorBoundary extends Component<Props, State> {
 
     const getErrorMessage = () => {
       if (!error) {
-        return "An unexpected error occurred while loading the story.";
+        return "An unexpected error occurred while loading the adventure.";
       }
 
       const message = error.message;
 
       if (message.includes("YAML") || message.includes("parsing")) {
-        return "There was an error parsing the story file. The story format may be invalid.";
+        return "There was an error parsing the adventure file. The adventure format may be invalid.";
       }
 
       if (message.includes("validation")) {
-        return "The story file contains validation errors and cannot be loaded.";
+        return "The adventure file contains validation errors and cannot be loaded.";
       }
 
       if (message.includes("fetch") || message.includes("load")) {
-        return "Unable to load the story file. Please check your connection.";
+        return "Unable to load the adventure file. Please check your connection.";
       }
 
-      return "An error occurred while loading the story.";
+      return "An error occurred while loading the adventure.";
     };
 
     return (
@@ -84,7 +84,7 @@ export class ErrorBoundary extends Component<Props, State> {
           </ErrorBoundaryActions>
           <ErrorBoundaryHelp>
             <ErrorBoundaryHelpText>
-              If this problem persists, the story file may need to be fixed.
+              If this problem persists, the adventure file may need to be fixed.
             </ErrorBoundaryHelpText>
             {error && (
               <DetailsButton

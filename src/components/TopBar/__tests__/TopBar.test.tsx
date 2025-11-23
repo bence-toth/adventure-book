@@ -2,34 +2,34 @@ import { screen } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
 import { TopBar } from "../TopBar";
 import { ROUTES } from "@/constants/routes";
-import { renderWithStory } from "@/__tests__/testUtils";
-import { setupTestStory } from "@/__tests__/mockStoryData";
+import { renderWithAdventure } from "@/__tests__/testUtils";
+import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 
-const TEST_STORY_ID = "test-story-id";
+const TEST_STORY_ID = "test-adventure-id";
 
 describe("TopBar Component", () => {
   beforeEach(async () => {
-    await setupTestStory(TEST_STORY_ID);
+    await setupTestAdventure(TEST_STORY_ID);
   });
 
   describe("Rendering", () => {
     it("renders the header element", async () => {
-      renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
+      renderWithAdventure(<TopBar />, { adventureId: TEST_STORY_ID });
       const header = await screen.findByRole("banner");
       expect(header).toBeInTheDocument();
     });
 
-    it("renders story view with back button, title input, and navigation in story routes", async () => {
-      renderWithStory(<TopBar />, { storyId: TEST_STORY_ID });
+    it("renders adventure view with back button, title input, and navigation in adventure routes", async () => {
+      renderWithAdventure(<TopBar />, { adventureId: TEST_STORY_ID });
 
       // Should have back button
       const backButton = await screen.findByRole("button", {
-        name: /back to document manager/i,
+        name: /back to adventure manager/i,
       });
       expect(backButton).toBeInTheDocument();
 
       // Should have title input
-      const titleInput = await screen.findByLabelText("Story title");
+      const titleInput = await screen.findByLabelText("Adventure title");
       expect(titleInput).toBeInTheDocument();
 
       // Should have navigation links
@@ -39,12 +39,12 @@ describe("TopBar Component", () => {
       expect(editLink).toBeInTheDocument();
     });
 
-    it("renders document manager view with logo and title on root route", async () => {
-      renderWithStory(<TopBar />, { route: ROUTES.ROOT });
+    it("renders adventure manager view with logo and title on root route", async () => {
+      renderWithAdventure(<TopBar />, { route: ROUTES.ROOT });
 
       // Should NOT have back button
       const backButton = screen.queryByRole("button", {
-        name: /back to document manager/i,
+        name: /back to adventure manager/i,
       });
       expect(backButton).not.toBeInTheDocument();
 

@@ -3,8 +3,8 @@ import { useMemo } from "react";
 import { Swords } from "lucide-react";
 import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
 import { BackButton } from "./BackButton/BackButton";
-import { StoryTitleInput } from "./StoryTitleInput/StoryTitleInput";
-import { StoryNavigation } from "./StoryNavigation/StoryNavigation";
+import { AdventureTitleInput } from "./AdventureTitleInput/AdventureTitleInput";
+import { AdventureNavigation } from "./AdventureNavigation/AdventureNavigation";
 import {
   TopBarContainer,
   TopBarLogo,
@@ -14,23 +14,23 @@ import {
 
 export const TopBar = () => {
   const location = useLocation();
-  const { storyId } = useParams<{ storyId: string }>();
+  const { adventureId } = useParams<{ adventureId: string }>();
 
-  const extractedStoryId = useMemo(() => {
-    // First try to get storyId from params (works in nested routes)
-    if (storyId) return storyId;
+  const extractedAdventureId = useMemo(() => {
+    // First try to get adventureId from params (works in nested routes)
+    if (adventureId) return adventureId;
 
     // Otherwise, extract from pathname
     const match = location.pathname.match(/^\/adventure\/([^/]+)/);
     return match ? match[1] : null;
-  }, [storyId, location.pathname]);
+  }, [adventureId, location.pathname]);
 
-  const isStoryRoute = useMemo(() => {
-    return !!extractedStoryId;
-  }, [extractedStoryId]);
+  const isAdventureRoute = useMemo(() => {
+    return !!extractedAdventureId;
+  }, [extractedAdventureId]);
 
-  if (!isStoryRoute) {
-    // DocumentManager view
+  if (!isAdventureRoute) {
+    // AdventureManager view
     return (
       <TopBarContainer as="header">
         <TopBarLogo data-testid={TOP_BAR_TEST_IDS.LOGO}>
@@ -47,9 +47,9 @@ export const TopBar = () => {
     <TopBarContainer as="header">
       <TopBarLogo data-testid={TOP_BAR_TEST_IDS.LOGO}>
         <BackButton />
-        <StoryTitleInput storyId={extractedStoryId!} />
+        <AdventureTitleInput adventureId={extractedAdventureId!} />
       </TopBarLogo>
-      <StoryNavigation storyId={extractedStoryId!} />
+      <AdventureNavigation adventureId={extractedAdventureId!} />
     </TopBarContainer>
   );
 };

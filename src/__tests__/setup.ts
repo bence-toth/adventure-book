@@ -41,8 +41,8 @@ console.error = (...args: unknown[]) => {
   // Filter out expected error messages that are intentionally triggered in tests
   if (
     message.includes("Error loading stories:") ||
-    message.includes("Error deleting story:") ||
-    message.includes("Error creating story:")
+    message.includes("Error deleting adventure:") ||
+    message.includes("Error creating adventure:")
   ) {
     return;
   }

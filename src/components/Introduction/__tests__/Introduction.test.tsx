@@ -1,15 +1,15 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { Introduction } from "../Introduction";
-import { renderWithStory } from "@/__tests__/testUtils";
-import { setupTestStory } from "@/__tests__/mockStoryData";
+import { renderWithAdventure } from "@/__tests__/testUtils";
+import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 import { getPassageRoute, SPECIAL_PASSAGES } from "@/constants/routes";
 import {
   INTRODUCTION_TEST_IDS,
   getIntroParagraphTestId,
 } from "@/constants/testIds";
 
-const TEST_STORY_ID = "test-story-id";
+const TEST_STORY_ID = "test-adventure-id";
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
@@ -24,11 +24,11 @@ vi.mock("react-router-dom", async () => {
 describe("Introduction Component", () => {
   beforeEach(async () => {
     mockNavigate.mockClear();
-    await setupTestStory(TEST_STORY_ID);
+    await setupTestAdventure(TEST_STORY_ID);
   });
 
   it("renders the introduction title", async () => {
-    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
 
     const title = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
     expect(title).toBeInTheDocument();
@@ -36,7 +36,7 @@ describe("Introduction Component", () => {
   });
 
   it("renders all introduction paragraphs", async () => {
-    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
 
     const introText = await screen.findByTestId(INTRODUCTION_TEST_IDS.TEXT);
     expect(introText).toBeInTheDocument();
@@ -58,7 +58,7 @@ describe("Introduction Component", () => {
   });
 
   it("renders the start adventure button with correct text", async () => {
-    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
 
     const button = await screen.findByTestId(
       INTRODUCTION_TEST_IDS.START_BUTTON
@@ -68,7 +68,7 @@ describe("Introduction Component", () => {
   });
 
   it("navigates to passage 1 when start adventure button is clicked", async () => {
-    renderWithStory(<Introduction />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
 
     const button = await screen.findByTestId(
       INTRODUCTION_TEST_IDS.START_BUTTON

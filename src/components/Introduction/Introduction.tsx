@@ -5,7 +5,7 @@ import {
   getIntroParagraphTestId,
 } from "@/constants/testIds";
 import { Button } from "@/components/common";
-import { useStory } from "@/context/useStory";
+import { useAdventure } from "@/context/useAdventure";
 import {
   IntroductionPageContent,
   IntroductionContainer,
@@ -17,28 +17,28 @@ import {
 
 export const Introduction = () => {
   const navigate = useNavigate();
-  const { story, storyId, loading, error } = useStory();
+  const { adventure, adventureId, loading, error } = useAdventure();
 
   const handleStartAdventure = () => {
-    if (!storyId) return;
-    navigate(getPassageRoute(storyId, SPECIAL_PASSAGES.START));
+    if (!adventureId) return;
+    navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.START));
   };
 
   if (loading) {
     return (
       <IntroductionPageContent>
         <IntroductionContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-          <p>Loading story...</p>
+          <p>Loading adventure...</p>
         </IntroductionContainer>
       </IntroductionPageContent>
     );
   }
 
-  if (error || !story) {
+  if (error || !adventure) {
     return (
       <IntroductionPageContent>
         <IntroductionContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-          <p>Error loading story: {error || "Story not found"}</p>
+          <p>Error loading adventure: {error || "Adventure not found"}</p>
         </IntroductionContainer>
       </IntroductionPageContent>
     );
@@ -48,10 +48,10 @@ export const Introduction = () => {
     <IntroductionPageContent>
       <IntroductionContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
         <IntroductionTitle data-testid={INTRODUCTION_TEST_IDS.TITLE}>
-          {story.metadata.title}
+          {adventure.metadata.title}
         </IntroductionTitle>
         <IntroText data-testid={INTRODUCTION_TEST_IDS.TEXT}>
-          {story.intro.paragraphs.map((paragraph, index) => (
+          {adventure.intro.paragraphs.map((paragraph, index) => (
             <IntroParagraph
               key={index}
               data-testid={getIntroParagraphTestId(index)}
@@ -65,7 +65,7 @@ export const Introduction = () => {
             onClick={handleStartAdventure}
             data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
           >
-            {story.intro.action}
+            {adventure.intro.action}
           </Button>
         </IntroAction>
       </IntroductionContainer>

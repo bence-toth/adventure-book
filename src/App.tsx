@@ -4,10 +4,10 @@ import {
   Introduction,
   ErrorBoundary,
   TopBar,
-  DocumentManager,
+  AdventureManager,
 } from "@/components";
 import { ROUTES } from "@/constants/routes";
-import { StoryProvider } from "@/context/StoryContext";
+import { AdventureProvider } from "@/context/AdventureContext";
 import { AppContainer, AppContent } from "./App.styles";
 
 const App = () => {
@@ -16,12 +16,12 @@ const App = () => {
       <TopBar />
       <AppContent as="main">
         <Routes>
-          <Route path={ROUTES.ROOT} element={<DocumentManager />} />
+          <Route path={ROUTES.ROOT} element={<AdventureManager />} />
 
           <Route
-            path="/adventure/:storyId/*"
+            path="/adventure/:adventureId/*"
             element={
-              <StoryProvider>
+              <AdventureProvider>
                 <ErrorBoundary>
                   <Routes>
                     <Route path="test" element={<Introduction />} />
@@ -33,7 +33,7 @@ const App = () => {
                     <Route path="*" element={<Navigate to="test" replace />} />
                   </Routes>
                 </ErrorBoundary>
-              </StoryProvider>
+              </AdventureProvider>
             }
           />
 

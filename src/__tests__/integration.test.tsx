@@ -3,18 +3,18 @@ import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, it, expect } from "vitest";
 import App from "../App";
-import { setupTestStory } from "./mockStoryData";
+import { setupTestAdventure } from "./mockAdventureData";
 import {
   INTRODUCTION_TEST_IDS,
   PASSAGE_TEST_IDS,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
 
-const TEST_STORY_ID = "test-story-id";
+const TEST_STORY_ID = "test-adventure-id";
 
 describe("Adventure Book Integration Tests", () => {
   beforeEach(async () => {
-    await setupTestStory(TEST_STORY_ID);
+    await setupTestAdventure(TEST_STORY_ID);
   });
 
   const renderApp = (initialRoute = "/") => {
@@ -64,7 +64,7 @@ describe("Adventure Book Integration Tests", () => {
     expect(screen.getByText(/Passage #999 does not exist/)).toBeInTheDocument();
   });
 
-  it("navigates through different story paths", async () => {
+  it("navigates through different adventure paths", async () => {
     renderApp(`/adventure/${TEST_STORY_ID}/test/passage/1`);
 
     // Start at passage 1

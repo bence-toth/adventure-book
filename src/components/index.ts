@@ -2,7 +2,7 @@ export { Introduction } from "./Introduction/Introduction";
 export { Passage } from "./Passage/Passage";
 export { ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
 export { TopBar } from "./TopBar/TopBar";
-export { DocumentManager } from "./DocumentManager/DocumentManager";
+export { AdventureManager } from "./AdventureManager/AdventureManager";
 
 // Re-export common components
 export {

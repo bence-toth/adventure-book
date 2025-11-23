@@ -22,7 +22,7 @@ describe("BackButton", () => {
   it("renders the back button", () => {
     render(<BackButton />);
     const button = screen.getByRole("button", {
-      name: /back to document manager/i,
+      name: /back to adventure manager/i,
     });
     expect(button).toBeInTheDocument();
   });
@@ -33,12 +33,12 @@ describe("BackButton", () => {
     expect(button).toBeInTheDocument();
   });
 
-  it("navigates to document manager when clicked", async () => {
+  it("navigates to adventure manager when clicked", async () => {
     const user = userEvent.setup();
     render(<BackButton />);
 
     const button = screen.getByRole("button", {
-      name: /back to document manager/i,
+      name: /back to adventure manager/i,
     });
     await user.click(button);
 

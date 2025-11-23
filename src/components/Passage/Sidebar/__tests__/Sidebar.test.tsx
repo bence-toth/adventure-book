@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { screen, act } from "@testing-library/react";
-import { setupTestStory } from "@/__tests__/mockStoryData";
-import { renderWithStory } from "@/__tests__/testUtils";
+import { setupTestAdventure } from "@/__tests__/mockAdventureData";
+import { renderWithAdventure } from "@/__tests__/testUtils";
 import { Sidebar } from "../Sidebar";
 
-const TEST_STORY_ID = "test-story-id";
+const TEST_STORY_ID = "test-adventure-id";
 
 describe("Sidebar", () => {
   beforeEach(async () => {
     localStorage.clear();
-    await setupTestStory(TEST_STORY_ID);
+    await setupTestAdventure(TEST_STORY_ID);
   });
 
   afterEach(() => {
@@ -17,13 +17,13 @@ describe("Sidebar", () => {
   });
 
   it("should render the inventory heading", async () => {
-    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Inventory")).toBeInTheDocument();
   });
 
   it("should show empty message when no items are collected", async () => {
-    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
   });
@@ -38,7 +38,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("No items yet")).not.toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(await screen.findByText("Mock Item Two")).toBeInTheDocument();
@@ -68,14 +68,14 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("Mock Item Two")).not.toBeInTheDocument();
   });
 
-  it("should handle items not in story inventory gracefully", async () => {
-    // Set up localStorage with an item ID not in the story
+  it("should handle items not in adventure inventory gracefully", async () => {
+    // Set up localStorage with an item ID not in the adventure
     const data = {
       [TEST_STORY_ID]: {
         passageId: null,
@@ -84,7 +84,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
 
     // Should not display the unknown item
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
@@ -99,7 +99,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithStory(<Sidebar />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
 
     const list = await screen.findByRole("list");
     expect(list).toBeInTheDocument();
@@ -107,8 +107,8 @@ describe("Sidebar", () => {
   });
 
   it("should update when storage event is triggered", async () => {
-    const { rerender } = renderWithStory(<Sidebar />, {
-      storyId: TEST_STORY_ID,
+    const { rerender } = renderWithAdventure(<Sidebar />, {
+      adventureId: TEST_STORY_ID,
     });
 
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
@@ -133,8 +133,8 @@ describe("Sidebar", () => {
   });
 
   it("should update when inventoryUpdate event is triggered", async () => {
-    const { rerender } = renderWithStory(<Sidebar />, {
-      storyId: TEST_STORY_ID,
+    const { rerender } = renderWithAdventure(<Sidebar />, {
+      adventureId: TEST_STORY_ID,
     });
 
     expect(await screen.findByText("No items yet")).toBeInTheDocument();

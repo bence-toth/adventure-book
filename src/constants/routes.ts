@@ -1,25 +1,25 @@
 export const ROUTES = {
   ROOT: "/",
-  STORY_TEST: "/adventure/:storyId/test",
-  STORY_EDIT: "/adventure/:storyId/edit",
+  STORY_TEST: "/adventure/:adventureId/test",
+  STORY_EDIT: "/adventure/:adventureId/edit",
 } as const;
 
-export const getStoryTestRoute = (storyId: string): string => {
-  return `/adventure/${storyId}/test`;
+export const getAdventureTestRoute = (adventureId: string): string => {
+  return `/adventure/${adventureId}/test`;
 };
 
-export const getStoryEditRoute = (storyId: string): string => {
-  return `/adventure/${storyId}/edit`;
+export const getAdventureEditRoute = (adventureId: string): string => {
+  return `/adventure/${adventureId}/edit`;
 };
 
 export const getPassageRoute = (
-  storyId: string,
+  adventureId: string,
   passageId: number | string
 ): string => {
-  return `/adventure/${storyId}/test/passage/${passageId}`;
+  return `/adventure/${adventureId}/test/passage/${passageId}`;
 };
 
-export const PASSAGE_ROUTE_PATTERN = `/adventure/:storyId/test/passage/:id`;
+export const PASSAGE_ROUTE_PATTERN = `/adventure/:adventureId/test/passage/:id`;
 
 export const SPECIAL_PASSAGES = {
   RESET: 0,

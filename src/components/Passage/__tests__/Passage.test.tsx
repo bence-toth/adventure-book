@@ -1,8 +1,8 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { Passage } from "../Passage";
-import { renderWithStory } from "@/__tests__/testUtils";
-import { setupTestStory } from "@/__tests__/mockStoryData";
+import { renderWithAdventure } from "@/__tests__/testUtils";
+import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 import { getPassageRoute } from "@/constants/routes";
 import {
   PASSAGE_TEST_IDS,
@@ -10,7 +10,7 @@ import {
   getChoiceButtonTestId,
 } from "@/constants/testIds";
 
-const TEST_STORY_ID = "test-story-id";
+const TEST_STORY_ID = "test-adventure-id";
 
 // Mock react-router-dom navigate function
 const mockNavigate = vi.fn();
@@ -19,18 +19,18 @@ vi.mock("react-router-dom", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
-    useParams: () => ({ id: "1", storyId: TEST_STORY_ID }),
+    useParams: () => ({ id: "1", adventureId: TEST_STORY_ID }),
   };
 });
 
 describe("Passage Component", () => {
   beforeEach(async () => {
     mockNavigate.mockClear();
-    await setupTestStory(TEST_STORY_ID);
+    await setupTestAdventure(TEST_STORY_ID);
   });
 
   it("renders the first passage correctly", async () => {
-    renderWithStory(<Passage />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Passage />, { adventureId: TEST_STORY_ID });
 
     const passage = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
     expect(passage).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe("Passage Component", () => {
   });
 
   it("navigates to correct passage when choice is clicked", async () => {
-    renderWithStory(<Passage />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Passage />, { adventureId: TEST_STORY_ID });
 
     const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
     expect(firstChoice).toHaveAttribute("data-goto", "2");
@@ -75,7 +75,7 @@ describe("Passage Component", () => {
   });
 
   it("renders multiple paragraphs correctly", async () => {
-    renderWithStory(<Passage />, { storyId: TEST_STORY_ID });
+    renderWithAdventure(<Passage />, { adventureId: TEST_STORY_ID });
 
     const paragraphs = [
       await screen.findByTestId(getPassageParagraphTestId(0)),

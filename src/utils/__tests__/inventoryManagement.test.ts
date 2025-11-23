@@ -5,7 +5,7 @@ import {
 import { getInventory, saveInventory } from "../localStorage";
 
 describe("inventoryManagement utilities", () => {
-  const testStoryId = "test-story-id";
+  const testAdventureId = "test-adventure-id";
 
   beforeEach(() => {
     localStorage.clear();
@@ -17,100 +17,104 @@ describe("inventoryManagement utilities", () => {
 
   describe("addItemToInventory", () => {
     it("should add a new item to empty inventory", () => {
-      addItemToInventory(testStoryId, "test_item");
+      addItemToInventory(testAdventureId, "test_item");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual(["test_item"]);
     });
 
     it("should not add duplicate items", () => {
-      addItemToInventory(testStoryId, "test_item");
-      addItemToInventory(testStoryId, "test_item");
+      addItemToInventory(testAdventureId, "test_item");
+      addItemToInventory(testAdventureId, "test_item");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual(["test_item"]);
     });
 
     it("should add multiple different items", () => {
-      addItemToInventory(testStoryId, "item1");
-      addItemToInventory(testStoryId, "item2");
-      addItemToInventory(testStoryId, "item3");
+      addItemToInventory(testAdventureId, "item1");
+      addItemToInventory(testAdventureId, "item2");
+      addItemToInventory(testAdventureId, "item3");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual(["item1", "item2", "item3"]);
     });
 
     it("should preserve existing items when adding new ones", () => {
-      saveInventory(testStoryId, ["existing_item"]);
+      saveInventory(testAdventureId, ["existing_item"]);
 
-      addItemToInventory(testStoryId, "new_item");
+      addItemToInventory(testAdventureId, "new_item");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toContain("existing_item");
       expect(inventory).toContain("new_item");
       expect(inventory).toHaveLength(2);
     });
 
     it("should handle adding items when existing inventory exists", () => {
-      saveInventory(testStoryId, ["item1", "item2"]);
+      saveInventory(testAdventureId, ["item1", "item2"]);
 
-      addItemToInventory(testStoryId, "item3");
+      addItemToInventory(testAdventureId, "item3");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual(["item1", "item2", "item3"]);
     });
 
     it("should not throw on localStorage errors", () => {
       // Even if localStorage has issues, the function should handle it gracefully
-      expect(() => addItemToInventory(testStoryId, "test_item")).not.toThrow();
+      expect(() =>
+        addItemToInventory(testAdventureId, "test_item")
+      ).not.toThrow();
     });
   });
 
   describe("removeItemFromInventory", () => {
     it("should remove an existing item", () => {
-      saveInventory(testStoryId, ["item1", "item2", "item3"]);
+      saveInventory(testAdventureId, ["item1", "item2", "item3"]);
 
-      removeItemFromInventory(testStoryId, "item1");
+      removeItemFromInventory(testAdventureId, "item1");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual(["item2", "item3"]);
     });
 
     it("should not throw when removing non-existent item", () => {
-      saveInventory(testStoryId, ["item1", "item2"]);
+      saveInventory(testAdventureId, ["item1", "item2"]);
 
       expect(() =>
-        removeItemFromInventory(testStoryId, "nonexistent")
+        removeItemFromInventory(testAdventureId, "nonexistent")
       ).not.toThrow();
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual(["item1", "item2"]);
     });
 
     it("should handle empty inventory gracefully", () => {
-      expect(() => removeItemFromInventory(testStoryId, "item1")).not.toThrow();
+      expect(() =>
+        removeItemFromInventory(testAdventureId, "item1")
+      ).not.toThrow();
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual([]);
     });
 
     it("should remove all instances of an item if duplicates exist", () => {
       // This tests the filter behavior
-      saveInventory(testStoryId, ["item1", "item2", "item1", "item3"]);
+      saveInventory(testAdventureId, ["item1", "item2", "item1", "item3"]);
 
-      removeItemFromInventory(testStoryId, "item1");
+      removeItemFromInventory(testAdventureId, "item1");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toEqual(["item2", "item3"]);
       expect(inventory).not.toContain("item1");
     });
 
     it("should preserve other items when removing", () => {
-      saveInventory(testStoryId, ["keep1", "remove", "keep2"]);
+      saveInventory(testAdventureId, ["keep1", "remove", "keep2"]);
 
-      removeItemFromInventory(testStoryId, "remove");
+      removeItemFromInventory(testAdventureId, "remove");
 
-      const inventory = getInventory(testStoryId);
+      const inventory = getInventory(testAdventureId);
       expect(inventory).toContain("keep1");
       expect(inventory).toContain("keep2");
       expect(inventory).not.toContain("remove");
@@ -120,45 +124,57 @@ describe("inventoryManagement utilities", () => {
     it("should not throw on localStorage errors", () => {
       // Even if localStorage has issues, the function should handle it gracefully
       expect(() =>
-        removeItemFromInventory(testStoryId, "test_item")
+        removeItemFromInventory(testAdventureId, "test_item")
       ).not.toThrow();
     });
   });
 
   describe("integration scenarios", () => {
     it("should support adding and removing items in sequence", () => {
-      addItemToInventory(testStoryId, "item1");
-      addItemToInventory(testStoryId, "item2");
-      addItemToInventory(testStoryId, "item3");
+      addItemToInventory(testAdventureId, "item1");
+      addItemToInventory(testAdventureId, "item2");
+      addItemToInventory(testAdventureId, "item3");
 
-      expect(getInventory(testStoryId)).toEqual(["item1", "item2", "item3"]);
+      expect(getInventory(testAdventureId)).toEqual([
+        "item1",
+        "item2",
+        "item3",
+      ]);
 
-      removeItemFromInventory(testStoryId, "item2");
+      removeItemFromInventory(testAdventureId, "item2");
 
-      expect(getInventory(testStoryId)).toEqual(["item1", "item3"]);
+      expect(getInventory(testAdventureId)).toEqual(["item1", "item3"]);
 
-      addItemToInventory(testStoryId, "item4");
+      addItemToInventory(testAdventureId, "item4");
 
-      expect(getInventory(testStoryId)).toEqual(["item1", "item3", "item4"]);
+      expect(getInventory(testAdventureId)).toEqual([
+        "item1",
+        "item3",
+        "item4",
+      ]);
     });
 
     it("should maintain consistency across multiple operations", () => {
       // Add several items
-      addItemToInventory(testStoryId, "sword");
-      addItemToInventory(testStoryId, "shield");
-      addItemToInventory(testStoryId, "potion");
+      addItemToInventory(testAdventureId, "sword");
+      addItemToInventory(testAdventureId, "shield");
+      addItemToInventory(testAdventureId, "potion");
 
       // Try to add duplicate
-      addItemToInventory(testStoryId, "sword");
+      addItemToInventory(testAdventureId, "sword");
 
       // Inventory should not have duplicates
-      expect(getInventory(testStoryId)).toEqual(["sword", "shield", "potion"]);
+      expect(getInventory(testAdventureId)).toEqual([
+        "sword",
+        "shield",
+        "potion",
+      ]);
 
       // Remove one item
-      removeItemFromInventory(testStoryId, "shield");
+      removeItemFromInventory(testAdventureId, "shield");
 
       // Verify final state
-      const finalInventory = getInventory(testStoryId);
+      const finalInventory = getInventory(testAdventureId);
       expect(finalInventory).toContain("sword");
       expect(finalInventory).toContain("potion");
       expect(finalInventory).not.toContain("shield");

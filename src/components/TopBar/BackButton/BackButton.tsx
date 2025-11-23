@@ -16,7 +16,7 @@ export const BackButton = () => {
     <Button
       onClick={handleBackClick}
       icon={ArrowLeft}
-      aria-label="Back to document manager"
+      aria-label="Back to adventure manager"
       data-testid={TOP_BAR_TEST_IDS.BACK_BUTTON}
       size="small"
     />
