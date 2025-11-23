@@ -66,7 +66,7 @@ describe("ErrorBoundary", () => {
     );
 
     // Check technical details are available
-    expect(screen.getByText("Technical details")).toBeInTheDocument();
+    expect(screen.getByText("Show technical details")).toBeInTheDocument();
 
     consoleSpy.mockRestore();
   });
@@ -267,7 +267,7 @@ describe("ErrorBoundary", () => {
     );
 
     // Technical details should show the error type
-    expect(screen.getByText("Technical details")).toBeInTheDocument();
+    expect(screen.getByText("Show technical details")).toBeInTheDocument();
 
     consoleSpy.mockRestore();
   });

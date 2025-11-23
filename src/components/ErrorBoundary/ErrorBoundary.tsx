@@ -18,17 +18,18 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  detailsOpen: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, detailsOpen: false };
   }
 
   static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI
-    return { hasError: true, error };
+    return { hasError: true, error, detailsOpen: false };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
@@ -44,6 +45,12 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children;
   }
+
+  private handleDetailsToggle = () => {
+    this.setState((prevState) => ({
+      detailsOpen: !prevState.detailsOpen,
+    }));
+  };
 
   private renderErrorFallback = () => {
     const { error } = this.state;
@@ -66,10 +73,15 @@ export class ErrorBoundary extends Component<Props, State> {
           </ErrorBoundaryHelpText>
           {error && (
             <DetailsButton
-              summary="Technical details"
+              summary={
+                this.state.detailsOpen
+                  ? "Hide technical details"
+                  : "Show technical details"
+              }
               className="error-boundary-details"
               role="region"
               aria-label="Technical details"
+              onToggle={this.handleDetailsToggle}
             >
               <ErrorBoundaryDetailsContent isError>
                 <strong>Error type:</strong> {error.name}
