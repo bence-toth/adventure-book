@@ -6,7 +6,6 @@ import {
   createAdventure,
   type StoredAdventure,
 } from "@/data/adventureDatabase";
-import { Button } from "@/components/common";
 import adventureTemplate from "@/data/adventure.yaml?raw";
 import { getAdventureTestRoute, getPassageRoute } from "@/constants/routes";
 import { getCurrentPassageId } from "@/utils/localStorage";
@@ -69,7 +68,7 @@ export const AdventureManager = () => {
     try {
       // Use the adventure.yaml template and replace the title
       const contentWithNewTitle = adventureTemplate.replace(
-        /title:\s*"[^\"]*"/,
+        /title:\s*"[^"]*"/,
         `title: "${title}"`
       );
 
