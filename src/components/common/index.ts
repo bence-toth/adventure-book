@@ -10,3 +10,4 @@ export type {
 } from "./ContextMenu/ContextMenu";
 export { DetailsButton } from "./DetailsButton/DetailsButton";
 export type { DetailsButtonProps } from "./DetailsButton/DetailsButton";
+export { FormattedDate } from "./FormattedDate/FormattedDate";

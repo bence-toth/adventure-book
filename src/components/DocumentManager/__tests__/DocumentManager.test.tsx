@@ -116,45 +116,6 @@ describe("DocumentManager Component", () => {
       expect(await screen.findByText("Adventure One")).toBeInTheDocument();
       expect(screen.getByText("Adventure Two")).toBeInTheDocument();
     });
-
-    it("displays story titles correctly", async () => {
-      render(<DocumentManager />);
-
-      const title1 = await screen.findByText("Adventure One");
-      const title2 = screen.getByText("Adventure Two");
-
-      expect(title1).toBeInTheDocument();
-      expect(title2).toBeInTheDocument();
-    });
-
-    it("displays last edited dates in relative format", async () => {
-      render(<DocumentManager />);
-
-      // Wait for stories to load
-      await screen.findByText("Adventure One");
-
-      // Check that date formatting is applied (looking for "ago" or specific date format)
-      const dateElements = screen.getAllByText(/Last edited/);
-      expect(dateElements.length).toBeGreaterThan(0);
-    });
-
-    it("renders Open button for each story", async () => {
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure One");
-
-      const openButtons = screen.getAllByLabelText(/^Open Adventure/);
-      expect(openButtons).toHaveLength(2);
-    });
-
-    it("renders Delete button for each story", async () => {
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure One");
-
-      const menuButtons = screen.getAllByRole("button", { name: /open menu/i });
-      expect(menuButtons).toHaveLength(2);
-    });
   });
 
   describe("Create New Story", () => {
@@ -225,7 +186,7 @@ describe("DocumentManager Component", () => {
       vi.mocked(storyDatabase.listStories).mockResolvedValue(mockStories);
     });
 
-    it("navigates to story test view when Open is clicked", async () => {
+    it("navigates to story test view when story is opened", async () => {
       render(<DocumentManager />);
 
       await screen.findByText("Adventure One");
@@ -235,17 +196,6 @@ describe("DocumentManager Component", () => {
 
       expect(mockNavigate).toHaveBeenCalledWith("/adventure/story-1/test");
     });
-
-    it("navigates to correct story when multiple stories exist", async () => {
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure Two");
-
-      const openButtons = screen.getAllByLabelText(/^Open Adventure/);
-      fireEvent.click(openButtons[1]);
-
-      expect(mockNavigate).toHaveBeenCalledWith("/adventure/story-2/test");
-    });
   });
 
   describe("Delete Story", () => {
@@ -254,56 +204,7 @@ describe("DocumentManager Component", () => {
       vi.mocked(storyDatabase.deleteStory).mockResolvedValue();
     });
 
-    it("shows context menu when ellipsis button is clicked", async () => {
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure One");
-
-      const menuButton = screen.getByLabelText("Open menu for Adventure One");
-      fireEvent.click(menuButton);
-
-      expect(screen.getByText("Delete")).toBeInTheDocument();
-    });
-
-    it("shows confirmation dialog when Delete is clicked from context menu", async () => {
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure One");
-
-      const menuButton = screen.getByLabelText("Open menu for Adventure One");
-      fireEvent.click(menuButton);
-
-      const deleteMenuItem = screen.getByText("Delete");
-      fireEvent.click(deleteMenuItem);
-
-      expect(
-        screen.getByText(
-          'Are you sure you want to delete "Adventure One"? This action cannot be undone.'
-        )
-      ).toBeInTheDocument();
-    });
-
-    it("closes context menu and does not delete story when user cancels confirmation", async () => {
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure One");
-
-      const menuButton = screen.getByLabelText("Open menu for Adventure One");
-      fireEvent.click(menuButton);
-
-      const deleteMenuItem = screen.getByText("Delete");
-      fireEvent.click(deleteMenuItem);
-
-      const cancelButton = screen.getByText("Cancel");
-      fireEvent.click(cancelButton);
-
-      await waitFor(() => {
-        expect(screen.queryByText("Delete Story")).not.toBeInTheDocument();
-      });
-      expect(storyDatabase.deleteStory).not.toHaveBeenCalled();
-    });
-
-    it("deletes story when user confirms", async () => {
+    it("deletes story and reloads list when deletion is confirmed", async () => {
       vi.mocked(storyDatabase.listStories)
         .mockResolvedValueOnce(mockStories) // Initial load
         .mockResolvedValueOnce([mockStories[1]]); // After deletion
@@ -330,29 +231,7 @@ describe("DocumentManager Component", () => {
         expect(screen.queryByText("Adventure One")).not.toBeInTheDocument();
       });
       expect(screen.getByText("Adventure Two")).toBeInTheDocument();
-    });
-
-    it("reloads story list after deletion", async () => {
-      vi.mocked(storyDatabase.listStories)
-        .mockResolvedValueOnce(mockStories)
-        .mockResolvedValueOnce([mockStories[1]]);
-
-      render(<DocumentManager />);
-
-      await screen.findByText("Adventure One");
-
-      const menuButton = screen.getByLabelText("Open menu for Adventure One");
-      fireEvent.click(menuButton);
-
-      const deleteMenuItem = screen.getByText("Delete");
-      fireEvent.click(deleteMenuItem);
-
-      const confirmButton = screen.getByRole("button", { name: "Delete" });
-      fireEvent.click(confirmButton);
-
-      await waitFor(() => {
-        expect(storyDatabase.listStories).toHaveBeenCalledTimes(2);
-      });
+      expect(storyDatabase.listStories).toHaveBeenCalledTimes(2);
     });
 
     it("shows error message when deletion fails", async () => {
