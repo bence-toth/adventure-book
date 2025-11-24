@@ -1,7 +1,8 @@
 import { useLocation, useParams } from "react-router-dom";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Swords } from "lucide-react";
 import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
+import { ToggleButton } from "@/components/common";
 import { BackButton } from "./BackButton/BackButton";
 import { AdventureTitleInput } from "./AdventureTitleInput/AdventureTitleInput";
 import { AdventureNavigation } from "./AdventureNavigation/AdventureNavigation";
@@ -10,11 +11,13 @@ import {
   TopBarLogo,
   TopBarLogoIcon,
   TopBarTitle,
+  TopBarControls,
 } from "./TopBar.styles";
 
 export const TopBar = () => {
   const location = useLocation();
   const { adventureId } = useParams<{ adventureId: string }>();
+  const [authorToolsEnabled, setAuthorToolsEnabled] = useState(false);
 
   const extractedAdventureId = useMemo(() => {
     // First try to get adventureId from params (works in nested routes)
@@ -28,6 +31,13 @@ export const TopBar = () => {
   const isAdventureRoute = useMemo(() => {
     return !!extractedAdventureId;
   }, [extractedAdventureId]);
+
+  const isTestView = useMemo(() => {
+    return (
+      location.pathname.includes("/test") &&
+      !location.pathname.includes("/edit")
+    );
+  }, [location.pathname]);
 
   if (!isAdventureRoute || extractedAdventureId === null) {
     // AdventureManager view
@@ -49,7 +59,17 @@ export const TopBar = () => {
         <BackButton />
         <AdventureTitleInput adventureId={extractedAdventureId} />
       </TopBarLogo>
-      <AdventureNavigation adventureId={extractedAdventureId} />
+      <TopBarControls>
+        {isTestView && (
+          <ToggleButton
+            label="Author tools"
+            checked={authorToolsEnabled}
+            onChange={setAuthorToolsEnabled}
+            data-testid={TOP_BAR_TEST_IDS.AUTHOR_TOOLS_TOGGLE}
+          />
+        )}
+        <AdventureNavigation adventureId={extractedAdventureId} />
+      </TopBarControls>
     </TopBarContainer>
   );
 };

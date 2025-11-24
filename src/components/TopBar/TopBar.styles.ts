@@ -32,3 +32,9 @@ export const TopBarTitle = styled.h1`
   font-size: var(--font-size-xl);
   line-height: var(--line-height-dense);
 `;
+
+export const TopBarControls = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+`;
