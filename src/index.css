@@ -204,6 +204,8 @@ a {
   --size-title-input-min-width: calc(var(--space-base) * 24);
   --size-modal-dialog-max-width: calc(var(--space-base) * 72);
   --size-context-menu-min-width: calc(var(--space-base) * 20);
+  --size-toggle-button-width: calc(var(--space-base) * 5);
+  --size-toggle-button-height: calc(var(--space-base) * 3);
 }
 
 @media (prefers-color-scheme: light) {

@@ -11,3 +11,5 @@ export type {
 export { DetailsButton } from "./DetailsButton/DetailsButton";
 export type { DetailsButtonProps } from "./DetailsButton/DetailsButton";
 export { FormattedDate } from "./FormattedDate/FormattedDate";
+export { ToggleButton } from "./ToggleButton/ToggleButton";
+export type { ToggleButtonProps } from "./ToggleButton/ToggleButton";
