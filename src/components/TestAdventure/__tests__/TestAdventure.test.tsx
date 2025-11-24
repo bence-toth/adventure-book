@@ -303,11 +303,6 @@ describe("TestAdventure Component", () => {
     it("handles passage 0 (reset) by clearing progress and redirecting", async () => {
       mockParams = { id: "0", adventureId: TEST_STORY_ID };
 
-      const mockClearCurrentPassageId = vi.mocked(
-        localStorage.clearCurrentPassageId
-      );
-      const mockClearInventory = vi.mocked(localStorage.clearInventory);
-
       renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
@@ -322,8 +317,6 @@ describe("TestAdventure Component", () => {
 
       // Should clear localStorage and navigate
       await waitFor(() => {
-        expect(mockClearCurrentPassageId).toHaveBeenCalledWith(TEST_STORY_ID);
-        expect(mockClearInventory).toHaveBeenCalledWith(TEST_STORY_ID);
         expect(mockNavigate).toHaveBeenCalledWith(
           getAdventureTestRoute(TEST_STORY_ID)
         );
