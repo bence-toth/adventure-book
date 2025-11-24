@@ -49,6 +49,17 @@ export const TestAdventure = () => {
   const isIntroduction = !id;
   const passageId = id ? parseInt(id, 10) : null;
 
+  // Clear inventory and passage ID when viewing introduction
+  useEffect(() => {
+    if (!adventureId || !isIntroduction) return;
+
+    clearCurrentPassageId(adventureId);
+    clearInventory(adventureId);
+
+    // Dispatch event to notify sidebar
+    window.dispatchEvent(new Event("inventoryUpdate"));
+  }, [adventureId, isIntroduction]);
+
   useEffect(() => {
     if (!adventureId || !adventure || isIntroduction || passageId === null)
       return;
@@ -56,8 +67,6 @@ export const TestAdventure = () => {
     if (!isNaN(passageId)) {
       if (passageId === SPECIAL_PASSAGES.RESET) {
         // Special case: passage 0 clears localStorage and redirects to introduction
-        clearCurrentPassageId(adventureId);
-        clearInventory(adventureId);
         navigate(getAdventureTestRoute(adventureId));
         return;
       } else if (passageId >= 1) {

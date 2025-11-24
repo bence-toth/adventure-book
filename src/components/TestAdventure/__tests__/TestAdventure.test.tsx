@@ -165,6 +165,28 @@ describe("TestAdventure Component", () => {
       );
       expect(container).toHaveTextContent("Loading adventure...");
     });
+
+    it("clears inventory and passage ID when introduction is displayed", async () => {
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      const mockClearCurrentPassageId = vi.mocked(
+        localStorage.clearCurrentPassageId
+      );
+      const mockClearInventory = vi.mocked(localStorage.clearInventory);
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      await waitFor(() => {
+        expect(mockClearCurrentPassageId).toHaveBeenCalledWith(TEST_STORY_ID);
+        expect(mockClearInventory).toHaveBeenCalledWith(TEST_STORY_ID);
+      });
+    });
   });
 
   it("renders the first passage correctly", async () => {
