@@ -16,6 +16,12 @@ p {
   line-height: var(--line-height-normal);
 }
 
+input,
+button,
+a {
+  outline-color: var(--color-interactive-outline-focus-neutral);
+}
+
 :root {
   color-scheme: light dark;
   color: var(--color-foreground-neutral);
@@ -219,6 +225,7 @@ p {
     --color-interactive-background-focus-neutral: var(--color-gray-250);
     --color-interactive-foreground-focus-neutral: var(--color-gray-900);
     --color-interactive-border-focus-neutral: var(--color-gray-300);
+    --color-interactive-outline-focus-neutral: var(--color-blue-500);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
@@ -242,6 +249,7 @@ p {
     --color-interactive-background-focus-danger: var(--color-red-250);
     --color-interactive-foreground-focus-danger: var(--color-red-900);
     --color-interactive-border-focus-danger: var(--color-red-300);
+    --color-interactive-outline-focus-danger: var(--color-red-500);
     --color-shadow-danger: color-mix(
       in srgb,
       var(--color-red-1000) 25%,
@@ -269,6 +277,7 @@ p {
     --color-interactive-background-focus-neutral: var(--color-gray-750);
     --color-interactive-foreground-focus-neutral: var(--color-gray-100);
     --color-interactive-border-focus-neutral: var(--color-gray-700);
+    --color-interactive-outline-focus-neutral: var(--color-blue-300);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
@@ -292,6 +301,7 @@ p {
     --color-interactive-background-focus-danger: var(--color-red-750);
     --color-interactive-foreground-focus-danger: var(--color-red-100);
     --color-interactive-border-focus-danger: var(--color-red-700);
+    --color-interactive-outline-focus-danger: var(--color-red-500);
     --color-shadow-danger: color-mix(
       in srgb,
       var(--color-red-1000) 25%,

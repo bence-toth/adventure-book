@@ -82,6 +82,10 @@ export const StyledButton = styled.button<{
         ? "var(--color-interactive-border-focus-danger)"
         : "var(--color-interactive-border-focus-neutral)"};
     outline-offset: var(--space-1);
+    ${(props) =>
+      props.$variant === "danger"
+        ? "outline-color: var(--color-interactive-outline-focus-danger);"
+        : ""};
   }
 `;
 
