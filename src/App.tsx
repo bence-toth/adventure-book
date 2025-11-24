@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import {
-  Passage,
-  Introduction,
+  TestAdventure,
   ErrorBoundary,
   AppTopBar,
   AdventureManager,
@@ -24,8 +23,11 @@ const App = () => {
               element={
                 <AdventureProvider>
                   <Routes>
-                    <Route path="test" element={<Introduction />} />
-                    <Route path="test/passage/:id" element={<Passage />} />
+                    <Route path="test" element={<TestAdventure />} />
+                    <Route
+                      path="test/passage/:id"
+                      element={<TestAdventure />}
+                    />
                     <Route
                       path="edit"
                       element={<div>Edit view coming soon</div>}

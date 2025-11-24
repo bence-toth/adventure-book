@@ -2,11 +2,11 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { screen, act } from "@testing-library/react";
 import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 import { renderWithAdventure } from "@/__tests__/testUtils";
-import { AdventureSidebar } from "../AdventureSidebar";
+import { TestAdventureSidebar } from "../TestAdventureSidebar";
 
 const TEST_STORY_ID = "test-adventure-id";
 
-describe("AdventureSidebar", () => {
+describe("TestAdventureSidebar", () => {
   beforeEach(async () => {
     localStorage.clear();
     await setupTestAdventure(TEST_STORY_ID);
@@ -17,13 +17,17 @@ describe("AdventureSidebar", () => {
   });
 
   it("should render the inventory heading", async () => {
-    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
 
     expect(await screen.findByText("Inventory")).toBeInTheDocument();
   });
 
   it("should show empty message when no items are collected", async () => {
-    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
 
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
   });
@@ -38,7 +42,9 @@ describe("AdventureSidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("No items yet")).not.toBeInTheDocument();
@@ -53,7 +59,9 @@ describe("AdventureSidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(await screen.findByText("Mock Item Two")).toBeInTheDocument();
@@ -68,7 +76,9 @@ describe("AdventureSidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("Mock Item Two")).not.toBeInTheDocument();
@@ -84,7 +94,9 @@ describe("AdventureSidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
 
     // Should not display the unknown item
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
@@ -99,7 +111,9 @@ describe("AdventureSidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
 
     const list = await screen.findByRole("list");
     expect(list).toBeInTheDocument();
@@ -107,7 +121,7 @@ describe("AdventureSidebar", () => {
   });
 
   it("should update when storage event is triggered", async () => {
-    const { rerender } = renderWithAdventure(<AdventureSidebar />, {
+    const { rerender } = renderWithAdventure(<TestAdventureSidebar />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -126,14 +140,14 @@ describe("AdventureSidebar", () => {
       window.dispatchEvent(new Event("storage"));
     });
 
-    rerender(<AdventureSidebar />);
+    rerender(<TestAdventureSidebar />);
 
     // Note: storage event doesn't trigger in same-window in tests,
     // so we rely on the inventoryUpdate event for same-window updates
   });
 
   it("should update when inventoryUpdate event is triggered", async () => {
-    const { rerender } = renderWithAdventure(<AdventureSidebar />, {
+    const { rerender } = renderWithAdventure(<TestAdventureSidebar />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -152,14 +166,14 @@ describe("AdventureSidebar", () => {
       window.dispatchEvent(new Event("inventoryUpdate"));
     });
 
-    rerender(<AdventureSidebar />);
+    rerender(<TestAdventureSidebar />);
 
     // Component should re-render with the new item
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
   });
 
   it("should return null when adventureId is not available", () => {
-    const { container } = renderWithAdventure(<AdventureSidebar />, {
+    const { container } = renderWithAdventure(<TestAdventureSidebar />, {
       adventureId: "",
       adventure: null,
       route: "/adventure/test-null/test",
@@ -170,7 +184,7 @@ describe("AdventureSidebar", () => {
   });
 
   it("should return null when adventure is not loaded yet", () => {
-    const { container } = renderWithAdventure(<AdventureSidebar />, {
+    const { container } = renderWithAdventure(<TestAdventureSidebar />, {
       adventureId: TEST_STORY_ID,
       adventure: null,
     });
@@ -181,7 +195,7 @@ describe("AdventureSidebar", () => {
 
   it("should not set up event listeners when adventureId is empty", () => {
     // Render with mock context where adventureId is empty (falsy)
-    const { container } = renderWithAdventure(<AdventureSidebar />, {
+    const { container } = renderWithAdventure(<TestAdventureSidebar />, {
       adventureId: "",
       adventure: null,
       route: "/adventure/test-empty/test",
@@ -220,7 +234,7 @@ describe("AdventureSidebar", () => {
       addEventListenerSpy as typeof window.addEventListener;
 
     // Render without mocking adventure to use real AdventureProvider
-    const { rerender } = renderWithAdventure(<AdventureSidebar />, {
+    const { rerender } = renderWithAdventure(<TestAdventureSidebar />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -232,7 +246,7 @@ describe("AdventureSidebar", () => {
 
     // Re-render component (simulates props/context update)
     await act(async () => {
-      rerender(<AdventureSidebar />);
+      rerender(<TestAdventureSidebar />);
     });
 
     // Effect should NOT re-run because adventureId hasn't changed

@@ -39,7 +39,7 @@ describe("App Component", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders Passage component when navigating to an adventure", async () => {
+  it("renders TestAdventure component when navigating to an adventure", async () => {
     renderAppWithRoute(`/adventure/${TEST_STORY_ID}/test/passage/1`);
 
     // Should show passage content from the mock adventure

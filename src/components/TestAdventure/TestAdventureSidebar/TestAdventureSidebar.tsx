@@ -6,9 +6,9 @@ import {
   InventoryTitle,
   InventoryEmpty,
   InventoryList,
-} from "./AdventureSidebar.styles";
+} from "./TestAdventureSidebar.styles";
 
-export const AdventureSidebar = () => {
+export const TestAdventureSidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
   const { adventure, adventureId } = useAdventure();
 

@@ -16,7 +16,9 @@ import {
 } from "@/constants/routes";
 import {
   PASSAGE_TEST_IDS,
+  INTRODUCTION_TEST_IDS,
   getPassageParagraphTestId,
+  getIntroParagraphTestId,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
 import { Button } from "@/components/common";
@@ -27,28 +29,29 @@ import {
   InvalidPassageIdError,
   PassageNotFoundError,
 } from "@/utils/errors";
-import { AdventureSidebar } from "./AdventureSidebar/AdventureSidebar";
+import { TestAdventureSidebar } from "./TestAdventureSidebar/TestAdventureSidebar";
 import {
   PageLayout,
   PageContent,
-  PassageContainer,
-  PassageText,
-  PassageParagraph,
+  ContentContainer,
+  ContentText,
+  ContentParagraph,
   Choices,
-} from "./Passage.styles";
+  ContentTitle,
+} from "./TestAdventure.styles";
 
-export const Passage = () => {
+export const TestAdventure = () => {
   const { id, adventureId } = useParams<{ id: string; adventureId: string }>();
   const navigate = useNavigate();
   const { adventure, loading, error } = useAdventure();
 
-  if (!id) {
-    throw new InvalidPassageIdError("undefined");
-  }
-  const passageId = parseInt(id, 10);
+  // If no id is provided, we're in introduction mode
+  const isIntroduction = !id;
+  const passageId = id ? parseInt(id, 10) : null;
 
   useEffect(() => {
-    if (!adventureId || !adventure) return;
+    if (!adventureId || !adventure || isIntroduction || passageId === null)
+      return;
 
     if (!isNaN(passageId)) {
       if (passageId === SPECIAL_PASSAGES.RESET) {
@@ -76,16 +79,22 @@ export const Passage = () => {
         }
       }
     }
-  }, [passageId, navigate, adventureId, adventure]);
+  }, [passageId, navigate, adventureId, adventure, isIntroduction]);
 
   if (loading) {
     return (
       <PageLayout>
-        <AdventureSidebar />
+        <TestAdventureSidebar />
         <PageContent>
-          <PassageContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
-            <p>Loading passage...</p>
-          </PassageContainer>
+          <ContentContainer
+            data-testid={
+              isIntroduction
+                ? INTRODUCTION_TEST_IDS.CONTAINER
+                : PASSAGE_TEST_IDS.CONTAINER
+            }
+          >
+            <p>Loading {isIntroduction ? "adventure" : "passage"}...</p>
+          </ContentContainer>
         </PageContent>
       </PageLayout>
     );
@@ -99,8 +108,52 @@ export const Passage = () => {
     throw new AdventureNotFoundError();
   }
 
-  if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
-    throw new InvalidPassageIdError(id);
+  // Handle introduction view
+  if (isIntroduction) {
+    const handleStartAdventure = () => {
+      navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.START));
+    };
+
+    return (
+      <PageLayout>
+        <TestAdventureSidebar />
+        <PageContent>
+          <ContentContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
+            <ContentTitle data-testid={INTRODUCTION_TEST_IDS.TITLE}>
+              {adventure.metadata.title}
+            </ContentTitle>
+            <ContentText data-testid={INTRODUCTION_TEST_IDS.TEXT}>
+              {adventure.intro.paragraphs.map((paragraph, index) => (
+                <ContentParagraph
+                  key={index}
+                  data-testid={getIntroParagraphTestId(index)}
+                >
+                  {paragraph}
+                </ContentParagraph>
+              ))}
+            </ContentText>
+            <Choices>
+              <Button
+                onClick={handleStartAdventure}
+                data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
+              >
+                {adventure.intro.action}
+              </Button>
+            </Choices>
+          </ContentContainer>
+        </PageContent>
+      </PageLayout>
+    );
+  }
+
+  // Handle passage view - passageId is guaranteed to be a number here
+  if (
+    passageId === null ||
+    isNaN(passageId) ||
+    passageId < 0 ||
+    !Number.isInteger(passageId)
+  ) {
+    throw new InvalidPassageIdError(id || "undefined");
   }
 
   // Handle passage 0 (reset) - this will be handled in useEffect, but we need to prevent
@@ -108,13 +161,13 @@ export const Passage = () => {
   if (passageId === SPECIAL_PASSAGES.RESET) {
     return (
       <PageLayout>
-        <AdventureSidebar />
+        <TestAdventureSidebar />
         <PageContent>
-          <PassageContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
-            <PassageText>
-              <PassageParagraph>Resetting your adventure…</PassageParagraph>
-            </PassageText>
-          </PassageContainer>
+          <ContentContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
+            <ContentText>
+              <ContentParagraph>Resetting your adventure…</ContentParagraph>
+            </ContentText>
+          </ContentContainer>
         </PageContent>
       </PageLayout>
     );
@@ -138,19 +191,19 @@ export const Passage = () => {
 
   return (
     <PageLayout>
-      <AdventureSidebar />
+      <TestAdventureSidebar />
       <PageContent>
-        <PassageContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
-          <PassageText data-testid={PASSAGE_TEST_IDS.TEXT}>
+        <ContentContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
+          <ContentText data-testid={PASSAGE_TEST_IDS.TEXT}>
             {currentPassage.paragraphs.map((paragraph, index) => (
-              <PassageParagraph
+              <ContentParagraph
                 key={index}
                 data-testid={getPassageParagraphTestId(index)}
               >
                 {paragraph}
-              </PassageParagraph>
+              </ContentParagraph>
             ))}
-          </PassageText>
+          </ContentText>
           <Choices data-testid={PASSAGE_TEST_IDS.CHOICES}>
             {currentPassage.ending ? (
               <Button
@@ -172,7 +225,7 @@ export const Passage = () => {
               ))
             )}
           </Choices>
-        </PassageContainer>
+        </ContentContainer>
       </PageContent>
     </PageLayout>
   );

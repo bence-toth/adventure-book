@@ -1,13 +1,15 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import { Passage } from "../Passage";
+import { TestAdventure } from "../TestAdventure";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
 import { getPassageRoute, getAdventureTestRoute } from "@/constants/routes";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 import {
   PASSAGE_TEST_IDS,
+  INTRODUCTION_TEST_IDS,
   getPassageParagraphTestId,
+  getIntroParagraphTestId,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
 import * as localStorage from "@/utils/localStorage";
@@ -49,15 +51,124 @@ vi.mock("@/data/adventureLoader", async () => {
   };
 });
 
-describe("Passage Component", () => {
+describe("TestAdventure Component", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     vi.clearAllMocks();
     mockParams = { id: "1", adventureId: TEST_STORY_ID };
   });
 
+  describe("Introduction Mode", () => {
+    it("renders introduction when no passage id is provided", async () => {
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      const introContainer = await screen.findByTestId(
+        INTRODUCTION_TEST_IDS.CONTAINER
+      );
+      expect(introContainer).toBeInTheDocument();
+
+      const introTitle = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
+      expect(introTitle).toBeInTheDocument();
+      expect(introTitle).toHaveTextContent(mockAdventure.metadata.title);
+
+      const introText = await screen.findByTestId(INTRODUCTION_TEST_IDS.TEXT);
+      expect(introText).toBeInTheDocument();
+    });
+
+    it("renders all introduction paragraphs", async () => {
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      // Check that the correct number of paragraphs are rendered
+      const expectedParagraphs = [
+        "This is the first mock introduction paragraph.",
+        "This is the second mock introduction paragraph.",
+        "This is the third mock introduction paragraph.",
+      ];
+
+      for (let index = 0; index < expectedParagraphs.length; index++) {
+        const paragraph = await screen.findByTestId(
+          getIntroParagraphTestId(index)
+        );
+        expect(paragraph).toBeInTheDocument();
+        expect(paragraph).toHaveTextContent(expectedParagraphs[index]);
+      }
+    });
+
+    it("renders start adventure button in introduction mode", async () => {
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      const button = await screen.findByTestId(
+        INTRODUCTION_TEST_IDS.START_BUTTON
+      );
+      expect(button).toBeInTheDocument();
+      expect(button).toHaveTextContent("Begin your test adventure");
+    });
+
+    it("navigates to passage 1 when start button is clicked in introduction mode", async () => {
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      const button = await screen.findByTestId(
+        INTRODUCTION_TEST_IDS.START_BUTTON
+      );
+      fireEvent.click(button);
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        getPassageRoute(TEST_STORY_ID, 1)
+      );
+    });
+
+    it("shows loading message in introduction mode while adventure is loading", async () => {
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        loading: true,
+      });
+
+      const container = await screen.findByTestId(
+        INTRODUCTION_TEST_IDS.CONTAINER
+      );
+      expect(container).toHaveTextContent("Loading adventure...");
+    });
+  });
+
   it("renders the first passage correctly", async () => {
-    renderWithAdventure(<Passage />, {
+    renderWithAdventure(<TestAdventure />, {
       adventureId: TEST_STORY_ID,
       adventure: mockAdventure,
     });
@@ -92,7 +203,7 @@ describe("Passage Component", () => {
   });
 
   it("navigates to correct passage when choice is clicked", async () => {
-    renderWithAdventure(<Passage />, {
+    renderWithAdventure(<TestAdventure />, {
       adventureId: TEST_STORY_ID,
       adventure: mockAdventure,
     });
@@ -108,7 +219,7 @@ describe("Passage Component", () => {
   });
 
   it("renders multiple paragraphs correctly", async () => {
-    renderWithAdventure(<Passage />, {
+    renderWithAdventure(<TestAdventure />, {
       adventureId: TEST_STORY_ID,
       adventure: mockAdventure,
     });
@@ -128,7 +239,7 @@ describe("Passage Component", () => {
     it("renders restart button for ending passages", async () => {
       mockParams = { id: "4", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
@@ -148,7 +259,7 @@ describe("Passage Component", () => {
       );
       const mockClearInventory = vi.mocked(localStorage.clearInventory);
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
@@ -175,7 +286,7 @@ describe("Passage Component", () => {
       );
       const mockClearInventory = vi.mocked(localStorage.clearInventory);
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
@@ -220,7 +331,7 @@ describe("Passage Component", () => {
       // Spy on window.dispatchEvent
       const dispatchEventSpy = vi.spyOn(window, "dispatchEvent");
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: adventureWithEffects,
       });
@@ -261,7 +372,7 @@ describe("Passage Component", () => {
       // Spy on window.dispatchEvent
       const dispatchEventSpy = vi.spyOn(window, "dispatchEvent");
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: adventureWithEffects,
       });
@@ -303,7 +414,7 @@ describe("Passage Component", () => {
 
       mockParams = { id: "9", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: adventureWithEffects,
       });
@@ -326,7 +437,7 @@ describe("Passage Component", () => {
 
       mockParams = { id: "4", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
@@ -347,7 +458,7 @@ describe("Passage Component", () => {
       // Use existing passage 1 which has no effects
       mockParams = { id: "1", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
@@ -371,7 +482,7 @@ describe("Passage Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <Passage />
+          <TestAdventure />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -388,31 +499,31 @@ describe("Passage Component", () => {
   });
 
   describe("Error Handling", () => {
-    it("throws InvalidPassageIdError when id param is undefined", async () => {
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-
+    it("renders introduction view when id param is undefined", async () => {
       mockParams = {
         id: undefined as unknown as string,
         adventureId: TEST_STORY_ID,
       };
 
-      renderWithAdventure(
-        <ErrorBoundary>
-          <Passage />
-        </ErrorBoundary>,
-        {
-          adventureId: TEST_STORY_ID,
-          adventure: mockAdventure,
-        }
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      // Should render introduction instead of throwing an error
+      const introContainer = await screen.findByTestId(
+        INTRODUCTION_TEST_IDS.CONTAINER
       );
+      expect(introContainer).toBeInTheDocument();
 
-      const errorMessages = await screen.findAllByText(/is not valid/);
-      expect(errorMessages.length).toBeGreaterThan(0);
-      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+      const introTitle = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
+      expect(introTitle).toBeInTheDocument();
+      expect(introTitle).toHaveTextContent(mockAdventure.metadata.title);
 
-      consoleSpy.mockRestore();
+      const startButton = await screen.findByTestId(
+        INTRODUCTION_TEST_IDS.START_BUTTON
+      );
+      expect(startButton).toBeInTheDocument();
     });
 
     it("throws AdventureLoadError when there is a load error", async () => {
@@ -422,7 +533,7 @@ describe("Passage Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <Passage />
+          <TestAdventure />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -445,7 +556,7 @@ describe("Passage Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <Passage />
+          <TestAdventure />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -470,7 +581,7 @@ describe("Passage Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <Passage />
+          <TestAdventure />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -494,7 +605,7 @@ describe("Passage Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <Passage />
+          <TestAdventure />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -518,7 +629,7 @@ describe("Passage Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <Passage />
+          <TestAdventure />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -536,7 +647,7 @@ describe("Passage Component", () => {
 
   describe("Loading State", () => {
     it("shows loading message while adventure is loading", async () => {
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         loading: true,
       });
@@ -554,7 +665,7 @@ describe("Passage Component", () => {
 
       mockParams = { id: "2", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<Passage />, {
+      renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
