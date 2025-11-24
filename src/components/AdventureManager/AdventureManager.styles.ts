@@ -11,14 +11,6 @@ export const AdventureManagerLoading = styled.div`
   text-align: center;
 `;
 
-export const AdventureManagerError = styled.div`
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-`;
-
 export const AdventureManagerList = styled.div`
   display: grid;
   grid-template-columns: repeat(

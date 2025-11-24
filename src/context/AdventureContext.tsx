@@ -22,7 +22,7 @@ export const AdventureProvider = ({
 }) => {
   const { adventureId } = useParams<{ adventureId: string }>();
   const [adventure, setAdventure] = useState<Adventure | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,9 +40,11 @@ export const AdventureProvider = ({
         const loadedAdventure = await loadAdventureById(adventureId);
         setAdventure(loadedAdventure);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load adventure"
-        );
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError("Failed to load adventure");
+        }
         setAdventure(null);
       } finally {
         setLoading(false);

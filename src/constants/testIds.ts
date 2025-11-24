@@ -25,12 +25,6 @@ export const getChoiceButtonTestId = (index: number): string => {
   return `choice-button-${index}`;
 };
 
-export const ERROR_TEST_IDS = {
-  INVALID_ID: "error-invalid-id",
-  PASSAGE_NOT_FOUND: "error-passage-not-found",
-  GO_TO_INTRODUCTION_BUTTON: "go-to-introduction-button",
-} as const;
-
 export const DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS = {
   OVERLAY: "confirmation-modal-overlay",
   DIALOG: "confirmation-modal-dialog",

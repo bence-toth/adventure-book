@@ -2,8 +2,9 @@ import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { Introduction } from "../Introduction";
 import { renderWithAdventure } from "@/__tests__/testUtils";
-import { setupTestAdventure } from "@/__tests__/mockAdventureData";
+import { mockAdventure } from "@/__tests__/mockAdventureData";
 import { getPassageRoute, SPECIAL_PASSAGES } from "@/constants/routes";
+import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 import {
   INTRODUCTION_TEST_IDS,
   getIntroParagraphTestId,
@@ -22,13 +23,15 @@ vi.mock("react-router-dom", async () => {
 });
 
 describe("Introduction Component", () => {
-  beforeEach(async () => {
+  beforeEach(() => {
     mockNavigate.mockClear();
-    await setupTestAdventure(TEST_STORY_ID);
   });
 
   it("renders the introduction title", async () => {
-    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, {
+      adventureId: TEST_STORY_ID,
+      adventure: mockAdventure,
+    });
 
     const title = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
     expect(title).toBeInTheDocument();
@@ -36,7 +39,10 @@ describe("Introduction Component", () => {
   });
 
   it("renders all introduction paragraphs", async () => {
-    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, {
+      adventureId: TEST_STORY_ID,
+      adventure: mockAdventure,
+    });
 
     const introText = await screen.findByTestId(INTRODUCTION_TEST_IDS.TEXT);
     expect(introText).toBeInTheDocument();
@@ -58,7 +64,10 @@ describe("Introduction Component", () => {
   });
 
   it("renders the start adventure button with correct text", async () => {
-    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, {
+      adventureId: TEST_STORY_ID,
+      adventure: mockAdventure,
+    });
 
     const button = await screen.findByTestId(
       INTRODUCTION_TEST_IDS.START_BUTTON
@@ -68,7 +77,10 @@ describe("Introduction Component", () => {
   });
 
   it("navigates to passage 1 when start adventure button is clicked", async () => {
-    renderWithAdventure(<Introduction />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<Introduction />, {
+      adventureId: TEST_STORY_ID,
+      adventure: mockAdventure,
+    });
 
     const button = await screen.findByTestId(
       INTRODUCTION_TEST_IDS.START_BUTTON
@@ -79,5 +91,53 @@ describe("Introduction Component", () => {
       getPassageRoute(TEST_STORY_ID, SPECIAL_PASSAGES.START)
     );
     expect(mockNavigate).toHaveBeenCalledTimes(1);
+  });
+
+  describe("Error Handling", () => {
+    it("throws AdventureLoadError when there is a load error", async () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      renderWithAdventure(
+        <ErrorBoundary>
+          <Introduction />
+        </ErrorBoundary>,
+        {
+          adventureId: TEST_STORY_ID,
+          error: "Failed to load adventure",
+        }
+      );
+
+      expect(
+        (await screen.findAllByText("Failed to load adventure")).length
+      ).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+    });
+
+    it("throws AdventureNotFoundError when adventure is not found", async () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+
+      renderWithAdventure(
+        <ErrorBoundary>
+          <Introduction />
+        </ErrorBoundary>,
+        {
+          adventureId: TEST_STORY_ID,
+          adventure: null,
+        }
+      );
+
+      expect(
+        (await screen.findAllByText("Adventure not found.")).length
+      ).toBeGreaterThan(0);
+      expect(screen.getByText("A system error occurred")).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+    });
   });
 });

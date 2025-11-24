@@ -214,4 +214,87 @@ describe("localStorage utilities", () => {
       expect(() => clearCurrentPassageId(testAdventureId)).not.toThrow();
     });
   });
+
+  describe("error handling with mock failures", () => {
+    it("should handle JSON.parse errors for invalid data", () => {
+      localStorage.setItem("adventure-book/progress", "not valid json {");
+
+      expect(() => getInventory(testAdventureId)).not.toThrow();
+      expect(getInventory(testAdventureId)).toEqual([]);
+
+      expect(() => getCurrentPassageId(testAdventureId)).not.toThrow();
+      expect(getCurrentPassageId(testAdventureId)).toBeNull();
+    });
+
+    it("should handle non-object data in localStorage", () => {
+      localStorage.setItem("adventure-book/progress", "null");
+
+      expect(getInventory(testAdventureId)).toEqual([]);
+      expect(getCurrentPassageId(testAdventureId)).toBeNull();
+
+      localStorage.setItem("adventure-book/progress", "42");
+
+      expect(getInventory(testAdventureId)).toEqual([]);
+      expect(getCurrentPassageId(testAdventureId)).toBeNull();
+
+      localStorage.setItem("adventure-book/progress", '"string value"');
+
+      expect(getInventory(testAdventureId)).toEqual([]);
+      expect(getCurrentPassageId(testAdventureId)).toBeNull();
+    });
+
+    it("should handle corrupted adventure data structure", () => {
+      // Missing inventory array
+      localStorage.setItem(
+        "adventure-book/progress",
+        JSON.stringify({
+          [testAdventureId]: {
+            passageId: 5,
+            // inventory field missing
+          },
+        })
+      );
+
+      expect(getInventory(testAdventureId)).toEqual([]);
+      expect(getCurrentPassageId(testAdventureId)).toBe(5);
+
+      // Inventory is not an array
+      localStorage.setItem(
+        "adventure-book/progress",
+        JSON.stringify({
+          [testAdventureId]: {
+            passageId: 5,
+            inventory: "not an array",
+          },
+        })
+      );
+
+      expect(getInventory(testAdventureId)).toEqual([]);
+    });
+
+    it("should handle localStorage.setItem errors in saveProgressData", () => {
+      const originalWarn = vi.fn();
+      vi.spyOn(console, "warn").mockImplementation(originalWarn);
+
+      // Mock setItem directly on the localStorage instance (not prototype)
+      const originalSetItem = localStorage.setItem;
+      localStorage.setItem = vi.fn(() => {
+        throw new Error("QuotaExceededError");
+      });
+
+      // This should catch the error and log a warning
+      saveInventory(testAdventureId, ["item1"]);
+
+      // Restore
+      localStorage.setItem = originalSetItem;
+
+      // Verify the error was handled
+      expect(originalWarn).toHaveBeenCalledWith(
+        "Failed to save progress data to localStorage:",
+        expect.any(Error)
+      );
+
+      vi.restoreAllMocks();
+    });
+  });
 });

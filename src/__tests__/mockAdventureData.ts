@@ -166,11 +166,9 @@ items:
     name: "Mock Item Two"
 `;
 
-/**
- * Setup a test adventure in IndexedDB
- * @param adventureId The ID to use for the test adventure (defaults to "test-adventure-id")
- * @returns Promise that resolves when the adventure is saved
- */
+// Setup a test adventure in IndexedDB
+// @param adventureId The ID to use for the test adventure (defaults to "test-adventure-id")
+// @returns Promise that resolves when the adventure is saved
 export const setupTestAdventure = async (
   adventureId = "test-adventure-id"
 ): Promise<void> => {
@@ -191,6 +189,7 @@ export const createMockAdventureLoader = () => {
   return {
     loadAdventure: () => mockAdventure,
     loadAdventureById: async () => mockAdventure,
+    reloadAdventure: () => mockAdventure,
     introduction: mockIntroduction,
     getPassage: (id: number) => mockPassages[id],
     getAllPassages: () => mockPassages,
@@ -219,6 +218,7 @@ export const createCustomMockAdventureLoader = (
   return {
     loadAdventure: () => adventure,
     loadAdventureById: async () => adventure,
+    reloadAdventure: () => adventure,
     introduction,
     getPassage: (id: number) => adventure.passages[id],
     getAllPassages: () => adventure.passages,

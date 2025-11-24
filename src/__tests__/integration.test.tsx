@@ -1,20 +1,24 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { beforeEach, describe, it, expect } from "vitest";
-import App from "../App";
-import { setupTestAdventure } from "./mockAdventureData";
+import { beforeEach, describe, it, expect, vi } from "vitest";
 import {
   INTRODUCTION_TEST_IDS,
   PASSAGE_TEST_IDS,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
+import { createMockAdventureLoader } from "./mockAdventureData";
+
+// Mock adventureLoader using the factory function
+vi.mock("@/data/adventureLoader", () => createMockAdventureLoader());
+
+import App from "../App";
 
 const TEST_STORY_ID = "test-adventure-id";
 
 describe("Adventure Book Integration Tests", () => {
-  beforeEach(async () => {
-    await setupTestAdventure(TEST_STORY_ID);
+  beforeEach(() => {
+    // Tests now use mocked adventureLoader
   });
 
   const renderApp = (initialRoute = "/") => {
@@ -57,11 +61,21 @@ describe("Adventure Book Integration Tests", () => {
   });
 
   it("handles error states in the flow", async () => {
+    // Suppress console.error for this test since we're intentionally triggering an error
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+
     renderApp(`/adventure/${TEST_STORY_ID}/test/passage/999`);
 
     // Should show error for non-existent passage
-    expect(await screen.findByText("Passage not found")).toBeInTheDocument();
-    expect(screen.getByText(/Passage #999 does not exist/)).toBeInTheDocument();
+    const errorMessages = await screen.findAllByText(
+      /Passage #999 does not exist/
+    );
+    expect(errorMessages.length).toBeGreaterThan(0);
+
+    // Restore console.error
+    consoleErrorSpy.mockRestore();
   });
 
   it("navigates through different adventure paths", async () => {

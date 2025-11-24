@@ -4,6 +4,14 @@ export const ErrorBoundaryContainer = styled.div`
   max-width: var(--size-content);
   padding: var(--space-5);
   text-align: center;
+  margin: 0 auto;
+`;
+
+export const ErrorBoundaryIcon = styled.div`
+  color: var(--color-foreground-danger);
+  margin-bottom: var(--space-3);
+  display: flex;
+  justify-content: center;
 `;
 
 export const ErrorBoundaryTitle = styled.h1`
@@ -35,7 +43,7 @@ export const ErrorBoundaryHelp = styled.div`
 `;
 
 export const ErrorBoundaryHelpText = styled.p`
-  margin: 0;
+  margin-bottom: var(--space-2);
 `;
 
 export const ErrorBoundaryDetails = styled.div`
@@ -50,7 +58,7 @@ export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
   background: ${(props) =>
     props.$isError
       ? "var(--color-background-surface-danger)"
-      : "var(--color-background-surface)"};
+      : "var(--color-background-surface-neutral)"};
   border: var(--border-width-surface) solid
     ${(props) =>
       props.$isError
@@ -66,6 +74,11 @@ export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
     props.$isError
       ? "var(--color-foreground-danger)"
       : "var(--color-foreground)"};
+  line-height: ${(props) =>
+    props.$isError ? "var(--line-height-normal)" : "var(--line-height-loose)"};
+  pre {
+    font-family: inherit;
+  }
 `;
 
 export const ErrorBoundaryDetailsStack = styled.div`

@@ -22,8 +22,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Test Title"
           message="Test message"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -38,8 +41,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Test Title"
           message="Test message"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -56,8 +62,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Delete Item"
           message="Are you sure?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -71,8 +80,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="This is a test message"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -91,8 +103,11 @@ describe("ConfirmationModal Component", () => {
               <p>Line 2</p>
             </div>
           }
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -111,6 +126,7 @@ describe("ConfirmationModal Component", () => {
           cancelLabel="No, go back"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -118,15 +134,18 @@ describe("ConfirmationModal Component", () => {
       expect(screen.getByText("No, go back")).toBeInTheDocument();
     });
 
-    it("uses default button labels when not specified", () => {
+    it("displays provided button labels", () => {
       render(
         <ConfirmationModal
           open={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -149,8 +168,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={handleConfirm}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -168,8 +190,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={handleCancel}
+          variant="neutral"
         />
       );
 
@@ -187,8 +212,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={handleCancel}
+          variant="neutral"
         />
       );
 
@@ -209,8 +237,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={handleCancel}
+          variant="neutral"
         />
       );
 
@@ -224,15 +255,18 @@ describe("ConfirmationModal Component", () => {
   });
 
   describe("Button Variants", () => {
-    it("uses primary variant by default", () => {
+    it("applies primary variant to confirm button", () => {
       render(
         <ConfirmationModal
           open={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -247,6 +281,8 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Delete"
           message="Are you sure?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
           variant="danger"
@@ -264,6 +300,8 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Delete"
           message="Are you sure?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
           variant="danger"
@@ -283,8 +321,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -296,8 +337,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -313,8 +357,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -328,8 +375,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -345,8 +395,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -368,8 +421,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -385,8 +441,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -402,8 +461,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -419,8 +481,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -436,8 +501,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -455,8 +523,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -472,8 +543,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -491,8 +565,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Important Decision"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -510,8 +587,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={handleConfirm}
           onCancel={handleCancel}
+          variant="neutral"
         />
       );
 
@@ -541,8 +621,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={handleOpenChange}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -561,8 +644,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -576,8 +662,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -593,8 +682,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="First Title"
           message="First message"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -607,8 +699,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Second Title"
           message="Second message"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 
@@ -627,8 +722,11 @@ describe("ConfirmationModal Component", () => {
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
+          confirmLabel="Confirm"
+          cancelLabel="Cancel"
           onConfirm={vi.fn()}
           onCancel={vi.fn()}
+          variant="neutral"
         />
       );
 

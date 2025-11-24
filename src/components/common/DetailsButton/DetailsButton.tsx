@@ -14,7 +14,6 @@ export interface DetailsButtonProps
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
   summaryClassName?: string;
-  variant?: "primary";
   "data-testid"?: string;
 }
 
@@ -22,9 +21,8 @@ export const DetailsButton = ({
   summary,
   children,
   icon,
-  className = "",
-  summaryClassName = "",
-  variant = "primary",
+  className,
+  summaryClassName,
   ...props
 }: DetailsButtonProps) => {
   const iconElement = icon
@@ -37,7 +35,7 @@ export const DetailsButton = ({
 
   return (
     <StyledDetails className={className} {...props}>
-      <StyledSummary $variant={variant} className={summaryClassName}>
+      <StyledSummary className={summaryClassName}>
         {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
         <TextWrapper>{summary}</TextWrapper>
       </StyledSummary>

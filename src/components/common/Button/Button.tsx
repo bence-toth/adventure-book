@@ -7,25 +7,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   selected?: boolean;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
-  variant?: "primary" | "danger";
+  variant?: "neutral" | "danger";
   size?: "default" | "small";
   "data-testid"?: string;
   "aria-label"?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      children,
-      selected = false,
-      icon,
-      className = "",
-      variant = "primary",
-      size = "default",
-      ...props
-    },
-    ref
-  ) => {
+  ({ children, selected, icon, className, variant, size, ...props }, ref) => {
     const iconElement = icon
       ? createElement(icon, {
           size: 20,
@@ -38,9 +27,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <StyledButton
         ref={ref}
         className={className}
-        $variant={variant}
-        $size={size}
-        $selected={selected}
+        $variant={variant ?? "neutral"}
+        $size={size ?? "default"}
+        $selected={selected ?? false}
         $hasChildren={!!children}
         {...props}
       >

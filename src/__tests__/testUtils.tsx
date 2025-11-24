@@ -3,7 +3,12 @@ import { render as rtlRender } from "@testing-library/react";
 import type { RenderOptions } from "@testing-library/react";
 import type { ReactElement } from "react";
 import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
-import { AdventureProvider } from "@/context/AdventureContext";
+import {
+  AdventureProvider,
+  AdventureContext,
+  type AdventureContextType,
+} from "@/context/AdventureContext";
+import type { Adventure } from "@/data/types";
 
 // Wrapper component for providers
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
@@ -42,14 +47,53 @@ export const renderWithAdventure = (
   {
     adventureId = "test-adventure-id",
     route,
+    adventure,
+    error,
+    loading = false,
     ...options
   }: Omit<RenderOptions, "wrapper"> & {
     adventureId?: string;
     route?: string;
+    adventure?: Adventure | null;
+    error?: string | null;
+    loading?: boolean;
   } = {}
 ) => {
   const initialRoute = route || `/adventure/${adventureId}/test`;
 
+  // If adventure, error, or loading are provided, use mock context
+  const useMockContext =
+    adventure !== undefined || error !== undefined || loading !== false;
+
+  if (useMockContext) {
+    const mockContextValue: AdventureContextType = {
+      adventure: adventure ?? null,
+      adventureId,
+      loading,
+      error: error ?? null,
+    };
+
+    return rtlRender(ui, {
+      wrapper: ({ children }) => (
+        <MemoryRouter initialEntries={[initialRoute]}>
+          <Routes>
+            <Route path="/" element={children} />
+            <Route
+              path="/adventure/:adventureId/*"
+              element={
+                <AdventureContext.Provider value={mockContextValue}>
+                  {children}
+                </AdventureContext.Provider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
+      ),
+      ...options,
+    });
+  }
+
+  // Otherwise use the real AdventureProvider
   return rtlRender(ui, {
     wrapper: ({ children }) => (
       <MemoryRouter initialEntries={[initialRoute]}>

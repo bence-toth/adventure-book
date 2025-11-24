@@ -4,18 +4,25 @@ export const ROUTES = {
   STORY_EDIT: "/adventure/:adventureId/edit",
 } as const;
 
-export const getAdventureTestRoute = (adventureId: string): string => {
+export const getAdventureTestRoute = (
+  adventureId: string | null | undefined
+): string => {
+  if (!adventureId) return "";
   return `/adventure/${adventureId}/test`;
 };
 
-export const getAdventureEditRoute = (adventureId: string): string => {
+export const getAdventureEditRoute = (
+  adventureId: string | null | undefined
+): string => {
+  if (!adventureId) return "";
   return `/adventure/${adventureId}/edit`;
 };
 
 export const getPassageRoute = (
-  adventureId: string,
+  adventureId: string | null | undefined,
   passageId: number | string
 ): string => {
+  if (!adventureId) return "";
   return `/adventure/${adventureId}/test/passage/${passageId}`;
 };
 

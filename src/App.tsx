@@ -12,17 +12,17 @@ import { AppContainer, AppContent } from "./App.styles";
 
 const App = () => {
   return (
-    <AppContainer>
-      <TopBar />
-      <AppContent as="main">
-        <Routes>
-          <Route path={ROUTES.ROOT} element={<AdventureManager />} />
+    <ErrorBoundary>
+      <AppContainer>
+        <TopBar />
+        <AppContent as="main">
+          <Routes>
+            <Route path={ROUTES.ROOT} element={<AdventureManager />} />
 
-          <Route
-            path="/adventure/:adventureId/*"
-            element={
-              <AdventureProvider>
-                <ErrorBoundary>
+            <Route
+              path="/adventure/:adventureId/*"
+              element={
+                <AdventureProvider>
                   <Routes>
                     <Route path="test" element={<Introduction />} />
                     <Route path="test/passage/:id" element={<Passage />} />
@@ -32,16 +32,15 @@ const App = () => {
                     />
                     <Route path="*" element={<Navigate to="test" replace />} />
                   </Routes>
-                </ErrorBoundary>
-              </AdventureProvider>
-            }
-          />
+                </AdventureProvider>
+              }
+            />
 
-          {/* Catch-all route redirects to root */}
-          <Route path="*" element={<Navigate to={ROUTES.ROOT} replace />} />
-        </Routes>
-      </AppContent>
-    </AppContainer>
+            <Route path="*" element={<Navigate to={ROUTES.ROOT} replace />} />
+          </Routes>
+        </AppContent>
+      </AppContainer>
+    </ErrorBoundary>
   );
 };
 

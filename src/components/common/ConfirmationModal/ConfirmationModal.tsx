@@ -19,14 +19,14 @@ import {
 
 export interface ConfirmationModalProps {
   open: boolean;
-  onOpenChange: (open: boolean) => void;
+  onOpenChange: () => void;
   title: string;
   message: ReactNode;
-  confirmLabel?: string;
-  cancelLabel?: string;
+  confirmLabel: string;
+  cancelLabel: string;
   onConfirm: () => void;
   onCancel: () => void;
-  variant?: "danger" | "primary";
+  variant: "neutral" | "danger";
   "data-testid"?: string;
 }
 
@@ -35,11 +35,11 @@ export const ConfirmationModal = ({
   onOpenChange,
   title,
   message,
-  confirmLabel = "Confirm",
-  cancelLabel = "Cancel",
+  confirmLabel,
+  cancelLabel,
   onConfirm,
   onCancel,
-  variant = "primary",
+  variant,
   "data-testid": dataTestId,
 }: ConfirmationModalProps) => {
   const { refs, context } = useFloating({

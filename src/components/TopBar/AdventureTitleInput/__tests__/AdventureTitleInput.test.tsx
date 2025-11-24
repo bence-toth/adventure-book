@@ -24,6 +24,14 @@ describe("AdventureTitleInput", () => {
     });
   });
 
+  it("handles null adventureId gracefully", () => {
+    render(<AdventureTitleInput adventureId={null} />);
+
+    const input = screen.getByLabelText("Adventure title");
+    expect(input).toHaveValue("");
+    expect(adventureDatabase.getAdventure).not.toHaveBeenCalled();
+  });
+
   it("loads and displays adventure title", async () => {
     render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
@@ -127,5 +135,35 @@ describe("AdventureTitleInput", () => {
         "Spaced Title"
       );
     });
+  });
+
+  it("handles update failure gracefully", async () => {
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const user = userEvent.setup();
+
+    // Mock the update to throw an error
+    vi.mocked(adventureDatabase.updateAdventureTitle).mockRejectedValueOnce(
+      new Error("Update failed")
+    );
+
+    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
+    });
+
+    const input = screen.getByLabelText("Adventure title");
+    await user.clear(input);
+    await user.type(input, "New Title");
+    await user.tab();
+
+    await waitFor(() => {
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Failed to update adventure title:",
+        expect.any(Error)
+      );
+    });
+
+    consoleSpy.mockRestore();
   });
 });

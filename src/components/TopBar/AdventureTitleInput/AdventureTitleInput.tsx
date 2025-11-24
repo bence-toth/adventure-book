@@ -3,7 +3,7 @@ import { updateAdventureTitle, getAdventure } from "@/data/adventureDatabase";
 import { TopBarTitleInput } from "./AdventureTitleInput.styles";
 
 export interface AdventureTitleInputProps {
-  adventureId: string;
+  adventureId: string | null;
 }
 
 export const AdventureTitleInput = ({
@@ -12,12 +12,12 @@ export const AdventureTitleInput = ({
   const [adventureTitle, setAdventureTitle] = useState<string>("");
 
   useEffect(() => {
+    if (!adventureId) return;
+
     const loadAdventureTitle = async () => {
-      if (adventureId) {
-        const adventure = await getAdventure(adventureId);
-        if (adventure) {
-          setAdventureTitle(adventure.title);
-        }
+      const adventure = await getAdventure(adventureId);
+      if (adventure) {
+        setAdventureTitle(adventure.title);
       }
     };
     loadAdventureTitle();

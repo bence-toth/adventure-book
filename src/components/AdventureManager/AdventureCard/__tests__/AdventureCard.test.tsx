@@ -241,5 +241,38 @@ describe("AdventureCard Component", () => {
         expect(screen.queryByText("Delete Adventure")).not.toBeInTheDocument();
       });
     });
+
+    it("calls onCancel when modal is closed via dialog close button", async () => {
+      render(
+        <AdventureCard
+          adventure={mockAdventure}
+          onOpen={mockOnOpen}
+          onDelete={mockOnDelete}
+        />
+      );
+
+      const menuButton = screen.getByLabelText("Open menu for Test Adventure");
+      fireEvent.click(menuButton);
+
+      const deleteMenuItem = screen.getByText("Delete");
+      fireEvent.click(deleteMenuItem);
+
+      // The modal should now be visible
+      expect(
+        screen.getByText(
+          'Are you sure you want to delete "Test Adventure"? This action cannot be undone.'
+        )
+      ).toBeInTheDocument();
+
+      // Close via cancel button which triggers onCancel callback
+      const cancelButton = screen.getByRole("button", { name: "Cancel" });
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(screen.queryByText("Delete Adventure")).not.toBeInTheDocument();
+      });
+
+      expect(mockOnDelete).not.toHaveBeenCalled();
+    });
   });
 });

@@ -6,6 +6,7 @@ import {
 } from "@/constants/testIds";
 import { Button } from "@/components/common";
 import { useAdventure } from "@/context/useAdventure";
+import { AdventureLoadError, AdventureNotFoundError } from "@/utils/errors";
 import {
   IntroductionPageContent,
   IntroductionContainer,
@@ -20,7 +21,6 @@ export const Introduction = () => {
   const { adventure, adventureId, loading, error } = useAdventure();
 
   const handleStartAdventure = () => {
-    if (!adventureId) return;
     navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.START));
   };
 
@@ -34,14 +34,12 @@ export const Introduction = () => {
     );
   }
 
-  if (error || !adventure) {
-    return (
-      <IntroductionPageContent>
-        <IntroductionContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-          <p>Error loading adventure: {error || "Adventure not found"}</p>
-        </IntroductionContainer>
-      </IntroductionPageContent>
-    );
+  if (error) {
+    throw new AdventureLoadError(error);
+  }
+
+  if (!adventure || !adventureId) {
+    throw new AdventureNotFoundError();
   }
 
   return (

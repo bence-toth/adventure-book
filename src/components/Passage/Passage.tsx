@@ -16,12 +16,17 @@ import {
 } from "@/constants/routes";
 import {
   PASSAGE_TEST_IDS,
-  ERROR_TEST_IDS,
   getPassageParagraphTestId,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
 import { Button } from "@/components/common";
 import { useAdventure } from "@/context/useAdventure";
+import {
+  AdventureLoadError,
+  AdventureNotFoundError,
+  InvalidPassageIdError,
+  PassageNotFoundError,
+} from "@/utils/errors";
 import { Sidebar } from "./Sidebar/Sidebar";
 import {
   PageLayout,
@@ -30,9 +35,6 @@ import {
   PassageText,
   PassageParagraph,
   Choices,
-  ErrorContainer,
-  ErrorTitle,
-  ErrorMessage,
 } from "./Passage.styles";
 
 export const Passage = () => {
@@ -40,7 +42,10 @@ export const Passage = () => {
   const navigate = useNavigate();
   const { adventure, loading, error } = useAdventure();
 
-  const passageId = parseInt(id ?? "1", 10);
+  if (!id) {
+    throw new InvalidPassageIdError("undefined");
+  }
+  const passageId = parseInt(id, 10);
 
   useEffect(() => {
     if (!adventureId || !adventure) return;
@@ -86,42 +91,16 @@ export const Passage = () => {
     );
   }
 
-  if (error || !adventure || !adventureId) {
-    return (
-      <PageLayout>
-        <Sidebar />
-        <PageContent>
-          <ErrorContainer data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
-            <ErrorTitle>Error</ErrorTitle>
-            <ErrorMessage>{error || "Adventure not found"}</ErrorMessage>
-          </ErrorContainer>
-        </PageContent>
-      </PageLayout>
-    );
+  if (error) {
+    throw new AdventureLoadError(error);
+  }
+
+  if (!adventure || !adventureId) {
+    throw new AdventureNotFoundError();
   }
 
   if (isNaN(passageId) || passageId < 0 || !Number.isInteger(passageId)) {
-    return (
-      <PageLayout>
-        <Sidebar />
-        <PageContent>
-          <ErrorContainer data-testid={ERROR_TEST_IDS.INVALID_ID}>
-            <ErrorTitle>Invalid passage ID</ErrorTitle>
-            <ErrorMessage>
-              The passage ID "{id}" is not valid. Please use a valid number.
-            </ErrorMessage>
-            <Button
-              onClick={() =>
-                navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.RESET))
-              }
-              data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
-            >
-              Go to introduction
-            </Button>
-          </ErrorContainer>
-        </PageContent>
-      </PageLayout>
-    );
+    throw new InvalidPassageIdError(id);
   }
 
   // Handle passage 0 (reset) - this will be handled in useEffect, but we need to prevent
@@ -144,27 +123,7 @@ export const Passage = () => {
   const currentPassage = adventure.passages[passageId];
 
   if (!currentPassage) {
-    return (
-      <PageLayout>
-        <Sidebar />
-        <PageContent>
-          <ErrorContainer data-testid={ERROR_TEST_IDS.PASSAGE_NOT_FOUND}>
-            <ErrorTitle>Passage not found</ErrorTitle>
-            <ErrorMessage>
-              Passage #{passageId} does not exist in this adventure.
-            </ErrorMessage>
-            <Button
-              onClick={() =>
-                navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.RESET))
-              }
-              data-testid={ERROR_TEST_IDS.GO_TO_INTRODUCTION_BUTTON}
-            >
-              Go to introduction
-            </Button>
-          </ErrorContainer>
-        </PageContent>
-      </PageLayout>
-    );
+    throw new PassageNotFoundError(passageId);
   }
 
   const handleChoiceClick = (nextId: number) => {
@@ -172,9 +131,9 @@ export const Passage = () => {
   };
 
   const handleRestartClick = () => {
-    clearCurrentPassageId(adventureId!);
-    clearInventory(adventureId!);
-    navigate(getAdventureTestRoute(adventureId!));
+    clearCurrentPassageId(adventureId);
+    clearInventory(adventureId);
+    navigate(getAdventureTestRoute(adventureId));
   };
 
   return (

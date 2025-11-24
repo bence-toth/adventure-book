@@ -13,7 +13,9 @@ export const Sidebar = () => {
   const { adventure, adventureId } = useAdventure();
 
   useEffect(() => {
-    if (!adventureId) return;
+    if (!adventureId) {
+      return;
+    }
 
     // Load initial inventory from localStorage
     setCurrentInventoryIds(getCurrentInventory(adventureId));

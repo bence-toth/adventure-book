@@ -16,9 +16,7 @@ export const AdventureCardDeleteModal = ({
   return (
     <ConfirmationModal
       open={open}
-      onOpenChange={(open) => {
-        if (!open) onCancel();
-      }}
+      onOpenChange={onCancel}
       title="Delete Adventure"
       message={
         <p>

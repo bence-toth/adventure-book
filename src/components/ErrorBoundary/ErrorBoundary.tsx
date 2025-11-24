@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import type { ReactNode } from "react";
+import { Bug } from "lucide-react";
 import { Button, DetailsButton } from "@/components/common";
 import {
   ErrorBoundaryContainer,
+  ErrorBoundaryIcon,
   ErrorBoundaryTitle,
   ErrorBoundaryDescription,
   ErrorBoundaryActions,
@@ -18,22 +20,23 @@ interface Props {
 interface State {
   hasError: boolean;
   error?: Error;
+  detailsOpen: boolean;
 }
 
 export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { hasError: false };
+    this.state = { hasError: false, detailsOpen: false };
   }
 
   static getDerivedStateFromError(error: Error): State {
     // Update state so the next render will show the fallback UI
-    return { hasError: true, error };
+    return { hasError: true, error, detailsOpen: false };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log the error for debugging
-    console.error("Adventure loading error caught by boundary:", error);
+    console.error("Error caught by boundary:", error);
     console.error("Error details:", errorInfo);
   }
 
@@ -45,70 +48,63 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 
+  private handleDetailsToggle = () => {
+    this.setState((prevState) => ({
+      detailsOpen: !prevState.detailsOpen,
+    }));
+  };
+
   private renderErrorFallback = () => {
     const { error } = this.state;
 
-    const getErrorMessage = () => {
-      if (!error) {
-        return "An unexpected error occurred while loading the adventure.";
-      }
-
-      const message = error.message;
-
-      if (message.includes("YAML") || message.includes("parsing")) {
-        return "There was an error parsing the adventure file. The adventure format may be invalid.";
-      }
-
-      if (message.includes("validation")) {
-        return "The adventure file contains validation errors and cannot be loaded.";
-      }
-
-      if (message.includes("fetch") || message.includes("load")) {
-        return "Unable to load the adventure file. Please check your connection.";
-      }
-
-      return "An error occurred while loading the adventure.";
-    };
+    // For AdventureBookError instances, use their message directly
+    const errorMessage = error?.message ?? "An unexpected error occurred";
 
     return (
-      <div className="adventure-book">
-        <ErrorBoundaryContainer>
-          <ErrorBoundaryTitle>A system error occurred</ErrorBoundaryTitle>
-          <ErrorBoundaryDescription>
-            {getErrorMessage()}
-          </ErrorBoundaryDescription>
-          <ErrorBoundaryActions>
-            <Button onClick={() => window.location.reload()}>
-              Reload page
-            </Button>
-          </ErrorBoundaryActions>
-          <ErrorBoundaryHelp>
-            <ErrorBoundaryHelpText>
-              If this problem persists, the adventure file may need to be fixed.
-            </ErrorBoundaryHelpText>
-            {error && (
-              <DetailsButton
-                summary="Technical details"
-                className="error-boundary-details"
-                role="region"
-                aria-label="Technical details"
-              >
-                <ErrorBoundaryDetailsContent $isError>
-                  {error.message}
+      <ErrorBoundaryContainer>
+        <ErrorBoundaryIcon>
+          <Bug size={48} strokeWidth={1} />
+        </ErrorBoundaryIcon>
+        <ErrorBoundaryTitle>A system error occurred</ErrorBoundaryTitle>
+        <ErrorBoundaryDescription>{errorMessage}</ErrorBoundaryDescription>
+        <ErrorBoundaryActions>
+          <Button onClick={() => window.location.reload()}>Reload page</Button>
+        </ErrorBoundaryActions>
+        <ErrorBoundaryHelp>
+          <ErrorBoundaryHelpText>
+            If this problem persists, the adventure file may need to be fixed.
+          </ErrorBoundaryHelpText>
+          {error && (
+            <DetailsButton
+              summary={
+                this.state.detailsOpen
+                  ? "Hide technical details"
+                  : "Show technical details"
+              }
+              className="error-boundary-details"
+              role="region"
+              aria-label="Technical details"
+              onToggle={this.handleDetailsToggle}
+            >
+              <ErrorBoundaryDetailsContent $isError>
+                <strong>Error type:</strong> {error.name}
+              </ErrorBoundaryDetailsContent>
+              <ErrorBoundaryDetailsContent $isError>
+                <strong>Error message:</strong> {error.message}
+              </ErrorBoundaryDetailsContent>
+              {error.stack && (
+                <ErrorBoundaryDetailsContent>
+                  <strong>Stack trace:</strong>
+                  <pre>{error.stack}</pre>
                 </ErrorBoundaryDetailsContent>
-                {error.stack && (
-                  <ErrorBoundaryDetailsContent>
-                    {error.stack}
-                  </ErrorBoundaryDetailsContent>
-                )}
-                <ErrorBoundaryHelpText>
-                  Check the browser console for more details.
-                </ErrorBoundaryHelpText>
-              </DetailsButton>
-            )}
-          </ErrorBoundaryHelp>
-        </ErrorBoundaryContainer>
-      </div>
+              )}
+              <ErrorBoundaryHelpText>
+                Check the browser console for more details.
+              </ErrorBoundaryHelpText>
+            </DetailsButton>
+          )}
+        </ErrorBoundaryHelp>
+      </ErrorBoundaryContainer>
     );
   };
 }

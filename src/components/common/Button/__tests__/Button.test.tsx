@@ -166,7 +166,7 @@ describe("Button Component", () => {
 
   describe("Variants", () => {
     it("accepts primary variant", () => {
-      render(<Button variant="primary">Primary</Button>);
+      render(<Button variant="neutral">Primary</Button>);
 
       const button = screen.getByRole("button");
       expect(button).toBeInTheDocument();

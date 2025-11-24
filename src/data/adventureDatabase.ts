@@ -1,6 +1,4 @@
-/**
- * IndexedDB utility for storing and managing adventure YAML files
- */
+// IndexedDB utility for storing and managing adventure YAML files
 
 export interface StoredAdventure {
   id: string;
@@ -14,9 +12,7 @@ const DB_NAME = "AdventureBookDB";
 const DB_VERSION = 1;
 const STORE_NAME = "stories";
 
-/**
- * Opens the IndexedDB database and ensures the object store exists
- */
+// Opens the IndexedDB database and ensures the object store exists
 const openDatabase = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
@@ -41,9 +37,7 @@ const openDatabase = (): Promise<IDBDatabase> => {
   });
 };
 
-/**
- * Saves an adventure to IndexedDB
- */
+// Saves an adventure to IndexedDB
 export const saveAdventure = async (
   adventure: StoredAdventure
 ): Promise<void> => {
@@ -68,9 +62,7 @@ export const saveAdventure = async (
   });
 };
 
-/**
- * Retrieves an adventure from IndexedDB by ID
- */
+// Retrieves an adventure from IndexedDB by ID
 export const getAdventure = async (
   id: string
 ): Promise<StoredAdventure | undefined> => {
@@ -95,9 +87,7 @@ export const getAdventure = async (
   });
 };
 
-/**
- * Lists all stories in IndexedDB, sorted by last edited date (most recent first)
- */
+// Lists all stories in IndexedDB, sorted by last edited date (most recent first)
 export const listStories = async (): Promise<StoredAdventure[]> => {
   const db = await openDatabase();
 
@@ -127,9 +117,7 @@ export const listStories = async (): Promise<StoredAdventure[]> => {
   });
 };
 
-/**
- * Deletes an adventure from IndexedDB
- */
+// Deletes an adventure from IndexedDB
 export const deleteAdventure = async (id: string): Promise<void> => {
   const db = await openDatabase();
 
@@ -152,9 +140,7 @@ export const deleteAdventure = async (id: string): Promise<void> => {
   });
 };
 
-/**
- * Updates the content and lastEdited timestamp of an existing adventure
- */
+// Updates the content and lastEdited timestamp of an existing adventure
 export const updateAdventureContent = async (
   id: string,
   content: string
@@ -174,9 +160,7 @@ export const updateAdventureContent = async (
   await saveAdventure(updatedAdventure);
 };
 
-/**
- * Updates the title and lastEdited timestamp of an existing adventure
- */
+// Updates the title and lastEdited timestamp of an existing adventure
 export const updateAdventureTitle = async (
   id: string,
   title: string
@@ -196,9 +180,7 @@ export const updateAdventureTitle = async (
   await saveAdventure(updatedAdventure);
 };
 
-/**
- * Creates a new adventure with a unique ID
- */
+// Creates a new adventure with a unique ID
 export const createAdventure = async (
   title: string,
   content: string

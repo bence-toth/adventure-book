@@ -1,9 +1,13 @@
 import { screen } from "@testing-library/react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { beforeEach, describe, it, expect } from "vitest";
+import { beforeEach, describe, it, expect, vi } from "vitest";
+import { createMockAdventureLoader } from "./mockAdventureData";
+
+// Mock adventureLoader using the factory function
+vi.mock("@/data/adventureLoader", () => createMockAdventureLoader());
+
 import App from "../App";
-import { setupTestAdventure } from "./mockAdventureData";
 
 const TEST_STORY_ID = "test-adventure-id";
 
@@ -17,8 +21,8 @@ const renderAppWithRoute = (initialRoute: string) => {
 };
 
 describe("App Component", () => {
-  beforeEach(async () => {
-    await setupTestAdventure(TEST_STORY_ID);
+  beforeEach(() => {
+    // Tests now use mocked adventureLoader
   });
 
   it("renders AdventureManager component on root path", async () => {
