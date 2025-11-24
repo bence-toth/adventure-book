@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { getCurrentInventory } from "@/data/adventureLoader";
 import { useAdventure } from "@/context/useAdventure";
+import { Sidebar } from "@/components/common/Sidebar/Sidebar";
 import {
-  SidebarContainer,
-  SidebarTitle,
-  SidebarInventoryEmpty,
-  SidebarInventory,
-} from "./Sidebar.styles";
+  InventoryTitle,
+  InventoryEmpty,
+  InventoryList,
+} from "./AdventureSidebar.styles";
 
-export const Sidebar = () => {
+export const AdventureSidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
   const { adventure, adventureId } = useAdventure();
 
@@ -49,17 +49,17 @@ export const Sidebar = () => {
   );
 
   return (
-    <SidebarContainer as="aside">
-      <SidebarTitle>Inventory</SidebarTitle>
+    <Sidebar>
+      <InventoryTitle>Inventory</InventoryTitle>
       {currentItems.length === 0 ? (
-        <SidebarInventoryEmpty>No items yet</SidebarInventoryEmpty>
+        <InventoryEmpty>No items yet</InventoryEmpty>
       ) : (
-        <SidebarInventory>
+        <InventoryList>
           {currentItems.map((item) => (
             <li key={item.id}>{item.name}</li>
           ))}
-        </SidebarInventory>
+        </InventoryList>
       )}
-    </SidebarContainer>
+    </Sidebar>
   );
 };

@@ -3,7 +3,7 @@ import {
   Passage,
   Introduction,
   ErrorBoundary,
-  TopBar,
+  AppTopBar,
   AdventureManager,
 } from "@/components";
 import { ROUTES } from "@/constants/routes";
@@ -14,7 +14,7 @@ const App = () => {
   return (
     <ErrorBoundary>
       <AppContainer>
-        <TopBar />
+        <AppTopBar />
         <AppContent as="main">
           <Routes>
             <Route path={ROUTES.ROOT} element={<AdventureManager />} />

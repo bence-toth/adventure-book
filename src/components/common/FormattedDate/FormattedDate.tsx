@@ -1,4 +1,4 @@
-interface FormattedDateProps {
+export interface FormattedDateProps {
   date: Date;
 }
 

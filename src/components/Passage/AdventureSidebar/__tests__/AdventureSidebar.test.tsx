@@ -2,11 +2,11 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { screen, act } from "@testing-library/react";
 import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 import { renderWithAdventure } from "@/__tests__/testUtils";
-import { Sidebar } from "../Sidebar";
+import { AdventureSidebar } from "../AdventureSidebar";
 
 const TEST_STORY_ID = "test-adventure-id";
 
-describe("Sidebar", () => {
+describe("AdventureSidebar", () => {
   beforeEach(async () => {
     localStorage.clear();
     await setupTestAdventure(TEST_STORY_ID);
@@ -17,13 +17,13 @@ describe("Sidebar", () => {
   });
 
   it("should render the inventory heading", async () => {
-    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Inventory")).toBeInTheDocument();
   });
 
   it("should show empty message when no items are collected", async () => {
-    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
   });
@@ -38,7 +38,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("No items yet")).not.toBeInTheDocument();
@@ -53,7 +53,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(await screen.findByText("Mock Item Two")).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
 
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
     expect(screen.queryByText("Mock Item Two")).not.toBeInTheDocument();
@@ -84,7 +84,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
 
     // Should not display the unknown item
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
@@ -99,7 +99,7 @@ describe("Sidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
-    renderWithAdventure(<Sidebar />, { adventureId: TEST_STORY_ID });
+    renderWithAdventure(<AdventureSidebar />, { adventureId: TEST_STORY_ID });
 
     const list = await screen.findByRole("list");
     expect(list).toBeInTheDocument();
@@ -107,7 +107,7 @@ describe("Sidebar", () => {
   });
 
   it("should update when storage event is triggered", async () => {
-    const { rerender } = renderWithAdventure(<Sidebar />, {
+    const { rerender } = renderWithAdventure(<AdventureSidebar />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -126,14 +126,14 @@ describe("Sidebar", () => {
       window.dispatchEvent(new Event("storage"));
     });
 
-    rerender(<Sidebar />);
+    rerender(<AdventureSidebar />);
 
     // Note: storage event doesn't trigger in same-window in tests,
     // so we rely on the inventoryUpdate event for same-window updates
   });
 
   it("should update when inventoryUpdate event is triggered", async () => {
-    const { rerender } = renderWithAdventure(<Sidebar />, {
+    const { rerender } = renderWithAdventure(<AdventureSidebar />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -152,14 +152,14 @@ describe("Sidebar", () => {
       window.dispatchEvent(new Event("inventoryUpdate"));
     });
 
-    rerender(<Sidebar />);
+    rerender(<AdventureSidebar />);
 
     // Component should re-render with the new item
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
   });
 
   it("should return null when adventureId is not available", () => {
-    const { container } = renderWithAdventure(<Sidebar />, {
+    const { container } = renderWithAdventure(<AdventureSidebar />, {
       adventureId: "",
       adventure: null,
       route: "/adventure/test-null/test",
@@ -170,7 +170,7 @@ describe("Sidebar", () => {
   });
 
   it("should return null when adventure is not loaded yet", () => {
-    const { container } = renderWithAdventure(<Sidebar />, {
+    const { container } = renderWithAdventure(<AdventureSidebar />, {
       adventureId: TEST_STORY_ID,
       adventure: null,
     });
@@ -181,7 +181,7 @@ describe("Sidebar", () => {
 
   it("should not set up event listeners when adventureId is empty", () => {
     // Render with mock context where adventureId is empty (falsy)
-    const { container } = renderWithAdventure(<Sidebar />, {
+    const { container } = renderWithAdventure(<AdventureSidebar />, {
       adventureId: "",
       adventure: null,
       route: "/adventure/test-empty/test",
@@ -220,7 +220,7 @@ describe("Sidebar", () => {
       addEventListenerSpy as typeof window.addEventListener;
 
     // Render without mocking adventure to use real AdventureProvider
-    const { rerender } = renderWithAdventure(<Sidebar />, {
+    const { rerender } = renderWithAdventure(<AdventureSidebar />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -232,7 +232,7 @@ describe("Sidebar", () => {
 
     // Re-render component (simulates props/context update)
     await act(async () => {
-      rerender(<Sidebar />);
+      rerender(<AdventureSidebar />);
     });
 
     // Effect should NOT re-run because adventureId hasn't changed

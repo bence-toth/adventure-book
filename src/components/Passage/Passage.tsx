@@ -27,7 +27,7 @@ import {
   InvalidPassageIdError,
   PassageNotFoundError,
 } from "@/utils/errors";
-import { Sidebar } from "./Sidebar/Sidebar";
+import { AdventureSidebar } from "./AdventureSidebar/AdventureSidebar";
 import {
   PageLayout,
   PageContent,
@@ -81,7 +81,7 @@ export const Passage = () => {
   if (loading) {
     return (
       <PageLayout>
-        <Sidebar />
+        <AdventureSidebar />
         <PageContent>
           <PassageContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
             <p>Loading passage...</p>
@@ -108,7 +108,7 @@ export const Passage = () => {
   if (passageId === SPECIAL_PASSAGES.RESET) {
     return (
       <PageLayout>
-        <Sidebar />
+        <AdventureSidebar />
         <PageContent>
           <PassageContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
             <PassageText>
@@ -138,7 +138,7 @@ export const Passage = () => {
 
   return (
     <PageLayout>
-      <Sidebar />
+      <AdventureSidebar />
       <PageContent>
         <PassageContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
           <PassageText data-testid={PASSAGE_TEST_IDS.TEXT}>

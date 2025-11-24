@@ -17,15 +17,3 @@ export const SidebarTitle = styled.h2`
   margin-bottom: var(--space-2);
   font-size: var(--font-size-lg);
 `;
-
-export const SidebarInventoryEmpty = styled.p`
-  margin: var(--space-2) 0;
-`;
-
-export const SidebarInventory = styled.ul`
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin: var(--space-2) 0;
-`;
