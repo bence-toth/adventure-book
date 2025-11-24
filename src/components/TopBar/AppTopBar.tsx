@@ -9,14 +9,10 @@ import { AdventureTitleInput } from "./AdventureTitleInput/AdventureTitleInput";
 import { AdventureNavigation } from "./AdventureNavigation/AdventureNavigation";
 import { TopBarLogoIcon, TopBarTitle } from "./AppTopBar.styles";
 
-/**
- * Application-specific TopBar that adapts its content based on the current route.
- * Shows different content for the adventure manager view vs. adventure-specific views.
- */
 export const AppTopBar = () => {
   const location = useLocation();
   const { adventureId } = useParams<{ adventureId: string }>();
-  const [authorToolsEnabled, setAuthorToolsEnabled] = useState(false);
+  const [debugModeEnabled, setDebugModeEnabled] = useState(false);
 
   const extractedAdventureId = useMemo(() => {
     // First try to get adventureId from params (works in nested routes)
@@ -80,9 +76,9 @@ export const AppTopBar = () => {
         <>
           {isTestView && (
             <ToggleButton
-              label="Author tools"
-              checked={authorToolsEnabled}
-              onChange={setAuthorToolsEnabled}
+              label="Debug mode"
+              checked={debugModeEnabled}
+              onChange={setDebugModeEnabled}
               data-testid={TOP_BAR_TEST_IDS.AUTHOR_TOOLS_TOGGLE}
             />
           )}

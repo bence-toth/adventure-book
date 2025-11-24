@@ -62,20 +62,20 @@ describe("AppTopBar Component", () => {
     });
   });
 
-  describe("Author tools Toggle", () => {
-    it("shows Author tools toggle in test view", async () => {
+  describe("Debug mode Toggle", () => {
+    it("shows Debug mode toggle in test view", async () => {
       renderWithAdventure(<AppTopBar />, {
         adventureId: TEST_STORY_ID,
         route: ROUTES.STORY_TEST.replace(":adventureId", TEST_STORY_ID),
       });
 
       const toggle = await screen.findByRole("switch", {
-        name: /author tools/i,
+        name: /debug mode/i,
       });
       expect(toggle).toBeInTheDocument();
     });
 
-    it("does not show Author tools toggle in edit view", async () => {
+    it("does not show Debug mode toggle in edit view", async () => {
       renderWithAdventure(<AppTopBar />, {
         adventureId: TEST_STORY_ID,
         route: ROUTES.STORY_EDIT.replace(":adventureId", TEST_STORY_ID),
@@ -84,30 +84,30 @@ describe("AppTopBar Component", () => {
       // Wait for component to render
       await screen.findByRole("banner");
 
-      const toggle = screen.queryByRole("switch", { name: /author tools/i });
+      const toggle = screen.queryByRole("switch", { name: /debug mode/i });
       expect(toggle).not.toBeInTheDocument();
     });
 
-    it("does not show Author tools toggle in adventure manager view", async () => {
+    it("does not show Debug mode toggle in adventure manager view", async () => {
       renderWithAdventure(<AppTopBar />, { route: ROUTES.ROOT });
 
-      const toggle = screen.queryByRole("switch", { name: /author tools/i });
+      const toggle = screen.queryByRole("switch", { name: /debug mode/i });
       expect(toggle).not.toBeInTheDocument();
     });
 
-    it("Author tools toggle is unchecked by default", async () => {
+    it("Debug mode toggle is unchecked by default", async () => {
       renderWithAdventure(<AppTopBar />, {
         adventureId: TEST_STORY_ID,
         route: ROUTES.STORY_TEST.replace(":adventureId", TEST_STORY_ID),
       });
 
       const toggle = await screen.findByRole("switch", {
-        name: /author tools/i,
+        name: /debug mode/i,
       });
       expect(toggle).not.toBeChecked();
     });
 
-    it("Author tools toggle can be toggled on and off", async () => {
+    it("Debug mode toggle can be toggled on and off", async () => {
       const user = userEvent.setup();
       renderWithAdventure(<AppTopBar />, {
         adventureId: TEST_STORY_ID,
@@ -115,7 +115,7 @@ describe("AppTopBar Component", () => {
       });
 
       const toggle = await screen.findByRole("switch", {
-        name: /author tools/i,
+        name: /debug mode/i,
       });
 
       // Initially unchecked
@@ -130,7 +130,7 @@ describe("AppTopBar Component", () => {
       expect(toggle).not.toBeChecked();
     });
 
-    it("Author tools toggle has correct test ID", async () => {
+    it("Debug mode toggle has correct test ID", async () => {
       renderWithAdventure(<AppTopBar />, {
         adventureId: TEST_STORY_ID,
         route: ROUTES.STORY_TEST.replace(":adventureId", TEST_STORY_ID),
