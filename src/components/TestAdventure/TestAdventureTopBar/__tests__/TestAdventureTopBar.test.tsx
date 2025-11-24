@@ -3,7 +3,6 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, beforeEach } from "vitest";
 import { TestAdventureTopBar } from "../TestAdventureTopBar";
 import { ROUTES } from "@/constants/routes";
-import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 

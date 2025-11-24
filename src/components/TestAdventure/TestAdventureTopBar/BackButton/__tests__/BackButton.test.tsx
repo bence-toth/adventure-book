@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { BackButton } from "../BackButton";
 import { ROUTES } from "@/constants/routes";
-import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
 
 const mockNavigate = vi.fn();
 vi.mock("react-router-dom", async () => {
