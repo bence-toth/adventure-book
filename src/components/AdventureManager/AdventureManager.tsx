@@ -14,6 +14,7 @@ import {
   StoryCreateError,
   StoryDeleteError,
 } from "@/utils/errors";
+import { AdventureManagerTopBar } from "./AdventureManagerTopBar/AdventureManagerTopBar";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
 import {
@@ -95,9 +96,12 @@ export const AdventureManager = () => {
 
   if (loading) {
     return (
-      <AdventureManagerContainer>
-        <AdventureManagerLoading>Loading stories...</AdventureManagerLoading>
-      </AdventureManagerContainer>
+      <>
+        <AdventureManagerTopBar />
+        <AdventureManagerContainer>
+          <AdventureManagerLoading>Loading stories...</AdventureManagerLoading>
+        </AdventureManagerContainer>
+      </>
     );
   }
 
@@ -113,18 +117,21 @@ export const AdventureManager = () => {
   }
 
   return (
-    <AdventureManagerContainer>
-      <AdventureManagerList>
-        <NewAdventureCard onClick={handleCreateAdventure} />
-        {stories.map((adventure) => (
-          <AdventureCard
-            key={adventure.id}
-            adventure={adventure}
-            onOpen={handleOpenAdventure}
-            onDelete={() => handleDeleteAdventure(adventure.id)}
-          />
-        ))}
-      </AdventureManagerList>
-    </AdventureManagerContainer>
+    <>
+      <AdventureManagerTopBar />
+      <AdventureManagerContainer>
+        <AdventureManagerList>
+          <NewAdventureCard onClick={handleCreateAdventure} />
+          {stories.map((adventure) => (
+            <AdventureCard
+              key={adventure.id}
+              adventure={adventure}
+              onOpen={handleOpenAdventure}
+              onDelete={() => handleDeleteAdventure(adventure.id)}
+            />
+          ))}
+        </AdventureManagerList>
+      </AdventureManagerContainer>
+    </>
   );
 };

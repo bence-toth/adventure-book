@@ -29,6 +29,7 @@ import {
   InvalidPassageIdError,
   PassageNotFoundError,
 } from "@/utils/errors";
+import { TestAdventureTopBar } from "./TestAdventureTopBar/TestAdventureTopBar";
 import { TestAdventureSidebar } from "./TestAdventureSidebar/TestAdventureSidebar";
 import {
   PageLayout,
@@ -92,20 +93,23 @@ export const TestAdventure = () => {
 
   if (loading) {
     return (
-      <PageLayout>
-        <TestAdventureSidebar />
-        <PageContent>
-          <ContentContainer
-            data-testid={
-              isIntroduction
-                ? INTRODUCTION_TEST_IDS.CONTAINER
-                : PASSAGE_TEST_IDS.CONTAINER
-            }
-          >
-            <p>Loading {isIntroduction ? "adventure" : "passage"}...</p>
-          </ContentContainer>
-        </PageContent>
-      </PageLayout>
+      <>
+        <TestAdventureTopBar />
+        <PageLayout>
+          <TestAdventureSidebar />
+          <PageContent>
+            <ContentContainer
+              data-testid={
+                isIntroduction
+                  ? INTRODUCTION_TEST_IDS.CONTAINER
+                  : PASSAGE_TEST_IDS.CONTAINER
+              }
+            >
+              <p>Loading {isIntroduction ? "adventure" : "passage"}...</p>
+            </ContentContainer>
+          </PageContent>
+        </PageLayout>
+      </>
     );
   }
 
@@ -124,34 +128,37 @@ export const TestAdventure = () => {
     };
 
     return (
-      <PageLayout>
-        <TestAdventureSidebar />
-        <PageContent>
-          <ContentContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-            <ContentTitle data-testid={INTRODUCTION_TEST_IDS.TITLE}>
-              {adventure.metadata.title}
-            </ContentTitle>
-            <ContentText data-testid={INTRODUCTION_TEST_IDS.TEXT}>
-              {adventure.intro.paragraphs.map((paragraph, index) => (
-                <ContentParagraph
-                  key={index}
-                  data-testid={getIntroParagraphTestId(index)}
+      <>
+        <TestAdventureTopBar />
+        <PageLayout>
+          <TestAdventureSidebar />
+          <PageContent>
+            <ContentContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
+              <ContentTitle data-testid={INTRODUCTION_TEST_IDS.TITLE}>
+                {adventure.metadata.title}
+              </ContentTitle>
+              <ContentText data-testid={INTRODUCTION_TEST_IDS.TEXT}>
+                {adventure.intro.paragraphs.map((paragraph, index) => (
+                  <ContentParagraph
+                    key={index}
+                    data-testid={getIntroParagraphTestId(index)}
+                  >
+                    {paragraph}
+                  </ContentParagraph>
+                ))}
+              </ContentText>
+              <Choices>
+                <Button
+                  onClick={handleStartAdventure}
+                  data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
                 >
-                  {paragraph}
-                </ContentParagraph>
-              ))}
-            </ContentText>
-            <Choices>
-              <Button
-                onClick={handleStartAdventure}
-                data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
-              >
-                {adventure.intro.action}
-              </Button>
-            </Choices>
-          </ContentContainer>
-        </PageContent>
-      </PageLayout>
+                  {adventure.intro.action}
+                </Button>
+              </Choices>
+            </ContentContainer>
+          </PageContent>
+        </PageLayout>
+      </>
     );
   }
 
@@ -169,16 +176,19 @@ export const TestAdventure = () => {
   // the rest of the component from rendering while the redirect happens
   if (passageId === SPECIAL_PASSAGES.RESET) {
     return (
-      <PageLayout>
-        <TestAdventureSidebar />
-        <PageContent>
-          <ContentContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
-            <ContentText>
-              <ContentParagraph>Resetting your adventure…</ContentParagraph>
-            </ContentText>
-          </ContentContainer>
-        </PageContent>
-      </PageLayout>
+      <>
+        <TestAdventureTopBar />
+        <PageLayout>
+          <TestAdventureSidebar />
+          <PageContent>
+            <ContentContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
+              <ContentText>
+                <ContentParagraph>Resetting your adventure…</ContentParagraph>
+              </ContentText>
+            </ContentContainer>
+          </PageContent>
+        </PageLayout>
+      </>
     );
   }
 
@@ -199,43 +209,46 @@ export const TestAdventure = () => {
   };
 
   return (
-    <PageLayout>
-      <TestAdventureSidebar />
-      <PageContent>
-        <ContentContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
-          <ContentText data-testid={PASSAGE_TEST_IDS.TEXT}>
-            {currentPassage.paragraphs.map((paragraph, index) => (
-              <ContentParagraph
-                key={index}
-                data-testid={getPassageParagraphTestId(index)}
-              >
-                {paragraph}
-              </ContentParagraph>
-            ))}
-          </ContentText>
-          <Choices data-testid={PASSAGE_TEST_IDS.CHOICES}>
-            {currentPassage.ending ? (
-              <Button
-                onClick={handleRestartClick}
-                data-testid={PASSAGE_TEST_IDS.RESTART_BUTTON}
-              >
-                Restart adventure
-              </Button>
-            ) : (
-              currentPassage.choices!.map((choice, index) => (
-                <Button
+    <>
+      <TestAdventureTopBar />
+      <PageLayout>
+        <TestAdventureSidebar />
+        <PageContent>
+          <ContentContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
+            <ContentText data-testid={PASSAGE_TEST_IDS.TEXT}>
+              {currentPassage.paragraphs.map((paragraph, index) => (
+                <ContentParagraph
                   key={index}
-                  onClick={() => handleChoiceClick(choice.goto)}
-                  data-testid={getChoiceButtonTestId(index)}
-                  data-goto={choice.goto}
+                  data-testid={getPassageParagraphTestId(index)}
                 >
-                  {choice.text}
+                  {paragraph}
+                </ContentParagraph>
+              ))}
+            </ContentText>
+            <Choices data-testid={PASSAGE_TEST_IDS.CHOICES}>
+              {currentPassage.ending ? (
+                <Button
+                  onClick={handleRestartClick}
+                  data-testid={PASSAGE_TEST_IDS.RESTART_BUTTON}
+                >
+                  Restart adventure
                 </Button>
-              ))
-            )}
-          </Choices>
-        </ContentContainer>
-      </PageContent>
-    </PageLayout>
+              ) : (
+                currentPassage.choices!.map((choice, index) => (
+                  <Button
+                    key={index}
+                    onClick={() => handleChoiceClick(choice.goto)}
+                    data-testid={getChoiceButtonTestId(index)}
+                    data-goto={choice.goto}
+                  >
+                    {choice.text}
+                  </Button>
+                ))
+              )}
+            </Choices>
+          </ContentContainer>
+        </PageContent>
+      </PageLayout>
+    </>
   );
 };

@@ -1,6 +1,5 @@
 export { TestAdventure } from "./TestAdventure/TestAdventure";
 export { ErrorBoundary } from "./ErrorBoundary/ErrorBoundary";
-export { AppTopBar } from "./TopBar/AppTopBar";
 export { AdventureManager } from "./AdventureManager/AdventureManager";
 
 // Re-export common components

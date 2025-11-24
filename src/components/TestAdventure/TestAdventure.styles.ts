@@ -5,7 +5,7 @@ export const PageLayout = styled.div`
   grid-template-columns: var(--size-sidebar) 1fr;
   overflow: hidden;
   min-height: 0;
-  height: 100%;
+  flex: 1;
 `;
 
 export const PageContent = styled.div`

@@ -27,12 +27,6 @@ describe("BackButton", () => {
     expect(button).toBeInTheDocument();
   });
 
-  it("has the correct test id", () => {
-    render(<BackButton />);
-    const button = screen.getByTestId(TOP_BAR_TEST_IDS.BACK_BUTTON);
-    expect(button).toBeInTheDocument();
-  });
-
   it("navigates to adventure manager when clicked", async () => {
     const user = userEvent.setup();
     render(<BackButton />);

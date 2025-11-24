@@ -1,10 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import {
-  TestAdventure,
-  ErrorBoundary,
-  AppTopBar,
-  AdventureManager,
-} from "@/components";
+import { TestAdventure, ErrorBoundary, AdventureManager } from "@/components";
 import { ROUTES } from "@/constants/routes";
 import { AdventureProvider } from "@/context/AdventureContext";
 import { AppContainer, AppContent } from "./App.styles";
@@ -13,7 +8,6 @@ const App = () => {
   return (
     <ErrorBoundary>
       <AppContainer>
-        <AppTopBar />
         <AppContent as="main">
           <Routes>
             <Route path={ROUTES.ROOT} element={<AdventureManager />} />
