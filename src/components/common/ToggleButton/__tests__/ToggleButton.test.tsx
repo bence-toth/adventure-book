@@ -42,7 +42,7 @@ describe("ToggleButton Component", () => {
       expect(toggle).toBeChecked();
     });
 
-    it("renders with custom data-testid", () => {
+    it("forwards data-testid attribute", () => {
       const onChange = vi.fn();
       render(
         <ToggleButton

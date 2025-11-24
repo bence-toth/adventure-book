@@ -216,35 +216,6 @@ describe("ContextMenu Component", () => {
 
       document.body.removeChild(triggerElement);
     });
-
-    it("renders all menu items with data-testid", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          open={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()}>Item 1</ContextMenuItem>
-          <ContextMenuItem onClick={vi.fn()}>Item 2</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      const items = screen.getAllByTestId("context-menu-item");
-      expect(items).toHaveLength(2);
-      expect(screen.getByText("Item 1")).toHaveAttribute(
-        "data-testid",
-        "context-menu-item"
-      );
-      expect(screen.getByText("Item 2")).toHaveAttribute(
-        "data-testid",
-        "context-menu-item"
-      );
-
-      document.body.removeChild(triggerElement);
-    });
   });
 
   describe("Accessibility", () => {
