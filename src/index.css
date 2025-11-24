@@ -143,23 +143,6 @@ a {
   --color-blue-950: oklch(20.833% 0.039 224.452deg);
   --color-blue-1000: oklch(20.833% 0.039 224.452deg);
 
-  /* Shadow color variables with opacity based on color variables */
-  --color-shadow-black: color-mix(
-    in srgb,
-    var(--color-gray-1000) 10%,
-    transparent
-  );
-  --color-shadow-black-md: color-mix(
-    in srgb,
-    var(--color-gray-1000) 20%,
-    transparent
-  );
-  --color-shadow-black-lg: color-mix(
-    in srgb,
-    var(--color-gray-1000) 30%,
-    transparent
-  );
-
   /* Shadow variables */
   --shadow-surface-neutral: 0 0 var(--space-2) var(--color-shadow-neutral);
   --shadow-surface-elevated-neutral: 0 var(--space-1) var(--space-2)
