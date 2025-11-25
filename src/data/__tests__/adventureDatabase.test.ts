@@ -221,10 +221,19 @@ describe("adventureDatabase", () => {
 
   describe("updateAdventureTitle", () => {
     it("should update adventure title and lastEdited", async () => {
+      const originalYaml = `metadata:
+  title: "Old Title"
+  author: "Test Author"
+  version: "1.0.0"
+
+intro:
+  text: Test intro
+  action: Begin`;
+
       const adventure: StoredAdventure = {
         id: "test-1",
         title: "Old Title",
-        content: "content",
+        content: originalYaml,
         lastEdited: new Date(Date.now() - 1000),
         createdAt: new Date(),
       };
@@ -238,11 +247,43 @@ describe("adventureDatabase", () => {
 
       const result = await getAdventure("test-1");
       expect(result?.title).toBe(newTitle);
-      expect(result?.content).toBe("content"); // Content unchanged
+
+      // Verify the YAML content was also updated
+      expect(result?.content).toContain(`title: "New Title"`);
+      expect(result?.content).not.toContain(`title: "Old Title"`);
 
       const lastEditedTime = new Date(result!.lastEdited).getTime();
       expect(lastEditedTime).toBeGreaterThanOrEqual(beforeUpdate);
       expect(lastEditedTime).toBeLessThanOrEqual(afterUpdate);
+    });
+
+    it("should update title in YAML without quotes", async () => {
+      const originalYaml = `metadata:
+  title: Old Title Without Quotes
+  author: Test Author
+  version: "1.0.0"
+
+intro:
+  text: Test intro
+  action: Begin`;
+
+      const adventure: StoredAdventure = {
+        id: "test-2",
+        title: "Old Title Without Quotes",
+        content: originalYaml,
+        lastEdited: new Date(Date.now() - 1000),
+        createdAt: new Date(),
+      };
+
+      await saveAdventure(adventure);
+
+      const newTitle = "New Title Without Quotes";
+      await updateAdventureTitle("test-2", newTitle);
+
+      const result = await getAdventure("test-2");
+      expect(result?.title).toBe(newTitle);
+      expect(result?.content).toContain(`title: ${newTitle}`);
+      expect(result?.content).not.toContain("Old Title Without Quotes");
     });
 
     it("should throw error when adventure not found", async () => {

@@ -171,13 +171,32 @@ export const updateAdventureTitle = async (
     throw new Error(`Adventure with id ${id} not found`);
   }
 
+  // Update both the database title AND the YAML content's metadata.title
+  // This ensures the title is consistent everywhere
+  const updatedContent = updateYamlTitle(adventure.content, title);
+
   const updatedAdventure: StoredAdventure = {
     ...adventure,
     title,
+    content: updatedContent,
     lastEdited: new Date(),
   };
 
   await saveAdventure(updatedAdventure);
+};
+
+// Helper function to update the title in YAML content
+const updateYamlTitle = (yamlContent: string, newTitle: string): string => {
+  // Use a regex to replace the title in the metadata section
+  // This handles various YAML formatting styles
+  const titlePattern = /^(\s*title:\s*['"]?).*?(['"]?\s*)$/m;
+
+  // Check if we need to quote the title (if it contains special characters)
+  const needsQuotes =
+    /[:#\[\]{}|>@`]/.test(newTitle) || newTitle.trim() !== newTitle;
+  const formattedTitle = needsQuotes ? `"${newTitle}"` : newTitle;
+
+  return yamlContent.replace(titlePattern, `$1${formattedTitle}$2`);
 };
 
 // Creates a new adventure with a unique ID

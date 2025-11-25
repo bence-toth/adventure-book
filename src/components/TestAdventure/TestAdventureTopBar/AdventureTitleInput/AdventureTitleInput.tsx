@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { updateAdventureTitle, getAdventure } from "@/data/adventureDatabase";
+import { invalidateAdventureCache } from "@/data/adventureLoader";
+import { useAdventure } from "@/context/useAdventure";
 import { TopBarTitleInput } from "./AdventureTitleInput.styles";
 
 export interface AdventureTitleInputProps {
@@ -10,6 +12,7 @@ export const AdventureTitleInput = ({
   adventureId,
 }: AdventureTitleInputProps) => {
   const [adventureTitle, setAdventureTitle] = useState<string>("");
+  const { reloadAdventure } = useAdventure();
 
   useEffect(() => {
     if (!adventureId) return;
@@ -34,11 +37,14 @@ export const AdventureTitleInput = ({
     if (adventureId && adventureTitle.trim()) {
       try {
         await updateAdventureTitle(adventureId, adventureTitle.trim());
+        // Invalidate the cache and reload the adventure to pick up the new title
+        invalidateAdventureCache(adventureId);
+        reloadAdventure();
       } catch (err) {
         console.error("Failed to update adventure title:", err);
       }
     }
-  }, [adventureId, adventureTitle]);
+  }, [adventureId, adventureTitle, reloadAdventure]);
 
   const handleTitleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {

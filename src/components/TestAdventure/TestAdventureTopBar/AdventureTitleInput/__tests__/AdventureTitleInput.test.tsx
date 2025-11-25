@@ -3,6 +3,8 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AdventureTitleInput } from "../AdventureTitleInput";
 import * as adventureDatabase from "@/data/adventureDatabase";
+import { AdventureContext } from "@/context/AdventureContext";
+import type { AdventureContextType } from "@/context/AdventureContext";
 
 vi.mock("@/data/adventureDatabase", () => ({
   getAdventure: vi.fn(),
@@ -12,6 +14,25 @@ vi.mock("@/data/adventureDatabase", () => ({
 describe("AdventureTitleInput", () => {
   const TEST_STORY_ID = "test-adventure-id";
   const TEST_TITLE = "Test Adventure Title";
+  const mockReloadAdventure = vi.fn();
+
+  const mockContextValue: AdventureContextType = {
+    adventure: null,
+    adventureId: TEST_STORY_ID,
+    loading: false,
+    error: null,
+    debugModeEnabled: false,
+    setDebugModeEnabled: vi.fn(),
+    reloadAdventure: mockReloadAdventure,
+  };
+
+  const renderWithContext = (component: React.ReactElement) => {
+    return render(
+      <AdventureContext.Provider value={mockContextValue}>
+        {component}
+      </AdventureContext.Provider>
+    );
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -25,7 +46,7 @@ describe("AdventureTitleInput", () => {
   });
 
   it("handles null adventureId gracefully", () => {
-    render(<AdventureTitleInput adventureId={null} />);
+    renderWithContext(<AdventureTitleInput adventureId={null} />);
 
     const input = screen.getByLabelText("Adventure title");
     expect(input).toHaveValue("");
@@ -33,7 +54,7 @@ describe("AdventureTitleInput", () => {
   });
 
   it("loads and displays adventure title", async () => {
-    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
     await waitFor(() => {
       const input = screen.getByLabelText("Adventure title");
@@ -45,7 +66,7 @@ describe("AdventureTitleInput", () => {
 
   it("updates title on change", async () => {
     const user = userEvent.setup();
-    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
     await waitFor(() => {
       expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
@@ -60,7 +81,7 @@ describe("AdventureTitleInput", () => {
 
   it("saves title on blur", async () => {
     const user = userEvent.setup();
-    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
     await waitFor(() => {
       expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
@@ -76,12 +97,13 @@ describe("AdventureTitleInput", () => {
         TEST_STORY_ID,
         "Updated Title"
       );
+      expect(mockReloadAdventure).toHaveBeenCalledTimes(1);
     });
   });
 
   it("saves title on Enter key", async () => {
     const user = userEvent.setup();
-    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
     await waitFor(() => {
       expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
@@ -96,12 +118,13 @@ describe("AdventureTitleInput", () => {
         TEST_STORY_ID,
         "Title via Enter"
       );
+      expect(mockReloadAdventure).toHaveBeenCalledTimes(1);
     });
   });
 
   it("does not save empty title", async () => {
     const user = userEvent.setup();
-    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
     await waitFor(() => {
       expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
@@ -118,7 +141,7 @@ describe("AdventureTitleInput", () => {
 
   it("trims whitespace before saving", async () => {
     const user = userEvent.setup();
-    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
     await waitFor(() => {
       expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
@@ -134,6 +157,7 @@ describe("AdventureTitleInput", () => {
         TEST_STORY_ID,
         "Spaced Title"
       );
+      expect(mockReloadAdventure).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -146,7 +170,7 @@ describe("AdventureTitleInput", () => {
       new Error("Update failed")
     );
 
-    render(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
     await waitFor(() => {
       expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
