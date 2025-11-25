@@ -19,6 +19,14 @@ import adventureYaml from "./adventure.yaml?raw";
 let loadedAdventure: Adventure | null = null;
 let currentAdventureId: string | null = null;
 
+// Invalidate the cache for a specific adventure ID
+export const invalidateAdventureCache = (adventureId?: string): void => {
+  if (!adventureId || currentAdventureId === adventureId) {
+    loadedAdventure = null;
+    currentAdventureId = null;
+  }
+};
+
 // Load an adventure from IndexedDB by ID
 export const loadAdventureById = async (
   adventureId: string

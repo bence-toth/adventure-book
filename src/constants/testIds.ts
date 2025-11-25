@@ -36,4 +36,5 @@ export const DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS = {
 export const TOP_BAR_TEST_IDS = {
   LOGO: "top-bar-logo",
   BACK_BUTTON: "top-bar-back-button",
+  AUTHOR_TOOLS_TOGGLE: "top-bar-author-tools-toggle",
 } as const;

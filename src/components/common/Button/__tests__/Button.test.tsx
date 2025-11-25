@@ -46,22 +46,29 @@ describe("Button Component", () => {
     });
   });
 
-  describe("Selected State", () => {
-    it("accepts selected prop", () => {
-      render(<Button selected>Selected</Button>);
+  describe("Variants", () => {
+    it("accepts neutral variant", () => {
+      render(<Button variant="neutral">Neutral</Button>);
 
       const button = screen.getByRole("button");
       expect(button).toBeInTheDocument();
     });
 
-    it("accepts selected false", () => {
-      render(<Button selected={false}>Not Selected</Button>);
+    it("accepts primary variant", () => {
+      render(<Button variant="primary">Primary</Button>);
 
       const button = screen.getByRole("button");
       expect(button).toBeInTheDocument();
     });
 
-    it("works without selected prop", () => {
+    it("accepts danger variant", () => {
+      render(<Button variant="danger">Danger</Button>);
+
+      const button = screen.getByRole("button");
+      expect(button).toBeInTheDocument();
+    });
+
+    it("works without variant prop (defaults to neutral)", () => {
       render(<Button>Default</Button>);
 
       const button = screen.getByRole("button");
@@ -77,9 +84,9 @@ describe("Button Component", () => {
       expect(button).toHaveClass("custom-class");
     });
 
-    it("works with custom className and selected state", () => {
+    it("works with custom className and variant", () => {
       render(
-        <Button selected className="custom-class">
+        <Button variant="primary" className="custom-class">
           Multiple Classes
         </Button>
       );
@@ -211,11 +218,11 @@ describe("Button Component", () => {
   });
 
   describe("Complex Scenarios", () => {
-    it("renders button with icon and selected state", () => {
+    it("renders button with icon and variant", () => {
       const TestIcon = () => <span data-testid="icon">★</span>;
 
       render(
-        <Button selected icon={TestIcon}>
+        <Button variant="primary" icon={TestIcon}>
           Favorite
         </Button>
       );
@@ -234,7 +241,7 @@ describe("Button Component", () => {
       render(
         <Button
           icon={TestIcon}
-          selected
+          variant="primary"
           className="home-button"
           data-testid="home-btn"
         >

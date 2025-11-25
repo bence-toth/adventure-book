@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 export const AppContainer = styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const AppMain = styled.main`
@@ -15,9 +15,8 @@ export const AppMain = styled.main`
 `;
 
 export const AppContent = styled.main`
-  overflow-y: auto;
-  display: grid;
-  place-items: stretch;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   background: var(--color-background-neutral);
-  min-height: 0;
 `;

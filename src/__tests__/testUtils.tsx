@@ -50,6 +50,7 @@ export const renderWithAdventure = (
     adventure,
     error,
     loading = false,
+    debugModeEnabled = false,
     ...options
   }: Omit<RenderOptions, "wrapper"> & {
     adventureId?: string;
@@ -57,13 +58,17 @@ export const renderWithAdventure = (
     adventure?: Adventure | null;
     error?: string | null;
     loading?: boolean;
+    debugModeEnabled?: boolean;
   } = {}
 ) => {
   const initialRoute = route || `/adventure/${adventureId}/test`;
 
-  // If adventure, error, or loading are provided, use mock context
+  // If adventure, error, loading, or debugModeEnabled are provided, use mock context
   const useMockContext =
-    adventure !== undefined || error !== undefined || loading !== false;
+    adventure !== undefined ||
+    error !== undefined ||
+    loading !== false ||
+    debugModeEnabled !== false;
 
   if (useMockContext) {
     const mockContextValue: AdventureContextType = {
@@ -71,6 +76,9 @@ export const renderWithAdventure = (
       adventureId,
       loading,
       error: error ?? null,
+      debugModeEnabled,
+      setDebugModeEnabled: () => {},
+      reloadAdventure: () => {},
     };
 
     return rtlRender(ui, {

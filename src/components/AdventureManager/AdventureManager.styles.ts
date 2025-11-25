@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const AdventureManagerContainer = styled.div`
   width: 100%;
-  height: 100%;
+  flex: 1;
   overflow-y: auto;
   padding: var(--space-4);
 `;

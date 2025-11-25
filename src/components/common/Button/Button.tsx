@@ -4,17 +4,16 @@ import { StyledButton, IconWrapper, TextWrapper } from "./Button.styles";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
-  selected?: boolean;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
-  variant?: "neutral" | "danger";
+  variant?: "neutral" | "danger" | "primary";
   size?: "default" | "small";
   "data-testid"?: string;
   "aria-label"?: string;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ children, selected, icon, className, variant, size, ...props }, ref) => {
+  ({ children, icon, className, variant, size, ...props }, ref) => {
     const iconElement = icon
       ? createElement(icon, {
           size: 20,
@@ -29,7 +28,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={className}
         $variant={variant ?? "neutral"}
         $size={size ?? "default"}
-        $selected={selected ?? false}
         $hasChildren={!!children}
         {...props}
       >

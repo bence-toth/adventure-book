@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getInteractiveColor } from "@/utils/colorHelpers";
 
 export const StyledDetails = styled.details``;
 
@@ -14,10 +15,10 @@ export const StyledSummary = styled.summary`
   padding: var(--space-2) var(--space-3);
   border-radius: var(--space-1);
   text-decoration: none;
-  background: var(--color-interactive-background-default-neutral);
-  color: var(--color-interactive-foreground-default-neutral);
+  background: ${getInteractiveColor("neutral", "background", "default")};
+  color: ${getInteractiveColor("neutral", "foreground", "default")};
   border: var(--border-width-interactive) solid
-    var(--color-interactive-border-default-neutral);
+    ${getInteractiveColor("neutral", "border", "default")};
 
   &::-webkit-details-marker,
   &::marker {
@@ -25,45 +26,45 @@ export const StyledSummary = styled.summary`
   }
 
   &:hover {
-    background: var(--color-interactive-background-hover-neutral);
-    color: var(--color-interactive-foreground-hover-neutral);
-    border-color: var(--color-interactive-border-hover-neutral);
+    background: ${getInteractiveColor("neutral", "background", "hover")};
+    color: ${getInteractiveColor("neutral", "foreground", "hover")};
+    border-color: ${getInteractiveColor("neutral", "border", "hover")};
   }
 
   &:active {
-    background: var(--color-interactive-background-active-neutral);
-    color: var(--color-interactive-foreground-active-neutral);
-    border-color: var(--color-interactive-border-active-neutral);
+    background: ${getInteractiveColor("neutral", "background", "active")};
+    color: ${getInteractiveColor("neutral", "foreground", "active")};
+    border-color: ${getInteractiveColor("neutral", "border", "active")};
   }
 
   &:focus-visible {
-    background: var(--color-interactive-background-focus-neutral);
-    color: var(--color-interactive-foreground-focus-neutral);
-    border-color: var(--color-interactive-border-focus-neutral);
+    background: ${getInteractiveColor("neutral", "background", "focus")};
+    color: ${getInteractiveColor("neutral", "foreground", "focus")};
+    border-color: ${getInteractiveColor("neutral", "border", "focus")};
     outline-offset: var(--space-1);
   }
 
   ${StyledDetails}[open] > & {
-    background: var(--color-interactive-background-default-neutral);
-    color: var(--color-interactive-foreground-default-neutral);
-    border-color: var(--color-interactive-border-default-neutral);
+    background: ${getInteractiveColor("neutral", "background", "default")};
+    color: ${getInteractiveColor("neutral", "foreground", "default")};
+    border-color: ${getInteractiveColor("neutral", "border", "default")};
 
     &:hover {
-      background: var(--color-interactive-background-hover-neutral);
-      color: var(--color-interactive-foreground-hover-neutral);
-      border-color: var(--color-interactive-border-hover-neutral);
+      background: ${getInteractiveColor("neutral", "background", "hover")};
+      color: ${getInteractiveColor("neutral", "foreground", "hover")};
+      border-color: ${getInteractiveColor("neutral", "border", "hover")};
     }
 
     &:active {
-      background: var(--color-interactive-background-active-neutral);
-      color: var(--color-interactive-foreground-active-neutral);
-      border-color: var(--color-interactive-border-active-neutral);
+      background: ${getInteractiveColor("neutral", "background", "active")};
+      color: ${getInteractiveColor("neutral", "foreground", "active")};
+      border-color: ${getInteractiveColor("neutral", "border", "active")};
     }
 
     &:focus-visible {
-      background: var(--color-interactive-background-focus-neutral);
-      color: var(--color-interactive-foreground-focus-neutral);
-      border-color: var(--color-interactive-border-focus-neutral);
+      background: ${getInteractiveColor("neutral", "background", "focus")};
+      color: ${getInteractiveColor("neutral", "foreground", "focus")};
+      border-color: ${getInteractiveColor("neutral", "border", "focus")};
       outline-offset: var(--space-1);
     }
   }

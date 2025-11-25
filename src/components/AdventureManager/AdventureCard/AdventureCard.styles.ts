@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getInteractiveColor } from "@/utils/colorHelpers";
 
 export const AdventureCardContainer = styled.div`
   background: var(--color-background-surface);
@@ -19,27 +20,27 @@ export const AdventureCardClickable = styled.button`
   width: 100%;
   min-height: 0;
   border-radius: var(--space-1);
-  background: var(--color-interactive-background-default-neutral);
-  color: var(--color-interactive-foreground-default-neutral);
+  background: ${getInteractiveColor("neutral", "background", "default")};
+  color: ${getInteractiveColor("neutral", "foreground", "default")};
   border: var(--border-width-interactive) solid
-    var(--color-interactive-border-default-neutral);
+    ${getInteractiveColor("neutral", "border", "default")};
 
   &:hover {
-    background: var(--color-interactive-background-hover-neutral);
-    color: var(--color-interactive-foreground-hover-neutral);
-    border-color: var(--color-interactive-border-hover-neutral);
+    background: ${getInteractiveColor("neutral", "background", "hover")};
+    color: ${getInteractiveColor("neutral", "foreground", "hover")};
+    border-color: ${getInteractiveColor("neutral", "border", "hover")};
   }
 
   &:active {
-    background: var(--color-interactive-background-active-neutral);
-    color: var(--color-interactive-foreground-active-neutral);
-    border-color: var(--color-interactive-border-active-neutral);
+    background: ${getInteractiveColor("neutral", "background", "active")};
+    color: ${getInteractiveColor("neutral", "foreground", "active")};
+    border-color: ${getInteractiveColor("neutral", "border", "active")};
   }
 
   &:focus-visible {
-    background: var(--color-interactive-background-focus-neutral);
-    color: var(--color-interactive-foreground-focus-neutral);
-    border-color: var(--color-interactive-border-focus-neutral);
+    background: ${getInteractiveColor("neutral", "background", "focus")};
+    color: ${getInteractiveColor("neutral", "foreground", "focus")};
+    border-color: ${getInteractiveColor("neutral", "border", "focus")};
     outline-offset: var(--space-1);
   }
 `;
@@ -83,27 +84,27 @@ export const AdventureCardMenu = styled.button`
   padding: var(--space-1);
   flex-shrink: 0;
   border-radius: var(--space-1);
-  background: var(--color-interactive-background-default-neutral);
-  color: var(--color-interactive-foreground-default-neutral);
+  background: ${getInteractiveColor("neutral", "background", "default")};
+  color: ${getInteractiveColor("neutral", "foreground", "default")};
   border: var(--border-width-interactive) solid
-    var(--color-interactive-border-default-neutral);
+    ${getInteractiveColor("neutral", "border", "default")};
 
   &:hover {
-    background: var(--color-interactive-background-hover-neutral);
-    color: var(--color-interactive-foreground-hover-neutral);
-    border-color: var(--color-interactive-border-hover-neutral);
+    background: ${getInteractiveColor("neutral", "background", "hover")};
+    color: ${getInteractiveColor("neutral", "foreground", "hover")};
+    border-color: ${getInteractiveColor("neutral", "border", "hover")};
   }
 
   &:active {
-    background: var(--color-interactive-background-active-neutral);
-    color: var(--color-interactive-foreground-active-neutral);
-    border-color: var(--color-interactive-border-active-neutral);
+    background: ${getInteractiveColor("neutral", "background", "active")};
+    color: ${getInteractiveColor("neutral", "foreground", "active")};
+    border-color: ${getInteractiveColor("neutral", "border", "active")};
   }
 
   &:focus-visible {
-    background: var(--color-interactive-background-focus-neutral);
-    color: var(--color-interactive-foreground-focus-neutral);
-    border-color: var(--color-interactive-border-focus-neutral);
+    background: ${getInteractiveColor("neutral", "background", "focus")};
+    color: ${getInteractiveColor("neutral", "foreground", "focus")};
+    border-color: ${getInteractiveColor("neutral", "border", "focus")};
     outline-offset: var(--space-1);
   }
 `;

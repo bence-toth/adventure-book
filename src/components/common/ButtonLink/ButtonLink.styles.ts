@@ -1,9 +1,12 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { getInteractiveColor } from "@/utils/colorHelpers";
+
+type LinkVariant = "neutral" | "primary";
 
 export const StyledLink = styled(Link)<{
   $size: "default" | "small";
-  $selected: boolean;
+  $variant: LinkVariant;
 }>`
   display: inline-flex;
   align-items: center;
@@ -17,28 +20,47 @@ export const StyledLink = styled(Link)<{
   border-radius: var(--space-1);
   cursor: pointer;
   text-decoration: none;
-  background: var(--color-interactive-background-default-neutral);
-  color: var(--color-interactive-foreground-default-neutral);
+  background: ${(props) =>
+    getInteractiveColor(props.$variant, "background", "default")};
+  color: ${(props) =>
+    getInteractiveColor(props.$variant, "foreground", "default")};
   border: var(--border-width-interactive) solid
-    var(--color-interactive-border-default-neutral);
+    ${(props) => getInteractiveColor(props.$variant, "border", "default")};
 
   &:hover {
-    background: var(--color-interactive-background-hover-neutral);
-    color: var(--color-interactive-foreground-hover-neutral);
-    border-color: var(--color-interactive-border-hover-neutral);
+    background: ${(props) =>
+      getInteractiveColor(props.$variant, "background", "hover")};
+    color: ${(props) =>
+      getInteractiveColor(props.$variant, "foreground", "hover")};
+    border-color: ${(props) =>
+      getInteractiveColor(props.$variant, "border", "hover")};
   }
 
   &:active {
-    background: var(--color-interactive-background-active-neutral);
-    color: var(--color-interactive-foreground-active-neutral);
-    border-color: var(--color-interactive-border-active-neutral);
+    background: ${(props) =>
+      getInteractiveColor(props.$variant, "background", "active")};
+    color: ${(props) =>
+      getInteractiveColor(props.$variant, "foreground", "active")};
+    border-color: ${(props) =>
+      getInteractiveColor(props.$variant, "border", "active")};
   }
 
   &:focus-visible {
-    background: var(--color-interactive-background-focus-neutral);
-    color: var(--color-interactive-foreground-focus-neutral);
-    border-color: var(--color-interactive-border-focus-neutral);
+    background: ${(props) =>
+      getInteractiveColor(props.$variant, "background", "focus")};
+    color: ${(props) =>
+      getInteractiveColor(props.$variant, "foreground", "focus")};
+    border-color: ${(props) =>
+      getInteractiveColor(props.$variant, "border", "focus")};
     outline-offset: var(--space-1);
+    ${(props) =>
+      props.$variant === "primary"
+        ? `outline-color: ${getInteractiveColor(
+            props.$variant,
+            "outline",
+            "focus"
+          )};`
+        : ""};
   }
 `;
 

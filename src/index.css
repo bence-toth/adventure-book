@@ -16,6 +16,12 @@ p {
   line-height: var(--line-height-normal);
 }
 
+input,
+button,
+a {
+  outline-color: var(--color-interactive-outline-focus-neutral);
+}
+
 :root {
   color-scheme: light dark;
   color: var(--color-foreground-neutral);
@@ -137,23 +143,6 @@ p {
   --color-blue-950: oklch(20.833% 0.039 224.452deg);
   --color-blue-1000: oklch(20.833% 0.039 224.452deg);
 
-  /* Shadow color variables with opacity based on color variables */
-  --color-shadow-black: color-mix(
-    in srgb,
-    var(--color-gray-1000) 10%,
-    transparent
-  );
-  --color-shadow-black-md: color-mix(
-    in srgb,
-    var(--color-gray-1000) 20%,
-    transparent
-  );
-  --color-shadow-black-lg: color-mix(
-    in srgb,
-    var(--color-gray-1000) 30%,
-    transparent
-  );
-
   /* Shadow variables */
   --shadow-surface-neutral: 0 0 var(--space-2) var(--color-shadow-neutral);
   --shadow-surface-elevated-neutral: 0 var(--space-1) var(--space-2)
@@ -198,6 +187,8 @@ p {
   --size-title-input-min-width: calc(var(--space-base) * 24);
   --size-modal-dialog-max-width: calc(var(--space-base) * 72);
   --size-context-menu-min-width: calc(var(--space-base) * 20);
+  --size-toggle-button-width: calc(var(--space-base) * 5);
+  --size-toggle-button-height: calc(var(--space-base) * 3);
 }
 
 @media (prefers-color-scheme: light) {
@@ -219,9 +210,34 @@ p {
     --color-interactive-background-focus-neutral: var(--color-gray-250);
     --color-interactive-foreground-focus-neutral: var(--color-gray-900);
     --color-interactive-border-focus-neutral: var(--color-gray-300);
+    --color-interactive-outline-focus-neutral: var(--color-blue-500);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
+      transparent
+    );
+
+    /* Primary colors */
+    --color-background-primary: var(--color-blue-100);
+    --color-foreground-primary: var(--color-blue-900);
+    --color-background-surface-primary: var(--color-blue-150);
+    --color-border-surface-primary: var(--color-blue-200);
+    --color-interactive-background-default-primary: var(--color-blue-200);
+    --color-interactive-foreground-default-primary: var(--color-blue-900);
+    --color-interactive-border-default-primary: var(--color-blue-250);
+    --color-interactive-background-hover-primary: var(--color-blue-250);
+    --color-interactive-foreground-hover-primary: var(--color-blue-900);
+    --color-interactive-border-hover-primary: var(--color-blue-300);
+    --color-interactive-background-active-primary: var(--color-blue-300);
+    --color-interactive-foreground-active-primary: var(--color-blue-900);
+    --color-interactive-border-active-primary: var(--color-blue-350);
+    --color-interactive-background-focus-primary: var(--color-blue-250);
+    --color-interactive-foreground-focus-primary: var(--color-blue-900);
+    --color-interactive-border-focus-primary: var(--color-blue-300);
+    --color-interactive-outline-focus-primary: var(--color-blue-500);
+    --color-shadow-primary: color-mix(
+      in srgb,
+      var(--color-blue-1000) 25%,
       transparent
     );
 
@@ -242,6 +258,7 @@ p {
     --color-interactive-background-focus-danger: var(--color-red-250);
     --color-interactive-foreground-focus-danger: var(--color-red-900);
     --color-interactive-border-focus-danger: var(--color-red-300);
+    --color-interactive-outline-focus-danger: var(--color-red-500);
     --color-shadow-danger: color-mix(
       in srgb,
       var(--color-red-1000) 25%,
@@ -269,9 +286,34 @@ p {
     --color-interactive-background-focus-neutral: var(--color-gray-750);
     --color-interactive-foreground-focus-neutral: var(--color-gray-100);
     --color-interactive-border-focus-neutral: var(--color-gray-700);
+    --color-interactive-outline-focus-neutral: var(--color-blue-300);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
+      transparent
+    );
+
+    /* Primary colors */
+    --color-background-primary: var(--color-blue-900);
+    --color-foreground-primary: var(--color-blue-100);
+    --color-background-surface-primary: var(--color-blue-850);
+    --color-border-surface-primary: var(--color-blue-800);
+    --color-interactive-background-default-primary: var(--color-blue-800);
+    --color-interactive-foreground-default-primary: var(--color-blue-100);
+    --color-interactive-border-default-primary: var(--color-blue-750);
+    --color-interactive-background-hover-primary: var(--color-blue-750);
+    --color-interactive-foreground-hover-primary: var(--color-blue-100);
+    --color-interactive-border-hover-primary: var(--color-blue-700);
+    --color-interactive-background-active-primary: var(--color-blue-700);
+    --color-interactive-foreground-active-primary: var(--color-blue-100);
+    --color-interactive-border-active-primary: var(--color-blue-650);
+    --color-interactive-background-focus-primary: var(--color-blue-750);
+    --color-interactive-foreground-focus-primary: var(--color-blue-100);
+    --color-interactive-border-focus-primary: var(--color-blue-700);
+    --color-interactive-outline-focus-primary: var(--color-blue-300);
+    --color-shadow-primary: color-mix(
+      in srgb,
+      var(--color-blue-1000) 25%,
       transparent
     );
 
@@ -292,6 +334,7 @@ p {
     --color-interactive-background-focus-danger: var(--color-red-750);
     --color-interactive-foreground-focus-danger: var(--color-red-100);
     --color-interactive-border-focus-danger: var(--color-red-700);
+    --color-interactive-outline-focus-danger: var(--color-red-500);
     --color-shadow-danger: color-mix(
       in srgb,
       var(--color-red-1000) 25%,
