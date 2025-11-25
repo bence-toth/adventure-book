@@ -73,7 +73,7 @@ describe("DebugNavigation Component", () => {
         </MemoryRouter>
       );
 
-      expect(screen.getByText("Navigation")).toBeInTheDocument();
+      expect(screen.getByText("Passages")).toBeInTheDocument();
     });
 
     it("renders introduction link", () => {

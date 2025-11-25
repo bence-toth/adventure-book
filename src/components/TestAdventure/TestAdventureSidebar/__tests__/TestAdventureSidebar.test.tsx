@@ -366,7 +366,7 @@ describe("TestAdventureSidebar", () => {
         debugModeEnabled: true,
       });
 
-      expect(await screen.findByText("Navigation")).toBeInTheDocument();
+      expect(await screen.findByText("Passages")).toBeInTheDocument();
       expect(screen.getByTestId("debug-nav-introduction")).toBeInTheDocument();
     });
 
@@ -378,7 +378,7 @@ describe("TestAdventureSidebar", () => {
       });
 
       expect(await screen.findByText("Inventory")).toBeInTheDocument();
-      expect(screen.queryByText("Navigation")).not.toBeInTheDocument();
+      expect(screen.queryByText("Passages")).not.toBeInTheDocument();
       expect(
         screen.queryByTestId("debug-nav-introduction")
       ).not.toBeInTheDocument();
