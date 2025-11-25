@@ -38,7 +38,7 @@ export const AdventureNavigation = ({
     <TopBarNav as="nav" aria-label="Main navigation">
       <ButtonLink
         to={testRoute}
-        selected={isActive(testRoute)}
+        variant={isActive(testRoute) ? "primary" : "neutral"}
         size="small"
         icon={Play}
       >
@@ -46,7 +46,7 @@ export const AdventureNavigation = ({
       </ButtonLink>
       <ButtonLink
         to={editRoute}
-        selected={isActive(editRoute)}
+        variant={isActive(editRoute) ? "primary" : "neutral"}
         size="small"
         icon={PenTool}
       >

@@ -5,18 +5,18 @@ import { StyledLink, IconWrapper, TextWrapper } from "./ButtonLink.styles";
 
 export interface ButtonLinkProps extends Omit<LinkProps, "className"> {
   children: ReactNode;
-  selected?: boolean;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
+  variant?: "neutral" | "primary";
   size?: "default" | "small";
   "data-testid"?: string;
 }
 
 export const ButtonLink = ({
   children,
-  selected,
   icon,
   className,
+  variant,
   size,
   "data-testid": dataTestId,
   ...props
@@ -33,9 +33,9 @@ export const ButtonLink = ({
     <StyledLink
       className={className}
       $size={size ?? "default"}
-      $selected={selected ?? false}
+      $variant={variant ?? "neutral"}
       data-testid={dataTestId}
-      aria-current={selected ? "page" : undefined}
+      aria-current={variant === "primary" ? "page" : undefined}
       {...props}
     >
       {iconElement && <IconWrapper>{iconElement}</IconWrapper>}

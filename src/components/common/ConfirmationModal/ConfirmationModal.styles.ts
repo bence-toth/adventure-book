@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getInteractiveColor } from "@/utils/colorHelpers";
 
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -12,7 +13,7 @@ export const ModalOverlay = styled.div`
 
 export const Dialog = styled.dialog`
   border: var(--border-width-surface) solid
-    var(--color-interactive-border-default-neutral);
+    ${getInteractiveColor("neutral", "border", "default")};
   border-radius: var(--space-1);
   padding: 0;
   max-width: var(--size-modal-dialog-max-width);

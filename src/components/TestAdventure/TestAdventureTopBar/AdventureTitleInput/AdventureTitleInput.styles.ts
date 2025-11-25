@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getInteractiveColor } from "@/utils/colorHelpers";
 
 export const TopBarTitleInput = styled.input`
   font-family: var(--font-family-display);
@@ -13,11 +14,11 @@ export const TopBarTitleInput = styled.input`
   field-sizing: content;
 
   &:hover {
-    border-color: var(--color-interactive-border-hover-neutral);
+    border-color: ${getInteractiveColor("neutral", "border", "hover")};
   }
 
   &:focus-visible {
-    border-color: var(--color-interactive-border-focus-neutral);
+    border-color: ${getInteractiveColor("neutral", "border", "focus")};
     outline-offset: var(--space-1);
   }
 `;

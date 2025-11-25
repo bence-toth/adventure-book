@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getInteractiveColor } from "@/utils/colorHelpers";
 
 export const ToggleButtonContainer = styled.label`
   display: inline-flex;
@@ -24,29 +25,29 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
   border-radius: calc(var(--size-toggle-button-height) * 0.5);
   background: ${(props) =>
     props.$checked
-      ? "var(--color-interactive-background-active-neutral)"
-      : "var(--color-interactive-background-default-neutral)"};
+      ? getInteractiveColor("neutral", "background", "active")
+      : getInteractiveColor("neutral", "background", "default")};
   border: var(--border-width-interactive) solid
     ${(props) =>
       props.$checked
-        ? "var(--color-interactive-border-active-neutral)"
-        : "var(--color-interactive-border-default-neutral)"};
+        ? getInteractiveColor("neutral", "border", "active")
+        : getInteractiveColor("neutral", "border", "default")};
   transition: background-color 0.2s ease, border-color 0.2s ease;
 
   ${ToggleButtonContainer}:hover & {
     background: ${(props) =>
       props.$checked
-        ? "var(--color-interactive-background-active-neutral)"
-        : "var(--color-interactive-background-hover-neutral)"};
+        ? getInteractiveColor("neutral", "background", "active")
+        : getInteractiveColor("neutral", "background", "hover")};
     border-color: ${(props) =>
       props.$checked
-        ? "var(--color-interactive-border-active-neutral)"
-        : "var(--color-interactive-border-hover-neutral)"};
+        ? getInteractiveColor("neutral", "border", "active")
+        : getInteractiveColor("neutral", "border", "hover")};
   }
 
   ${HiddenCheckbox}:focus-visible + & {
     outline: var(--border-width-interactive) solid
-      var(--color-interactive-outline-focus-neutral);
+      ${getInteractiveColor("neutral", "outline", "focus")};
     outline-offset: var(--space-1);
   }
 `;
@@ -56,7 +57,7 @@ export const ToggleThumb = styled.span<{ $checked: boolean }>`
   aspect-ratio: 1 / 1;
   height: calc(100% - calc(2 * var(--border-width-interactive)));
   border-radius: 50%;
-  background: var(--color-interactive-foreground-default-neutral);
+  background: ${getInteractiveColor("neutral", "foreground", "default")};
   box-shadow: 0 var(--space-0-25) var(--space-0-5) var(--color-shadow-neutral);
   transform: ${(props) =>
     props.$checked

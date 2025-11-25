@@ -1,9 +1,11 @@
 import styled from "styled-components";
+import { getInteractiveColor } from "@/utils/colorHelpers";
+
+type ButtonVariant = "neutral" | "danger" | "primary";
 
 export const StyledButton = styled.button<{
-  $variant: "neutral" | "danger";
+  $variant: ButtonVariant;
   $size: "default" | "small";
-  $selected: boolean;
   $hasChildren: boolean;
 }>`
   display: inline-flex;
@@ -25,66 +27,45 @@ export const StyledButton = styled.button<{
   cursor: pointer;
   text-decoration: none;
   background: ${(props) =>
-    props.$variant === "danger"
-      ? "var(--color-interactive-background-default-danger)"
-      : "var(--color-interactive-background-default-neutral)"};
+    getInteractiveColor(props.$variant, "background", "default")};
   color: ${(props) =>
-    props.$variant === "danger"
-      ? "var(--color-interactive-foreground-default-danger)"
-      : "var(--color-interactive-foreground-default-neutral)"};
+    getInteractiveColor(props.$variant, "foreground", "default")};
   border: var(--border-width-interactive) solid
-    ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-border-default-danger)"
-        : "var(--color-interactive-border-default-neutral)"};
+    ${(props) => getInteractiveColor(props.$variant, "border", "default")};
 
   &:hover {
     background: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-background-hover-danger)"
-        : "var(--color-interactive-background-hover-neutral)"};
+      getInteractiveColor(props.$variant, "background", "hover")};
     color: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-foreground-hover-danger)"
-        : "var(--color-interactive-foreground-hover-neutral)"};
+      getInteractiveColor(props.$variant, "foreground", "hover")};
     border-color: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-border-hover-danger)"
-        : "var(--color-interactive-border-hover-neutral)"};
+      getInteractiveColor(props.$variant, "border", "hover")};
   }
 
   &:active {
     background: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-background-active-danger)"
-        : "var(--color-interactive-background-active-neutral)"};
+      getInteractiveColor(props.$variant, "background", "active")};
     color: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-foreground-active-danger)"
-        : "var(--color-interactive-foreground-active-neutral)"};
+      getInteractiveColor(props.$variant, "foreground", "active")};
     border-color: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-border-active-danger)"
-        : "var(--color-interactive-border-active-neutral)"};
+      getInteractiveColor(props.$variant, "border", "active")};
   }
 
   &:focus-visible {
     background: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-background-focus-danger)"
-        : "var(--color-interactive-background-focus-neutral)"};
+      getInteractiveColor(props.$variant, "background", "focus")};
     color: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-foreground-focus-danger)"
-        : "var(--color-interactive-foreground-focus-neutral)"};
+      getInteractiveColor(props.$variant, "foreground", "focus")};
     border-color: ${(props) =>
-      props.$variant === "danger"
-        ? "var(--color-interactive-border-focus-danger)"
-        : "var(--color-interactive-border-focus-neutral)"};
+      getInteractiveColor(props.$variant, "border", "focus")};
     outline-offset: var(--space-1);
     ${(props) =>
-      props.$variant === "danger"
-        ? "outline-color: var(--color-interactive-outline-focus-danger);"
+      props.$variant !== "neutral"
+        ? `outline-color: ${getInteractiveColor(
+            props.$variant,
+            "outline",
+            "focus"
+          )};`
         : ""};
   }
 `;

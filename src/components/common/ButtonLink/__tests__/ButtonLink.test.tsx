@@ -60,11 +60,11 @@ describe("ButtonLink Component", () => {
     });
   });
 
-  describe("Selected State", () => {
-    it("accepts selected prop", () => {
+  describe("Variants", () => {
+    it("accepts neutral variant", () => {
       renderWithRouter(
-        <ButtonLink to="/test" selected>
-          Selected
+        <ButtonLink to="/test" variant="neutral">
+          Neutral
         </ButtonLink>
       );
 
@@ -72,10 +72,10 @@ describe("ButtonLink Component", () => {
       expect(link).toBeInTheDocument();
     });
 
-    it("accepts selected false", () => {
+    it("accepts primary variant", () => {
       renderWithRouter(
-        <ButtonLink to="/test" selected={false}>
-          Not Selected
+        <ButtonLink to="/test" variant="primary">
+          Primary
         </ButtonLink>
       );
 
@@ -83,7 +83,7 @@ describe("ButtonLink Component", () => {
       expect(link).toBeInTheDocument();
     });
 
-    it("works without selected prop", () => {
+    it("works without variant prop (defaults to neutral)", () => {
       renderWithRouter(<ButtonLink to="/test">Default</ButtonLink>);
 
       const link = screen.getByRole("link");
@@ -103,9 +103,9 @@ describe("ButtonLink Component", () => {
       expect(link).toHaveClass("custom-class");
     });
 
-    it("works with custom className and selected state", () => {
+    it("works with custom className and variant", () => {
       renderWithRouter(
-        <ButtonLink to="/test" selected className="custom-class">
+        <ButtonLink to="/test" variant="primary" className="custom-class">
           Multiple Classes
         </ButtonLink>
       );
@@ -173,11 +173,11 @@ describe("ButtonLink Component", () => {
   });
 
   describe("Complex Scenarios", () => {
-    it("renders link with icon and selected state", () => {
+    it("renders link with icon and variant", () => {
       const TestIcon = () => <span data-testid="icon">★</span>;
 
       renderWithRouter(
-        <ButtonLink to="/test" selected icon={TestIcon}>
+        <ButtonLink to="/test" variant="primary" icon={TestIcon}>
           Favorite
         </ButtonLink>
       );
@@ -197,7 +197,7 @@ describe("ButtonLink Component", () => {
         <ButtonLink
           to="/home"
           icon={TestIcon}
-          selected
+          variant="primary"
           size="small"
           className="home-link"
         >
