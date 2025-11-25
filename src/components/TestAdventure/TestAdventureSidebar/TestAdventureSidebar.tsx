@@ -2,15 +2,12 @@ import { useState, useEffect } from "react";
 import { getCurrentInventory } from "@/data/adventureLoader";
 import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "@/components/common/Sidebar/Sidebar";
-import {
-  InventoryTitle,
-  InventoryEmpty,
-  InventoryList,
-} from "./TestAdventureSidebar.styles";
+import { Inventory } from "./Inventory/Inventory";
+import { DebugInventory } from "./DebugInventory/DebugInventory";
 
 export const TestAdventureSidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const { adventure, adventureId } = useAdventure();
+  const { adventure, adventureId, debugModeEnabled } = useAdventure();
 
   useEffect(() => {
     if (!adventureId) {
@@ -40,7 +37,13 @@ export const TestAdventureSidebar = () => {
     };
   }, [adventureId]);
 
-  if (!adventure) {
+  const handleInventoryChange = () => {
+    if (!adventureId) return;
+    setCurrentInventoryIds(getCurrentInventory(adventureId));
+    window.dispatchEvent(new Event("inventoryUpdate"));
+  };
+
+  if (!adventure || !adventureId) {
     return null;
   }
 
@@ -50,15 +53,15 @@ export const TestAdventureSidebar = () => {
 
   return (
     <Sidebar>
-      <InventoryTitle>Inventory</InventoryTitle>
-      {currentItems.length === 0 ? (
-        <InventoryEmpty>No items yet</InventoryEmpty>
+      {debugModeEnabled ? (
+        <DebugInventory
+          allItems={adventure.items}
+          currentItemIds={currentInventoryIds}
+          adventureId={adventureId}
+          onInventoryChange={handleInventoryChange}
+        />
       ) : (
-        <InventoryList>
-          {currentItems.map((item) => (
-            <li key={item.id}>{item.name}</li>
-          ))}
-        </InventoryList>
+        <Inventory items={currentItems} />
       )}
     </Sidebar>
   );

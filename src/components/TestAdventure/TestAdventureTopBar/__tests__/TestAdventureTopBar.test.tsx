@@ -46,7 +46,8 @@ describe("TestAdventureTopBar Component", () => {
 
     it("returns null when adventureId is not available", () => {
       renderWithAdventure(<TestAdventureTopBar />, {
-        route: ROUTES.ROOT,
+        adventureId: "",
+        adventure: null,
       });
 
       const header = screen.queryByRole("banner");

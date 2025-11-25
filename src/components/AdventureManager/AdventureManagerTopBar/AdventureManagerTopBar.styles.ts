@@ -1,5 +1,11 @@
 import styled from "styled-components";
 
+export const TopBarStartContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+`;
+
 export const TopBarLogoIcon = styled.div`
   display: flex;
   font-size: var(--font-size-xl);

@@ -9,6 +9,8 @@ export interface AdventureContextType {
   adventureId: string | null;
   loading: boolean;
   error: string | null;
+  debugModeEnabled: boolean;
+  setDebugModeEnabled: (enabled: boolean) => void;
 }
 
 export const AdventureContext = createContext<AdventureContextType | undefined>(
@@ -24,6 +26,7 @@ export const AdventureProvider = ({
   const [adventure, setAdventure] = useState<Adventure | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [debugModeEnabled, setDebugModeEnabled] = useState(false);
 
   useEffect(() => {
     if (!adventureId) {
@@ -61,6 +64,8 @@ export const AdventureProvider = ({
         adventureId: adventureId ?? null,
         loading,
         error,
+        debugModeEnabled,
+        setDebugModeEnabled,
       }}
     >
       {children}

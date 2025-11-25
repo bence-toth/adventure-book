@@ -1,8 +1,23 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { screen, act } from "@testing-library/react";
-import { setupTestAdventure } from "@/__tests__/mockAdventureData";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { screen, act, fireEvent } from "@testing-library/react";
+import {
+  setupTestAdventure,
+  mockAdventure,
+} from "@/__tests__/mockAdventureData";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { TestAdventureSidebar } from "../TestAdventureSidebar";
+import * as inventoryManagement from "@/utils/inventoryManagement";
+
+vi.mock("@/utils/inventoryManagement", async () => {
+  const actual = await vi.importActual<
+    typeof import("@/utils/inventoryManagement")
+  >("@/utils/inventoryManagement");
+  return {
+    ...actual,
+    addItemToInventory: vi.fn(actual.addItemToInventory),
+    removeItemFromInventory: vi.fn(actual.removeItemFromInventory),
+  };
+});
 
 const TEST_STORY_ID = "test-adventure-id";
 
@@ -253,5 +268,95 @@ describe("TestAdventureSidebar", () => {
     expect(addEventListenerCallCount).toBe(initialCallCount);
 
     window.addEventListener = originalAddEventListener;
+  });
+
+  describe("Debug Mode", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it("should render debug inventory when debug mode is enabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: true,
+      });
+
+      // Both modes show "Inventory" as the title, but debug mode shows toggles
+      expect(await screen.findByText("Inventory")).toBeInTheDocument();
+      // Verify it's debug mode by checking for toggle switches
+      expect(
+        screen.getByRole("switch", { name: "Mock Item One" })
+      ).toBeInTheDocument();
+    });
+
+    it("should render normal inventory when debug mode is disabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: false,
+      });
+
+      expect(await screen.findByText("Inventory")).toBeInTheDocument();
+      // Verify it's normal mode by checking no toggle switches exist
+      expect(screen.queryByRole("switch")).not.toBeInTheDocument();
+    });
+
+    it("should show all items with checkboxes in debug mode", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: true,
+      });
+
+      expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
+      expect(await screen.findByText("Mock Item Two")).toBeInTheDocument();
+    });
+
+    it("should allow toggling items in debug mode", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: true,
+      });
+
+      const toggle = (await screen.findByRole("switch", {
+        name: "Mock Item One",
+      })) as HTMLInputElement;
+      expect(toggle.checked).toBe(false);
+
+      fireEvent.click(toggle);
+
+      expect(inventoryManagement.addItemToInventory).toHaveBeenCalledWith(
+        TEST_STORY_ID,
+        "mock_item_1"
+      );
+    });
+
+    it("should reflect current inventory state in debug mode", async () => {
+      const data = {
+        [TEST_STORY_ID]: {
+          passageId: null,
+          inventory: ["mock_item_1"],
+        },
+      };
+      localStorage.setItem("adventure-book/progress", JSON.stringify(data));
+
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: true,
+      });
+
+      const toggle1 = (await screen.findByRole("switch", {
+        name: "Mock Item One",
+      })) as HTMLInputElement;
+      const toggle2 = (await screen.findByRole("switch", {
+        name: "Mock Item Two",
+      })) as HTMLInputElement;
+
+      expect(toggle1.checked).toBe(true);
+      expect(toggle2.checked).toBe(false);
+    });
   });
 });
