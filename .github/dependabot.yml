@@ -13,8 +13,15 @@ updates:
       # Group all React-related dependencies together
       react:
         patterns:
-          - "react*"
+          - "react"
+          - "react-*"
+          - "react-router-dom"
+          - "styled-components"
           - "@types/react*"
+          - "@types/react-router-dom"
+          - "@types/styled-components"
+          - "@floating-ui/react"
+          - "lucide-react"
       # Group testing dependencies together
       testing:
         patterns:
@@ -26,9 +33,11 @@ updates:
       # Group linting and code quality tools
       linting:
         patterns:
-          - "eslint*"
+          - "eslint"
+          - "eslint-*"
           - "@eslint/*"
-          - "stylelint*"
+          - "stylelint"
+          - "stylelint-*"
           - "typescript-eslint"
       # Group TypeScript-related packages
       typescript:
@@ -37,6 +46,7 @@ updates:
           - "@types/*"
         exclude-patterns:
           - "@types/react*"
+          - "@types/styled-components"
       # Group build tools
       build-tools:
         patterns:
