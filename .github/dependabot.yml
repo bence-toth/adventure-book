@@ -46,6 +46,7 @@ updates:
           - "@types/*"
         exclude-patterns:
           - "@types/react*"
+          - "@types/react-router-dom"
           - "@types/styled-components"
       # Group build tools
       build-tools:
