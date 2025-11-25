@@ -179,6 +179,20 @@ describe("PassageLink Component", () => {
       expect(container.querySelector("svg")).toBeInTheDocument();
     });
 
+    it("renders move-up icon for passage without choices (default)", () => {
+      const mockOnClick = vi.fn();
+      const passage: Passage = {
+        paragraphs: ["No choices passage"],
+      };
+
+      const { container } = render(
+        <PassageLink passageId={11} passage={passage} onClick={mockOnClick} />
+      );
+
+      expect(screen.getByText("Passage 11")).toBeInTheDocument();
+      expect(container.querySelector("svg")).toBeInTheDocument();
+    });
+
     it("calls onClick when passage link is clicked", () => {
       const mockOnClick = vi.fn();
       const passage: Passage = {
