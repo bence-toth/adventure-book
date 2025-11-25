@@ -193,7 +193,7 @@ const updateYamlTitle = (yamlContent: string, newTitle: string): string => {
 
   // Check if we need to quote the title (if it contains special characters)
   const needsQuotes =
-    /[:#\[\]{}|>@`]/.test(newTitle) || newTitle.trim() !== newTitle;
+    /[:#[\]{}|>@`]/.test(newTitle) || newTitle.trim() !== newTitle;
   const formattedTitle = needsQuotes ? `"${newTitle}"` : newTitle;
 
   return yamlContent.replace(titlePattern, `$1${formattedTitle}$2`);

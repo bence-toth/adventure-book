@@ -78,6 +78,7 @@ export const renderWithAdventure = (
       error: error ?? null,
       debugModeEnabled,
       setDebugModeEnabled: () => {},
+      reloadAdventure: () => {},
     };
 
     return rtlRender(ui, {

@@ -183,6 +183,7 @@ describe("PassageLink Component", () => {
       const mockOnClick = vi.fn();
       const passage: Passage = {
         paragraphs: ["No choices passage"],
+        choices: [],
       };
 
       const { container } = render(
