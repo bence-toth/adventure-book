@@ -358,5 +358,30 @@ describe("TestAdventureSidebar", () => {
       expect(toggle1.checked).toBe(true);
       expect(toggle2.checked).toBe(false);
     });
+
+    it("should render debug navigation when debug mode is enabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: true,
+      });
+
+      expect(await screen.findByText("Navigation")).toBeInTheDocument();
+      expect(screen.getByTestId("debug-nav-introduction")).toBeInTheDocument();
+    });
+
+    it("should not render debug navigation when debug mode is disabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: false,
+      });
+
+      expect(await screen.findByText("Inventory")).toBeInTheDocument();
+      expect(screen.queryByText("Navigation")).not.toBeInTheDocument();
+      expect(
+        screen.queryByTestId("debug-nav-introduction")
+      ).not.toBeInTheDocument();
+    });
   });
 });

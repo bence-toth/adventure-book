@@ -4,6 +4,7 @@ import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "@/components/common/Sidebar/Sidebar";
 import { Inventory } from "./Inventory/Inventory";
 import { DebugInventory } from "./DebugInventory/DebugInventory";
+import { DebugNavigation } from "./DebugNavigation/DebugNavigation";
 
 export const TestAdventureSidebar = () => {
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
@@ -54,12 +55,15 @@ export const TestAdventureSidebar = () => {
   return (
     <Sidebar>
       {debugModeEnabled ? (
-        <DebugInventory
-          allItems={adventure.items}
-          currentItemIds={currentInventoryIds}
-          adventureId={adventureId}
-          onInventoryChange={handleInventoryChange}
-        />
+        <>
+          <DebugInventory
+            allItems={adventure.items}
+            currentItemIds={currentInventoryIds}
+            adventureId={adventureId}
+            onInventoryChange={handleInventoryChange}
+          />
+          <DebugNavigation adventure={adventure} adventureId={adventureId} />
+        </>
       ) : (
         <Inventory items={currentItems} />
       )}
