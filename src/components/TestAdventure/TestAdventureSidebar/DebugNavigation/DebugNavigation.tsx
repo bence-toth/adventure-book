@@ -13,11 +13,13 @@ import {
 interface DebugNavigationProps {
   adventure: Adventure;
   adventureId: string;
+  currentPassageId: number | null;
 }
 
 export const DebugNavigation = ({
   adventure,
   adventureId,
+  currentPassageId,
 }: DebugNavigationProps) => {
   const navigate = useNavigate();
 
@@ -47,6 +49,7 @@ export const DebugNavigation = ({
             icon="play"
             label="Introduction"
             onClick={handleIntroductionClick}
+            isActive={currentPassageId === null}
             data-testid="debug-nav-introduction"
           />
         </DebugNavigationItem>
@@ -58,6 +61,7 @@ export const DebugNavigation = ({
                 passageId={passageId}
                 passage={passage}
                 onClick={() => handlePassageClick(passageId)}
+                isActive={currentPassageId === passageId}
                 data-testid={`debug-nav-passage-${passageId}`}
               />
             </DebugNavigationItem>

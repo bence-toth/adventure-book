@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { getCurrentInventory } from "@/data/adventureLoader";
 import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "@/components/common/Sidebar/Sidebar";
@@ -7,8 +8,12 @@ import { DebugInventory } from "./DebugInventory/DebugInventory";
 import { DebugNavigation } from "./DebugNavigation/DebugNavigation";
 
 export const TestAdventureSidebar = () => {
+  const { id } = useParams<{ id: string }>();
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
   const { adventure, adventureId, debugModeEnabled } = useAdventure();
+
+  // Parse current passage ID from URL (null means we're on introduction)
+  const currentPassageId = id ? parseInt(id, 10) : null;
 
   useEffect(() => {
     if (!adventureId) {
@@ -62,7 +67,11 @@ export const TestAdventureSidebar = () => {
             adventureId={adventureId}
             onInventoryChange={handleInventoryChange}
           />
-          <DebugNavigation adventure={adventure} adventureId={adventureId} />
+          <DebugNavigation
+            adventure={adventure}
+            adventureId={adventureId}
+            currentPassageId={currentPassageId}
+          />
         </>
       ) : (
         <Inventory items={currentItems} />

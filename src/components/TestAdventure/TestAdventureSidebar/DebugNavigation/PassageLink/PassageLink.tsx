@@ -17,6 +17,7 @@ interface PassageLinkProps {
   passage?: Passage;
   label?: string;
   onClick: () => void;
+  isActive?: boolean;
   "data-testid"?: string;
 }
 
@@ -68,6 +69,7 @@ export const PassageLink = ({
   passage,
   label,
   onClick,
+  isActive = false,
   ...props
 }: PassageLinkProps) => {
   let Icon: ComponentType<{ size?: number; strokeWidth?: number }>;
@@ -90,6 +92,7 @@ export const PassageLink = ({
       onClick={onClick}
       icon={Icon}
       size="small"
+      variant={isActive ? "primary" : "neutral"}
       aria-label={displayLabel}
       {...props}
     >

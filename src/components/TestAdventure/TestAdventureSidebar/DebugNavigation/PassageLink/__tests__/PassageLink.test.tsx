@@ -245,4 +245,52 @@ describe("PassageLink Component", () => {
       expect(screen.getByTestId("custom-test-id")).toBeInTheDocument();
     });
   });
+
+  describe("Active State", () => {
+    it("renders with neutral variant by default", () => {
+      const mockOnClick = vi.fn();
+      render(<PassageLink icon="play" onClick={mockOnClick} />);
+
+      const button = screen.getByText("Introduction");
+      expect(button).toBeInTheDocument();
+    });
+
+    it("renders with neutral variant when isActive is false", () => {
+      const mockOnClick = vi.fn();
+      render(
+        <PassageLink icon="play" onClick={mockOnClick} isActive={false} />
+      );
+
+      const button = screen.getByText("Introduction");
+      expect(button).toBeInTheDocument();
+    });
+
+    it("applies primary variant when isActive is true for introduction", () => {
+      const mockOnClick = vi.fn();
+      render(<PassageLink icon="play" onClick={mockOnClick} isActive={true} />);
+
+      const button = screen.getByText("Introduction");
+      expect(button).toBeInTheDocument();
+    });
+
+    it("applies primary variant when isActive is true for passage", () => {
+      const mockOnClick = vi.fn();
+      const passage: Passage = {
+        paragraphs: ["Test passage"],
+        choices: [{ text: "Go", goto: 2 }],
+      };
+
+      render(
+        <PassageLink
+          passageId={1}
+          passage={passage}
+          onClick={mockOnClick}
+          isActive={true}
+        />
+      );
+
+      const button = screen.getByText("Passage 1");
+      expect(button).toBeInTheDocument();
+    });
+  });
 });

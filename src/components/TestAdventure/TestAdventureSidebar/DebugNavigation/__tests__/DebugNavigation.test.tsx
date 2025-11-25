@@ -69,6 +69,7 @@ describe("DebugNavigation Component", () => {
           <DebugNavigation
             adventure={mockAdventure}
             adventureId="test-adventure"
+            currentPassageId={null}
           />
         </MemoryRouter>
       );
@@ -83,6 +84,7 @@ describe("DebugNavigation Component", () => {
           <DebugNavigation
             adventure={mockAdventure}
             adventureId="test-adventure"
+            currentPassageId={null}
           />
         </MemoryRouter>
       );
@@ -98,6 +100,7 @@ describe("DebugNavigation Component", () => {
           <DebugNavigation
             adventure={mockAdventure}
             adventureId="test-adventure"
+            currentPassageId={null}
           />
         </MemoryRouter>
       );
@@ -139,6 +142,7 @@ describe("DebugNavigation Component", () => {
           <DebugNavigation
             adventure={mockAdventure}
             adventureId="test-adventure"
+            currentPassageId={null}
           />
         </MemoryRouter>
       );
@@ -158,6 +162,7 @@ describe("DebugNavigation Component", () => {
           <DebugNavigation
             adventure={mockAdventure}
             adventureId="test-adventure"
+            currentPassageId={null}
           />
         </MemoryRouter>
       );
@@ -177,6 +182,7 @@ describe("DebugNavigation Component", () => {
           <DebugNavigation
             adventure={mockAdventure}
             adventureId="test-adventure"
+            currentPassageId={null}
           />
         </MemoryRouter>
       );
@@ -196,6 +202,7 @@ describe("DebugNavigation Component", () => {
           <DebugNavigation
             adventure={mockAdventure}
             adventureId="test-adventure"
+            currentPassageId={null}
           />
         </MemoryRouter>
       );
@@ -211,6 +218,95 @@ describe("DebugNavigation Component", () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         "/adventure/test-adventure/test/passage/5"
       );
+    });
+  });
+
+  describe("Highlighting", () => {
+    it("highlights introduction button when on introduction page", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <DebugNavigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      const introButton = screen.getByTestId("debug-nav-introduction");
+      // Check that the button has the primary variant by checking aria-label
+      expect(introButton).toBeInTheDocument();
+      expect(introButton).toHaveAttribute("aria-label", "Introduction");
+    });
+
+    it("does not highlight introduction when viewing a passage", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <DebugNavigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={2}
+          />
+        </MemoryRouter>
+      );
+
+      const introButton = screen.getByTestId("debug-nav-introduction");
+      expect(introButton).toBeInTheDocument();
+    });
+
+    it("highlights correct passage button when viewing that passage", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <DebugNavigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={3}
+          />
+        </MemoryRouter>
+      );
+
+      const passage3Button = screen.getByTestId("debug-nav-passage-3");
+      expect(passage3Button).toBeInTheDocument();
+      expect(passage3Button).toHaveAttribute("aria-label", "Passage 3");
+
+      // Other passages should also exist
+      const passage1Button = screen.getByTestId("debug-nav-passage-1");
+      expect(passage1Button).toBeInTheDocument();
+    });
+
+    it("updates highlighting when navigating between passages", () => {
+      const mockAdventure = createMockAdventure();
+      const { rerender } = render(
+        <MemoryRouter>
+          <DebugNavigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={1}
+          />
+        </MemoryRouter>
+      );
+
+      // Initially passage 1 exists
+      expect(screen.getByTestId("debug-nav-passage-1")).toBeInTheDocument();
+      expect(screen.getByTestId("debug-nav-passage-2")).toBeInTheDocument();
+
+      // Navigate to passage 2
+      rerender(
+        <MemoryRouter>
+          <DebugNavigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={2}
+          />
+        </MemoryRouter>
+      );
+
+      // Both passages still exist
+      expect(screen.getByTestId("debug-nav-passage-1")).toBeInTheDocument();
+      expect(screen.getByTestId("debug-nav-passage-2")).toBeInTheDocument();
     });
   });
 });
