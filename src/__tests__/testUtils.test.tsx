@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderWithAdventure } from "./testUtils";
+import { renderWithAdventure, waitFor } from "./testUtils";
 import { useAdventure } from "@/context/useAdventure";
 import { useParams } from "react-router-dom";
 import { mockAdventure } from "./mockAdventureData";
@@ -115,7 +115,7 @@ describe("renderWithAdventure", () => {
   });
 
   describe("Real Provider Behavior", () => {
-    it("uses real AdventureProvider when no mock parameters provided", () => {
+    it("uses real AdventureProvider when no mock parameters provided", async () => {
       // This uses the real provider which will attempt to load from IndexedDB
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "nonexistent-id",
@@ -123,6 +123,11 @@ describe("renderWithAdventure", () => {
 
       // Real provider starts with loading state
       expect(getByTestId("test-component")).toBeInTheDocument();
+
+      // Wait for loading to complete to avoid unhandled promise rejections
+      await waitFor(() => {
+        expect(getByTestId("loading-state")).toHaveTextContent("not-loading");
+      });
     });
   });
 
