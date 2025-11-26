@@ -36,41 +36,17 @@ Object.defineProperty(window, "localStorage", {
   writable: true,
 });
 
-// Suppress expected console warnings and errors in tests
-// Save original methods
-const originalConsoleError = console.error;
+// Suppress expected console warnings in tests
 const originalConsoleWarn = console.warn;
 
-// Mock console methods to filter out expected test errors
-console.error = (...args: unknown[]) => {
-  const message = String(args[0]);
-
-  // Filter out expected error messages that are intentionally triggered in tests
-  if (
-    message.includes("Error loading stories:") ||
-    message.includes("Error deleting adventure:") ||
-    message.includes("Error creating adventure:")
-  ) {
-    return;
-  }
-
-  // Call original for unexpected errors
-  originalConsoleError(...args);
-};
-
+// Mock console.warn to filter out expected test warnings
 console.warn = (...args: unknown[]) => {
   const message = String(args[0]);
 
-  // Filter out expected localStorage warnings in tests
+  // Filter out expected warnings in tests
   if (
     message.includes("Failed to get progress data from localStorage:") ||
-    message.includes("Failed to save progress data to localStorage:") ||
-    message.includes("Failed to save passage ID to localStorage:") ||
-    message.includes("Failed to get passage ID from localStorage:") ||
-    message.includes("Failed to clear passage ID from localStorage:") ||
-    message.includes("Failed to save inventory to localStorage:") ||
-    message.includes("Failed to get inventory from localStorage:") ||
-    message.includes("Failed to clear inventory from localStorage:")
+    message.includes("Failed to save progress data to localStorage:")
   ) {
     return;
   }
