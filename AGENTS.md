@@ -379,6 +379,101 @@ None of these changes should require code modifications or break existing tests.
 - **Think in Components**: Break complex UI into smaller, focused components
 - **Optimize for Readability**: Code is read more often than written
 
+## Development Scripts
+
+### Core Development Commands
+
+```bash
+# Development server
+npm run dev              # Start Vite dev server with HMR
+
+# Building
+npm run build            # Type check and build for production
+npm run preview          # Preview production build locally
+```
+
+### Testing Commands
+
+```bash
+# Running tests
+npm test                 # Run tests in watch mode
+npm run test:run         # Run tests once (CI mode)
+npm run test:ui          # Open Vitest UI for interactive testing
+npm run test:coverage    # Generate test coverage report
+npm run test:types       # Type check without emitting files
+```
+
+### Linting and Code Quality
+
+```bash
+# Comprehensive linting
+npm run lint             # Run ESLint and Stylelint checks, and unused code detection
+npm run lint:fix         # Auto-fix all linting issues (ESLint + Stylelint)
+
+# JavaScript/TypeScript linting
+npm run lint:ts          # Check JS/TS code quality with ESLint
+npm run lint:ts:fix      # Auto-fix ESLint issues
+
+# CSS linting
+npm run lint:styles      # Check CSS code quality with Stylelint
+npm run lint:styles:fix  # Auto-fix Stylelint issues
+
+# Detect unused code
+npm run lint:unused-code # Check for unused exports and dependencies with Knip
+```
+
+### Pre-Commit Checklist
+
+Before committing changes, ensure:
+
+1. **Tests Pass**: `npm run test:run`
+2. **Types Check**: `npm run test:types`
+3. **Code Quality**: `npm run lint` (or `npm run lint:fix` to auto-fix)
+4. **No Unused Code**: `npm run lint:unused-code`
+5. **Build Works**: `npm run build`
+
+### Common Workflows
+
+#### Feature Development
+
+```bash
+# Start development
+npm run dev
+
+# In another terminal, run tests in watch mode
+npm test
+
+# Before committing
+npm run lint:fix
+npm run test:run
+npm run lint:unused-code
+```
+
+#### Fixing Linting Issues
+
+```bash
+# Check what needs fixing
+npm run lint
+
+# Auto-fix everything possible
+npm run lint:fix
+
+# Fix specific linters
+npm run lint:ts:fix      # Fix JS/TS issues
+npm run lint:styles:fix  # Fix CSS issues
+```
+
+#### Cleaning Up Unused Code
+
+```bash
+# Identify unused exports and dependencies
+npm run lint:unused-code
+
+# Review the output and manually remove unused code
+# Re-run to verify all issues are resolved
+npm run lint:unused-code
+```
+
 ## Getting Help
 
 ### Resources

@@ -81,10 +81,13 @@ npm run build           # Build for production
 npm run preview         # Preview production build
 
 # Linting
-npm run lint            # Run both ESLint and Stylelint
-npm run lint:es         # Run ESLint on JavaScript/TypeScript files
-npm run lint:styles     # Run Stylelint on CSS files
-npm run lint:styles:fix # Run Stylelint with auto-fix
+npm run lint              # Run ESLint, Stylelint, and unused code detection
+npm run lint:ts           # Run ESLint on JavaScript/TypeScript files
+npm run lint:ts:fix       # Run ESLint with auto-fix
+npm run lint:styles       # Run Stylelint on CSS files
+npm run lint:styles:fix   # Run Stylelint with auto-fix
+npm run lint:fix          # Run both ESLint and Stylelint with auto-fix
+npm run lint:unused-code  # Check for unused exports and dependencies
 
 # Testing
 npm test                # Run tests in watch mode
@@ -177,8 +180,9 @@ npm run test:types      # Check TypeScript types
 
 - Use the provided development scripts for consistent tooling
 - Run tests before committing changes
-- Run `npm run lint` to check both JavaScript/TypeScript and CSS code quality
-- Use individual linting commands (`lint:es`, `lint:styles`) for targeted checks
+- Run `npm run lint` to check JavaScript/TypeScript, CSS, and unused code
+- Use `npm run lint:fix` to automatically fix linting issues when possible
+- Use individual linting commands (`lint:ts`, `lint:styles`, `lint:unused-code`) for targeted checks
 - Follow the established project structure and naming conventions
 - Consider performance implications of changes, especially for user interactions
 

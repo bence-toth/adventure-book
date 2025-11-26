@@ -7,17 +7,19 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "npm run lint:es && npm run lint:styles",
-    "lint:es": "eslint .",
+    "lint": "npm run lint:ts && npm run lint:styles && npm run lint:unused-code",
+    "lint:ts": "eslint .",
+    "lint:ts:fix": "eslint . --fix",
     "lint:styles": "stylelint \"src/**/*.css\"",
     "lint:styles:fix": "stylelint \"src/**/*.css\" --fix",
+    "lint:fix": "npm run lint:ts:fix && npm run lint:styles:fix",
+    "lint:unused-code": "knip",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:types": "tsc -b --noEmit",
-    "knip": "knip"
+    "test:types": "tsc -b --noEmit"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.16",
