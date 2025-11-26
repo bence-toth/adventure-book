@@ -2,7 +2,6 @@ import "@testing-library/jest-dom";
 import { beforeEach } from "vitest";
 import "fake-indexeddb/auto";
 
-// Ensure window is available for React 19 compatibility
 if (typeof window === "undefined") {
   throw new Error(
     "window is not defined - jsdom environment may not be properly configured"
