@@ -2,12 +2,6 @@ import "@testing-library/jest-dom";
 import { beforeEach } from "vitest";
 import "fake-indexeddb/auto";
 
-if (typeof window === "undefined") {
-  throw new Error(
-    "window is not defined - jsdom environment may not be properly configured"
-  );
-}
-
 // Create a simple in-memory localStorage implementation for tests
 class LocalStorageMock {
   private store: Record<string, string> = {};
@@ -30,10 +24,12 @@ class LocalStorageMock {
 }
 
 // Mock localStorage for tests with a real implementation
-Object.defineProperty(window, "localStorage", {
-  value: new LocalStorageMock(),
-  writable: true,
-});
+if (typeof window !== "undefined") {
+  Object.defineProperty(window, "localStorage", {
+    value: new LocalStorageMock(),
+    writable: true,
+  });
+}
 
 // Suppress expected console warnings in tests
 const originalConsoleWarn = console.warn;
