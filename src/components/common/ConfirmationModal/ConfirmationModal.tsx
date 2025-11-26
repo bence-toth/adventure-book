@@ -76,6 +76,8 @@ export const ConfirmationModal = ({
         data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.OVERLAY}
       >
         <Dialog
+          // Callback ref to set the floating element, safe to use in render
+          // eslint-disable-next-line react-hooks/refs
           ref={refs.setFloating}
           open
           onClick={(e) => e.stopPropagation()}

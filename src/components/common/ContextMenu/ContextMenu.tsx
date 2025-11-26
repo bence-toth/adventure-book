@@ -58,6 +58,8 @@ export const ContextMenu = ({
   return (
     <FloatingFocusManager context={context} modal={false}>
       <MenuContainer
+        // Callback ref to set the floating element, safe to use in render
+        // eslint-disable-next-line react-hooks/refs
         ref={refs.setFloating}
         style={floatingStyles}
         data-testid={dataTestId || "context-menu"}
