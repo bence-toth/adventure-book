@@ -21,7 +21,7 @@ import {
   getIntroParagraphTestId,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
-import { Button } from "@/components/common";
+import { Button } from "@/components/common/Button/Button";
 import { useAdventure } from "@/context/useAdventure";
 import {
   AdventureLoadError,

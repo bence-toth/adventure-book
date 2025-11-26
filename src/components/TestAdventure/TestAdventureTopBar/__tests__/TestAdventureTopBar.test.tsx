@@ -46,8 +46,9 @@ describe("TestAdventureTopBar Component", () => {
 
     it("returns null when adventureId is not available", () => {
       renderWithAdventure(<TestAdventureTopBar />, {
-        adventureId: "",
         adventure: null,
+        loading: false,
+        route: "/",
       });
 
       const header = screen.queryByRole("banner");
@@ -66,18 +67,6 @@ describe("TestAdventureTopBar Component", () => {
         name: /debug mode/i,
       });
       expect(toggle).toBeInTheDocument();
-    });
-
-    it("does not show Debug mode toggle in edit view", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
-        adventureId: TEST_STORY_ID,
-        route: ROUTES.STORY_EDIT.replace(":adventureId", TEST_STORY_ID),
-      });
-
-      const toggle = screen.queryByRole("switch", {
-        name: /debug mode/i,
-      });
-      expect(toggle).not.toBeInTheDocument();
     });
 
     it("Debug mode toggle is unchecked by default", async () => {

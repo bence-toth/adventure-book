@@ -49,8 +49,8 @@ export const renderWithAdventure = (
     route,
     adventure,
     error,
-    loading = false,
-    debugModeEnabled = false,
+    loading,
+    debugModeEnabled,
     ...options
   }: Omit<RenderOptions, "wrapper"> & {
     adventureId?: string;
@@ -61,22 +61,30 @@ export const renderWithAdventure = (
     debugModeEnabled?: boolean;
   } = {}
 ) => {
-  const initialRoute = route || `/adventure/${adventureId}/test`;
+  // Validate adventureId - empty strings are not valid
+  if (adventureId === "") {
+    throw new Error(
+      "adventureId cannot be an empty string. Use undefined to get the default test adventure ID, or provide a valid non-empty string."
+    );
+  }
+
+  const initialRoute =
+    route || (adventureId ? `/adventure/${adventureId}/test` : "/");
 
   // If adventure, error, loading, or debugModeEnabled are provided, use mock context
   const useMockContext =
     adventure !== undefined ||
     error !== undefined ||
-    loading !== false ||
-    debugModeEnabled !== false;
+    loading !== undefined ||
+    debugModeEnabled !== undefined;
 
   if (useMockContext) {
     const mockContextValue: AdventureContextType = {
       adventure: adventure ?? null,
       adventureId,
-      loading,
+      loading: loading ?? false,
       error: error ?? null,
-      debugModeEnabled,
+      debugModeEnabled: debugModeEnabled ?? false,
       setDebugModeEnabled: () => {},
       reloadAdventure: () => {},
     };
@@ -84,17 +92,12 @@ export const renderWithAdventure = (
     return rtlRender(ui, {
       wrapper: ({ children }) => (
         <MemoryRouter initialEntries={[initialRoute]}>
-          <Routes>
-            <Route path="/" element={children} />
-            <Route
-              path="/adventure/:adventureId/*"
-              element={
-                <AdventureContext.Provider value={mockContextValue}>
-                  {children}
-                </AdventureContext.Provider>
-              }
-            />
-          </Routes>
+          <AdventureContext.Provider value={mockContextValue}>
+            <Routes>
+              <Route path="/" element={children} />
+              <Route path="/adventure/:adventureId/*" element={children} />
+            </Routes>
+          </AdventureContext.Provider>
         </MemoryRouter>
       ),
       ...options,

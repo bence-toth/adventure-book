@@ -11,9 +11,3 @@ export const SidebarContainer = styled.div`
   min-height: 0;
   padding: var(--space-2);
 `;
-
-export const SidebarTitle = styled.h2`
-  margin-top: 0;
-  margin-bottom: var(--space-2);
-  font-size: var(--font-size-lg);
-`;

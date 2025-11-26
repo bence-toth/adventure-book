@@ -3,7 +3,7 @@ import { createElement } from "react";
 import type { LinkProps } from "react-router-dom";
 import { StyledLink, IconWrapper, TextWrapper } from "./ButtonLink.styles";
 
-export interface ButtonLinkProps extends Omit<LinkProps, "className"> {
+interface ButtonLinkProps extends Omit<LinkProps, "className"> {
   children: ReactNode;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;

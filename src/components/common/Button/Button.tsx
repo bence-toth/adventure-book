@@ -2,7 +2,7 @@ import type { ReactNode, ButtonHTMLAttributes, ComponentType } from "react";
 import { createElement, forwardRef } from "react";
 import { StyledButton, IconWrapper, TextWrapper } from "./Button.styles";
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;

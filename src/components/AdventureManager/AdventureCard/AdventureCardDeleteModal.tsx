@@ -1,4 +1,4 @@
-import { ConfirmationModal } from "@/components/common";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal/ConfirmationModal";
 
 interface AdventureCardDeleteModalProps {
   open: boolean;

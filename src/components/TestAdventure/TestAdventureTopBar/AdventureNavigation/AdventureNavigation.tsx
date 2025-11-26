@@ -5,10 +5,10 @@ import {
   getAdventureTestRoute,
   getAdventureEditRoute,
 } from "@/constants/routes";
-import { ButtonLink } from "@/components/common";
+import { ButtonLink } from "@/components/common/ButtonLink/ButtonLink";
 import { TopBarNav } from "./AdventureNavigation.styles";
 
-export interface AdventureNavigationProps {
+interface AdventureNavigationProps {
   adventureId: string | null;
 }
 

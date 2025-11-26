@@ -26,8 +26,6 @@ export const getPassageRoute = (
   return `/adventure/${adventureId}/test/passage/${passageId}`;
 };
 
-export const PASSAGE_ROUTE_PATTERN = `/adventure/:adventureId/test/passage/:id`;
-
 export const SPECIAL_PASSAGES = {
   RESET: 0,
   START: 1,

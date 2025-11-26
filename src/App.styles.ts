@@ -7,13 +7,6 @@ export const AppContainer = styled.div`
   flex-direction: column;
 `;
 
-export const AppMain = styled.main`
-  display: grid;
-  grid-template-columns: var(--size-sidebar) 1fr;
-  overflow: hidden;
-  min-height: 0;
-`;
-
 export const AppContent = styled.main`
   display: flex;
   flex-direction: column;

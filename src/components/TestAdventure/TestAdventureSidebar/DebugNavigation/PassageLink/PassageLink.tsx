@@ -9,7 +9,7 @@ import {
   MoveUp,
 } from "lucide-react";
 import type { Passage } from "@/data/types";
-import { Button } from "@/components/common";
+import { Button } from "@/components/common/Button/Button";
 
 interface PassageLinkProps {
   icon?: "play";

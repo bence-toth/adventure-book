@@ -4,7 +4,7 @@ import {
   addItemToInventory,
   removeItemFromInventory,
 } from "@/utils/inventoryManagement";
-import { ToggleButton } from "@/components/common";
+import { ToggleButton } from "@/components/common/ToggleButton/ToggleButton";
 import {
   DebugInventoryTitle,
   DebugInventoryList,

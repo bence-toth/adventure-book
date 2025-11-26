@@ -1,7 +1,7 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useMemo } from "react";
 import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
-import { ToggleButton } from "@/components/common";
+import { ToggleButton } from "@/components/common/ToggleButton/ToggleButton";
 import { TopBar } from "@/components/common/TopBar/TopBar";
 import { useAdventure } from "@/context/useAdventure";
 import { BackButton } from "./BackButton/BackButton";

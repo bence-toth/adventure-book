@@ -1,4 +1,7 @@
-import { ContextMenu, ContextMenuItem } from "@/components/common";
+import {
+  ContextMenu,
+  ContextMenuItem,
+} from "@/components/common/ContextMenu/ContextMenu";
 
 interface AdventureCardContextMenuProps {
   open: boolean;

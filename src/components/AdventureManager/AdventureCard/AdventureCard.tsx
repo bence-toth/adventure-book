@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import { EllipsisVertical } from "lucide-react";
 import type { StoredAdventure } from "@/data/adventureDatabase";
-import { FormattedDate } from "@/components/common";
+import { FormattedDate } from "@/components/common/FormattedDate/FormattedDate";
 import { AdventureCardDeleteModal } from "./AdventureCardDeleteModal";
 import { AdventureCardContextMenu } from "./AdventureCardContextMenu";
 import {

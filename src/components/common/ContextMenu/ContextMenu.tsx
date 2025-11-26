@@ -15,7 +15,7 @@ import {
 } from "@floating-ui/react";
 import { MenuContainer, MenuItem } from "./ContextMenu.styles";
 
-export interface ContextMenuProps {
+interface ContextMenuProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   triggerRef: HTMLElement | null;
@@ -69,7 +69,7 @@ export const ContextMenu = ({
   );
 };
 
-export interface ContextMenuItemProps {
+interface ContextMenuItemProps {
   onClick: () => void;
   children: ReactNode;
   variant?: "default" | "danger";

@@ -7,8 +7,7 @@ import {
   TextWrapper,
 } from "./DetailsButton.styles";
 
-export interface DetailsButtonProps
-  extends DetailsHTMLAttributes<HTMLDetailsElement> {
+interface DetailsButtonProps extends DetailsHTMLAttributes<HTMLDetailsElement> {
   summary: string;
   children: ReactNode;
   icon?: ComponentType<Record<string, unknown>>;

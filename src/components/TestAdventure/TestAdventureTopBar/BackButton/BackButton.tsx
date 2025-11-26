@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { Button } from "@/components/common";
+import { Button } from "@/components/common/Button/Button";
 import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
 import { ROUTES } from "@/constants/routes";
 
