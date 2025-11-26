@@ -48,6 +48,7 @@ describe("TestAdventureTopBar Component", () => {
       renderWithAdventure(<TestAdventureTopBar />, {
         adventureId: "",
         adventure: null,
+        loading: false,
       });
 
       const header = screen.queryByRole("banner");
@@ -73,6 +74,9 @@ describe("TestAdventureTopBar Component", () => {
         adventureId: TEST_STORY_ID,
         route: ROUTES.STORY_EDIT.replace(":adventureId", TEST_STORY_ID),
       });
+
+      // Wait for the component to render after loading
+      await screen.findByRole("banner");
 
       const toggle = screen.queryByRole("switch", {
         name: /debug mode/i,

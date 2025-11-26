@@ -9,6 +9,17 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: "./src/__tests__/setup.ts",
+    environmentOptions: {
+      jsdom: {
+        resources: "usable",
+      },
+    },
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
     coverage: {
       exclude: [
         "**/node_modules/**",
