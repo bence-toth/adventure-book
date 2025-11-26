@@ -5,7 +5,7 @@ export const ModalOverlay = styled.div`
   position: fixed;
   inset: 0;
   background: rgb(0 0 0 / 50%);
-  z-index: 1;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -21,7 +21,7 @@ export const Dialog = styled.dialog`
   background: var(--color-background-surface-neutral);
   position: relative;
   margin: 0;
-  z-index: 2;
+  z-index: 3;
 
   &::backdrop {
     display: none;
