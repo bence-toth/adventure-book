@@ -16,7 +16,8 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
-    "test:types": "tsc -b --noEmit"
+    "test:types": "tsc -b --noEmit",
+    "knip": "knip"
   },
   "dependencies": {
     "@floating-ui/react": "^0.27.16",
@@ -45,6 +46,7 @@
     "fake-indexeddb": "^6.2.5",
     "globals": "^16.4.0",
     "jsdom": "^27.2.0",
+    "knip": "^5.70.2",
     "stylelint": "^16.25.0",
     "stylelint-config-standard": "^39.0.1",
     "typescript": "~5.9.3",

@@ -1,5 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { TestAdventure, ErrorBoundary, AdventureManager } from "@/components";
+import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
+import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
+import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
 import { ROUTES } from "@/constants/routes";
 import { AdventureProvider } from "@/context/AdventureContext";
 import { AppContainer, AppContent } from "./App.styles";

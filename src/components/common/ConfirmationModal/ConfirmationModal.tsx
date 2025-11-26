@@ -6,7 +6,7 @@ import {
   useInteractions,
   FloatingFocusManager,
 } from "@floating-ui/react";
-import { Button } from "@/components/common";
+import { Button } from "@/components/common/Button/Button";
 import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "@/constants/testIds";
 import {
   ModalOverlay,

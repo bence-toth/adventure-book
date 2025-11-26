@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import type { ReactNode } from "react";
 import { Bug } from "lucide-react";
-import { Button, DetailsButton } from "@/components/common";
+import { Button } from "@/components/common/Button/Button";
+import { DetailsButton } from "@/components/common/DetailsButton/DetailsButton";
 import {
   ErrorBoundaryContainer,
   ErrorBoundaryIcon,
