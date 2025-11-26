@@ -61,6 +61,13 @@ export const renderWithAdventure = (
     debugModeEnabled?: boolean;
   } = {}
 ) => {
+  // Validate adventureId - empty strings are not valid
+  if (adventureId === "") {
+    throw new Error(
+      "adventureId cannot be an empty string. Use undefined to get the default test adventure ID, or provide a valid non-empty string."
+    );
+  }
+
   const initialRoute =
     route || (adventureId ? `/adventure/${adventureId}/test` : "/");
 

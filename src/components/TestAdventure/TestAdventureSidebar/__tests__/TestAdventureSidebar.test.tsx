@@ -189,9 +189,8 @@ describe("TestAdventureSidebar", () => {
 
   it("should return null when adventureId is not available", () => {
     const { container } = renderWithAdventure(<TestAdventureSidebar />, {
-      adventureId: "",
       adventure: null,
-      route: "/adventure/test-null/test",
+      route: "/",
     });
 
     // Component should not render anything
@@ -209,11 +208,10 @@ describe("TestAdventureSidebar", () => {
   });
 
   it("should not set up event listeners when adventureId is empty", () => {
-    // Render with mock context where adventureId is empty (falsy)
+    // Render with mock context where adventureId is not available
     const { container } = renderWithAdventure(<TestAdventureSidebar />, {
-      adventureId: "",
       adventure: null,
-      route: "/adventure/test-empty/test",
+      route: "/",
     });
 
     // Component should not render anything

@@ -59,19 +59,14 @@ const TestComponentWithActions = () => {
 
 describe("renderWithAdventure", () => {
   describe("Mock Context Behavior", () => {
-    it("provides mock context to root route when adventureId is empty", () => {
-      const { getByTestId } = renderWithAdventure(<TestComponent />, {
-        adventureId: "",
-        adventure: null,
-        loading: false,
-      });
-
-      // Mock context should be available even at root route
-      expect(getByTestId("context-adventure-id")).toHaveTextContent("null");
-      expect(getByTestId("adventure-state")).toHaveTextContent("no-adventure");
-      expect(getByTestId("loading-state")).toHaveTextContent("not-loading");
-      expect(getByTestId("error-state")).toHaveTextContent("no-error");
-      expect(getByTestId("debug-state")).toHaveTextContent("debug-off");
+    it("rejects empty string adventureId", () => {
+      expect(() => {
+        renderWithAdventure(<TestComponent />, {
+          adventureId: "",
+          adventure: null,
+          loading: false,
+        });
+      }).toThrow("adventureId cannot be an empty string");
     });
 
     it("provides mock context to root route with explicit values", () => {
@@ -142,14 +137,15 @@ describe("renderWithAdventure", () => {
       expect(getByTestId("params-adventure-id")).toHaveTextContent("test-id");
     });
 
-    it("uses root route when adventureId is empty", () => {
+    it("uses default adventureId when undefined", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
-        adventureId: "",
         adventure: null,
       });
 
-      // Should render at root route
-      expect(getByTestId("params-adventure-id")).toHaveTextContent("null");
+      // Should use default test adventure ID
+      expect(getByTestId("context-adventure-id")).toHaveTextContent(
+        "test-adventure-id"
+      );
     });
 
     it("respects custom route parameter", () => {
