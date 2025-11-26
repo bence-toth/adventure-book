@@ -59,8 +59,7 @@ updates:
         patterns:
           - "yaml"
     labels:
-      - "dependencies"
-      - "automated"
+      - "architecture"
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -75,8 +74,6 @@ updates:
       timezone: "Etc/UTC"
     open-pull-requests-limit: 3
     labels:
-      - "dependencies"
-      - "github-actions"
-      - "automated"
+      - "architecture"
     commit-message:
       prefix: "ci"
