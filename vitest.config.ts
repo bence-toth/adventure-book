@@ -14,6 +14,10 @@ export default defineConfig({
         resources: "usable",
       },
     },
+    // Use forked processes for test isolation with jsdom environment
+    // singleFork: true runs all tests in one forked process for better performance
+    // while maintaining isolation from the main process. This is recommended for
+    // jsdom environments and helps avoid potential memory leaks and context issues.
     pool: "forks",
     poolOptions: {
       forks: {
