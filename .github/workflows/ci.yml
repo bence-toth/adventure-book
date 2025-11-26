@@ -70,12 +70,6 @@ jobs:
       - name: Run tests with coverage
         run: npm run test:coverage
 
-      - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
-        if: success()
-        with:
-          fail_ci_if_error: false
-
   build:
     name: Build
     runs-on: ubuntu-latest
