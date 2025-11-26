@@ -6,6 +6,7 @@
 export class AdventureLoadError extends Error {
   constructor(message = "Unable to load the adventure. Please try again.") {
     super(message);
+    this.name = this.constructor.name;
   }
 }
 
@@ -13,6 +14,7 @@ export class AdventureLoadError extends Error {
 export class AdventureNotFoundError extends Error {
   constructor(message = "Adventure not found.") {
     super(message);
+    this.name = this.constructor.name;
   }
 }
 
@@ -22,6 +24,7 @@ export class InvalidPassageIdError extends Error {
     super(
       `The passage ID "${passageId}" is not valid. Please use a valid number.`
     );
+    this.name = this.constructor.name;
   }
 }
 
@@ -29,6 +32,7 @@ export class InvalidPassageIdError extends Error {
 export class PassageNotFoundError extends Error {
   constructor(passageId: number) {
     super(`Passage #${passageId} does not exist in this adventure.`);
+    this.name = this.constructor.name;
   }
 }
 
@@ -38,6 +42,7 @@ export class AdventureParseError extends Error {
     message = "There was an error parsing the adventure file. The adventure format may be invalid."
   ) {
     super(message);
+    this.name = this.constructor.name;
   }
 }
 
@@ -47,6 +52,7 @@ export class AdventureValidationError extends Error {
     message = "The adventure file contains validation errors and cannot be loaded."
   ) {
     super(message);
+    this.name = this.constructor.name;
   }
 }
 
@@ -54,6 +60,7 @@ export class AdventureValidationError extends Error {
 export class StoriesLoadError extends Error {
   constructor(message = "Failed to load stories.") {
     super(message);
+    this.name = this.constructor.name;
   }
 }
 
@@ -61,6 +68,7 @@ export class StoriesLoadError extends Error {
 export class StoryCreateError extends Error {
   constructor(message = "Failed to create adventure.") {
     super(message);
+    this.name = this.constructor.name;
   }
 }
 
@@ -68,5 +76,6 @@ export class StoryCreateError extends Error {
 export class StoryDeleteError extends Error {
   constructor(message = "Failed to delete adventure.") {
     super(message);
+    this.name = this.constructor.name;
   }
 }
