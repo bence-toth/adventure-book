@@ -2,30 +2,22 @@
 // Each error class encapsulates a specific error scenario with a user-friendly message.
 // These errors are caught by the ErrorBoundary component for display.
 
-// Base class for all Adventure Book errors
-export class AdventureBookError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = this.constructor.name;
-  }
-}
-
 // Error thrown when an adventure cannot be loaded
-export class AdventureLoadError extends AdventureBookError {
+export class AdventureLoadError extends Error {
   constructor(message = "Unable to load the adventure. Please try again.") {
     super(message);
   }
 }
 
 // Error thrown when an adventure is not found
-export class AdventureNotFoundError extends AdventureBookError {
+export class AdventureNotFoundError extends Error {
   constructor(message = "Adventure not found.") {
     super(message);
   }
 }
 
 // Error thrown when a passage ID is invalid
-export class InvalidPassageIdError extends AdventureBookError {
+export class InvalidPassageIdError extends Error {
   constructor(passageId: string) {
     super(
       `The passage ID "${passageId}" is not valid. Please use a valid number.`
@@ -34,14 +26,14 @@ export class InvalidPassageIdError extends AdventureBookError {
 }
 
 // Error thrown when a passage is not found in the adventure
-export class PassageNotFoundError extends AdventureBookError {
+export class PassageNotFoundError extends Error {
   constructor(passageId: number) {
     super(`Passage #${passageId} does not exist in this adventure.`);
   }
 }
 
 // Error thrown when the adventure YAML cannot be parsed
-export class AdventureParseError extends AdventureBookError {
+export class AdventureParseError extends Error {
   constructor(
     message = "There was an error parsing the adventure file. The adventure format may be invalid."
   ) {
@@ -50,7 +42,7 @@ export class AdventureParseError extends AdventureBookError {
 }
 
 // Error thrown when adventure validation fails
-export class AdventureValidationError extends AdventureBookError {
+export class AdventureValidationError extends Error {
   constructor(
     message = "The adventure file contains validation errors and cannot be loaded."
   ) {
@@ -59,21 +51,21 @@ export class AdventureValidationError extends AdventureBookError {
 }
 
 // Error thrown when stories cannot be loaded from the database
-export class StoriesLoadError extends AdventureBookError {
+export class StoriesLoadError extends Error {
   constructor(message = "Failed to load stories.") {
     super(message);
   }
 }
 
 // Error thrown when a story cannot be created
-export class StoryCreateError extends AdventureBookError {
+export class StoryCreateError extends Error {
   constructor(message = "Failed to create adventure.") {
     super(message);
   }
 }
 
 // Error thrown when a story cannot be deleted
-export class StoryDeleteError extends AdventureBookError {
+export class StoryDeleteError extends Error {
   constructor(message = "Failed to delete adventure.") {
     super(message);
   }

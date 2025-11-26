@@ -8,7 +8,7 @@ import {
   LabelText,
 } from "./ToggleButton.styles";
 
-export interface ToggleButtonProps
+interface ToggleButtonProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "onChange"> {
   label: string;
   checked: boolean;

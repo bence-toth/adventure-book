@@ -4,7 +4,7 @@ import { invalidateAdventureCache } from "@/data/adventureLoader";
 import { useAdventure } from "@/context/useAdventure";
 import { TopBarTitleInput } from "./AdventureTitleInput.styles";
 
-export interface AdventureTitleInputProps {
+interface AdventureTitleInputProps {
   adventureId: string | null;
 }
 

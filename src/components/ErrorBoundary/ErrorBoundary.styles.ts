@@ -46,11 +46,6 @@ export const ErrorBoundaryHelpText = styled.p`
   margin-bottom: var(--space-2);
 `;
 
-export const ErrorBoundaryDetails = styled.div`
-  text-align: center;
-  margin-block: var(--space-3);
-`;
-
 export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
   font-family: var(--font-family-monospace);
   text-align: start;
@@ -79,10 +74,4 @@ export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
   pre {
     font-family: inherit;
   }
-`;
-
-export const ErrorBoundaryDetailsStack = styled.div`
-  color: var(--color-foreground);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-loose);
 `;

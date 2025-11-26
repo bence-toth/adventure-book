@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { SidebarContainer } from "./Sidebar.styles";
 
-export interface SidebarProps {
+interface SidebarProps {
   // Content to display in the sidebar
   children: ReactNode;
 }

@@ -17,7 +17,7 @@ import {
   DialogActions,
 } from "./ConfirmationModal.styles";
 
-export interface ConfirmationModalProps {
+interface ConfirmationModalProps {
   open: boolean;
   onOpenChange: () => void;
   title: string;

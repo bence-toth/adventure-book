@@ -1,4 +1,4 @@
-export interface Choice {
+interface Choice {
   text: string;
   goto: number;
 }
@@ -8,7 +8,7 @@ export interface InventoryItem {
   name: string;
 }
 
-export type Effect =
+type Effect =
   | {
       type: "add_item";
       item: string;
@@ -18,7 +18,7 @@ export type Effect =
       item: string;
     };
 
-export type RawPassage =
+type RawPassage =
   | {
       text: string;
       ending: true;
@@ -34,7 +34,7 @@ export type RawPassage =
       effects?: Effect[];
     };
 
-export interface RawIntro {
+interface RawIntro {
   text: string;
   action: string;
 }
@@ -66,7 +66,7 @@ export type Passage =
       effects?: Effect[];
     };
 
-export interface Intro {
+interface Intro {
   paragraphs: string[];
   action: string;
 }

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { TopBarContainer, TopBarStart, TopBarEnd } from "./TopBar.styles";
 
-export interface TopBarProps {
+interface TopBarProps {
   // Content to display at the start of the top bar (inline-start for RTL support)
   start?: ReactNode;
   // Content to display at the end of the top bar (inline-end for RTL support)
