@@ -22,13 +22,14 @@ export const TestAdventureSidebar = () => {
 
     let isMounted = true;
 
-    // Load initial inventory from localStorage on mount
-    // Using queueMicrotask to avoid synchronous setState in effect
-    queueMicrotask(() => {
+    // Load initial inventory from localStorage on mount and when adventureId changes
+    const updateInventory = () => {
       if (isMounted) {
         setCurrentInventoryIds(getCurrentInventory(adventureId));
       }
-    });
+    };
+
+    updateInventory();
 
     // Set up a listener for storage changes
     const handleStorageChange = () => {
