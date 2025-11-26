@@ -1,10 +1,12 @@
-import { screen } from "@testing-library/react";
+import { screen, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, beforeEach } from "vitest";
+import { MemoryRouter } from "react-router-dom";
 import { TestAdventureTopBar } from "../TestAdventureTopBar";
 import { ROUTES } from "@/constants/routes";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { setupTestAdventure } from "@/__tests__/mockAdventureData";
+import { AdventureContext } from "@/context/AdventureContext";
 
 const TEST_STORY_ID = "test-adventure-id";
 
@@ -45,13 +47,25 @@ describe("TestAdventureTopBar Component", () => {
     });
 
     it("returns null when adventureId is not available", () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
+      const mockContextValue = {
         adventure: null,
+        adventureId: null,
         loading: false,
-        route: "/",
-      });
+        error: null,
+        debugModeEnabled: false,
+        setDebugModeEnabled: () => {},
+        reloadAdventure: () => {},
+      };
 
-      const header = screen.queryByRole("banner");
+      const { container } = render(
+        <MemoryRouter initialEntries={["/"]}>
+          <AdventureContext.Provider value={mockContextValue}>
+            <TestAdventureTopBar />
+          </AdventureContext.Provider>
+        </MemoryRouter>
+      );
+
+      const header = container.querySelector("header");
       expect(header).not.toBeInTheDocument();
     });
   });

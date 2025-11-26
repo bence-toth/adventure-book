@@ -20,27 +20,36 @@ export const TestAdventureSidebar = () => {
       return;
     }
 
+    let isMounted = true;
+
     // Load initial inventory from localStorage on mount
     // Using queueMicrotask to avoid synchronous setState in effect
     queueMicrotask(() => {
-      setCurrentInventoryIds(getCurrentInventory(adventureId));
+      if (isMounted) {
+        setCurrentInventoryIds(getCurrentInventory(adventureId));
+      }
     });
 
     // Set up a listener for storage changes
     const handleStorageChange = () => {
-      setCurrentInventoryIds(getCurrentInventory(adventureId));
+      if (isMounted) {
+        setCurrentInventoryIds(getCurrentInventory(adventureId));
+      }
     };
 
     window.addEventListener("storage", handleStorageChange);
 
     // Also listen for custom events from the same window
     const handleInventoryUpdate = () => {
-      setCurrentInventoryIds(getCurrentInventory(adventureId));
+      if (isMounted) {
+        setCurrentInventoryIds(getCurrentInventory(adventureId));
+      }
     };
 
     window.addEventListener("inventoryUpdate", handleInventoryUpdate);
 
     return () => {
+      isMounted = false;
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("inventoryUpdate", handleInventoryUpdate);
     };

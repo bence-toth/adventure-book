@@ -1,11 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { screen, act, fireEvent } from "@testing-library/react";
+import { screen, act, fireEvent, render } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import {
   setupTestAdventure,
   mockAdventure,
 } from "@/__tests__/mockAdventureData";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { TestAdventureSidebar } from "../TestAdventureSidebar";
+import { AdventureContext } from "@/context/AdventureContext";
 import * as inventoryManagement from "@/utils/inventoryManagement";
 
 vi.mock("@/utils/inventoryManagement", async () => {
@@ -188,20 +190,46 @@ describe("TestAdventureSidebar", () => {
   });
 
   it("should return null when adventureId is not available", () => {
-    const { container } = renderWithAdventure(<TestAdventureSidebar />, {
+    const mockContextValue = {
       adventure: null,
-      route: "/",
-    });
+      adventureId: null,
+      loading: false,
+      error: null,
+      debugModeEnabled: false,
+      setDebugModeEnabled: () => {},
+      reloadAdventure: () => {},
+    };
+
+    const { container } = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <AdventureContext.Provider value={mockContextValue}>
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
 
     // Component should not render anything
     expect(container.firstChild).toBeNull();
   });
 
   it("should return null when adventure is not loaded yet", () => {
-    const { container } = renderWithAdventure(<TestAdventureSidebar />, {
-      adventureId: TEST_STORY_ID,
+    const mockContextValue = {
       adventure: null,
-    });
+      adventureId: null,
+      loading: true,
+      error: null,
+      debugModeEnabled: false,
+      setDebugModeEnabled: () => {},
+      reloadAdventure: () => {},
+    };
+
+    const { container } = render(
+      <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
+        <AdventureContext.Provider value={mockContextValue}>
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
 
     // Component should not render anything when adventure is null
     expect(container.firstChild).toBeNull();
@@ -209,10 +237,23 @@ describe("TestAdventureSidebar", () => {
 
   it("should not set up event listeners when adventureId is empty", () => {
     // Render with mock context where adventureId is not available
-    const { container } = renderWithAdventure(<TestAdventureSidebar />, {
+    const mockContextValue = {
       adventure: null,
-      route: "/",
-    });
+      adventureId: null,
+      loading: false,
+      error: null,
+      debugModeEnabled: false,
+      setDebugModeEnabled: () => {},
+      reloadAdventure: () => {},
+    };
+
+    const { container } = render(
+      <MemoryRouter initialEntries={["/"]}>
+        <AdventureContext.Provider value={mockContextValue}>
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
 
     // Component should not render anything
     expect(container.firstChild).toBeNull();

@@ -42,25 +42,39 @@ export const AdventureProvider = ({
       return;
     }
 
+    let isMounted = true;
+
     const loadAdventure = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        const loadedAdventure = await loadAdventureById(adventureId);
-        setAdventure(loadedAdventure);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("Failed to load adventure");
+        if (isMounted) {
+          setLoading(true);
+          setError(null);
         }
-        setAdventure(null);
+        const loadedAdventure = await loadAdventureById(adventureId);
+        if (isMounted) {
+          setAdventure(loadedAdventure);
+        }
+      } catch (err) {
+        if (isMounted) {
+          if (err instanceof Error) {
+            setError(err.message);
+          } else {
+            setError("Failed to load adventure");
+          }
+          setAdventure(null);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
 
     loadAdventure();
+
+    return () => {
+      isMounted = false;
+    };
   }, [adventureId, reloadTrigger]);
 
   return (
