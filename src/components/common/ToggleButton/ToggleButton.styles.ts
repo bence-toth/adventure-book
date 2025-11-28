@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getInteractiveColor } from "@/utils/colorHelpers";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const ToggleButtonContainer = styled.label`
   display: inline-flex;
@@ -58,7 +58,8 @@ export const ToggleThumb = styled.span<{ $checked: boolean }>`
   height: calc(100% - calc(2 * var(--border-width-interactive)));
   border-radius: 50%;
   background: ${getInteractiveColor("neutral", "foreground", "default")};
-  box-shadow: 0 var(--space-0-25) var(--space-0-5) var(--color-shadow-neutral);
+  box-shadow: 0 var(--space-0-25) var(--space-0-5)
+    ${getColor("shadow", "neutral", true)};
   transform: ${(props) =>
     props.$checked
       ? `
@@ -72,5 +73,5 @@ export const ToggleThumb = styled.span<{ $checked: boolean }>`
 
 export const LabelText = styled.span`
   line-height: var(--line-height-dense);
-  color: var(--color-foreground-neutral);
+  color: ${getColor("foreground", "neutral")};
 `;

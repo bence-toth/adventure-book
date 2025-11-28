@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getColor } from "@/utils/colorHelpers";
 
 export const TopBarStartContainer = styled.div`
   display: flex;
@@ -7,5 +8,5 @@ export const TopBarStartContainer = styled.div`
 `;
 
 export const SavingIndicator = styled.span`
-  color: var(--color-foreground-neutral-muted);
+  color: ${getColor("foreground-muted", "neutral")};
 `;

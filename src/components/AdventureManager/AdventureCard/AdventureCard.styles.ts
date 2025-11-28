@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { getInteractiveColor } from "@/utils/colorHelpers";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const AdventureCardContainer = styled.div`
-  background: var(--color-background-surface);
+  background: ${getColor("background", "neutral", true)};
   border-radius: var(--space-1);
   position: relative;
   display: flex;

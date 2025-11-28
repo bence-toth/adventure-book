@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { getInteractiveColor } from "@/utils/colorHelpers";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const MenuContainer = styled.div`
-  box-shadow: var(--shadow-surface-elevated-neutral);
+  box-shadow: ${getColor("shadow", "neutral", true, true)};
   min-width: var(--size-context-menu-min-width);
   border-radius: var(--space-1);
   z-index: 1;

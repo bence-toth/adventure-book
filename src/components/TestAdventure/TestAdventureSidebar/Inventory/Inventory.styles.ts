@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getColor } from "@/utils/colorHelpers";
 
 export const InventoryTitle = styled.h2`
   margin: 0 0 var(--space-3) 0;
@@ -7,7 +8,7 @@ export const InventoryTitle = styled.h2`
 
 export const InventoryEmpty = styled.p`
   margin: 0;
-  color: var(--color-foreground-muted-neutral);
+  color: ${getColor("foreground-muted", "neutral")};
 `;
 
 export const InventoryList = styled.ul`

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getInteractiveColor } from "@/utils/colorHelpers";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -17,8 +17,8 @@ export const Dialog = styled.dialog`
   border-radius: var(--space-1);
   padding: 0;
   max-width: var(--size-modal-dialog-max-width);
-  box-shadow: var(--shadow-surface-elevated-neutral);
-  background: var(--color-background-surface-neutral);
+  box-shadow: ${getColor("shadow", "neutral", true, true)};
+  background: ${getColor("background", "neutral", true)};
   position: relative;
   margin: 0;
   z-index: 3;
