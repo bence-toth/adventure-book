@@ -8,7 +8,8 @@ export const SidebarContainer = styled.div`
   border-inline-end: var(--border-width-surface) solid
     ${getColor("border", "neutral", true)};
   box-shadow: ${getColor("shadow", "neutral", true)};
-  overflow-y: auto;
+  overflow: hidden;
   min-height: 0;
-  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
 `;

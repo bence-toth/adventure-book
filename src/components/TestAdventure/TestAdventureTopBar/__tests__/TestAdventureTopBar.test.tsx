@@ -1,9 +1,7 @@
 import { screen, render } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { TestAdventureTopBar } from "../TestAdventureTopBar";
-import { ROUTES } from "@/constants/routes";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 import { AdventureContext } from "@/context/AdventureContext";
@@ -94,55 +92,6 @@ describe("TestAdventureTopBar Component", () => {
 
       const savingIndicator = screen.queryByTestId("saving-indicator");
       expect(savingIndicator).not.toBeInTheDocument();
-    });
-  });
-
-  describe("Debug mode Toggle", () => {
-    it("shows Debug mode toggle in test view", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
-        adventureId: TEST_STORY_ID,
-        route: ROUTES.STORY_TEST.replace(":adventureId", TEST_STORY_ID),
-      });
-
-      const toggle = await screen.findByRole("switch", {
-        name: /debug mode/i,
-      });
-      expect(toggle).toBeInTheDocument();
-    });
-
-    it("Debug mode toggle is unchecked by default", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
-        adventureId: TEST_STORY_ID,
-        route: ROUTES.STORY_TEST.replace(":adventureId", TEST_STORY_ID),
-      });
-
-      const toggle = await screen.findByRole("switch", {
-        name: /debug mode/i,
-      });
-      expect(toggle).not.toBeChecked();
-    });
-
-    it("Debug mode toggle can be toggled on and off", async () => {
-      const user = userEvent.setup();
-      renderWithAdventure(<TestAdventureTopBar />, {
-        adventureId: TEST_STORY_ID,
-        route: ROUTES.STORY_TEST.replace(":adventureId", TEST_STORY_ID),
-      });
-
-      const toggle = await screen.findByRole("switch", {
-        name: /debug mode/i,
-      });
-
-      // Initially unchecked
-      expect(toggle).not.toBeChecked();
-
-      // Click to check
-      await user.click(toggle);
-      expect(toggle).toBeChecked();
-
-      // Click again to uncheck
-      await user.click(toggle);
-      expect(toggle).not.toBeChecked();
     });
   });
 });

@@ -6,7 +6,7 @@ export const TopBarContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-1) var(--space-2);
+  padding-inline: var(--space-2);
   border-bottom: var(--border-width-surface) solid
     ${getColor("border", "neutral", true)};
   box-shadow: ${getColor("shadow", "neutral", true)};

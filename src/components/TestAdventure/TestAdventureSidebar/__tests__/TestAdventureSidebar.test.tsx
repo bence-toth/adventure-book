@@ -349,8 +349,14 @@ describe("TestAdventureSidebar", () => {
       });
 
       expect(await screen.findByText("Inventory")).toBeInTheDocument();
-      // Verify it's normal mode by checking no toggle switches exist
-      expect(screen.queryByRole("switch")).not.toBeInTheDocument();
+      // Verify the debug mode toggle is present in the footer
+      expect(
+        screen.getByRole("switch", { name: "Debug mode" })
+      ).toBeInTheDocument();
+      // Verify it's normal mode by checking no item toggle switches exist
+      expect(
+        screen.queryByRole("switch", { name: "Mock Item One" })
+      ).not.toBeInTheDocument();
     });
 
     it("should show all items with checkboxes in debug mode", async () => {
@@ -433,6 +439,45 @@ describe("TestAdventureSidebar", () => {
       expect(
         screen.queryByTestId("debug-nav-introduction")
       ).not.toBeInTheDocument();
+    });
+
+    it("should always show debug mode toggle in footer", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: false,
+      });
+
+      const debugToggle = await screen.findByRole("switch", {
+        name: "Debug mode",
+      });
+      expect(debugToggle).toBeInTheDocument();
+    });
+
+    it("should show debug toggle as unchecked when debug mode is disabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: false,
+      });
+
+      const debugToggle = (await screen.findByRole("switch", {
+        name: "Debug mode",
+      })) as HTMLInputElement;
+      expect(debugToggle.checked).toBe(false);
+    });
+
+    it("should show debug toggle as checked when debug mode is enabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        debugModeEnabled: true,
+      });
+
+      const debugToggle = (await screen.findByRole("switch", {
+        name: "Debug mode",
+      })) as HTMLInputElement;
+      expect(debugToggle.checked).toBe(true);
     });
   });
 });
