@@ -66,6 +66,13 @@ const TestConsumer = () => {
     });
   };
 
+  const handleSimulateLongSave = async () => {
+    await withSaving(async () => {
+      // Simulate longer async operation (>500ms)
+      await new Promise((resolve) => setTimeout(resolve, 600));
+    });
+  };
+
   return (
     <div>
       <div data-testid="loading-state">
@@ -85,6 +92,12 @@ const TestConsumer = () => {
       </button>
       <button onClick={handleSimulateSave} data-testid="simulate-save-button">
         Simulate Save
+      </button>
+      <button
+        onClick={handleSimulateLongSave}
+        data-testid="simulate-long-save-button"
+      >
+        Simulate Long Save
       </button>
     </div>
   );
@@ -424,14 +437,74 @@ describe("AdventureContext", () => {
     // Initial state should be not-saving
     expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
 
-    // Trigger save
+    // Trigger a quick save (100ms - less than 500ms threshold)
     const saveButton = screen.getByTestId("simulate-save-button");
     const clickPromise = user.click(saveButton);
 
-    // Should show saving state during async operation
+    // Should NOT show saving state for quick operations
+    // Wait a bit to ensure it doesn't flash
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Wait for save to complete
+    await clickPromise;
+
+    // Should still be not-saving after operation completes
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+  });
+
+  it("should show saving state only for operations longer than 500ms", async () => {
+    const adventure: StoredAdventure = {
+      id: "test-adventure-3b",
+      title: "Test Adventure",
+      content: sampleAdventureYAML,
+      lastEdited: new Date(),
+      createdAt: new Date(),
+    };
+
+    await saveAdventure(adventure);
+
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={["/adventure/test-adventure-3b"]}>
+        <Routes>
+          <Route
+            path="/adventure/:adventureId"
+            element={
+              <AdventureProvider>
+                <TestConsumer />
+              </AdventureProvider>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Wait for adventure to load
     await waitFor(() => {
-      expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
+      expect(screen.getByTestId("loading-state")).toHaveTextContent(
+        "not-loading"
+      );
     });
+
+    // Initial state should be not-saving
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Trigger a long save (600ms - more than 500ms threshold)
+    const longSaveButton = screen.getByTestId("simulate-long-save-button");
+    const clickPromise = user.click(longSaveButton);
+
+    // Should NOT show saving immediately
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Should show saving state after 500ms
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
+      },
+      { timeout: 700 }
+    );
 
     // Wait for save to complete
     await clickPromise;
@@ -479,15 +552,21 @@ describe("AdventureContext", () => {
       );
     });
 
-    // Trigger multiple saves
-    const saveButton = screen.getByTestId("simulate-save-button");
-    const clickPromise1 = user.click(saveButton);
-    const clickPromise2 = user.click(saveButton);
+    // Trigger multiple long saves to ensure they last beyond the 500ms threshold
+    const longSaveButton = screen.getByTestId("simulate-long-save-button");
+    const clickPromise1 = user.click(longSaveButton);
+    const clickPromise2 = user.click(longSaveButton);
 
-    // Should show saving state
-    await waitFor(() => {
-      expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
-    });
+    // Should NOT show saving immediately
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Should show saving state after 500ms
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
+      },
+      { timeout: 700 }
+    );
 
     // Wait for all saves to complete
     await Promise.all([clickPromise1, clickPromise2]);

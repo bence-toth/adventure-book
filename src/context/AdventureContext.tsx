@@ -34,6 +34,7 @@ export const AdventureProvider = ({
   const [reloadTrigger, setReloadTrigger] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const savingCountRef = useRef(0);
+  const savingTimeoutRef = useRef<number | null>(null);
 
   const reloadAdventure = () => {
     setReloadTrigger((prev) => prev + 1);
@@ -52,13 +53,27 @@ export const AdventureProvider = ({
   const withSaving = useCallback(
     async <T,>(asyncOperation: () => Promise<T>): Promise<T> => {
       savingCountRef.current += 1;
-      setIsSaving(true);
+
+      // Only show the saving indicator if the operation takes longer than 500ms
+      const timeoutId = window.setTimeout(() => {
+        if (savingCountRef.current > 0) {
+          setIsSaving(true);
+        }
+      }, 500);
+
+      savingTimeoutRef.current = timeoutId;
 
       try {
         return await asyncOperation();
       } finally {
         savingCountRef.current -= 1;
+
+        // Clear the timeout if the operation completes before 500ms
         if (savingCountRef.current === 0) {
+          if (savingTimeoutRef.current !== null) {
+            clearTimeout(savingTimeoutRef.current);
+            savingTimeoutRef.current = null;
+          }
           setIsSaving(false);
         }
       }
@@ -108,6 +123,15 @@ export const AdventureProvider = ({
       isMounted = false;
     };
   }, [adventureId, reloadTrigger]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (savingTimeoutRef.current !== null) {
+        clearTimeout(savingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <AdventureContext.Provider
