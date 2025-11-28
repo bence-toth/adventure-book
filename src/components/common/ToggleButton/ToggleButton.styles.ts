@@ -32,7 +32,9 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
       props.$checked
         ? getInteractiveColor("neutral", "border", "active")
         : getInteractiveColor("neutral", "border", "default")};
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 
   ${ToggleButtonContainer}:hover & {
     background: ${(props) =>

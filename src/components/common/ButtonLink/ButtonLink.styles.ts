@@ -56,11 +56,7 @@ export const StyledLink = styled(Link)<{
     outline-offset: var(--space-1);
     ${(props) =>
       props.$variant === "primary"
-        ? `outline-color: ${getInteractiveColor(
-            props.$variant,
-            "outline",
-            "focus"
-          )};`
+        ? `outline-color: ${getInteractiveColor(props.$variant, "outline", "focus")};`
         : ""};
   }
 `;

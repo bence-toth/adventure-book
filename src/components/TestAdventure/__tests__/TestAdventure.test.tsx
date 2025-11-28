@@ -365,9 +365,8 @@ describe("TestAdventure Component", () => {
     });
 
     it("handles remove_item effects for regular passages", async () => {
-      const { removeItemFromInventory } = await import(
-        "@/data/adventureLoader"
-      );
+      const { removeItemFromInventory } =
+        await import("@/data/adventureLoader");
       const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
 
       const adventureWithEffects: Adventure = {
@@ -406,9 +405,8 @@ describe("TestAdventure Component", () => {
     });
 
     it("handles multiple effects in a passage", async () => {
-      const { addItemToInventory, removeItemFromInventory } = await import(
-        "@/data/adventureLoader"
-      );
+      const { addItemToInventory, removeItemFromInventory } =
+        await import("@/data/adventureLoader");
       const mockAddItemToInventory = vi.mocked(addItemToInventory);
       const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
 
@@ -464,9 +462,8 @@ describe("TestAdventure Component", () => {
     });
 
     it("handles passages without effects", async () => {
-      const { addItemToInventory, removeItemFromInventory } = await import(
-        "@/data/adventureLoader"
-      );
+      const { addItemToInventory, removeItemFromInventory } =
+        await import("@/data/adventureLoader");
       const mockAddItemToInventory = vi.mocked(addItemToInventory);
       const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
 

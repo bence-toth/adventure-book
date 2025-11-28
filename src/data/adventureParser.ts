@@ -215,9 +215,7 @@ export class AdventureParser {
           !validTypes.includes(passageObj.type)
         ) {
           throw new Error(
-            `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(
-              ", "
-            )}`
+            `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(", ")}`
           );
         }
         // Type can only be used with ending: true

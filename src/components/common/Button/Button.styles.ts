@@ -62,11 +62,7 @@ export const StyledButton = styled.button<{
     outline-offset: var(--space-1);
     ${(props) =>
       props.$variant !== "neutral"
-        ? `outline-color: ${getInteractiveColor(
-            props.$variant,
-            "outline",
-            "focus"
-          )};`
+        ? `outline-color: ${getInteractiveColor(props.$variant, "outline", "focus")};`
         : ""};
   }
 `;
