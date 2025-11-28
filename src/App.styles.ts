@@ -12,5 +12,5 @@ export const AppContent = styled.main`
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: ${getColor("background", "neutral")};
+  background: ${getColor({ type: "background", variant: "neutral" })};
 `;

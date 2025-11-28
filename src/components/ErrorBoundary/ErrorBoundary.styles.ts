@@ -9,14 +9,14 @@ export const ErrorBoundaryContainer = styled.div`
 `;
 
 export const ErrorBoundaryIcon = styled.div`
-  color: ${getColor("foreground", "danger")};
+  color: ${getColor({ type: "foreground", variant: "danger" })};
   margin-bottom: var(--space-3);
   display: flex;
   justify-content: center;
 `;
 
 export const ErrorBoundaryTitle = styled.h1`
-  color: ${getColor("foreground", "danger")};
+  color: ${getColor({ type: "foreground", variant: "danger" })};
   margin-bottom: var(--space-3);
   font-family: var(--font-family-display);
   font-size: var(--font-size-xl);
@@ -39,7 +39,7 @@ export const ErrorBoundaryHelp = styled.div`
   margin-top: var(--space-4);
   padding-top: var(--space-3);
   border-top: var(--border-width-surface) solid
-    ${getColor("border", "neutral", true)};
+    ${getColor({ type: "border", variant: "neutral", isSurface: true })};
 `;
 
 export const ErrorBoundaryHelpText = styled.p`
@@ -52,13 +52,13 @@ export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
   font-size: var(--font-size-sm);
   background: ${(props) =>
     props.$isError
-      ? getColor("background", "danger", true)
-      : getColor("background", "neutral", true)};
+      ? getColor({ type: "background", variant: "danger", isSurface: true })
+      : getColor({ type: "background", variant: "neutral", isSurface: true })};
   border: var(--border-width-surface) solid
     ${(props) =>
       props.$isError
-        ? getColor("border", "danger", true)
-        : getColor("border", "neutral", true)};
+        ? getColor({ type: "border", variant: "danger", isSurface: true })
+        : getColor({ type: "border", variant: "neutral", isSurface: true })};
   border-radius: calc(var(--space-1) / 2);
   padding: var(--space-2);
   margin: var(--space-2) 0;
@@ -67,8 +67,8 @@ export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
   overflow-wrap: break-word;
   color: ${(props) =>
     props.$isError
-      ? getColor("foreground", "danger")
-      : getColor("foreground", "neutral")};
+      ? getColor({ type: "foreground", variant: "danger" })
+      : getColor({ type: "foreground", variant: "neutral" })};
   line-height: ${(props) =>
     props.$isError ? "var(--line-height-normal)" : "var(--line-height-loose)"};
   pre {

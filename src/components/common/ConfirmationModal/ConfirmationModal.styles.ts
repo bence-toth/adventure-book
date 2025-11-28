@@ -13,12 +13,25 @@ export const ModalOverlay = styled.div`
 
 export const Dialog = styled.dialog`
   border: var(--border-width-surface) solid
-    ${getInteractiveColor("neutral", "border", "default")};
+    ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "default",
+    })};
   border-radius: var(--space-1);
   padding: 0;
   max-width: var(--size-modal-dialog-max-width);
-  box-shadow: ${getColor("shadow", "neutral", true, true)};
-  background: ${getColor("background", "neutral", true)};
+  box-shadow: ${getColor({
+    type: "shadow",
+    variant: "neutral",
+    isSurface: true,
+    isElevated: true,
+  })};
+  background: ${getColor({
+    type: "background",
+    variant: "neutral",
+    isSurface: true,
+  })};
   position: relative;
   margin: 0;
   z-index: 3;

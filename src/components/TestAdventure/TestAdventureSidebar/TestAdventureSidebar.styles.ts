@@ -18,7 +18,15 @@ export const SidebarContent = styled.div`
 export const SidebarFooter = styled.div`
   padding: var(--space-2);
   border-block-start: var(--border-width-surface) solid
-    ${getColor("border", "neutral", true)};
-  background-color: ${getColor("background", "neutral", true)};
-  box-shadow: ${getColor("shadow", "neutral", true)};
+    ${getColor({ type: "border", variant: "neutral", isSurface: true })};
+  background-color: ${getColor({
+    type: "background",
+    variant: "neutral",
+    isSurface: true,
+  })};
+  box-shadow: ${getColor({
+    type: "shadow",
+    variant: "neutral",
+    isSurface: true,
+  })};
 `;

@@ -4,10 +4,18 @@ import { getColor } from "@/utils/colorHelpers";
 export const SidebarContainer = styled.div`
   position: relative;
   z-index: 1;
-  background-color: ${getColor("background", "neutral", true)};
+  background-color: ${getColor({
+    type: "background",
+    variant: "neutral",
+    isSurface: true,
+  })};
   border-inline-end: var(--border-width-surface) solid
-    ${getColor("border", "neutral", true)};
-  box-shadow: ${getColor("shadow", "neutral", true)};
+    ${getColor({ type: "border", variant: "neutral", isSurface: true })};
+  box-shadow: ${getColor({
+    type: "shadow",
+    variant: "neutral",
+    isSurface: true,
+  })};
   overflow: hidden;
   min-height: 0;
   display: flex;

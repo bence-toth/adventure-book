@@ -8,5 +8,5 @@ export const TopBarStartContainer = styled.div`
 `;
 
 export const SavingIndicator = styled.span`
-  color: ${getColor("foreground-muted", "neutral")};
+  color: ${getColor({ type: "foreground-muted", variant: "neutral" })};
 `;

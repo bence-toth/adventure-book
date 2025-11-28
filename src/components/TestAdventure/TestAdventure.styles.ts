@@ -13,7 +13,7 @@ export const PageContent = styled.div`
   overflow-y: auto;
   display: grid;
   place-items: center;
-  background: ${getColor("background", "neutral")};
+  background: ${getColor({ type: "background", variant: "neutral" })};
   min-height: 0;
   padding: var(--space-4);
 `;

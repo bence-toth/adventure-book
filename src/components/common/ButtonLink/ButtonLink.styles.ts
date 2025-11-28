@@ -22,41 +22,90 @@ export const StyledLink = styled(Link)<{
   cursor: pointer;
   text-decoration: none;
   background: ${(props) =>
-    getInteractiveColor(props.$variant, "background", "default")};
+    getInteractiveColor({
+      variant: props.$variant,
+      type: "background",
+      state: "default",
+    })};
   color: ${(props) =>
-    getInteractiveColor(props.$variant, "foreground", "default")};
+    getInteractiveColor({
+      variant: props.$variant,
+      type: "foreground",
+      state: "default",
+    })};
   border: var(--border-width-interactive) solid
-    ${(props) => getInteractiveColor(props.$variant, "border", "default")};
+    ${(props) =>
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "border",
+        state: "default",
+      })};
 
   &:hover {
     background: ${(props) =>
-      getInteractiveColor(props.$variant, "background", "hover")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "background",
+        state: "hover",
+      })};
     color: ${(props) =>
-      getInteractiveColor(props.$variant, "foreground", "hover")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "foreground",
+        state: "hover",
+      })};
     border-color: ${(props) =>
-      getInteractiveColor(props.$variant, "border", "hover")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "border",
+        state: "hover",
+      })};
   }
 
   &:active {
     background: ${(props) =>
-      getInteractiveColor(props.$variant, "background", "active")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "background",
+        state: "active",
+      })};
     color: ${(props) =>
-      getInteractiveColor(props.$variant, "foreground", "active")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "foreground",
+        state: "active",
+      })};
     border-color: ${(props) =>
-      getInteractiveColor(props.$variant, "border", "active")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "border",
+        state: "active",
+      })};
   }
 
   &:focus-visible {
     background: ${(props) =>
-      getInteractiveColor(props.$variant, "background", "focus")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "background",
+        state: "focus",
+      })};
     color: ${(props) =>
-      getInteractiveColor(props.$variant, "foreground", "focus")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "foreground",
+        state: "focus",
+      })};
     border-color: ${(props) =>
-      getInteractiveColor(props.$variant, "border", "focus")};
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "border",
+        state: "focus",
+      })};
     outline-offset: var(--space-1);
     ${(props) =>
       props.$variant === "primary"
-        ? `outline-color: ${getInteractiveColor(props.$variant, "outline", "focus")};`
+        ? `outline-color: ${getInteractiveColor({ variant: props.$variant, type: "outline", state: "focus" })};`
         : ""};
   }
 `;

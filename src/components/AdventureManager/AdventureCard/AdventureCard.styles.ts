@@ -2,7 +2,11 @@ import styled from "styled-components";
 import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const AdventureCardContainer = styled.div`
-  background: ${getColor("background", "neutral", true)};
+  background: ${getColor({
+    type: "background",
+    variant: "neutral",
+    isSurface: true,
+  })};
   border-radius: var(--space-1);
   position: relative;
   display: flex;
@@ -20,27 +24,75 @@ export const AdventureCardClickable = styled.button`
   width: 100%;
   min-height: 0;
   border-radius: var(--space-1);
-  background: ${getInteractiveColor("neutral", "background", "default")};
-  color: ${getInteractiveColor("neutral", "foreground", "default")};
+  background: ${getInteractiveColor({
+    variant: "neutral",
+    type: "background",
+    state: "default",
+  })};
+  color: ${getInteractiveColor({
+    variant: "neutral",
+    type: "foreground",
+    state: "default",
+  })};
   border: var(--border-width-interactive) solid
-    ${getInteractiveColor("neutral", "border", "default")};
+    ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "default",
+    })};
 
   &:hover {
-    background: ${getInteractiveColor("neutral", "background", "hover")};
-    color: ${getInteractiveColor("neutral", "foreground", "hover")};
-    border-color: ${getInteractiveColor("neutral", "border", "hover")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "hover",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "hover",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "hover",
+    })};
   }
 
   &:active {
-    background: ${getInteractiveColor("neutral", "background", "active")};
-    color: ${getInteractiveColor("neutral", "foreground", "active")};
-    border-color: ${getInteractiveColor("neutral", "border", "active")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "active",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "active",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "active",
+    })};
   }
 
   &:focus-visible {
-    background: ${getInteractiveColor("neutral", "background", "focus")};
-    color: ${getInteractiveColor("neutral", "foreground", "focus")};
-    border-color: ${getInteractiveColor("neutral", "border", "focus")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "focus",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "focus",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "focus",
+    })};
     outline-offset: var(--space-1);
   }
 `;
@@ -82,27 +134,75 @@ export const AdventureCardMenu = styled.button`
   padding: var(--space-1);
   flex-shrink: 0;
   border-radius: var(--space-1);
-  background: ${getInteractiveColor("neutral", "background", "default")};
-  color: ${getInteractiveColor("neutral", "foreground", "default")};
+  background: ${getInteractiveColor({
+    variant: "neutral",
+    type: "background",
+    state: "default",
+  })};
+  color: ${getInteractiveColor({
+    variant: "neutral",
+    type: "foreground",
+    state: "default",
+  })};
   border: var(--border-width-interactive) solid
-    ${getInteractiveColor("neutral", "border", "default")};
+    ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "default",
+    })};
 
   &:hover {
-    background: ${getInteractiveColor("neutral", "background", "hover")};
-    color: ${getInteractiveColor("neutral", "foreground", "hover")};
-    border-color: ${getInteractiveColor("neutral", "border", "hover")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "hover",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "hover",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "hover",
+    })};
   }
 
   &:active {
-    background: ${getInteractiveColor("neutral", "background", "active")};
-    color: ${getInteractiveColor("neutral", "foreground", "active")};
-    border-color: ${getInteractiveColor("neutral", "border", "active")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "active",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "active",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "active",
+    })};
   }
 
   &:focus-visible {
-    background: ${getInteractiveColor("neutral", "background", "focus")};
-    color: ${getInteractiveColor("neutral", "foreground", "focus")};
-    border-color: ${getInteractiveColor("neutral", "border", "focus")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "focus",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "focus",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "focus",
+    })};
     outline-offset: var(--space-1);
   }
 `;
