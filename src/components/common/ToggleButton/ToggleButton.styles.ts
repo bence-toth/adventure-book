@@ -33,8 +33,8 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
         ? getInteractiveColor("neutral", "border", "active")
         : getInteractiveColor("neutral", "border", "default")};
   transition:
-    background-color 0.2s ease,
-    border-color 0.2s ease;
+    background-color var(--duration-medium) ease,
+    border-color var(--duration-medium) ease;
 
   ${ToggleButtonContainer}:hover & {
     background: ${(props) =>
@@ -70,7 +70,7 @@ export const ToggleThumb = styled.span<{ $checked: boolean }>`
         translateX(calc(-3 * var(--border-width-interactive)))
         `
       : "translateX(var(--border-width-interactive))"};
-  transition: transform 0.2s ease;
+  transition: transform var(--duration-medium) ease;
 `;
 
 export const LabelText = styled.span`

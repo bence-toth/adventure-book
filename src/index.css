@@ -189,6 +189,11 @@ a {
   --size-context-menu-min-width: calc(var(--space-base) * 20);
   --size-toggle-button-width: calc(var(--space-base) * 5);
   --size-toggle-button-height: calc(var(--space-base) * 3);
+
+  /* Transition and animation duration variables */
+  --duration-fast: 125ms;
+  --duration-medium: 200ms;
+  --duration-slow: 375ms;
 }
 
 @media (prefers-color-scheme: light) {
