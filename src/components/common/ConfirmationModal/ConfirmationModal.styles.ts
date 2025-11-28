@@ -34,7 +34,6 @@ export const DialogContent = styled.div`
 
 export const DialogTitle = styled.h2`
   margin: 0 0 var(--space-2);
-  color: var(--color-foreground);
   font-size: var(--font-size-xl);
 `;
 

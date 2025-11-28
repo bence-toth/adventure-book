@@ -23,7 +23,6 @@ export const ErrorBoundaryTitle = styled.h1`
 
 export const ErrorBoundaryDescription = styled.p`
   margin-bottom: var(--space-4);
-  color: var(--color-foreground);
   text-wrap: balance;
 `;
 
@@ -68,7 +67,7 @@ export const ErrorBoundaryDetailsContent = styled.pre<{ $isError?: boolean }>`
   color: ${(props) =>
     props.$isError
       ? "var(--color-foreground-danger)"
-      : "var(--color-foreground)"};
+      : "var(--color-foreground-neutral)"};
   line-height: ${(props) =>
     props.$isError ? "var(--line-height-normal)" : "var(--line-height-loose)"};
   pre {

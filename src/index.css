@@ -196,7 +196,7 @@ a {
     /* Neutral colors */
     --color-background-neutral: var(--color-gray-100);
     --color-foreground-neutral: var(--color-gray-900);
-    --color-foreground-neutral-muted: var(--color-gray-700);
+    --color-foreground-muted-neutral: var(--color-gray-700);
     --color-background-surface-neutral: var(--color-gray-150);
     --color-border-surface-neutral: var(--color-gray-200);
     --color-interactive-background-default-neutral: var(--color-gray-200);

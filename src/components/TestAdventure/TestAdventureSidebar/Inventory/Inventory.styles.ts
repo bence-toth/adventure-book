@@ -7,7 +7,7 @@ export const InventoryTitle = styled.h2`
 
 export const InventoryEmpty = styled.p`
   margin: 0;
-  color: var(--color-foreground-neutral-muted);
+  color: var(--color-foreground-muted-neutral);
 `;
 
 export const InventoryList = styled.ul`

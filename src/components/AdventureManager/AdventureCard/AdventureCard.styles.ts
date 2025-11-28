@@ -52,7 +52,6 @@ export const AdventureCardContent = styled.div`
 export const AdventureCardTitle = styled.h2`
   font-size: var(--font-size-lg);
   line-height: var(--line-height-normal);
-  color: var(--color-foreground);
   overflow-wrap: break-word;
   font-family: var(--font-family-display);
 `;
@@ -66,7 +65,6 @@ export const AdventureCardFooter = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: var(--space-2) var(--space-3);
-  background: var(--color-background);
   gap: var(--space-2);
 `;
 

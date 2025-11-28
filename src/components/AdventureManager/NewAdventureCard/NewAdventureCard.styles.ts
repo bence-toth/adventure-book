@@ -41,7 +41,6 @@ export const AdventureCardNew = styled.button`
 export const AdventureCardTitle = styled.h2`
   font-size: var(--font-size-lg);
   line-height: var(--line-height-normal);
-  color: var(--color-foreground);
   overflow-wrap: break-word;
   font-family: var(--font-family-display);
 `;
