@@ -5,3 +5,7 @@ export const TopBarStartContainer = styled.div`
   align-items: center;
   gap: var(--space-1);
 `;
+
+export const SavingIndicator = styled.span`
+  color: var(--color-foreground-neutral-muted);
+`;

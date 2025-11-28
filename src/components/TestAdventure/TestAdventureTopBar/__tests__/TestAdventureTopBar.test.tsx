@@ -1,12 +1,13 @@
 import { screen, render } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { TestAdventureTopBar } from "../TestAdventureTopBar";
 import { ROUTES } from "@/constants/routes";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 import { AdventureContext } from "@/context/AdventureContext";
+import type { AdventureContextType } from "@/context/AdventureContext";
 
 const TEST_STORY_ID = "test-adventure-id";
 
@@ -47,14 +48,17 @@ describe("TestAdventureTopBar Component", () => {
     });
 
     it("returns null when adventureId is not available", () => {
-      const mockContextValue = {
+      const mockContextValue: AdventureContextType = {
         adventure: null,
         adventureId: null,
         loading: false,
         error: null,
         debugModeEnabled: false,
-        setDebugModeEnabled: () => {},
-        reloadAdventure: () => {},
+        isSaving: false,
+        setDebugModeEnabled: vi.fn(),
+        reloadAdventure: vi.fn(),
+        updateAdventure: vi.fn(),
+        withSaving: vi.fn(),
       };
 
       const { container } = render(
@@ -67,6 +71,29 @@ describe("TestAdventureTopBar Component", () => {
 
       const header = container.querySelector("header");
       expect(header).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Saving Indicator", () => {
+    it("shows saving indicator when isSaving is true", async () => {
+      renderWithAdventure(<TestAdventureTopBar />, {
+        adventureId: TEST_STORY_ID,
+        contextOverride: { isSaving: true },
+      });
+
+      const savingIndicator = await screen.findByTestId("saving-indicator");
+      expect(savingIndicator).toBeInTheDocument();
+      expect(savingIndicator).toHaveTextContent("Saving...");
+    });
+
+    it("does not show saving indicator when isSaving is false", async () => {
+      renderWithAdventure(<TestAdventureTopBar />, {
+        adventureId: TEST_STORY_ID,
+        contextOverride: { isSaving: false },
+      });
+
+      const savingIndicator = screen.queryByTestId("saving-indicator");
+      expect(savingIndicator).not.toBeInTheDocument();
     });
   });
 

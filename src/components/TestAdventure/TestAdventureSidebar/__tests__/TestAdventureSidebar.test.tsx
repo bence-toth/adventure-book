@@ -7,7 +7,10 @@ import {
 } from "@/__tests__/mockAdventureData";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { TestAdventureSidebar } from "../TestAdventureSidebar";
-import { AdventureContext } from "@/context/AdventureContext";
+import {
+  AdventureContext,
+  type AdventureContextType,
+} from "@/context/AdventureContext";
 import * as inventoryManagement from "@/utils/inventoryManagement";
 
 vi.mock("@/utils/inventoryManagement", async () => {
@@ -189,15 +192,18 @@ describe("TestAdventureSidebar", () => {
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
   });
 
-  it("should return null when adventureId is not available", () => {
-    const mockContextValue = {
+  it("should return null when adventureId is null", () => {
+    const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
       loading: false,
       error: null,
       debugModeEnabled: false,
-      setDebugModeEnabled: () => {},
-      reloadAdventure: () => {},
+      isSaving: false,
+      setDebugModeEnabled: vi.fn(),
+      reloadAdventure: vi.fn(),
+      updateAdventure: vi.fn(),
+      withSaving: vi.fn(),
     };
 
     const { container } = render(
@@ -213,14 +219,17 @@ describe("TestAdventureSidebar", () => {
   });
 
   it("should return null when adventure is not loaded yet", () => {
-    const mockContextValue = {
+    const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
       loading: true,
       error: null,
       debugModeEnabled: false,
-      setDebugModeEnabled: () => {},
-      reloadAdventure: () => {},
+      isSaving: false,
+      setDebugModeEnabled: vi.fn(),
+      reloadAdventure: vi.fn(),
+      updateAdventure: vi.fn(),
+      withSaving: vi.fn(),
     };
 
     const { container } = render(
@@ -237,14 +246,17 @@ describe("TestAdventureSidebar", () => {
 
   it("should not set up event listeners when adventureId is empty", () => {
     // Render with mock context where adventureId is not available
-    const mockContextValue = {
+    const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
       loading: false,
       error: null,
       debugModeEnabled: false,
-      setDebugModeEnabled: () => {},
-      reloadAdventure: () => {},
+      isSaving: false,
+      setDebugModeEnabled: vi.fn(),
+      reloadAdventure: vi.fn(),
+      updateAdventure: vi.fn(),
+      withSaving: vi.fn(),
     };
 
     const { container } = render(
