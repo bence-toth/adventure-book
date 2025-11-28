@@ -10,6 +10,7 @@ export const MenuContainer = styled.div`
 
 export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
   display: block;
+  font-weight: 500;
   width: 100%;
   padding: var(--space-2) var(--space-3);
   text-align: start;

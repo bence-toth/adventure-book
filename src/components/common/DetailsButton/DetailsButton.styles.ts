@@ -79,4 +79,5 @@ export const IconWrapper = styled.span`
 
 export const TextWrapper = styled.span`
   display: inline-block;
+  font-weight: 500;
 `;

@@ -9,6 +9,7 @@ export const StyledButton = styled.button<{
   $hasChildren: boolean;
 }>`
   display: inline-flex;
+  font-weight: 500;
   align-items: center;
   justify-content: center;
   gap: var(--space-1);

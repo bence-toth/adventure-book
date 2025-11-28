@@ -196,6 +196,7 @@ a {
     /* Neutral colors */
     --color-background-neutral: var(--color-gray-100);
     --color-foreground-neutral: var(--color-gray-900);
+    --color-foreground-neutral-muted: var(--color-gray-700);
     --color-background-surface-neutral: var(--color-gray-150);
     --color-border-surface-neutral: var(--color-gray-200);
     --color-interactive-background-default-neutral: var(--color-gray-200);
@@ -220,6 +221,7 @@ a {
     /* Primary colors */
     --color-background-primary: var(--color-blue-100);
     --color-foreground-primary: var(--color-blue-900);
+    --color-foreground-primary-muted: var(--color-blue-700);
     --color-background-surface-primary: var(--color-blue-150);
     --color-border-surface-primary: var(--color-blue-200);
     --color-interactive-background-default-primary: var(--color-blue-200);
@@ -244,6 +246,7 @@ a {
     /* Danger colors */
     --color-background-danger: var(--color-red-100);
     --color-foreground-danger: var(--color-red-900);
+    --color-foreground-danger-muted: var(--color-red-700);
     --color-background-surface-danger: var(--color-red-150);
     --color-border-surface-danger: var(--color-red-200);
     --color-interactive-background-default-danger: var(--color-red-200);
@@ -272,6 +275,7 @@ a {
     /* Neutral colors */
     --color-background-neutral: var(--color-gray-900);
     --color-foreground-neutral: var(--color-gray-100);
+    --color-foreground-neutral-muted: var(--color-gray-300);
     --color-background-surface-neutral: var(--color-gray-850);
     --color-border-surface-neutral: var(--color-gray-800);
     --color-interactive-background-default-neutral: var(--color-gray-800);
@@ -296,6 +300,7 @@ a {
     /* Primary colors */
     --color-background-primary: var(--color-blue-900);
     --color-foreground-primary: var(--color-blue-100);
+    --color-foreground-primary-muted: var(--color-blue-300);
     --color-background-surface-primary: var(--color-blue-850);
     --color-border-surface-primary: var(--color-blue-800);
     --color-interactive-background-default-primary: var(--color-blue-800);
@@ -320,6 +325,7 @@ a {
     /* Danger colors */
     --color-background-danger: var(--color-red-900);
     --color-foreground-danger: var(--color-red-100);
+    --color-foreground-danger-muted: var(--color-red-300);
     --color-background-surface-danger: var(--color-red-850);
     --color-border-surface-danger: var(--color-red-800);
     --color-interactive-background-default-danger: var(--color-red-800);

@@ -9,6 +9,7 @@ export const StyledLink = styled(Link)<{
   $variant: LinkVariant;
 }>`
   display: inline-flex;
+  font-weight: 500;
   align-items: center;
   justify-content: center;
   gap: var(--space-1);
