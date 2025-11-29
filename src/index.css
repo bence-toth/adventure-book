@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Eagle+Lake&family=Inconsolata:wght@200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inclusive+Sans:wght@300..700&family=Inconsolata:wght@200..900&family=Metamorphous&display=swap");
 
 * {
   box-sizing: border-box;
@@ -149,9 +149,9 @@ a {
     var(--space-1) var(--color-shadow-neutral);
 
   /* Font family variables */
-  --font-family-display: "Eagle Lake", serif;
+  --font-family-display: "Metamorphous", serif;
   --font-family-monospace: "Inconsolata", monospace;
-  --font-family-default: "Atkinson Hyperlegible Next", sans-serif;
+  --font-family-default: "Inclusive Sans", sans-serif;
 
   /* Font size variables */
   --font-size-sm: 0.75rem;
@@ -189,6 +189,11 @@ a {
   --size-context-menu-min-width: calc(var(--space-base) * 20);
   --size-toggle-button-width: calc(var(--space-base) * 5);
   --size-toggle-button-height: calc(var(--space-base) * 3);
+
+  /* Transition and animation duration variables */
+  --duration-fast: 125ms;
+  --duration-medium: 200ms;
+  --duration-slow: 375ms;
 }
 
 @media (prefers-color-scheme: light) {
@@ -196,6 +201,7 @@ a {
     /* Neutral colors */
     --color-background-neutral: var(--color-gray-100);
     --color-foreground-neutral: var(--color-gray-900);
+    --color-foreground-muted-neutral: var(--color-gray-700);
     --color-background-surface-neutral: var(--color-gray-150);
     --color-border-surface-neutral: var(--color-gray-200);
     --color-interactive-background-default-neutral: var(--color-gray-200);
@@ -220,6 +226,7 @@ a {
     /* Primary colors */
     --color-background-primary: var(--color-blue-100);
     --color-foreground-primary: var(--color-blue-900);
+    --color-foreground-primary-muted: var(--color-blue-700);
     --color-background-surface-primary: var(--color-blue-150);
     --color-border-surface-primary: var(--color-blue-200);
     --color-interactive-background-default-primary: var(--color-blue-200);
@@ -244,6 +251,7 @@ a {
     /* Danger colors */
     --color-background-danger: var(--color-red-100);
     --color-foreground-danger: var(--color-red-900);
+    --color-foreground-danger-muted: var(--color-red-700);
     --color-background-surface-danger: var(--color-red-150);
     --color-border-surface-danger: var(--color-red-200);
     --color-interactive-background-default-danger: var(--color-red-200);
@@ -272,6 +280,7 @@ a {
     /* Neutral colors */
     --color-background-neutral: var(--color-gray-900);
     --color-foreground-neutral: var(--color-gray-100);
+    --color-foreground-neutral-muted: var(--color-gray-300);
     --color-background-surface-neutral: var(--color-gray-850);
     --color-border-surface-neutral: var(--color-gray-800);
     --color-interactive-background-default-neutral: var(--color-gray-800);
@@ -296,6 +305,7 @@ a {
     /* Primary colors */
     --color-background-primary: var(--color-blue-900);
     --color-foreground-primary: var(--color-blue-100);
+    --color-foreground-primary-muted: var(--color-blue-300);
     --color-background-surface-primary: var(--color-blue-850);
     --color-border-surface-primary: var(--color-blue-800);
     --color-interactive-background-default-primary: var(--color-blue-800);
@@ -320,6 +330,7 @@ a {
     /* Danger colors */
     --color-background-danger: var(--color-red-900);
     --color-foreground-danger: var(--color-red-100);
+    --color-foreground-danger-muted: var(--color-red-300);
     --color-background-surface-danger: var(--color-red-850);
     --color-border-surface-danger: var(--color-red-800);
     --color-interactive-background-default-danger: var(--color-red-800);

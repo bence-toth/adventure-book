@@ -3,9 +3,6 @@ import type { Adventure, RawAdventure, InventoryItem } from "./types";
 
 export class AdventureParser {
   static parseFromString(yamlContent: string): Adventure {
-    // The 'yaml' package's parse() function is safe by default (unlike js-yaml's load())
-    // It only parses standard YAML types and doesn't execute arbitrary code or custom tags
-    // This is much safer than js-yaml.load() which could execute arbitrary JavaScript
     const parsed = parse(yamlContent, {
       // Explicitly disable custom tags for extra security
       customTags: [],
@@ -218,9 +215,7 @@ export class AdventureParser {
           !validTypes.includes(passageObj.type)
         ) {
           throw new Error(
-            `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(
-              ", "
-            )}`
+            `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(", ")}`
           );
         }
         // Type can only be used with ending: true

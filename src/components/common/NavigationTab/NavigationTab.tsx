@@ -1,26 +1,24 @@
 import type { ReactNode, ComponentType } from "react";
 import { createElement } from "react";
 import type { LinkProps } from "react-router-dom";
-import { StyledLink, IconWrapper, TextWrapper } from "./ButtonLink.styles";
+import { StyledLink, IconWrapper, TextWrapper } from "./NavigationTab.styles";
 
-interface ButtonLinkProps extends Omit<LinkProps, "className"> {
+interface NavigationTabProps extends Omit<LinkProps, "className"> {
   children: ReactNode;
   icon?: ComponentType<Record<string, unknown>>;
   className?: string;
   variant?: "neutral" | "primary";
-  size?: "default" | "small";
   "data-testid"?: string;
 }
 
-export const ButtonLink = ({
+export const NavigationTab = ({
   children,
   icon,
   className,
   variant,
-  size,
   "data-testid": dataTestId,
   ...props
-}: ButtonLinkProps) => {
+}: NavigationTabProps) => {
   const iconElement = icon
     ? createElement(icon, {
         size: 20,
@@ -32,7 +30,6 @@ export const ButtonLink = ({
   return (
     <StyledLink
       className={className}
-      $size={size ?? "default"}
       $variant={variant ?? "neutral"}
       data-testid={dataTestId}
       aria-current={variant === "primary" ? "page" : undefined}

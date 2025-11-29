@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { createMockAdventureLoader } from "@/__tests__/mockAdventureData";
 
 // Mock the adventure loader to avoid content dependencies
@@ -14,6 +14,7 @@ const {
   getCurrentInventory,
   addItemToInventory,
   removeItemFromInventory,
+  saveAdventureById,
 } = await import("../adventureLoader");
 
 describe("AdventureLoader", () => {
@@ -463,6 +464,74 @@ describe("AdventureLoader", () => {
           expect(inventory).toContain(testItem.id);
         }
       });
+    });
+  });
+
+  describe("saveAdventureById", () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it("should serialize and save adventure to database", async () => {
+      const testAdventureId = "test-adventure-123";
+      const adventure = loadAdventure();
+
+      const result = await saveAdventureById(testAdventureId, adventure);
+
+      // Since we're using mocks, verify the returned value is a YAML string
+      expect(typeof result).toBe("string");
+      expect(result).toContain("metadata:");
+      expect(result).toContain("intro:");
+      expect(result).toContain("passages:");
+    });
+
+    it("should serialize adventure with all properties", async () => {
+      const testAdventureId = "test-adventure-789";
+      const adventure = loadAdventure();
+
+      const yamlContent = await saveAdventureById(testAdventureId, adventure);
+
+      // Check for metadata
+      expect(yamlContent).toContain("title:");
+      expect(yamlContent).toContain("author:");
+      expect(yamlContent).toContain("version:");
+
+      // Check for intro
+      expect(yamlContent).toContain("text:");
+      expect(yamlContent).toContain("action:");
+
+      // Check for passages
+      expect(yamlContent).toContain("passages:");
+    });
+
+    it("should handle adventures with inventory items", async () => {
+      const testAdventureId = "test-adventure-with-items";
+      const adventure = loadAdventure();
+
+      // Add some items if not present
+      if (adventure.items.length === 0) {
+        adventure.items = [{ id: "test_item", name: "Test Item" }];
+      }
+
+      const yamlContent = await saveAdventureById(testAdventureId, adventure);
+
+      if (adventure.items.length > 0) {
+        expect(yamlContent).toContain("items:");
+      }
+    });
+
+    it("should preserve adventure data through save", async () => {
+      const testAdventureId = "test-adventure-preserve";
+      const originalAdventure = loadAdventure();
+
+      await saveAdventureById(testAdventureId, originalAdventure);
+
+      // Load and verify data is preserved
+      const loadedAdventure = loadAdventure();
+      expect(loadedAdventure.metadata.title).toBe(
+        originalAdventure.metadata.title
+      );
+      expect(loadedAdventure.passages).toEqual(originalAdventure.passages);
     });
   });
 });

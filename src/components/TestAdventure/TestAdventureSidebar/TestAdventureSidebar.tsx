@@ -3,14 +3,21 @@ import { useParams } from "react-router-dom";
 import { getCurrentInventory } from "@/data/adventureLoader";
 import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "@/components/common/Sidebar/Sidebar";
+import { ToggleButton } from "@/components/common/ToggleButton/ToggleButton";
 import { Inventory } from "./Inventory/Inventory";
 import { DebugInventory } from "./DebugInventory/DebugInventory";
 import { DebugNavigation } from "./DebugNavigation/DebugNavigation";
+import {
+  SidebarLayout,
+  SidebarContent,
+  SidebarFooter,
+} from "./TestAdventureSidebar.styles";
 
 export const TestAdventureSidebar = () => {
   const { id } = useParams<{ id: string }>();
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const { adventure, adventureId, debugModeEnabled } = useAdventure();
+  const { adventure, adventureId, debugModeEnabled, setDebugModeEnabled } =
+    useAdventure();
 
   // Parse current passage ID from URL (null means we're on introduction)
   const currentPassageId = id ? parseInt(id, 10) : null;
@@ -72,23 +79,35 @@ export const TestAdventureSidebar = () => {
 
   return (
     <Sidebar>
-      {debugModeEnabled ? (
-        <>
-          <DebugInventory
-            allItems={adventure.items}
-            currentItemIds={currentInventoryIds}
-            adventureId={adventureId}
-            onInventoryChange={handleInventoryChange}
+      <SidebarLayout>
+        <SidebarContent>
+          {debugModeEnabled ? (
+            <>
+              <DebugInventory
+                allItems={adventure.items}
+                currentItemIds={currentInventoryIds}
+                adventureId={adventureId}
+                onInventoryChange={handleInventoryChange}
+              />
+              <DebugNavigation
+                adventure={adventure}
+                adventureId={adventureId}
+                currentPassageId={currentPassageId}
+              />
+            </>
+          ) : (
+            <Inventory items={currentItems} />
+          )}
+        </SidebarContent>
+        <SidebarFooter>
+          <ToggleButton
+            label="Debug mode"
+            checked={debugModeEnabled}
+            onChange={setDebugModeEnabled}
+            data-testid="debug-mode-toggle"
           />
-          <DebugNavigation
-            adventure={adventure}
-            adventureId={adventureId}
-            currentPassageId={currentPassageId}
-          />
-        </>
-      ) : (
-        <Inventory items={currentItems} />
-      )}
+        </SidebarFooter>
+      </SidebarLayout>
     </Sidebar>
   );
 };

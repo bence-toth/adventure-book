@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getInteractiveColor } from "@/utils/colorHelpers";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const ModalOverlay = styled.div`
   position: fixed;
@@ -13,12 +13,25 @@ export const ModalOverlay = styled.div`
 
 export const Dialog = styled.dialog`
   border: var(--border-width-surface) solid
-    ${getInteractiveColor("neutral", "border", "default")};
+    ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "default",
+    })};
   border-radius: var(--space-1);
   padding: 0;
   max-width: var(--size-modal-dialog-max-width);
-  box-shadow: var(--shadow-surface-elevated-neutral);
-  background: var(--color-background-surface-neutral);
+  box-shadow: ${getColor({
+    type: "shadow",
+    variant: "neutral",
+    isSurface: true,
+    isElevated: true,
+  })};
+  background: ${getColor({
+    type: "background",
+    variant: "neutral",
+    isSurface: true,
+  })};
   position: relative;
   margin: 0;
   z-index: 3;
@@ -34,7 +47,6 @@ export const DialogContent = styled.div`
 
 export const DialogTitle = styled.h2`
   margin: 0 0 var(--space-2);
-  color: var(--color-foreground);
   font-size: var(--font-size-xl);
 `;
 

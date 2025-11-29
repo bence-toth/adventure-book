@@ -1,5 +1,6 @@
 /// <reference types="../vite-env" />
 import { AdventureParser } from "./adventureParser";
+import { AdventureSerializer } from "./adventureSerializer";
 import type {
   Adventure,
   Passage,
@@ -11,7 +12,7 @@ import {
   addItemToInventory,
   removeItemFromInventory,
 } from "@/utils/inventoryManagement";
-import { getAdventure } from "./adventureDatabase";
+import { getAdventure, updateAdventureContent } from "./adventureDatabase";
 
 // Import the YAML file as a string (for backwards compatibility)
 import adventureYaml from "./adventure.yaml?raw";
@@ -110,6 +111,21 @@ export const getInventoryItems = (): InventoryItem[] => {
 
 export const getCurrentInventory = (adventureId: string): string[] => {
   return getInventory(adventureId);
+};
+
+// Save an adventure back to the database
+export const saveAdventureById = async (
+  adventureId: string,
+  adventure: Adventure
+): Promise<void> => {
+  // Serialize the adventure to YAML format
+  const yamlContent = AdventureSerializer.serializeToString(adventure);
+
+  // Update the content in the database
+  await updateAdventureContent(adventureId, yamlContent);
+
+  // Invalidate the cache to force reload on next access
+  invalidateAdventureCache(adventureId);
 };
 
 // Re-export inventory management functions from the shared utility

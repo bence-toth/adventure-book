@@ -17,7 +17,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const iconElement = icon
       ? createElement(icon, {
           size: 20,
-          strokeWidth: 1.5,
+          strokeWidth: 2,
           "aria-hidden": true,
         })
       : null;

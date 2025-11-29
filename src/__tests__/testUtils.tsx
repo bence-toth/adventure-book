@@ -51,6 +51,7 @@ export const renderWithAdventure = (
     error,
     loading,
     debugModeEnabled,
+    contextOverride,
     ...options
   }: Omit<RenderOptions, "wrapper"> & {
     adventureId?: string;
@@ -59,6 +60,7 @@ export const renderWithAdventure = (
     error?: string | null;
     loading?: boolean;
     debugModeEnabled?: boolean;
+    contextOverride?: Partial<AdventureContextType>;
   } = {}
 ) => {
   // Validate adventureId - empty strings are not valid
@@ -71,22 +73,31 @@ export const renderWithAdventure = (
   const initialRoute =
     route || (adventureId ? `/adventure/${adventureId}/test` : "/");
 
-  // If adventure, error, loading, or debugModeEnabled are provided, use mock context
+  // If adventure, error, loading, debugModeEnabled, or contextOverride are provided, use mock context
   const useMockContext =
     adventure !== undefined ||
     error !== undefined ||
     loading !== undefined ||
-    debugModeEnabled !== undefined;
+    debugModeEnabled !== undefined ||
+    contextOverride !== undefined;
 
   if (useMockContext) {
-    const mockContextValue: AdventureContextType = {
+    const baseContextValue: AdventureContextType = {
       adventure: adventure ?? null,
       adventureId,
       loading: loading ?? false,
       error: error ?? null,
       debugModeEnabled: debugModeEnabled ?? false,
+      isSaving: false,
       setDebugModeEnabled: () => {},
       reloadAdventure: () => {},
+      updateAdventure: () => {},
+      withSaving: (fn) => fn(),
+    };
+
+    const mockContextValue: AdventureContextType = {
+      ...baseContextValue,
+      ...contextOverride,
     };
 
     return rtlRender(ui, {

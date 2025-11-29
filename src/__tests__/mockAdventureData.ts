@@ -5,6 +5,8 @@ import {
   removeItemFromInventory,
 } from "@/utils/inventoryManagement";
 import { saveAdventure } from "@/data/adventureDatabase";
+import { AdventureSerializer } from "@/data/adventureSerializer";
+import { vi } from "vitest";
 
 export const mockIntroduction: IntroductionContent = {
   title: "Mock Test Adventure",
@@ -185,15 +187,22 @@ export const setupTestAdventure = async (
 // This can be used in vi.mock() calls to replace the actual adventure loader
 export const createMockAdventureLoader = () => {
   const testAdventureId = "test-adventure-id";
+  let currentAdventure = { ...mockAdventure };
 
   return {
-    loadAdventure: () => mockAdventure,
-    loadAdventureById: async () => mockAdventure,
-    reloadAdventure: () => mockAdventure,
+    loadAdventure: () => currentAdventure,
+    loadAdventureById: async () => currentAdventure,
+    reloadAdventure: () => currentAdventure,
+    invalidateAdventureCache: vi.fn(),
+    saveAdventureById: async (_adventureId: string, adventure: Adventure) => {
+      currentAdventure = { ...adventure };
+      // Mock implementation for testing - just return the serialized YAML
+      return AdventureSerializer.serializeToString(adventure);
+    },
     introduction: mockIntroduction,
-    getPassage: (id: number) => mockPassages[id],
-    getAllPassages: () => mockPassages,
-    getInventoryItems: () => mockAdventure.items,
+    getPassage: (id: number) => currentAdventure.passages[id],
+    getAllPassages: () => currentAdventure.passages,
+    getInventoryItems: () => currentAdventure.items,
     getCurrentInventory: (adventureId: string = testAdventureId) =>
       getInventory(adventureId),
     addItemToInventory: (adventureId: string, itemId: string) =>
@@ -219,6 +228,8 @@ export const createCustomMockAdventureLoader = (
     loadAdventure: () => adventure,
     loadAdventureById: async () => adventure,
     reloadAdventure: () => adventure,
+    invalidateAdventureCache: vi.fn(),
+    saveAdventureById: vi.fn(),
     introduction,
     getPassage: (id: number) => adventure.passages[id],
     getAllPassages: () => adventure.passages,

@@ -1,63 +1,58 @@
 import styled from "styled-components";
-import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
+import { Link } from "react-router-dom";
+import { getInteractiveColor } from "@/utils/colorHelpers";
 
-export const MenuContainer = styled.div`
-  box-shadow: ${getColor({
-    type: "shadow",
-    variant: "neutral",
-    isSurface: true,
-    isElevated: true,
-  })};
-  min-width: var(--size-context-menu-min-width);
-  border-radius: var(--space-1);
-  z-index: 1;
-`;
+type LinkVariant = "neutral" | "primary";
 
-export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
-  display: block;
+export const StyledLink = styled(Link)<{
+  $variant: LinkVariant;
+}>`
+  display: inline-flex;
   font-weight: 500;
-  width: 100%;
-  padding: var(--space-2) var(--space-3);
-  text-align: start;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  line-height: var(--line-height-dense);
+  padding: calc(var(--space-1) + var(--space-0-5)) var(--space-2) var(--space-1);
   cursor: pointer;
-  font-size: inherit;
-  border-radius: var(--space-1);
+  text-decoration: none;
   background: ${(props) =>
     getInteractiveColor({
-      variant: props.$variant === "danger" ? "danger" : "neutral",
+      variant: props.$variant,
       type: "background",
       state: "default",
     })};
   color: ${(props) =>
     getInteractiveColor({
-      variant: props.$variant === "danger" ? "danger" : "neutral",
+      variant: props.$variant,
       type: "foreground",
       state: "default",
     })};
-  border: var(--border-width-interactive) solid
+  border-bottom: var(--space-0-5) solid
     ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "border",
         state: "default",
       })};
+  height: var(--size-top-bar);
 
   &:hover {
     background: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "background",
         state: "hover",
       })};
     color: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "foreground",
         state: "hover",
       })};
     border-color: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "border",
         state: "hover",
       })};
@@ -66,19 +61,19 @@ export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
   &:active {
     background: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "background",
         state: "active",
       })};
     color: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "foreground",
         state: "active",
       })};
     border-color: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "border",
         state: "active",
       })};
@@ -87,22 +82,37 @@ export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
   &:focus-visible {
     background: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "background",
         state: "focus",
       })};
     color: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "foreground",
         state: "focus",
       })};
     border-color: ${(props) =>
       getInteractiveColor({
-        variant: props.$variant === "danger" ? "danger" : "neutral",
+        variant: props.$variant,
         type: "border",
         state: "focus",
       })};
-    outline-offset: var(--space-1);
+    outline-offset: calc(-1 * var(--space-0-25));
+    ${(props) =>
+      props.$variant === "primary"
+        ? `outline-color: ${getInteractiveColor({ variant: props.$variant, type: "outline", state: "focus" })};`
+        : ""};
   }
+`;
+
+export const IconWrapper = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: var(--line-height-dense);
+`;
+
+export const TextWrapper = styled.span`
+  display: inline-block;
 `;

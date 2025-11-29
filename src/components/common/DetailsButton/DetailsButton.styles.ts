@@ -15,10 +15,22 @@ export const StyledSummary = styled.summary`
   padding: var(--space-2) var(--space-3);
   border-radius: var(--space-1);
   text-decoration: none;
-  background: ${getInteractiveColor("neutral", "background", "default")};
-  color: ${getInteractiveColor("neutral", "foreground", "default")};
+  background: ${getInteractiveColor({
+    variant: "neutral",
+    type: "background",
+    state: "default",
+  })};
+  color: ${getInteractiveColor({
+    variant: "neutral",
+    type: "foreground",
+    state: "default",
+  })};
   border: var(--border-width-interactive) solid
-    ${getInteractiveColor("neutral", "border", "default")};
+    ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "default",
+    })};
 
   &::-webkit-details-marker,
   &::marker {
@@ -26,45 +38,129 @@ export const StyledSummary = styled.summary`
   }
 
   &:hover {
-    background: ${getInteractiveColor("neutral", "background", "hover")};
-    color: ${getInteractiveColor("neutral", "foreground", "hover")};
-    border-color: ${getInteractiveColor("neutral", "border", "hover")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "hover",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "hover",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "hover",
+    })};
   }
 
   &:active {
-    background: ${getInteractiveColor("neutral", "background", "active")};
-    color: ${getInteractiveColor("neutral", "foreground", "active")};
-    border-color: ${getInteractiveColor("neutral", "border", "active")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "active",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "active",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "active",
+    })};
   }
 
   &:focus-visible {
-    background: ${getInteractiveColor("neutral", "background", "focus")};
-    color: ${getInteractiveColor("neutral", "foreground", "focus")};
-    border-color: ${getInteractiveColor("neutral", "border", "focus")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "focus",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "focus",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "focus",
+    })};
     outline-offset: var(--space-1);
   }
 
   ${StyledDetails}[open] > & {
-    background: ${getInteractiveColor("neutral", "background", "default")};
-    color: ${getInteractiveColor("neutral", "foreground", "default")};
-    border-color: ${getInteractiveColor("neutral", "border", "default")};
+    background: ${getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "default",
+    })};
+    color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "foreground",
+      state: "default",
+    })};
+    border-color: ${getInteractiveColor({
+      variant: "neutral",
+      type: "border",
+      state: "default",
+    })};
 
     &:hover {
-      background: ${getInteractiveColor("neutral", "background", "hover")};
-      color: ${getInteractiveColor("neutral", "foreground", "hover")};
-      border-color: ${getInteractiveColor("neutral", "border", "hover")};
+      background: ${getInteractiveColor({
+        variant: "neutral",
+        type: "background",
+        state: "hover",
+      })};
+      color: ${getInteractiveColor({
+        variant: "neutral",
+        type: "foreground",
+        state: "hover",
+      })};
+      border-color: ${getInteractiveColor({
+        variant: "neutral",
+        type: "border",
+        state: "hover",
+      })};
     }
 
     &:active {
-      background: ${getInteractiveColor("neutral", "background", "active")};
-      color: ${getInteractiveColor("neutral", "foreground", "active")};
-      border-color: ${getInteractiveColor("neutral", "border", "active")};
+      background: ${getInteractiveColor({
+        variant: "neutral",
+        type: "background",
+        state: "active",
+      })};
+      color: ${getInteractiveColor({
+        variant: "neutral",
+        type: "foreground",
+        state: "active",
+      })};
+      border-color: ${getInteractiveColor({
+        variant: "neutral",
+        type: "border",
+        state: "active",
+      })};
     }
 
     &:focus-visible {
-      background: ${getInteractiveColor("neutral", "background", "focus")};
-      color: ${getInteractiveColor("neutral", "foreground", "focus")};
-      border-color: ${getInteractiveColor("neutral", "border", "focus")};
+      background: ${getInteractiveColor({
+        variant: "neutral",
+        type: "background",
+        state: "focus",
+      })};
+      color: ${getInteractiveColor({
+        variant: "neutral",
+        type: "foreground",
+        state: "focus",
+      })};
+      border-color: ${getInteractiveColor({
+        variant: "neutral",
+        type: "border",
+        state: "focus",
+      })};
       outline-offset: var(--space-1);
     }
   }
@@ -79,4 +175,5 @@ export const IconWrapper = styled.span`
 
 export const TextWrapper = styled.span`
   display: inline-block;
+  font-weight: 500;
 `;

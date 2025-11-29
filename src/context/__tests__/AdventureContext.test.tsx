@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "fake-indexeddb/auto";
 import { AdventureProvider, AdventureContext } from "../AdventureContext";
@@ -38,13 +39,46 @@ const TestConsumer = () => {
     return <div>No context</div>;
   }
 
-  const { adventure, adventureId, loading, error } = context;
+  const {
+    adventure,
+    adventureId,
+    loading,
+    error,
+    isSaving,
+    updateAdventure,
+    withSaving,
+  } = context;
+
+  const handleUpdateTitle = () => {
+    updateAdventure((adv) => ({
+      ...adv,
+      metadata: {
+        ...adv.metadata,
+        title: "Updated Title",
+      },
+    }));
+  };
+
+  const handleSimulateSave = async () => {
+    await withSaving(async () => {
+      // Simulate async operation
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    });
+  };
+
+  const handleSimulateLongSave = async () => {
+    await withSaving(async () => {
+      // Simulate longer async operation (>500ms)
+      await new Promise((resolve) => setTimeout(resolve, 600));
+    });
+  };
 
   return (
     <div>
       <div data-testid="loading-state">
         {loading ? "loading" : "not-loading"}
       </div>
+      <div data-testid="saving-state">{isSaving ? "saving" : "not-saving"}</div>
       <div data-testid="adventure-id">{adventureId || "no-id"}</div>
       <div data-testid="error-state">{error || "no-error"}</div>
       {adventure && (
@@ -53,6 +87,18 @@ const TestConsumer = () => {
           <div data-testid="adventure-author">{adventure.metadata.author}</div>
         </div>
       )}
+      <button onClick={handleUpdateTitle} data-testid="update-title-button">
+        Update Title
+      </button>
+      <button onClick={handleSimulateSave} data-testid="simulate-save-button">
+        Simulate Save
+      </button>
+      <button
+        onClick={handleSimulateLongSave}
+        data-testid="simulate-long-save-button"
+      >
+        Simulate Long Save
+      </button>
     </div>
   );
 };
@@ -305,4 +351,231 @@ describe("AdventureContext", () => {
 
   // Note: Testing route changes with rerender has timing complexities.
   // The loading/clearing behavior is already covered by other tests.
+
+  it("should update adventure via updateAdventure function", async () => {
+    const adventure: StoredAdventure = {
+      id: "test-adventure-2",
+      title: "Test Adventure",
+      content: sampleAdventureYAML,
+      lastEdited: new Date(),
+      createdAt: new Date(),
+    };
+
+    await saveAdventure(adventure);
+
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={["/adventure/test-adventure-2"]}>
+        <Routes>
+          <Route
+            path="/adventure/:adventureId"
+            element={
+              <AdventureProvider>
+                <TestConsumer />
+              </AdventureProvider>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Wait for adventure to load
+    await waitFor(() => {
+      expect(screen.getByTestId("adventure-title")).toHaveTextContent(
+        "Test Adventure"
+      );
+    });
+
+    // Update the title
+    const updateButton = screen.getByTestId("update-title-button");
+    await user.click(updateButton);
+
+    // Verify title was updated
+    await waitFor(() => {
+      expect(screen.getByTestId("adventure-title")).toHaveTextContent(
+        "Updated Title"
+      );
+    });
+  });
+
+  it("should track saving state with withSaving", async () => {
+    const adventure: StoredAdventure = {
+      id: "test-adventure-3",
+      title: "Test Adventure",
+      content: sampleAdventureYAML,
+      lastEdited: new Date(),
+      createdAt: new Date(),
+    };
+
+    await saveAdventure(adventure);
+
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={["/adventure/test-adventure-3"]}>
+        <Routes>
+          <Route
+            path="/adventure/:adventureId"
+            element={
+              <AdventureProvider>
+                <TestConsumer />
+              </AdventureProvider>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Wait for adventure to load
+    await waitFor(() => {
+      expect(screen.getByTestId("loading-state")).toHaveTextContent(
+        "not-loading"
+      );
+    });
+
+    // Initial state should be not-saving
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Trigger a quick save (100ms - less than 500ms threshold)
+    const saveButton = screen.getByTestId("simulate-save-button");
+    const clickPromise = user.click(saveButton);
+
+    // Should NOT show saving state for quick operations
+    // Wait a bit to ensure it doesn't flash
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Wait for save to complete
+    await clickPromise;
+
+    // Should still be not-saving after operation completes
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+  });
+
+  it("should show saving state only for operations longer than 500ms", async () => {
+    const adventure: StoredAdventure = {
+      id: "test-adventure-3b",
+      title: "Test Adventure",
+      content: sampleAdventureYAML,
+      lastEdited: new Date(),
+      createdAt: new Date(),
+    };
+
+    await saveAdventure(adventure);
+
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={["/adventure/test-adventure-3b"]}>
+        <Routes>
+          <Route
+            path="/adventure/:adventureId"
+            element={
+              <AdventureProvider>
+                <TestConsumer />
+              </AdventureProvider>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Wait for adventure to load
+    await waitFor(() => {
+      expect(screen.getByTestId("loading-state")).toHaveTextContent(
+        "not-loading"
+      );
+    });
+
+    // Initial state should be not-saving
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Trigger a long save (600ms - more than 500ms threshold)
+    const longSaveButton = screen.getByTestId("simulate-long-save-button");
+    const clickPromise = user.click(longSaveButton);
+
+    // Should NOT show saving immediately
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Should show saving state after 500ms
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
+      },
+      { timeout: 700 }
+    );
+
+    // Wait for save to complete
+    await clickPromise;
+
+    // Should return to not-saving after operation completes
+    await waitFor(() => {
+      expect(screen.getByTestId("saving-state")).toHaveTextContent(
+        "not-saving"
+      );
+    });
+  });
+
+  it("should handle multiple concurrent saves correctly", async () => {
+    const adventure: StoredAdventure = {
+      id: "test-adventure-4",
+      title: "Test Adventure",
+      content: sampleAdventureYAML,
+      lastEdited: new Date(),
+      createdAt: new Date(),
+    };
+
+    await saveAdventure(adventure);
+
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter initialEntries={["/adventure/test-adventure-4"]}>
+        <Routes>
+          <Route
+            path="/adventure/:adventureId"
+            element={
+              <AdventureProvider>
+                <TestConsumer />
+              </AdventureProvider>
+            }
+          />
+        </Routes>
+      </MemoryRouter>
+    );
+
+    // Wait for adventure to load
+    await waitFor(() => {
+      expect(screen.getByTestId("loading-state")).toHaveTextContent(
+        "not-loading"
+      );
+    });
+
+    // Trigger multiple long saves to ensure they last beyond the 500ms threshold
+    const longSaveButton = screen.getByTestId("simulate-long-save-button");
+    const clickPromise1 = user.click(longSaveButton);
+    const clickPromise2 = user.click(longSaveButton);
+
+    // Should NOT show saving immediately
+    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+
+    // Should show saving state after 500ms
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
+      },
+      { timeout: 700 }
+    );
+
+    // Wait for all saves to complete
+    await Promise.all([clickPromise1, clickPromise2]);
+
+    // Should return to not-saving only after all operations complete
+    await waitFor(() => {
+      expect(screen.getByTestId("saving-state")).toHaveTextContent(
+        "not-saving"
+      );
+    });
+  });
 });

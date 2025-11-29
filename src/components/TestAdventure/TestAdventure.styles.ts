@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { getColor } from "@/utils/colorHelpers";
 
 export const PageLayout = styled.div`
   display: grid;
@@ -12,7 +13,7 @@ export const PageContent = styled.div`
   overflow-y: auto;
   display: grid;
   place-items: center;
-  background: var(--color-background-neutral);
+  background: ${getColor({ type: "background", variant: "neutral" })};
   min-height: 0;
   padding: var(--space-4);
 `;
