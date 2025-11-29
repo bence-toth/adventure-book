@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&family=Eagle+Lake&family=Inconsolata:wght@200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inclusive+Sans:wght@300..700&family=Inconsolata:wght@200..900&family=Metamorphous&display=swap");
 
 * {
   box-sizing: border-box;
@@ -149,9 +149,9 @@ a {
     var(--space-1) var(--color-shadow-neutral);
 
   /* Font family variables */
-  --font-family-display: "Eagle Lake", serif;
+  --font-family-display: "Metamorphous", serif;
   --font-family-monospace: "Inconsolata", monospace;
-  --font-family-default: "Atkinson Hyperlegible Next", sans-serif;
+  --font-family-default: "Inclusive Sans", sans-serif;
 
   /* Font size variables */
   --font-size-sm: 0.75rem;
