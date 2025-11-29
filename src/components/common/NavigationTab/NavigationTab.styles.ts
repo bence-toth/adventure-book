@@ -13,15 +13,20 @@ export const StyledLink = styled(Link)<{
   justify-content: center;
   gap: var(--space-1);
   line-height: var(--line-height-dense);
-  padding: calc(var(--space-1) + var(--space-0-5)) var(--space-2) var(--space-1);
+  padding: calc(var(--space-1) + var(--space-0-5)) var(--space-3) var(--space-1);
   cursor: pointer;
   text-decoration: none;
-  background: ${(props) =>
-    getInteractiveColor({
-      variant: props.$variant,
-      type: "background",
-      state: "default",
-    })};
+  background: ${(props) => {
+    if (props.$variant === "neutral") {
+      return "transparent";
+    } else {
+      return getInteractiveColor({
+        variant: props.$variant,
+        type: "background",
+        state: "default",
+      });
+    }
+  }};
   color: ${(props) =>
     getInteractiveColor({
       variant: props.$variant,

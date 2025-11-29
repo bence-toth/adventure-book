@@ -10,7 +10,7 @@ export const MenuContainer = styled.div`
   })};
   min-width: var(--size-context-menu-min-width);
   border-radius: var(--space-1);
-  z-index: 1;
+  z-index: 2;
 `;
 
 export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
