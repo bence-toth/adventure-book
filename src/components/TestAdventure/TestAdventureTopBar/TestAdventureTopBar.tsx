@@ -31,8 +31,8 @@ export const TestAdventureTopBar = () => {
     []
   );
 
-  const handleDownloadClick = useCallback(() => {
-    console.log("Download as YAML clicked");
+  const handleYAMLDownloadClick = useCallback(() => {
+    console.log("Download adventure as YAML clicked");
     setContextMenuOpen(false);
   }, []);
 
@@ -73,7 +73,7 @@ export const TestAdventureTopBar = () => {
         open={contextMenuOpen}
         onOpenChange={setContextMenuOpen}
         triggerRef={contextMenuTrigger}
-        onDownloadClick={handleDownloadClick}
+        onYAMLDownloadClick={handleYAMLDownloadClick}
       />
     </>
   );

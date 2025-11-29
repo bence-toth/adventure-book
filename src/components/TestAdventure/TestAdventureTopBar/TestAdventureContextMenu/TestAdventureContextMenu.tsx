@@ -1,3 +1,4 @@
+import { Download } from "lucide-react";
 import {
   ContextMenu,
   ContextMenuItem,
@@ -7,14 +8,14 @@ interface TestAdventureContextMenuProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   triggerRef: HTMLElement | null;
-  onDownloadClick: () => void;
+  onYAMLDownloadClick: () => void;
 }
 
 export const TestAdventureContextMenu = ({
   open,
   onOpenChange,
   triggerRef,
-  onDownloadClick,
+  onYAMLDownloadClick,
 }: TestAdventureContextMenuProps) => {
   return (
     <ContextMenu
@@ -25,7 +26,8 @@ export const TestAdventureContextMenu = ({
       data-testid="test-adventure-context-menu"
     >
       <ContextMenuItem
-        onClick={onDownloadClick}
+        onClick={onYAMLDownloadClick}
+        icon={<Download size={16} strokeWidth={2} />}
         data-testid="test-adventure-context-menu-download"
       >
         Download adventure as YAML

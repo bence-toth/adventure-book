@@ -13,7 +13,7 @@ import {
   FloatingFocusManager,
   type Placement,
 } from "@floating-ui/react";
-import { MenuContainer, MenuItem } from "./ContextMenu.styles";
+import { MenuContainer, MenuItem, MenuItemIcon } from "./ContextMenu.styles";
 
 interface ContextMenuProps {
   open: boolean;
@@ -75,6 +75,7 @@ interface ContextMenuItemProps {
   onClick: () => void;
   children: ReactNode;
   variant?: "default" | "danger";
+  icon?: ReactNode;
   "data-testid"?: string;
 }
 
@@ -82,6 +83,7 @@ export const ContextMenuItem = ({
   onClick,
   children,
   variant = "default",
+  icon,
   "data-testid": dataTestId,
 }: ContextMenuItemProps) => {
   return (
@@ -90,6 +92,7 @@ export const ContextMenuItem = ({
       onClick={onClick}
       data-testid={dataTestId || "context-menu-item"}
     >
+      {icon && <MenuItemIcon aria-hidden="true">{icon}</MenuItemIcon>}
       {children}
     </MenuItem>
   );

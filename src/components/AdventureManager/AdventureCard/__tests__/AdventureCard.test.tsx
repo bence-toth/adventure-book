@@ -106,6 +106,26 @@ describe("AdventureCard Component", () => {
       expect(screen.getByText("Delete")).toBeInTheDocument();
     });
 
+    it("renders delete menu item with trash icon", () => {
+      render(
+        <AdventureCard
+          adventure={mockAdventure}
+          onOpen={mockOnOpen}
+          onDelete={mockOnDelete}
+        />
+      );
+
+      const menuButton = screen.getByLabelText("Open menu for Test Adventure");
+      fireEvent.click(menuButton);
+
+      const deleteMenuItem = screen.getByText("Delete");
+      expect(deleteMenuItem).toBeInTheDocument();
+
+      // Verify icon is present (lucide-react icons render as SVG)
+      const svg = deleteMenuItem.querySelector("svg");
+      expect(svg).toBeInTheDocument();
+    });
+
     it("does not trigger onOpen when menu button is clicked", () => {
       render(
         <AdventureCard

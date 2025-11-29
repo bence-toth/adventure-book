@@ -14,7 +14,9 @@ export const MenuContainer = styled.div`
 `;
 
 export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   font-weight: 500;
   width: 100%;
   padding: var(--space-2) var(--space-3);
@@ -105,4 +107,8 @@ export const MenuItem = styled.button<{ $variant: "default" | "danger" }>`
       })};
     outline-offset: var(--space-1);
   }
+`;
+
+export const MenuItemIcon = styled.span`
+  display: flex;
 `;

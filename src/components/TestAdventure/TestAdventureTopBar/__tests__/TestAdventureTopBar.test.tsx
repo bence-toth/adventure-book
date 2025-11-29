@@ -1,4 +1,4 @@
-import { screen, render } from "@testing-library/react";
+import { screen, render, fireEvent } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { TestAdventureTopBar } from "../TestAdventureTopBar";
@@ -69,6 +69,41 @@ describe("TestAdventureTopBar Component", () => {
 
       const header = container.querySelector("header");
       expect(header).not.toBeInTheDocument();
+    });
+  });
+
+  describe("Context Menu", () => {
+    it("opens context menu when menu button is clicked", async () => {
+      renderWithAdventure(<TestAdventureTopBar />, {
+        adventureId: TEST_STORY_ID,
+      });
+
+      const menuButton = await screen.findByTestId(
+        "test-adventure-context-menu-button"
+      );
+      fireEvent.click(menuButton);
+
+      expect(
+        screen.getByText("Download adventure as YAML")
+      ).toBeInTheDocument();
+    });
+
+    it("renders download menu item with download icon", async () => {
+      renderWithAdventure(<TestAdventureTopBar />, {
+        adventureId: TEST_STORY_ID,
+      });
+
+      const menuButton = await screen.findByTestId(
+        "test-adventure-context-menu-button"
+      );
+      fireEvent.click(menuButton);
+
+      const downloadMenuItem = screen.getByText("Download adventure as YAML");
+      expect(downloadMenuItem).toBeInTheDocument();
+
+      // Verify icon is present (lucide-react icons render as SVG)
+      const svg = downloadMenuItem.querySelector("svg");
+      expect(svg).toBeInTheDocument();
     });
   });
 

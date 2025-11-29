@@ -1,3 +1,4 @@
+import { Trash } from "lucide-react";
 import {
   ContextMenu,
   ContextMenuItem,
@@ -23,7 +24,12 @@ export const AdventureCardContextMenu = ({
       triggerRef={triggerRef}
       placement="top-end"
     >
-      <ContextMenuItem onClick={onDeleteClick}>Delete</ContextMenuItem>
+      <ContextMenuItem
+        onClick={onDeleteClick}
+        icon={<Trash size={16} strokeWidth={2} />}
+      >
+        Delete
+      </ContextMenuItem>
     </ContextMenu>
   );
 };
