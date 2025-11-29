@@ -27,7 +27,7 @@ export const TestAdventureContextMenu = ({
     >
       <ContextMenuItem
         onClick={onYAMLDownloadClick}
-        icon={<Download size={16} strokeWidth={2} />}
+        icon={Download}
         data-testid="test-adventure-context-menu-download"
       >
         Download adventure as YAML

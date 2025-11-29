@@ -24,10 +24,7 @@ export const AdventureCardContextMenu = ({
       triggerRef={triggerRef}
       placement="top-end"
     >
-      <ContextMenuItem
-        onClick={onDeleteClick}
-        icon={<Trash size={16} strokeWidth={2} />}
-      >
+      <ContextMenuItem onClick={onDeleteClick} icon={Trash}>
         Delete
       </ContextMenuItem>
     </ContextMenu>

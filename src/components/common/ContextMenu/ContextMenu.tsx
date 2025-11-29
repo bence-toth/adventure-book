@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { useEffect } from "react";
+import type { ReactNode, ComponentType } from "react";
+import { createElement, useEffect } from "react";
 import {
   useFloating,
   autoUpdate,
@@ -75,7 +75,7 @@ interface ContextMenuItemProps {
   onClick: () => void;
   children: ReactNode;
   variant?: "default" | "danger";
-  icon?: ReactNode;
+  icon?: ComponentType<Record<string, unknown>>;
   "data-testid"?: string;
 }
 
@@ -86,13 +86,21 @@ export const ContextMenuItem = ({
   icon,
   "data-testid": dataTestId,
 }: ContextMenuItemProps) => {
+  const iconElement = icon
+    ? createElement(icon, {
+        size: 16,
+        strokeWidth: 2,
+        "aria-hidden": true,
+      })
+    : null;
+
   return (
     <MenuItem
       $variant={variant}
       onClick={onClick}
       data-testid={dataTestId || "context-menu-item"}
     >
-      {icon && <MenuItemIcon aria-hidden="true">{icon}</MenuItemIcon>}
+      {iconElement && <MenuItemIcon>{iconElement}</MenuItemIcon>}
       {children}
     </MenuItem>
   );

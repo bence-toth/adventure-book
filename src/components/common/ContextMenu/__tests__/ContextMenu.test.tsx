@@ -230,7 +230,7 @@ describe("ContextMenu Component", () => {
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
-          <ContextMenuItem onClick={vi.fn()} icon={<TestIcon />}>
+          <ContextMenuItem onClick={vi.fn()} icon={TestIcon}>
             Item with Icon
           </ContextMenuItem>
         </ContextMenu>
@@ -273,10 +273,10 @@ describe("ContextMenu Component", () => {
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
-          <ContextMenuItem onClick={vi.fn()} icon={<Icon1 />}>
+          <ContextMenuItem onClick={vi.fn()} icon={Icon1}>
             Item 1
           </ContextMenuItem>
-          <ContextMenuItem onClick={vi.fn()} icon={<Icon2 />}>
+          <ContextMenuItem onClick={vi.fn()} icon={Icon2}>
             Item 2
           </ContextMenuItem>
         </ContextMenu>
@@ -337,7 +337,10 @@ describe("ContextMenu Component", () => {
     it("icons have aria-hidden attribute for screen readers", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
-      const TestIcon = () => <svg data-testid="test-icon" />;
+      // Mock icon component that accepts and spreads all props
+      const TestIcon = (props: Record<string, unknown>) => (
+        <svg data-testid="test-icon" {...props} />
+      );
 
       render(
         <ContextMenu
@@ -345,14 +348,15 @@ describe("ContextMenu Component", () => {
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
-          <ContextMenuItem onClick={vi.fn()} icon={<TestIcon />}>
+          <ContextMenuItem onClick={vi.fn()} icon={TestIcon}>
             Accessible Icon Item
           </ContextMenuItem>
         </ContextMenu>
       );
 
-      const iconContainer = screen.getByTestId("test-icon").parentElement;
-      expect(iconContainer).toHaveAttribute("aria-hidden", "true");
+      // The aria-hidden attribute is on the SVG element itself
+      const icon = screen.getByTestId("test-icon");
+      expect(icon).toHaveAttribute("aria-hidden", "true");
 
       document.body.removeChild(triggerElement);
     });
@@ -369,7 +373,7 @@ describe("ContextMenu Component", () => {
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
-          <ContextMenuItem onClick={handleClick} icon={<TestIcon />}>
+          <ContextMenuItem onClick={handleClick} icon={TestIcon}>
             Clickable Icon Item
           </ContextMenuItem>
         </ContextMenu>
