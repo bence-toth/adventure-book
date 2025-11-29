@@ -4,6 +4,8 @@ import { EllipsisVertical } from "lucide-react";
 import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
 import { TopBar } from "@/components/common/TopBar/TopBar";
 import { useAdventure } from "@/context/useAdventure";
+import { getAdventure } from "@/data/adventureDatabase";
+import { sanitizeFilename, downloadFile } from "@/utils/fileDownload";
 import { BackButton } from "./BackButton/BackButton";
 import { AdventureTitleInput } from "./AdventureTitleInput/AdventureTitleInput";
 import { AdventureNavigation } from "./AdventureNavigation/AdventureNavigation";
@@ -17,7 +19,7 @@ import {
 
 export const TestAdventureTopBar = () => {
   const { adventureId } = useParams<{ adventureId: string }>();
-  const { isSaving } = useAdventure();
+  const { adventure, isSaving } = useAdventure();
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
   const [contextMenuTrigger, setContextMenuTrigger] =
     useState<HTMLElement | null>(null);
@@ -31,10 +33,35 @@ export const TestAdventureTopBar = () => {
     []
   );
 
-  const handleYAMLDownloadClick = useCallback(() => {
-    console.log("Download adventure as YAML clicked");
-    setContextMenuOpen(false);
-  }, []);
+  const handleYAMLDownloadClick = useCallback(async () => {
+    if (!adventureId || !adventure) {
+      return;
+    }
+
+    try {
+      // Fetch the raw YAML content from the database
+      const storedAdventure = await getAdventure(adventureId);
+      if (!storedAdventure) {
+        console.error("Adventure not found in database");
+        return;
+      }
+
+      // Create a sanitized filename from the adventure title
+      const sanitizedTitle = sanitizeFilename(adventure.metadata.title);
+      const filename = `${sanitizedTitle}.yaml`;
+
+      // Trigger the download
+      downloadFile(
+        storedAdventure.content,
+        filename,
+        "text/yaml;charset=utf-8"
+      );
+    } catch (error) {
+      console.error("Failed to download adventure:", error);
+    } finally {
+      setContextMenuOpen(false);
+    }
+  }, [adventureId, adventure]);
 
   if (!adventureId) {
     return null;
