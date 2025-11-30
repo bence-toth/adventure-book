@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { ConfirmationModal } from "../ConfirmationModal";
+import { ModalDialog } from "../ModalDialog";
 import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "@/constants/testIds";
 
-describe("ConfirmationModal Component", () => {
+describe("ModalDialog Component", () => {
   let originalOverflow: string;
 
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe("ConfirmationModal Component", () => {
   describe("Visibility", () => {
     it("renders when open is true", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Test Title"
@@ -35,7 +35,7 @@ describe("ConfirmationModal Component", () => {
 
     it("does not render when open is false", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={false}
           onOpenChange={vi.fn()}
           title="Test Title"
@@ -55,7 +55,7 @@ describe("ConfirmationModal Component", () => {
   describe("Content", () => {
     it("displays the title", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Delete Item"
@@ -72,7 +72,7 @@ describe("ConfirmationModal Component", () => {
 
     it("displays string message", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -89,7 +89,7 @@ describe("ConfirmationModal Component", () => {
 
     it("displays ReactNode message", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -112,7 +112,7 @@ describe("ConfirmationModal Component", () => {
 
     it("displays custom button labels", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -130,7 +130,7 @@ describe("ConfirmationModal Component", () => {
 
     it("displays provided button labels", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -156,7 +156,7 @@ describe("ConfirmationModal Component", () => {
       const handleConfirm = vi.fn();
 
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -177,7 +177,7 @@ describe("ConfirmationModal Component", () => {
       const handleCancel = vi.fn();
 
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -198,7 +198,7 @@ describe("ConfirmationModal Component", () => {
       const handleOpenChange = vi.fn();
 
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={handleOpenChange}
           title="Confirm"
@@ -222,7 +222,7 @@ describe("ConfirmationModal Component", () => {
       const handleOpenChange = vi.fn();
 
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={handleOpenChange}
           title="Confirm"
@@ -246,7 +246,7 @@ describe("ConfirmationModal Component", () => {
   describe("Button Variants", () => {
     it("applies variant to button when specified", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -264,7 +264,7 @@ describe("ConfirmationModal Component", () => {
 
     it("applies danger variant to button when specified", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Delete"
@@ -282,7 +282,7 @@ describe("ConfirmationModal Component", () => {
 
     it("button without variant uses default styling", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Delete"
@@ -302,7 +302,7 @@ describe("ConfirmationModal Component", () => {
   describe("Scroll Lock", () => {
     it("locks body scroll when modal opens", async () => {
       const { rerender } = render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={false}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -317,7 +317,7 @@ describe("ConfirmationModal Component", () => {
       expect(document.body.style.overflow).toBe("");
 
       rerender(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -336,7 +336,7 @@ describe("ConfirmationModal Component", () => {
 
     it("unlocks body scroll when modal closes", async () => {
       const { rerender } = render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -353,7 +353,7 @@ describe("ConfirmationModal Component", () => {
       });
 
       rerender(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={false}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -372,7 +372,7 @@ describe("ConfirmationModal Component", () => {
 
     it("restores body scroll on unmount", async () => {
       const { unmount } = render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -397,7 +397,7 @@ describe("ConfirmationModal Component", () => {
   describe("Component Structure", () => {
     it("renders modal overlay element", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -416,7 +416,7 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog element", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -435,7 +435,7 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog content element", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -454,7 +454,7 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog message element", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -473,7 +473,7 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog actions element", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -494,7 +494,7 @@ describe("ConfirmationModal Component", () => {
   describe("Accessibility", () => {
     it("uses dialog element with open attribute", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -513,7 +513,7 @@ describe("ConfirmationModal Component", () => {
 
     it("renders buttons as actual button elements", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -534,7 +534,7 @@ describe("ConfirmationModal Component", () => {
 
     it("title is rendered as h2 heading", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Important Decision"
@@ -555,7 +555,7 @@ describe("ConfirmationModal Component", () => {
       const handleCancel = vi.fn();
 
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -588,7 +588,7 @@ describe("ConfirmationModal Component", () => {
       const handleOpenChange = vi.fn();
 
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={handleOpenChange}
           title="Confirm"
@@ -610,7 +610,7 @@ describe("ConfirmationModal Component", () => {
 
     it("updates when open prop changes from false to true", () => {
       const { rerender } = render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={false}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -627,7 +627,7 @@ describe("ConfirmationModal Component", () => {
       ).not.toBeInTheDocument();
 
       rerender(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
@@ -646,7 +646,7 @@ describe("ConfirmationModal Component", () => {
 
     it("updates content when props change", () => {
       const { rerender } = render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="First Title"
@@ -662,7 +662,7 @@ describe("ConfirmationModal Component", () => {
       expect(screen.getByText("First message")).toBeInTheDocument();
 
       rerender(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Second Title"
@@ -684,7 +684,7 @@ describe("ConfirmationModal Component", () => {
   describe("Button Order", () => {
     it("renders buttons in the order specified in actions array", () => {
       render(
-        <ConfirmationModal
+        <ModalDialog
           isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"

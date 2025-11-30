@@ -1,4 +1,4 @@
-import { ConfirmationModal } from "@/components/common/ConfirmationModal/ConfirmationModal";
+import { ModalDialog } from "@/components/common/ModalDialog/ModalDialog";
 
 interface AdventureCardDeleteModalProps {
   isOpen: boolean;
@@ -14,7 +14,7 @@ export const AdventureCardDeleteModal = ({
   onCancel,
 }: AdventureCardDeleteModalProps) => {
   return (
-    <ConfirmationModal
+    <ModalDialog
       isOpen={isOpen}
       onOpenChange={onCancel}
       title="Delete Adventure"

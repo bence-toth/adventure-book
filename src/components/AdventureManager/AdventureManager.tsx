@@ -16,7 +16,7 @@ import {
   StoryDeleteError,
 } from "@/utils/errors";
 import { FileDropArea } from "@/components/common/FileDropArea/FileDropArea";
-import { ConfirmationModal } from "@/components/common/ConfirmationModal/ConfirmationModal";
+import { ModalDialog } from "@/components/common/ModalDialog/ModalDialog";
 import { AdventureManagerTopBar } from "./AdventureManagerTopBar/AdventureManagerTopBar";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
@@ -187,7 +187,7 @@ export const AdventureManager = () => {
           </AdventureManagerList>
         </AdventureManagerContainer>
       </FileDropArea>
-      <ConfirmationModal
+      <ModalDialog
         isOpen={importError !== null}
         onOpenChange={handleCloseImportError}
         title="Import Failed"

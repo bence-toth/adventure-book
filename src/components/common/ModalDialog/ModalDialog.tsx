@@ -15,7 +15,7 @@ import {
   DialogTitle,
   DialogMessage,
   DialogActions,
-} from "./ConfirmationModal.styles";
+} from "./ModalDialog.styles";
 
 interface ModalAction {
   label: string;
@@ -23,7 +23,7 @@ interface ModalAction {
   variant?: "neutral" | "primary" | "danger";
 }
 
-interface ConfirmationModalProps {
+interface ModalDialogProps {
   isOpen: boolean;
   onOpenChange: () => void;
   title: string;
@@ -32,14 +32,14 @@ interface ConfirmationModalProps {
   "data-testid"?: string;
 }
 
-export const ConfirmationModal = ({
+export const ModalDialog = ({
   isOpen,
   onOpenChange,
   title,
   message,
   actions,
   "data-testid": dataTestId,
-}: ConfirmationModalProps) => {
+}: ModalDialogProps) => {
   const { refs, context } = useFloating({
     open: isOpen,
     onOpenChange,
