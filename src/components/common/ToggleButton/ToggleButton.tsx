@@ -47,8 +47,8 @@ export const ToggleButton = forwardRef<HTMLInputElement, ToggleButtonProps>(
           aria-checked={isChecked}
           {...props}
         />
-        <ToggleTrack $checked={isChecked}>
-          <ToggleThumb $checked={isChecked} />
+        <ToggleTrack $isChecked={isChecked}>
+          <ToggleThumb $isChecked={isChecked} />
         </ToggleTrack>
         <LabelText>{label}</LabelText>
       </ToggleButtonContainer>

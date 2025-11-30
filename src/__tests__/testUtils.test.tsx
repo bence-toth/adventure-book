@@ -7,7 +7,7 @@ import type { Adventure } from "@/data/types";
 
 // Test component that displays adventure context values
 const TestComponent = () => {
-  const { adventureId, adventure, loading, error, isDebugModeEnabled } =
+  const { adventureId, adventure, isLoading, error, isDebugModeEnabled } =
     useAdventure();
   const params = useParams();
 
@@ -24,7 +24,7 @@ const TestComponent = () => {
         {adventure?.metadata.title || "no-title"}
       </div>
       <div data-testid="loading-state">
-        {loading ? "loading" : "not-loading"}
+        {isLoading ? "loading" : "not-loading"}
       </div>
       <div data-testid="error-state">{error || "no-error"}</div>
       <div data-testid="debug-state">

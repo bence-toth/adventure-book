@@ -7,7 +7,7 @@ import type { Adventure } from "@/data/types";
 export interface AdventureContextType {
   adventure: Adventure | null;
   adventureId: string | null;
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
   isDebugModeEnabled: boolean;
   isSaving: boolean;
@@ -28,7 +28,7 @@ export const AdventureProvider = ({
 }) => {
   const { adventureId } = useParams<{ adventureId: string }>();
   const [adventure, setAdventure] = useState<Adventure | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isDebugModeEnabled, setIsDebugModeEnabled] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
@@ -84,7 +84,7 @@ export const AdventureProvider = ({
   useEffect(() => {
     if (!adventureId) {
       setAdventure(null);
-      setLoading(false);
+      setIsLoading(false);
       setError(null);
       return;
     }
@@ -94,7 +94,7 @@ export const AdventureProvider = ({
     const loadAdventure = async () => {
       try {
         if (isMounted) {
-          setLoading(true);
+          setIsLoading(true);
           setError(null);
         }
         const loadedAdventure = await loadAdventureById(adventureId);
@@ -112,7 +112,7 @@ export const AdventureProvider = ({
         }
       } finally {
         if (isMounted) {
-          setLoading(false);
+          setIsLoading(false);
         }
       }
     };
@@ -138,7 +138,7 @@ export const AdventureProvider = ({
       value={{
         adventure,
         adventureId: adventureId ?? null,
-        loading,
+        isLoading,
         error,
         isDebugModeEnabled,
         isSaving,

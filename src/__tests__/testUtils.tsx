@@ -85,7 +85,7 @@ export const renderWithAdventure = (
     const baseContextValue: AdventureContextType = {
       adventure: adventure ?? null,
       adventureId,
-      loading: isLoading ?? false,
+      isLoading: isLoading ?? false,
       error: error ?? null,
       isDebugModeEnabled: isDebugModeEnabled ?? false,
       isSaving: false,

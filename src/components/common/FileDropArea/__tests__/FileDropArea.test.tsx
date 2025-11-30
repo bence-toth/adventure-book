@@ -1,4 +1,4 @@
-import { screen, fireEvent, waitFor } from "@testing-library/react";
+import { screen, fireEvent, waitFor, act } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { FileDropArea } from "../FileDropArea";
 import { render } from "@/__tests__/testUtils";
@@ -334,7 +334,9 @@ describe("FileDropArea Component", () => {
 
       // Cancel drag (e.g., press ESC or drag back to original location)
       const dragEndEvent = new Event("dragend", { bubbles: true });
-      document.dispatchEvent(dragEndEvent);
+      await act(async () => {
+        document.dispatchEvent(dragEndEvent);
+      });
 
       await waitFor(() => {
         expect(
@@ -364,7 +366,9 @@ describe("FileDropArea Component", () => {
 
       // Drop outside the drop area
       const dropEvent = new Event("drop", { bubbles: true });
-      document.dispatchEvent(dropEvent);
+      await act(async () => {
+        document.dispatchEvent(dropEvent);
+      });
 
       await waitFor(() => {
         expect(

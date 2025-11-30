@@ -78,6 +78,7 @@ describe("downloadFile", () => {
   let revokeObjectURLSpy: ReturnType<typeof vi.spyOn>;
   let appendChildSpy: ReturnType<typeof vi.spyOn>;
   let removeChildSpy: ReturnType<typeof vi.spyOn>;
+  let mockClick: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
     // Mock URL.createObjectURL and URL.revokeObjectURL
@@ -95,6 +96,18 @@ describe("downloadFile", () => {
     removeChildSpy = vi
       .spyOn(document.body, "removeChild")
       .mockImplementation((node) => node);
+
+    // Mock document.createElement to prevent actual anchor clicks
+    // This avoids jsdom "Not implemented: navigation" warnings
+    mockClick = vi.fn();
+    const originalCreateElement = document.createElement.bind(document);
+    vi.spyOn(document, "createElement").mockImplementation((tagName) => {
+      const element = originalCreateElement(tagName);
+      if (tagName === "a") {
+        element.click = mockClick as () => void;
+      }
+      return element;
+    });
   });
 
   afterEach(() => {
@@ -151,20 +164,9 @@ describe("downloadFile", () => {
     const content = "test content";
     const filename = "test.txt";
 
-    // Spy on the click method
-    const clickSpy = vi.fn();
-    const originalCreateElement = document.createElement.bind(document);
-    vi.spyOn(document, "createElement").mockImplementation((tagName) => {
-      const element = originalCreateElement(tagName);
-      if (tagName === "a") {
-        element.click = clickSpy;
-      }
-      return element;
-    });
-
     downloadFile(content, filename);
 
-    expect(clickSpy).toHaveBeenCalledTimes(1);
+    expect(mockClick).toHaveBeenCalledTimes(1);
   });
 
   it("cleans up by removing the link and revoking the URL", () => {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "fake-indexeddb/auto";
@@ -42,7 +42,7 @@ const TestConsumer = () => {
   const {
     adventure,
     adventureId,
-    loading,
+    isLoading,
     error,
     isSaving,
     updateAdventure,
@@ -76,7 +76,7 @@ const TestConsumer = () => {
   return (
     <div>
       <div data-testid="loading-state">
-        {loading ? "loading" : "not-loading"}
+        {isLoading ? "loading" : "not-loading"}
       </div>
       <div data-testid="saving-state">{isSaving ? "saving" : "not-saving"}</div>
       <div data-testid="adventure-id">{adventureId || "no-id"}</div>
@@ -443,7 +443,9 @@ describe("AdventureContext", () => {
 
     // Should NOT show saving state for quick operations
     // Wait a bit to ensure it doesn't flash
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+    });
     expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
 
     // Wait for save to complete
@@ -499,12 +501,16 @@ describe("AdventureContext", () => {
     expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
 
     // Should show saving state after 500ms
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
-      },
-      { timeout: 700 }
-    );
+    await act(async () => {
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("saving-state")).toHaveTextContent(
+            "saving"
+          );
+        },
+        { timeout: 700 }
+      );
+    });
 
     // Wait for save to complete
     await clickPromise;
@@ -561,12 +567,16 @@ describe("AdventureContext", () => {
     expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
 
     // Should show saving state after 500ms
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
-      },
-      { timeout: 700 }
-    );
+    await act(async () => {
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("saving-state")).toHaveTextContent(
+            "saving"
+          );
+        },
+        { timeout: 700 }
+      );
+    });
 
     // Wait for all saves to complete
     await Promise.all([clickPromise1, clickPromise2]);
