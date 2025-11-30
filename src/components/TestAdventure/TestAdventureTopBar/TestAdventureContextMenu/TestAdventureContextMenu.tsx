@@ -5,21 +5,21 @@ import {
 } from "@/components/common/ContextMenu/ContextMenu";
 
 interface TestAdventureContextMenuProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   triggerRef: HTMLElement | null;
   onYAMLDownloadClick: () => void;
 }
 
 export const TestAdventureContextMenu = ({
-  open,
+  isOpen,
   onOpenChange,
   triggerRef,
   onYAMLDownloadClick,
 }: TestAdventureContextMenuProps) => {
   return (
     <ContextMenu
-      open={open}
+      isOpen={isOpen}
       onOpenChange={onOpenChange}
       triggerRef={triggerRef}
       placement="bottom-end"

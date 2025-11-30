@@ -17,7 +17,7 @@ export const AdventureNavigation = ({
 }: AdventureNavigationProps) => {
   const location = useLocation();
 
-  const isActive = useCallback(
+  const getIsActive = useCallback(
     (path: string) => {
       return location.pathname === path || location.pathname.startsWith(path);
     },
@@ -38,14 +38,14 @@ export const AdventureNavigation = ({
     <TopBarNav as="nav" aria-label="Main navigation">
       <NavigationTab
         to={testRoute}
-        variant={isActive(testRoute) ? "primary" : "neutral"}
+        variant={getIsActive(testRoute) ? "primary" : "neutral"}
         icon={Play}
       >
         Test
       </NavigationTab>
       <NavigationTab
         to={editRoute}
-        variant={isActive(editRoute) ? "primary" : "neutral"}
+        variant={getIsActive(editRoute) ? "primary" : "neutral"}
         icon={PenTool}
       >
         Edit

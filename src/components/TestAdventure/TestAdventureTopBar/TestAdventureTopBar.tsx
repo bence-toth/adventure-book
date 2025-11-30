@@ -20,7 +20,7 @@ import {
 export const TestAdventureTopBar = () => {
   const { adventureId } = useParams<{ adventureId: string }>();
   const { adventure, isSaving } = useAdventure();
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [contextMenuTrigger, setContextMenuTrigger] =
     useState<HTMLElement | null>(null);
 
@@ -28,7 +28,7 @@ export const TestAdventureTopBar = () => {
     (e: React.MouseEvent, buttonRef: HTMLButtonElement) => {
       e.stopPropagation();
       setContextMenuTrigger(buttonRef);
-      setContextMenuOpen(true);
+      setIsContextMenuOpen(true);
     },
     []
   );
@@ -59,7 +59,7 @@ export const TestAdventureTopBar = () => {
     } catch (error) {
       console.error("Failed to download adventure:", error);
     } finally {
-      setContextMenuOpen(false);
+      setIsContextMenuOpen(false);
     }
   }, [adventureId, adventure]);
 
@@ -97,8 +97,8 @@ export const TestAdventureTopBar = () => {
         }
       />
       <TestAdventureContextMenu
-        open={contextMenuOpen}
-        onOpenChange={setContextMenuOpen}
+        isOpen={isContextMenuOpen}
+        onOpenChange={setIsContextMenuOpen}
         triggerRef={contextMenuTrigger}
         onYAMLDownloadClick={handleYAMLDownloadClick}
       />

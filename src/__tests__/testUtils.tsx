@@ -49,8 +49,8 @@ export const renderWithAdventure = (
     route,
     adventure,
     error,
-    loading,
-    debugModeEnabled,
+    isLoading,
+    isDebugModeEnabled,
     contextOverride,
     ...options
   }: Omit<RenderOptions, "wrapper"> & {
@@ -58,8 +58,8 @@ export const renderWithAdventure = (
     route?: string;
     adventure?: Adventure | null;
     error?: string | null;
-    loading?: boolean;
-    debugModeEnabled?: boolean;
+    isLoading?: boolean;
+    isDebugModeEnabled?: boolean;
     contextOverride?: Partial<AdventureContextType>;
   } = {}
 ) => {
@@ -73,23 +73,23 @@ export const renderWithAdventure = (
   const initialRoute =
     route || (adventureId ? `/adventure/${adventureId}/test` : "/");
 
-  // If adventure, error, loading, debugModeEnabled, or contextOverride are provided, use mock context
+  // If adventure, error, isLoading, isDebugModeEnabled, or contextOverride are provided, use mock context
   const useMockContext =
     adventure !== undefined ||
     error !== undefined ||
-    loading !== undefined ||
-    debugModeEnabled !== undefined ||
+    isLoading !== undefined ||
+    isDebugModeEnabled !== undefined ||
     contextOverride !== undefined;
 
   if (useMockContext) {
     const baseContextValue: AdventureContextType = {
       adventure: adventure ?? null,
       adventureId,
-      loading: loading ?? false,
+      loading: isLoading ?? false,
       error: error ?? null,
-      debugModeEnabled: debugModeEnabled ?? false,
+      isDebugModeEnabled: isDebugModeEnabled ?? false,
       isSaving: false,
-      setDebugModeEnabled: () => {},
+      setIsDebugModeEnabled: () => {},
       reloadAdventure: () => {},
       updateAdventure: () => {},
       withSaving: (fn) => fn(),

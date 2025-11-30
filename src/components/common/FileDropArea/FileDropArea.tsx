@@ -16,7 +16,7 @@ interface FileDropAreaProps {
   children: ReactNode;
   onFileDrop: (file: File) => void;
   dropLabel: string;
-  disabled?: boolean;
+  isDisabled?: boolean;
   "data-testid"?: string;
 }
 
@@ -24,7 +24,7 @@ export const FileDropArea = ({
   children,
   onFileDrop,
   dropLabel,
-  disabled = false,
+  isDisabled = false,
   "data-testid": dataTestId,
 }: FileDropAreaProps) => {
   const [isDragging, setIsDragging] = useState(false);
@@ -34,11 +34,11 @@ export const FileDropArea = ({
     (e: DragEvent<HTMLDivElement>) => {
       e.preventDefault();
       e.stopPropagation();
-      if (disabled) return;
+      if (isDisabled) return;
       dragCounter.current += 1;
       setIsDragging(true);
     },
-    [disabled]
+    [isDisabled]
   );
 
   const handleDragLeave = useCallback((e: DragEvent<HTMLDivElement>) => {
@@ -63,7 +63,7 @@ export const FileDropArea = ({
       dragCounter.current = 0;
       setIsDragging(false);
 
-      if (disabled) return;
+      if (isDisabled) return;
 
       const files = Array.from(e.dataTransfer.files);
 
@@ -72,7 +72,7 @@ export const FileDropArea = ({
         onFileDrop(files[0]);
       }
     },
-    [onFileDrop, disabled]
+    [onFileDrop, isDisabled]
   );
 
   // Handle drag end events globally to catch cancellations

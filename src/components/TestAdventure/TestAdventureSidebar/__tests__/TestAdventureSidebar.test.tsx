@@ -196,11 +196,11 @@ describe("TestAdventureSidebar", () => {
     const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
-      loading: false,
+      isLoading: false,
       error: null,
-      debugModeEnabled: false,
+      isDebugModeEnabled: false,
       isSaving: false,
-      setDebugModeEnabled: vi.fn(),
+      setIsDebugModeEnabled: vi.fn(),
       reloadAdventure: vi.fn(),
       updateAdventure: vi.fn(),
       withSaving: vi.fn(),
@@ -222,11 +222,11 @@ describe("TestAdventureSidebar", () => {
     const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
-      loading: true,
+      isLoading: true,
       error: null,
-      debugModeEnabled: false,
+      isDebugModeEnabled: false,
       isSaving: false,
-      setDebugModeEnabled: vi.fn(),
+      setIsDebugModeEnabled: vi.fn(),
       reloadAdventure: vi.fn(),
       updateAdventure: vi.fn(),
       withSaving: vi.fn(),
@@ -249,11 +249,11 @@ describe("TestAdventureSidebar", () => {
     const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
-      loading: false,
+      isLoading: false,
       error: null,
-      debugModeEnabled: false,
+      isDebugModeEnabled: false,
       isSaving: false,
-      setDebugModeEnabled: vi.fn(),
+      setIsDebugModeEnabled: vi.fn(),
       reloadAdventure: vi.fn(),
       updateAdventure: vi.fn(),
       withSaving: vi.fn(),
@@ -330,7 +330,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       // Both modes show "Inventory" as the title, but debug mode shows toggles
@@ -345,7 +345,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: false,
+        isDebugModeEnabled: false,
       });
 
       expect(await screen.findByText("Inventory")).toBeInTheDocument();
@@ -363,7 +363,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
@@ -374,7 +374,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       const toggle = (await screen.findByRole("switch", {
@@ -402,7 +402,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       const toggle1 = (await screen.findByRole("switch", {
@@ -420,7 +420,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       expect(await screen.findByText("Passages")).toBeInTheDocument();
@@ -431,7 +431,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: false,
+        isDebugModeEnabled: false,
       });
 
       expect(await screen.findByText("Inventory")).toBeInTheDocument();
@@ -445,7 +445,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: false,
+        isDebugModeEnabled: false,
       });
 
       const debugToggle = await screen.findByRole("switch", {
@@ -458,7 +458,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: false,
+        isDebugModeEnabled: false,
       });
 
       const debugToggle = (await screen.findByRole("switch", {
@@ -471,7 +471,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       const debugToggle = (await screen.findByRole("switch", {

@@ -18,7 +18,7 @@ import {
 } from "./ConfirmationModal.styles";
 
 interface ConfirmationModalProps {
-  open: boolean;
+  isOpen: boolean;
   onOpenChange: () => void;
   title: string;
   message: ReactNode;
@@ -31,7 +31,7 @@ interface ConfirmationModalProps {
 }
 
 export const ConfirmationModal = ({
-  open,
+  isOpen,
   onOpenChange,
   title,
   message,
@@ -43,7 +43,7 @@ export const ConfirmationModal = ({
   "data-testid": dataTestId,
 }: ConfirmationModalProps) => {
   const { refs, context } = useFloating({
-    open,
+    open: isOpen,
     onOpenChange,
   });
 
@@ -57,7 +57,7 @@ export const ConfirmationModal = ({
 
   // Lock scroll when modal is open
   useEffect(() => {
-    if (open) {
+    if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -65,9 +65,9 @@ export const ConfirmationModal = ({
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);
+  }, [isOpen]);
 
-  if (!open) return null;
+  if (!isOpen) return null;
 
   return (
     <FloatingFocusManager context={context} modal initialFocus={0}>

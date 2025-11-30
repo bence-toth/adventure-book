@@ -5,21 +5,21 @@ import {
 } from "@/components/common/ContextMenu/ContextMenu";
 
 interface AdventureManagerContextMenuProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   triggerRef: HTMLElement | null;
   onImportClick: () => void;
 }
 
 export const AdventureManagerContextMenu = ({
-  open,
+  isOpen,
   onOpenChange,
   triggerRef,
   onImportClick,
 }: AdventureManagerContextMenuProps) => {
   return (
     <ContextMenu
-      open={open}
+      isOpen={isOpen}
       onOpenChange={onOpenChange}
       triggerRef={triggerRef}
       placement="bottom-end"

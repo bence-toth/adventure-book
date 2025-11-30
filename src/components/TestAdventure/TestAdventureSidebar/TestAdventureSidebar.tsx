@@ -16,7 +16,7 @@ import {
 export const TestAdventureSidebar = () => {
   const { id } = useParams<{ id: string }>();
   const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const { adventure, adventureId, debugModeEnabled, setDebugModeEnabled } =
+  const { adventure, adventureId, isDebugModeEnabled, setIsDebugModeEnabled } =
     useAdventure();
 
   // Parse current passage ID from URL (null means we're on introduction)
@@ -81,7 +81,7 @@ export const TestAdventureSidebar = () => {
     <Sidebar>
       <SidebarLayout>
         <SidebarContent>
-          {debugModeEnabled ? (
+          {isDebugModeEnabled ? (
             <>
               <DebugInventory
                 allItems={adventure.items}
@@ -102,8 +102,8 @@ export const TestAdventureSidebar = () => {
         <SidebarFooter>
           <ToggleButton
             label="Debug mode"
-            checked={debugModeEnabled}
-            onChange={setDebugModeEnabled}
+            isChecked={isDebugModeEnabled}
+            onChange={setIsDebugModeEnabled}
             data-testid="debug-mode-toggle"
           />
         </SidebarFooter>

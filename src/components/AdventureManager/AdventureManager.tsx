@@ -154,7 +154,7 @@ export const AdventureManager = () => {
       <FileDropArea
         onFileDrop={handleFileDrop}
         dropLabel="Drop YAML file here"
-        disabled={deletingAdventureId !== null}
+        isDisabled={deletingAdventureId !== null}
         data-testid="adventure-manager-drop-area"
       >
         <AdventureManagerContainer>
@@ -166,7 +166,7 @@ export const AdventureManager = () => {
                 adventure={adventure}
                 onOpen={handleOpenAdventure}
                 onDeleteClick={() => handleDeleteClick(adventure.id)}
-                deleteModalOpen={deletingAdventureId === adventure.id}
+                isDeleteModalOpen={deletingAdventureId === adventure.id}
                 onConfirmDelete={handleConfirmDelete}
                 onCancelDelete={handleCancelDelete}
               />

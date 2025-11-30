@@ -12,7 +12,7 @@ import {
 } from "./AdventureManagerTopBar.styles";
 
 export const AdventureManagerTopBar = () => {
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [contextMenuTrigger, setContextMenuTrigger] =
     useState<HTMLElement | null>(null);
 
@@ -20,14 +20,14 @@ export const AdventureManagerTopBar = () => {
     (e: React.MouseEvent, buttonRef: HTMLButtonElement) => {
       e.stopPropagation();
       setContextMenuTrigger(buttonRef);
-      setContextMenuOpen(true);
+      setIsContextMenuOpen(true);
     },
     []
   );
 
   const handleImportClick = useCallback(() => {
     console.log("Import adventure from YAML");
-    setContextMenuOpen(false);
+    setIsContextMenuOpen(false);
   }, []);
 
   return (
@@ -56,8 +56,8 @@ export const AdventureManagerTopBar = () => {
         }
       />
       <AdventureManagerContextMenu
-        open={contextMenuOpen}
-        onOpenChange={setContextMenuOpen}
+        isOpen={isContextMenuOpen}
+        onOpenChange={setIsContextMenuOpen}
         triggerRef={contextMenuTrigger}
         onImportClick={handleImportClick}
       />

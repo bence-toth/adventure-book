@@ -16,7 +16,7 @@ describe("AdventureManagerContextMenu Component", () => {
     it("does not render when open is false", () => {
       render(
         <AdventureManagerContextMenu
-          open={false}
+          isOpen={false}
           onOpenChange={mockOnOpenChange}
           triggerRef={mockTriggerRef}
           onImportClick={mockOnImportClick}
@@ -32,7 +32,7 @@ describe("AdventureManagerContextMenu Component", () => {
     it("renders when open is true", () => {
       render(
         <AdventureManagerContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={mockOnOpenChange}
           triggerRef={mockTriggerRef}
           onImportClick={mockOnImportClick}
@@ -46,7 +46,7 @@ describe("AdventureManagerContextMenu Component", () => {
     it("renders import menu item with correct text and icon", () => {
       render(
         <AdventureManagerContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={mockOnOpenChange}
           triggerRef={mockTriggerRef}
           onImportClick={mockOnImportClick}
@@ -65,7 +65,7 @@ describe("AdventureManagerContextMenu Component", () => {
     it("calls onImportClick when import item is clicked", () => {
       render(
         <AdventureManagerContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={mockOnOpenChange}
           triggerRef={mockTriggerRef}
           onImportClick={mockOnImportClick}

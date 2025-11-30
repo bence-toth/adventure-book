@@ -5,21 +5,21 @@ import {
 } from "@/components/common/ContextMenu/ContextMenu";
 
 interface AdventureCardContextMenuProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   triggerRef: HTMLElement | null;
   onDeleteClick: () => void;
 }
 
 export const AdventureCardContextMenu = ({
-  open,
+  isOpen,
   onOpenChange,
   triggerRef,
   onDeleteClick,
 }: AdventureCardContextMenuProps) => {
   return (
     <ContextMenu
-      open={open}
+      isOpen={isOpen}
       onOpenChange={onOpenChange}
       triggerRef={triggerRef}
       placement="top-end"

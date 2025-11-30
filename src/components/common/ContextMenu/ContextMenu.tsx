@@ -16,8 +16,8 @@ import {
 import { MenuContainer, MenuItem, MenuItemIcon } from "./ContextMenu.styles";
 
 interface ContextMenuProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   triggerRef: HTMLElement | null;
   children: ReactNode;
   placement?: Placement;
@@ -25,7 +25,7 @@ interface ContextMenuProps {
 }
 
 export const ContextMenu = ({
-  open,
+  isOpen,
   onOpenChange,
   triggerRef,
   children,
@@ -33,7 +33,7 @@ export const ContextMenu = ({
   "data-testid": dataTestId,
 }: ContextMenuProps) => {
   const { refs, floatingStyles, context } = useFloating({
-    open,
+    open: isOpen,
     onOpenChange,
     middleware: [offset(4), flip(), shift({ padding: 8 })],
     whileElementsMounted: autoUpdate,
@@ -53,7 +53,7 @@ export const ContextMenu = ({
     }
   }, [triggerRef, refs]);
 
-  if (!open) return null;
+  if (!isOpen) return null;
 
   return (
     <FloatingFocusManager context={context} modal={false}>

@@ -157,7 +157,7 @@ describe("TestAdventure Component", () => {
 
       renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
-        loading: true,
+        isLoading: true,
       });
 
       const container = await screen.findByTestId(
@@ -661,7 +661,7 @@ describe("TestAdventure Component", () => {
     it("shows loading message while adventure is loading", async () => {
       renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
-        loading: true,
+        isLoading: true,
       });
 
       const container = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);

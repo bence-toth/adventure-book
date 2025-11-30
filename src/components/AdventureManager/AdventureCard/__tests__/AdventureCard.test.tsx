@@ -30,7 +30,7 @@ describe("AdventureCard Component", () => {
         adventure={mockAdventure}
         onOpen={mockOnOpen}
         onDeleteClick={mockOnDeleteClick}
-        deleteModalOpen={deleteModalOpen}
+        isDeleteModalOpen={deleteModalOpen}
         onConfirmDelete={mockOnConfirmDelete}
         onCancelDelete={mockOnCancelDelete}
       />

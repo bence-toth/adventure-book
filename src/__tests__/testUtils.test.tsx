@@ -7,7 +7,7 @@ import type { Adventure } from "@/data/types";
 
 // Test component that displays adventure context values
 const TestComponent = () => {
-  const { adventureId, adventure, loading, error, debugModeEnabled } =
+  const { adventureId, adventure, loading, error, isDebugModeEnabled } =
     useAdventure();
   const params = useParams();
 
@@ -28,25 +28,25 @@ const TestComponent = () => {
       </div>
       <div data-testid="error-state">{error || "no-error"}</div>
       <div data-testid="debug-state">
-        {debugModeEnabled ? "debug-on" : "debug-off"}
+        {isDebugModeEnabled ? "debug-on" : "debug-off"}
       </div>
     </div>
   );
 };
 
-// Test component that uses setDebugModeEnabled
+// Test component that uses setIsDebugModeEnabled
 const TestComponentWithActions = () => {
-  const { debugModeEnabled, setDebugModeEnabled, reloadAdventure } =
+  const { isDebugModeEnabled, setIsDebugModeEnabled, reloadAdventure } =
     useAdventure();
 
   return (
     <div data-testid="test-component-actions">
       <div data-testid="debug-state">
-        {debugModeEnabled ? "debug-on" : "debug-off"}
+        {isDebugModeEnabled ? "debug-on" : "debug-off"}
       </div>
       <button
         data-testid="toggle-debug"
-        onClick={() => setDebugModeEnabled(!debugModeEnabled)}
+        onClick={() => setIsDebugModeEnabled(!isDebugModeEnabled)}
       >
         Toggle Debug
       </button>
@@ -64,7 +64,7 @@ describe("renderWithAdventure", () => {
         renderWithAdventure(<TestComponent />, {
           adventureId: "",
           adventure: null,
-          loading: false,
+          isLoading: false,
         });
       }).toThrow("adventureId cannot be an empty string");
     });
@@ -73,9 +73,9 @@ describe("renderWithAdventure", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "test-id",
         adventure: null,
-        loading: true,
+        isLoading: true,
         error: "Test error",
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
         route: "/",
       });
 
@@ -91,7 +91,7 @@ describe("renderWithAdventure", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "test-story",
         adventure: null,
-        loading: false,
+        isLoading: false,
       });
 
       // Mock context should be available at adventure route
@@ -103,10 +103,10 @@ describe("renderWithAdventure", () => {
     });
 
     it("uses mock context when any optional parameter is explicitly provided", () => {
-      // Providing just `loading: false` should trigger mock context
+      // Providing just `isLoading: false` should trigger mock context
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "test-id",
-        loading: false,
+        isLoading: false,
       });
 
       expect(getByTestId("loading-state")).toHaveTextContent("not-loading");
@@ -209,7 +209,7 @@ describe("renderWithAdventure", () => {
     it("provides loading state when loading parameter is true", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "test-id",
-        loading: true,
+        isLoading: true,
       });
 
       expect(getByTestId("loading-state")).toHaveTextContent("loading");
@@ -220,7 +220,7 @@ describe("renderWithAdventure", () => {
     it("provides debug mode enabled state", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "test-id",
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       expect(getByTestId("debug-state")).toHaveTextContent("debug-on");
@@ -235,12 +235,12 @@ describe("renderWithAdventure", () => {
       expect(getByTestId("debug-state")).toHaveTextContent("debug-off");
     });
 
-    it("mock setDebugModeEnabled function does not throw errors", () => {
+    it("mock setIsDebugModeEnabled function does not throw errors", () => {
       const { getByTestId } = renderWithAdventure(
         <TestComponentWithActions />,
         {
           adventureId: "test-id",
-          debugModeEnabled: false,
+          isDebugModeEnabled: false,
         }
       );
 
@@ -273,9 +273,9 @@ describe("renderWithAdventure", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "combo-test",
         adventure: testAdventure,
-        loading: false,
+        isLoading: false,
         error: null,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
         route: "/adventure/combo-test/test",
       });
 
@@ -302,7 +302,7 @@ describe("renderWithAdventure", () => {
     it("handles error state with loading", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "test-id",
-        loading: true,
+        isLoading: true,
         error: "Network error",
       });
 

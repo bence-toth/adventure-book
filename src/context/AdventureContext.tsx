@@ -9,9 +9,9 @@ export interface AdventureContextType {
   adventureId: string | null;
   loading: boolean;
   error: string | null;
-  debugModeEnabled: boolean;
+  isDebugModeEnabled: boolean;
   isSaving: boolean;
-  setDebugModeEnabled: (enabled: boolean) => void;
+  setIsDebugModeEnabled: (isEnabled: boolean) => void;
   reloadAdventure: () => void;
   updateAdventure: (updater: (adventure: Adventure) => Adventure) => void;
   withSaving: <T>(asyncOperation: () => Promise<T>) => Promise<T>;
@@ -30,7 +30,7 @@ export const AdventureProvider = ({
   const [adventure, setAdventure] = useState<Adventure | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [debugModeEnabled, setDebugModeEnabled] = useState(false);
+  const [isDebugModeEnabled, setIsDebugModeEnabled] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const savingCountRef = useRef(0);
@@ -140,9 +140,9 @@ export const AdventureProvider = ({
         adventureId: adventureId ?? null,
         loading,
         error,
-        debugModeEnabled,
+        isDebugModeEnabled,
         isSaving,
-        setDebugModeEnabled,
+        setIsDebugModeEnabled,
         reloadAdventure,
         updateAdventure,
         withSaving,

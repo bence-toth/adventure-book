@@ -10,7 +10,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -29,7 +29,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={false}
+          isOpen={false}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -44,7 +44,7 @@ describe("ContextMenu Component", () => {
 
     it("handles null triggerRef gracefully", () => {
       render(
-        <ContextMenu open={true} onOpenChange={vi.fn()} triggerRef={null}>
+        <ContextMenu isOpen={true} onOpenChange={vi.fn()} triggerRef={null}>
           <ContextMenuItem onClick={vi.fn()}>Test Item</ContextMenuItem>
         </ContextMenu>
       );
@@ -60,7 +60,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -84,7 +84,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -108,7 +108,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -135,7 +135,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -156,7 +156,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -179,7 +179,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -204,7 +204,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -226,7 +226,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -248,7 +248,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -269,7 +269,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -296,7 +296,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -317,7 +317,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -344,7 +344,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -369,7 +369,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -393,7 +393,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -414,7 +414,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
           placement="bottom-start"
@@ -436,7 +436,7 @@ describe("ContextMenu Component", () => {
 
       const { rerender } = render(
         <ContextMenu
-          open={false}
+          isOpen={false}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -448,7 +448,7 @@ describe("ContextMenu Component", () => {
 
       rerender(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -469,7 +469,7 @@ describe("ContextMenu Component", () => {
 
       const { rerender } = render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement1}
         >
@@ -481,7 +481,7 @@ describe("ContextMenu Component", () => {
 
       rerender(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement2}
         >

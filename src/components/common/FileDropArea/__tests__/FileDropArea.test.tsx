@@ -198,7 +198,7 @@ describe("FileDropArea Component", () => {
         <FileDropArea
           onFileDrop={mockOnFileDrop}
           dropLabel="Drop file here"
-          disabled={true}
+          isDisabled={true}
           data-testid="drop-area"
         >
           <div>Content</div>
@@ -218,7 +218,7 @@ describe("FileDropArea Component", () => {
         <FileDropArea
           onFileDrop={mockOnFileDrop}
           dropLabel="Drop file here"
-          disabled={true}
+          isDisabled={true}
           data-testid="drop-area"
         >
           <div>Content</div>
@@ -240,7 +240,7 @@ describe("FileDropArea Component", () => {
         <FileDropArea
           onFileDrop={mockOnFileDrop}
           dropLabel="Drop file here"
-          disabled={false}
+          isDisabled={false}
           data-testid="drop-area"
         >
           <div>Content</div>

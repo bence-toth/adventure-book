@@ -16,7 +16,7 @@ export const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
   height: 0;
 `;
 
-export const ToggleTrack = styled.span<{ $checked: boolean }>`
+export const ToggleTrack = styled.span<{ $isChecked: boolean }>`
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -24,7 +24,7 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
   height: var(--size-toggle-button-height);
   border-radius: calc(var(--size-toggle-button-height) * 0.5);
   background: ${(props) =>
-    props.$checked
+    props.$isChecked
       ? getInteractiveColor({
           variant: "neutral",
           type: "background",
@@ -37,7 +37,7 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
         })};
   border: var(--border-width-interactive) solid
     ${(props) =>
-      props.$checked
+      props.$isChecked
         ? getInteractiveColor({
             variant: "neutral",
             type: "border",
@@ -54,7 +54,7 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
 
   ${ToggleButtonContainer}:hover & {
     background: ${(props) =>
-      props.$checked
+      props.$isChecked
         ? getInteractiveColor({
             variant: "neutral",
             type: "background",
@@ -66,7 +66,7 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
             state: "hover",
           })};
     border-color: ${(props) =>
-      props.$checked
+      props.$isChecked
         ? getInteractiveColor({
             variant: "neutral",
             type: "border",
@@ -90,7 +90,7 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
   }
 `;
 
-export const ToggleThumb = styled.span<{ $checked: boolean }>`
+export const ToggleThumb = styled.span<{ $isChecked: boolean }>`
   position: absolute;
   aspect-ratio: 1 / 1;
   height: calc(100% - calc(2 * var(--border-width-interactive)));
@@ -103,7 +103,7 @@ export const ToggleThumb = styled.span<{ $checked: boolean }>`
   box-shadow: 0 var(--space-0-25) var(--space-0-5)
     ${getColor({ type: "shadow", variant: "neutral", isSurface: true })};
   transform: ${(props) =>
-    props.$checked
+    props.$isChecked
       ? `
         translateX(var(--size-toggle-button-width))
         translateX(-100%)

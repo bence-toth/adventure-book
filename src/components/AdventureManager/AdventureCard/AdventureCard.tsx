@@ -18,7 +18,7 @@ interface AdventureCardProps {
   adventure: StoredAdventure;
   onOpen: (id: string) => void;
   onDeleteClick: () => void;
-  deleteModalOpen: boolean;
+  isDeleteModalOpen: boolean;
   onConfirmDelete: () => Promise<void>;
   onCancelDelete: () => void;
 }
@@ -27,11 +27,11 @@ export const AdventureCard = ({
   adventure,
   onOpen,
   onDeleteClick,
-  deleteModalOpen,
+  isDeleteModalOpen,
   onConfirmDelete,
   onCancelDelete,
 }: AdventureCardProps) => {
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [contextMenuTrigger, setContextMenuTrigger] =
     useState<HTMLElement | null>(null);
 
@@ -39,14 +39,14 @@ export const AdventureCard = ({
     (e: React.MouseEvent, buttonRef: HTMLButtonElement) => {
       e.stopPropagation();
       setContextMenuTrigger(buttonRef);
-      setContextMenuOpen(true);
+      setIsContextMenuOpen(true);
     },
     []
   );
 
   const handleDeleteClick = useCallback(() => {
     onDeleteClick();
-    setContextMenuOpen(false);
+    setIsContextMenuOpen(false);
   }, [onDeleteClick]);
 
   return (
@@ -75,13 +75,13 @@ export const AdventureCard = ({
         </AdventureCardFooter>
       </AdventureCardContainer>
       <AdventureCardContextMenu
-        open={contextMenuOpen}
-        onOpenChange={setContextMenuOpen}
+        isOpen={isContextMenuOpen}
+        onOpenChange={setIsContextMenuOpen}
         triggerRef={contextMenuTrigger}
         onDeleteClick={handleDeleteClick}
       />
       <AdventureCardDeleteModal
-        open={deleteModalOpen}
+        isOpen={isDeleteModalOpen}
         adventureTitle={adventure.title}
         onConfirm={onConfirmDelete}
         onCancel={onCancelDelete}
