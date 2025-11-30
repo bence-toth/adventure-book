@@ -17,18 +17,23 @@ import {
 interface AdventureCardProps {
   adventure: StoredAdventure;
   onOpen: (id: string) => void;
-  onDelete: () => Promise<void>;
+  onDeleteClick: () => void;
+  deleteModalOpen: boolean;
+  onConfirmDelete: () => Promise<void>;
+  onCancelDelete: () => void;
 }
 
 export const AdventureCard = ({
   adventure,
   onOpen,
-  onDelete,
+  onDeleteClick,
+  deleteModalOpen,
+  onConfirmDelete,
+  onCancelDelete,
 }: AdventureCardProps) => {
   const [contextMenuOpen, setContextMenuOpen] = useState(false);
   const [contextMenuTrigger, setContextMenuTrigger] =
     useState<HTMLElement | null>(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleMenuClick = useCallback(
     (e: React.MouseEvent, buttonRef: HTMLButtonElement) => {
@@ -40,18 +45,9 @@ export const AdventureCard = ({
   );
 
   const handleDeleteClick = useCallback(() => {
-    setDeleteModalOpen(true);
+    onDeleteClick();
     setContextMenuOpen(false);
-  }, []);
-
-  const handleConfirmDelete = useCallback(async () => {
-    await onDelete();
-    setDeleteModalOpen(false);
-  }, [onDelete]);
-
-  const handleCancelDelete = useCallback(() => {
-    setDeleteModalOpen(false);
-  }, []);
+  }, [onDeleteClick]);
 
   return (
     <>
@@ -87,8 +83,8 @@ export const AdventureCard = ({
       <AdventureCardDeleteModal
         open={deleteModalOpen}
         adventureTitle={adventure.title}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        onConfirm={onConfirmDelete}
+        onCancel={onCancelDelete}
       />
     </>
   );

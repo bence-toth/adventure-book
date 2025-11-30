@@ -439,4 +439,112 @@ describe("AdventureManager Component", () => {
       });
     });
   });
+
+  describe("File Drop", () => {
+    beforeEach(() => {
+      vi.mocked(adventureDatabase.listStories).mockResolvedValue(mockStories);
+    });
+
+    it("logs to console when YAML file is dropped", async () => {
+      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {
+        // Mock implementation
+      });
+
+      render(<AdventureManager />);
+
+      await screen.findByText("Adventure One");
+
+      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
+      const dropArea = screen.getByTestId("adventure-manager-drop-area");
+
+      fireEvent.drop(dropArea, {
+        dataTransfer: { files: [file] },
+      });
+
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        "YAML file dropped:",
+        "test.yaml"
+      );
+
+      consoleLogSpy.mockRestore();
+    });
+
+    it("disables file drop when delete confirmation modal is open", async () => {
+      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {
+        // Mock implementation
+      });
+
+      render(<AdventureManager />);
+
+      await screen.findByText("Adventure One");
+
+      // Open the delete modal
+      const menuButton = screen.getByLabelText("Open menu for Adventure One");
+      fireEvent.click(menuButton);
+
+      const deleteMenuItem = screen.getByText("Delete");
+      fireEvent.click(deleteMenuItem);
+
+      // Verify modal is open
+      expect(
+        screen.getByText(/Are you sure you want to delete/)
+      ).toBeInTheDocument();
+
+      // Try to drop a file while modal is open
+      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
+      const dropArea = screen.getByTestId("adventure-manager-drop-area");
+
+      fireEvent.drop(dropArea, {
+        dataTransfer: { files: [file] },
+      });
+
+      // File drop should not be logged when modal is open
+      expect(consoleLogSpy).not.toHaveBeenCalled();
+
+      consoleLogSpy.mockRestore();
+    });
+
+    it("re-enables file drop after delete modal is closed", async () => {
+      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {
+        // Mock implementation
+      });
+
+      render(<AdventureManager />);
+
+      await screen.findByText("Adventure One");
+
+      // Open the delete modal
+      const menuButton = screen.getByLabelText("Open menu for Adventure One");
+      fireEvent.click(menuButton);
+
+      const deleteMenuItem = screen.getByText("Delete");
+      fireEvent.click(deleteMenuItem);
+
+      // Close the modal by clicking Cancel
+      const cancelButton = screen.getByRole("button", { name: "Cancel" });
+      fireEvent.click(cancelButton);
+
+      // Wait for modal to close
+      await waitFor(() => {
+        expect(
+          screen.queryByText(/Are you sure you want to delete/)
+        ).not.toBeInTheDocument();
+      });
+
+      // Now file drop should work again
+      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
+      const dropArea = screen.getByTestId("adventure-manager-drop-area");
+
+      fireEvent.drop(dropArea, {
+        dataTransfer: { files: [file] },
+      });
+
+      expect(consoleLogSpy).toHaveBeenCalledWith(
+        "YAML file dropped:",
+        "test.yaml"
+      );
+
+      consoleLogSpy.mockRestore();
+    });
+  });
 });

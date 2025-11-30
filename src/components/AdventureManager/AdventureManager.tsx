@@ -14,6 +14,7 @@ import {
   StoryCreateError,
   StoryDeleteError,
 } from "@/utils/errors";
+import { FileDropArea } from "@/components/common/FileDropArea/FileDropArea";
 import { AdventureManagerTopBar } from "./AdventureManagerTopBar/AdventureManagerTopBar";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
@@ -27,6 +28,9 @@ export const AdventureManager = () => {
   const [stories, setStories] = useState<StoredAdventure[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<"load" | "create" | "delete" | null>(null);
+  const [deletingAdventureId, setDeletingAdventureId] = useState<string | null>(
+    null
+  );
   const navigate = useNavigate();
 
   const loadStories = useCallback(async () => {
@@ -81,18 +85,46 @@ export const AdventureManager = () => {
     }
   }, [navigate]);
 
-  const handleDeleteAdventure = useCallback(
-    async (adventureId: string) => {
-      try {
-        await deleteAdventure(adventureId);
-        await loadStories();
-      } catch (err) {
-        console.error("Error deleting adventure:", err);
-        setError("delete");
-      }
-    },
-    [loadStories]
-  );
+  const handleDeleteClick = useCallback((adventureId: string) => {
+    setDeletingAdventureId(adventureId);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deletingAdventureId) return;
+
+    try {
+      await deleteAdventure(deletingAdventureId);
+      await loadStories();
+      setDeletingAdventureId(null);
+    } catch (err) {
+      console.error("Error deleting adventure:", err);
+      setError("delete");
+    }
+  }, [deletingAdventureId, loadStories]);
+
+  const handleCancelDelete = useCallback(() => {
+    setDeletingAdventureId(null);
+  }, []);
+
+  const handleFileDrop = useCallback((file: File) => {
+    // Check file extension
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    const acceptedFileTypes = [".yaml", ".yml"];
+    const isAccepted = acceptedFileTypes.some((type) => {
+      const ext = type.startsWith(".") ? type.slice(1) : type;
+      return ext.toLowerCase() === fileExtension;
+    });
+
+    if (!isAccepted) {
+      console.warn(
+        `File type not accepted. Please drop a ${acceptedFileTypes.join(" or ")} file`
+      );
+      return;
+    }
+
+    console.log("YAML file dropped:", file.name);
+    // TODO: Implement file import logic
+  }, []);
 
   if (loading) {
     return (
@@ -119,19 +151,29 @@ export const AdventureManager = () => {
   return (
     <>
       <AdventureManagerTopBar />
-      <AdventureManagerContainer>
-        <AdventureManagerList>
-          <NewAdventureCard onClick={handleCreateAdventure} />
-          {stories.map((adventure) => (
-            <AdventureCard
-              key={adventure.id}
-              adventure={adventure}
-              onOpen={handleOpenAdventure}
-              onDelete={() => handleDeleteAdventure(adventure.id)}
-            />
-          ))}
-        </AdventureManagerList>
-      </AdventureManagerContainer>
+      <FileDropArea
+        onFileDrop={handleFileDrop}
+        dropLabel="Drop YAML file here"
+        disabled={deletingAdventureId !== null}
+        data-testid="adventure-manager-drop-area"
+      >
+        <AdventureManagerContainer>
+          <AdventureManagerList>
+            <NewAdventureCard onClick={handleCreateAdventure} />
+            {stories.map((adventure) => (
+              <AdventureCard
+                key={adventure.id}
+                adventure={adventure}
+                onOpen={handleOpenAdventure}
+                onDeleteClick={() => handleDeleteClick(adventure.id)}
+                deleteModalOpen={deletingAdventureId === adventure.id}
+                onConfirmDelete={handleConfirmDelete}
+                onCancelDelete={handleCancelDelete}
+              />
+            ))}
+          </AdventureManagerList>
+        </AdventureManagerContainer>
+      </FileDropArea>
     </>
   );
 };
