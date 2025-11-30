@@ -16,6 +16,9 @@ export class AdventureParser {
     // Convert multiline text to paragraphs and transform to processed Adventure
     const processedAdventure = this.processTextFields(rawAdventure);
 
+    // Validate all goto references exist
+    this.validateReferences(processedAdventure);
+
     return processedAdventure;
   }
 
@@ -335,8 +338,7 @@ export class AdventureParser {
       .filter((paragraph) => paragraph.length > 0);
   }
 
-  static validateAdventure(adventure: Adventure): string[] {
-    const errors: string[] = [];
+  private static validateReferences(adventure: Adventure): void {
     const passageNumbers = Object.keys(adventure.passages).map(Number);
 
     // Validate all goto references exist
@@ -344,15 +346,13 @@ export class AdventureParser {
       if ("choices" in passage && passage.choices) {
         for (const choice of passage.choices) {
           if (!passageNumbers.includes(choice.goto)) {
-            errors.push(
+            throw new Error(
               `Passage ${passageId} has invalid goto: ${choice.goto}`
             );
           }
         }
       }
     }
-
-    return errors;
   }
 
   static getEndingPassages(adventure: Adventure): number[] {

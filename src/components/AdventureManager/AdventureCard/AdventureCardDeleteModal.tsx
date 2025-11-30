@@ -24,11 +24,10 @@ export const AdventureCardDeleteModal = ({
           be undone.
         </p>
       }
-      confirmLabel="Delete"
-      cancelLabel="Cancel"
-      onConfirm={onConfirm}
-      onCancel={onCancel}
-      variant="danger"
+      actions={[
+        { label: "Cancel", onClick: onCancel },
+        { label: "Delete", onClick: onConfirm, variant: "danger" },
+      ]}
     />
   );
 };

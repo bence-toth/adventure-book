@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { Swords, EllipsisVertical } from "lucide-react";
 import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
 import { TopBar } from "@/components/common/TopBar/TopBar";
@@ -11,10 +11,17 @@ import {
   ContextMenuButton,
 } from "./AdventureManagerTopBar.styles";
 
-export const AdventureManagerTopBar = () => {
+interface AdventureManagerTopBarProps {
+  onFileSelect: (file: File) => void;
+}
+
+export const AdventureManagerTopBar = ({
+  onFileSelect,
+}: AdventureManagerTopBarProps) => {
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [contextMenuTrigger, setContextMenuTrigger] =
     useState<HTMLElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleMenuClick = useCallback(
     (e: React.MouseEvent, buttonRef: HTMLButtonElement) => {
@@ -26,9 +33,24 @@ export const AdventureManagerTopBar = () => {
   );
 
   const handleImportClick = useCallback(() => {
-    console.log("Import adventure from YAML");
     setIsContextMenuOpen(false);
+    // Trigger file input
+    fileInputRef.current?.click();
   }, []);
+
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        onFileSelect(file);
+      }
+      // Reset input so the same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    },
+    [onFileSelect]
+  );
 
   return (
     <>
@@ -60,6 +82,14 @@ export const AdventureManagerTopBar = () => {
         onOpenChange={setIsContextMenuOpen}
         triggerRef={contextMenuTrigger}
         onImportClick={handleImportClick}
+      />
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".yaml,.yml"
+        onChange={handleFileChange}
+        style={{ display: "none" }}
+        data-testid="adventure-manager-file-input"
       />
     </>
   );

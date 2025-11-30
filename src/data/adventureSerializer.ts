@@ -2,10 +2,8 @@ import { stringify } from "yaml";
 import type { Adventure } from "./types";
 
 export class AdventureSerializer {
-  /**
-   * Serializes an Adventure object back to YAML string format
-   * This is the inverse operation of AdventureParser.parseFromString
-   */
+  // Serializes an Adventure object back to YAML string format
+  // This is the inverse operation of AdventureParser.parseFromString
   static serializeToString(adventure: Adventure): string {
     // Convert the processed Adventure back to raw format for YAML serialization
     const rawAdventure = this.adventureToRaw(adventure);
@@ -26,9 +24,8 @@ export class AdventureSerializer {
     return yamlString;
   }
 
-  /**
-   * Converts a processed Adventure object back to raw format suitable for YAML serialization
-   */
+  // Converts a processed Adventure object back to raw format
+  // suitable for YAML serialization
   private static adventureToRaw(adventure: Adventure): Record<string, unknown> {
     // Convert intro paragraphs back to multiline text
     const introText = this.paragraphsToText(adventure.intro.paragraphs);
@@ -79,10 +76,8 @@ export class AdventureSerializer {
     return rawAdventure;
   }
 
-  /**
-   * Converts an array of paragraphs back to multiline text format
-   * Joins paragraphs with double newlines to match the original format
-   */
+  // Converts an array of paragraphs back to multiline text format
+  // Joins paragraphs with double newlines to match the original format
   private static paragraphsToText(paragraphs: string[]): string {
     if (!paragraphs || paragraphs.length === 0) {
       return "";

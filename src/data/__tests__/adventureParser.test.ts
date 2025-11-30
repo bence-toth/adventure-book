@@ -327,6 +327,28 @@ passages:
       );
     });
 
+    it("should throw error for invalid goto references", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Adventure"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Test"
+passages:
+  1:
+    text: "Test passage"
+    choices:
+      - text: "Go to missing passage"
+        goto: 99
+`;
+
+      expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
+        "Passage 1 has invalid goto: 99"
+      );
+    });
+
     it("should throw error for invalid passage type", () => {
       const yamlContent = `
 metadata:
@@ -572,54 +594,6 @@ passages:
       expect(processedAdventure.intro.paragraphs).toEqual([]);
       expect(processedAdventure.passages[1].paragraphs).toEqual([]);
       expect(processedAdventure.passages[2].paragraphs).toEqual([]);
-    });
-  });
-
-  describe("validateAdventure", () => {
-    it("should return no errors for valid adventure", () => {
-      const validAdventure: Adventure = {
-        metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"], action: "Test" },
-        passages: {
-          1: {
-            paragraphs: ["Passage 1"],
-            choices: [{ text: "Go to 2", goto: 2 }],
-          },
-          2: {
-            paragraphs: ["Passage 2"],
-            ending: true,
-          },
-        },
-        items: [],
-      };
-
-      const errors = AdventureParser.validateAdventure(validAdventure);
-      expect(errors).toEqual([]);
-    });
-
-    it("should detect invalid goto references", () => {
-      const invalidAdventure: Adventure = {
-        metadata: { title: "Test", author: "Author", version: "1.0" },
-        intro: { paragraphs: ["Intro"], action: "Test" },
-        passages: {
-          1: {
-            paragraphs: ["Passage 1"],
-            choices: [
-              { text: "Go to 2", goto: 2 },
-              { text: "Go to 99", goto: 99 },
-            ],
-          },
-          2: {
-            paragraphs: ["Passage 2"],
-            choices: [{ text: "Go to 100", goto: 100 }],
-          },
-        },
-        items: [],
-      };
-
-      const errors = AdventureParser.validateAdventure(invalidAdventure);
-      expect(errors).toContain("Passage 1 has invalid goto: 99");
-      expect(errors).toContain("Passage 2 has invalid goto: 100");
     });
   });
 

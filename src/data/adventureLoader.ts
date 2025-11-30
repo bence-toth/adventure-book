@@ -45,13 +45,6 @@ export const loadAdventureById = async (
 
   const adventure = AdventureParser.parseFromString(storedAdventure.content);
 
-  // Validate the adventure
-  const errors = AdventureParser.validateAdventure(adventure);
-  if (errors.length > 0) {
-    console.error("Adventure validation errors:", errors);
-    throw new Error(`Adventure validation failed: ${errors.join(", ")}`);
-  }
-
   loadedAdventure = adventure;
   currentAdventureId = adventureId;
 
@@ -62,13 +55,6 @@ export const loadAdventureById = async (
 export const loadAdventure = (): Adventure => {
   if (!loadedAdventure) {
     loadedAdventure = AdventureParser.parseFromString(adventureYaml);
-
-    // Validate the adventure
-    const errors = AdventureParser.validateAdventure(loadedAdventure);
-    if (errors.length > 0) {
-      console.error("Adventure validation errors:", errors);
-      throw new Error(`Adventure validation failed: ${errors.join(", ")}`);
-    }
   }
 
   return loadedAdventure;

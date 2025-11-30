@@ -9,12 +9,14 @@ import {
 import adventureTemplate from "@/data/adventure.yaml?raw";
 import { getAdventureTestRoute, getPassageRoute } from "@/constants/routes";
 import { getCurrentPassageId } from "@/utils/localStorage";
+import { importYamlFile } from "@/utils/importYaml";
 import {
   StoriesLoadError,
   StoryCreateError,
   StoryDeleteError,
 } from "@/utils/errors";
 import { FileDropArea } from "@/components/common/FileDropArea/FileDropArea";
+import { ConfirmationModal } from "@/components/common/ConfirmationModal/ConfirmationModal";
 import { AdventureManagerTopBar } from "./AdventureManagerTopBar/AdventureManagerTopBar";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
@@ -31,6 +33,7 @@ export const AdventureManager = () => {
   const [deletingAdventureId, setDeletingAdventureId] = useState<string | null>(
     null
   );
+  const [importError, setImportError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const loadStories = useCallback(async () => {
@@ -106,30 +109,38 @@ export const AdventureManager = () => {
     setDeletingAdventureId(null);
   }, []);
 
-  const handleFileDrop = useCallback((file: File) => {
-    // Check file extension
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
-    const acceptedFileTypes = [".yaml", ".yml"];
-    const isAccepted = acceptedFileTypes.some((type) => {
-      const ext = type.startsWith(".") ? type.slice(1) : type;
-      return ext.toLowerCase() === fileExtension;
-    });
+  const handleFileImport = useCallback(
+    async (file: File) => {
+      const result = await importYamlFile(file);
 
-    if (!isAccepted) {
-      console.warn(
-        `File type not accepted. Please drop a ${acceptedFileTypes.join(" or ")} file`
-      );
-      return;
-    }
+      if (result.success) {
+        // Reload stories to show the new adventure
+        await loadStories();
+        // Navigate to the imported adventure
+        navigate(getAdventureTestRoute(result.adventureId));
+      } else {
+        // Show error modal
+        setImportError(result.error);
+      }
+    },
+    [loadStories, navigate]
+  );
 
-    console.log("YAML file dropped:", file.name);
-    // TODO: Implement file import logic
+  const handleFileDrop = useCallback(
+    (file: File) => {
+      handleFileImport(file);
+    },
+    [handleFileImport]
+  );
+
+  const handleCloseImportError = useCallback(() => {
+    setImportError(null);
   }, []);
 
   if (loading) {
     return (
       <>
-        <AdventureManagerTopBar />
+        <AdventureManagerTopBar onFileSelect={handleFileImport} />
         <AdventureManagerContainer>
           <AdventureManagerLoading>Loading stories...</AdventureManagerLoading>
         </AdventureManagerContainer>
@@ -148,13 +159,15 @@ export const AdventureManager = () => {
     throw new StoryDeleteError();
   }
 
+  const isModalOpen = deletingAdventureId !== null || importError !== null;
+
   return (
     <>
-      <AdventureManagerTopBar />
+      <AdventureManagerTopBar onFileSelect={handleFileImport} />
       <FileDropArea
         onFileDrop={handleFileDrop}
         dropLabel="Drop YAML file here"
-        isDisabled={deletingAdventureId !== null}
+        isDisabled={isModalOpen}
         data-testid="adventure-manager-drop-area"
       >
         <AdventureManagerContainer>
@@ -174,6 +187,19 @@ export const AdventureManager = () => {
           </AdventureManagerList>
         </AdventureManagerContainer>
       </FileDropArea>
+      <ConfirmationModal
+        isOpen={importError !== null}
+        onOpenChange={handleCloseImportError}
+        title="Import Failed"
+        message={importError || ""}
+        actions={[
+          {
+            label: "Close",
+            onClick: handleCloseImportError,
+            variant: "primary",
+          },
+        ]}
+      />
     </>
   );
 };

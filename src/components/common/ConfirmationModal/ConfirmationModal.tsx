@@ -17,16 +17,18 @@ import {
   DialogActions,
 } from "./ConfirmationModal.styles";
 
+interface ModalAction {
+  label: string;
+  onClick: () => void;
+  variant?: "neutral" | "primary" | "danger";
+}
+
 interface ConfirmationModalProps {
   isOpen: boolean;
   onOpenChange: () => void;
   title: string;
   message: ReactNode;
-  confirmLabel: string;
-  cancelLabel: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-  variant: "neutral" | "danger";
+  actions: ModalAction[];
   "data-testid"?: string;
 }
 
@@ -35,11 +37,7 @@ export const ConfirmationModal = ({
   onOpenChange,
   title,
   message,
-  confirmLabel,
-  cancelLabel,
-  onConfirm,
-  onCancel,
-  variant,
+  actions,
   "data-testid": dataTestId,
 }: ConfirmationModalProps) => {
   const { refs, context } = useFloating({
@@ -67,12 +65,12 @@ export const ConfirmationModal = ({
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  if (!isOpen || actions.length === 0) return null;
 
   return (
     <FloatingFocusManager context={context} modal initialFocus={0}>
       <ModalOverlay
-        onClick={onCancel}
+        onClick={onOpenChange}
         data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.OVERLAY}
       >
         <Dialog
@@ -98,10 +96,15 @@ export const ConfirmationModal = ({
             <DialogActions
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS}
             >
-              <Button onClick={onCancel}>{cancelLabel}</Button>
-              <Button variant={variant} onClick={onConfirm}>
-                {confirmLabel}
-              </Button>
+              {actions.map((action, index) => (
+                <Button
+                  key={index}
+                  variant={action.variant}
+                  onClick={action.onClick}
+                >
+                  {action.label}
+                </Button>
+              ))}
             </DialogActions>
           </DialogContent>
         </Dialog>

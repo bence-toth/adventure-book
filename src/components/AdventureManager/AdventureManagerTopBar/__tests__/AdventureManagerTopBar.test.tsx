@@ -5,15 +5,17 @@ import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
 import { render } from "@/__tests__/testUtils";
 
 describe("AdventureManagerTopBar Component", () => {
+  const mockOnFileSelect = vi.fn();
+
   describe("Rendering", () => {
     it("renders the header element", () => {
-      render(<AdventureManagerTopBar />);
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
       const header = screen.getByRole("banner");
       expect(header).toBeInTheDocument();
     });
 
     it("renders logo and app title", () => {
-      render(<AdventureManagerTopBar />);
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
 
       // Should have logo
       const logo = screen.getByTestId(TOP_BAR_TEST_IDS.LOGO);
@@ -25,7 +27,7 @@ describe("AdventureManagerTopBar Component", () => {
     });
 
     it("renders the context menu button", () => {
-      render(<AdventureManagerTopBar />);
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
 
       const menuButton = screen.getByTestId(
         "adventure-manager-context-menu-button"
@@ -40,7 +42,7 @@ describe("AdventureManagerTopBar Component", () => {
 
   describe("Context Menu", () => {
     it("opens context menu when button is clicked", async () => {
-      render(<AdventureManagerTopBar />);
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
 
       const menuButton = screen.getByTestId(
         "adventure-manager-context-menu-button"
@@ -56,7 +58,7 @@ describe("AdventureManagerTopBar Component", () => {
     });
 
     it("displays import option in context menu", async () => {
-      render(<AdventureManagerTopBar />);
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
 
       const menuButton = screen.getByTestId(
         "adventure-manager-context-menu-button"
@@ -72,17 +74,16 @@ describe("AdventureManagerTopBar Component", () => {
       });
     });
 
-    it("logs to console when import option is clicked", async () => {
-      const consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {
-        // Mock implementation
-      });
-
-      render(<AdventureManagerTopBar />);
+    it("triggers file input when import option is clicked", async () => {
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
 
       const menuButton = screen.getByTestId(
         "adventure-manager-context-menu-button"
       );
       fireEvent.click(menuButton);
+
+      const fileInput = screen.getByTestId("adventure-manager-file-input");
+      const clickSpy = vi.spyOn(fileInput, "click");
 
       await waitFor(() => {
         const importOption = screen.getByTestId(
@@ -91,13 +92,11 @@ describe("AdventureManagerTopBar Component", () => {
         fireEvent.click(importOption);
       });
 
-      expect(consoleLogSpy).toHaveBeenCalledWith("Import adventure from YAML");
-
-      consoleLogSpy.mockRestore();
+      expect(clickSpy).toHaveBeenCalled();
     });
 
     it("closes context menu after import option is clicked", async () => {
-      render(<AdventureManagerTopBar />);
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
 
       const menuButton = screen.getByTestId(
         "adventure-manager-context-menu-button"
