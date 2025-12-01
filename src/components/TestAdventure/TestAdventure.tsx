@@ -37,6 +37,7 @@ import {
   ContentContainer,
   ContentText,
   ContentParagraph,
+  PassageNotes,
   Choices,
   ContentTitle,
 } from "./TestAdventure.styles";
@@ -215,6 +216,11 @@ export const TestAdventure = () => {
         <TestAdventureSidebar />
         <PageContent>
           <ContentContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
+            {isDebugModeEnabled && currentPassage.notes && (
+              <PassageNotes data-testid={PASSAGE_TEST_IDS.NOTES}>
+                {currentPassage.notes}
+              </PassageNotes>
+            )}
             <ContentText data-testid={PASSAGE_TEST_IDS.TEXT}>
               {currentPassage.paragraphs.map((paragraph, index) => (
                 <ContentParagraph

@@ -25,6 +25,7 @@ export const mockPassages: Record<number, Passage> = {
       "It has multiple paragraphs for testing.",
       "Choose your path in this test.",
     ],
+    notes: "Initial passage for testing. Offers three choices.",
     choices: [
       { text: "Go to mock passage 2", goto: 2 },
       { text: "Go to mock passage 3", goto: 3 },
@@ -36,6 +37,7 @@ export const mockPassages: Record<number, Passage> = {
       "This is mock passage 2.",
       "You made the first choice in the test.",
     ],
+    notes: "Second passage demonstrating first choice path.",
     choices: [
       { text: "Continue to ending", goto: 4 },
       { text: "Go back to passage 1", goto: 1 },
@@ -56,6 +58,7 @@ export const mockPassages: Record<number, Passage> = {
       "This is the mock ending passage.",
       "Congratulations on completing the mock test adventure!",
     ],
+    notes: "Victory ending passage for testing.",
     ending: true,
     type: "victory",
   },
@@ -108,6 +111,7 @@ intro:
 
 passages:
   1:
+    notes: "Initial passage for testing. Offers three choices."
     text: |
       This is mock passage 1.
       
@@ -122,6 +126,7 @@ passages:
       - text: "Return to start"
         goto: 1
   2:
+    notes: "Second passage demonstrating first choice path."
     text: |
       This is mock passage 2.
       
@@ -142,6 +147,7 @@ passages:
       - text: "Go back to passage 1"
         goto: 1
   4:
+    notes: "Victory ending passage for testing."
     text: |
       This is the mock ending passage.
       

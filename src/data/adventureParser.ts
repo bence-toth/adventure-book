@@ -143,6 +143,15 @@ export class AdventureParser {
         );
       }
 
+      // Validate optional notes field
+      if (passageObj.notes !== undefined) {
+        if (typeof passageObj.notes !== "string") {
+          throw new Error(
+            `Invalid YAML: Passage ${passageId} notes must be a string`
+          );
+        }
+      }
+
       // Validate optional choices array
       if (passageObj.choices) {
         if (!Array.isArray(passageObj.choices)) {
@@ -311,6 +320,7 @@ export class AdventureParser {
         processedAdventure.passages[Number(id)] = {
           paragraphs,
           ending: true,
+          ...(rawPassage.notes && { notes: rawPassage.notes }),
           ...(rawPassage.type && { type: rawPassage.type }),
         };
       } else {
@@ -318,6 +328,7 @@ export class AdventureParser {
         processedAdventure.passages[Number(id)] = {
           paragraphs,
           choices: rawPassage.choices,
+          ...(rawPassage.notes && { notes: rawPassage.notes }),
           ...(rawPassage.effects && { effects: rawPassage.effects }),
         };
       }

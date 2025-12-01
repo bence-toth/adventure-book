@@ -12,6 +12,7 @@ export const getIntroParagraphTestId = (index: number): string => {
 export const PASSAGE_TEST_IDS = {
   CONTAINER: "passage",
   TEXT: "passage-text",
+  NOTES: "passage-notes",
   CHOICES: "choices",
   RESTART_BUTTON: "restart-button",
   RESET_PASSAGE: "reset-passage",

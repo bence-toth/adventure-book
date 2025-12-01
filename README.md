@@ -27,6 +27,7 @@ intro:
 
 passages:
   1:
+    notes: "Optional: Add development notes about this passage (only visible in debug mode)"
     text: |
       Passage text here.
 
@@ -54,6 +55,8 @@ passages:
 
 4. **Endings**: Mark ending passages with `ending: true`. Optional `type` can be "victory", "defeat", or "neutral".
 
+5. **Development Notes**: Add optional `notes` field to passages for authoring context and reminders. Notes are only visible when debug mode is enabled.
+
 #### File Location
 
 Your adventure content is defined in:
@@ -70,6 +73,7 @@ To modify your adventure, simply edit this YAML file and the changes will be ref
 4. **Consider multiple endings**: Different outcomes increase replayability
 5. **Rich Paragraphs**: Use multiple paragraphs to create immersive, detailed narratives
 6. **Paragraph Structure**: Break longer text into logical paragraphs for better readability
+7. **Development Notes**: Use notes to document passage purpose, narrative intent, or implementation details for your future reference
 
 #### Technical Notes
 
