@@ -83,7 +83,8 @@
         },
         "notes": {
           "type": "string",
-          "description": "Optional development notes about the passage."
+          "minLength": 1,
+          "description": "Optional development notes about the passage. Only visible in debug mode. Must not be empty or whitespace-only."
         },
         "choices": {
           "type": "array",

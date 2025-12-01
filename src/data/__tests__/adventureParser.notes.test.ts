@@ -113,7 +113,7 @@ passages:
       expect(adventure.passages[4].notes).toBeUndefined();
     });
 
-    it("should handle empty notes field", () => {
+    it("should throw error for empty notes field", () => {
       const yamlContent = `
 metadata:
   title: "Test Adventure"
@@ -137,10 +137,38 @@ passages:
     ending: true
 `;
 
-      const adventure = AdventureParser.parseFromString(yamlContent);
+      expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 notes must not be empty or whitespace-only"
+      );
+    });
 
-      // Empty string notes are filtered out (not added to processed passage)
-      expect(adventure.passages[1].notes).toBeUndefined();
+    it("should throw error for whitespace-only notes", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Adventure"
+  author: "Test Author"
+  version: "1.0"
+
+intro:
+  text: "Welcome to the test adventure."
+  action: "Start adventure"
+
+passages:
+  1:
+    notes: "   "
+    text: "Passage 1"
+    choices:
+      - text: "Go to 2"
+        goto: 2
+
+  2:
+    text: "Ending"
+    ending: true
+`;
+
+      expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 notes must not be empty or whitespace-only"
+      );
     });
 
     it("should handle multi-line notes", () => {
@@ -209,6 +237,35 @@ passages:
 
       expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
         "Invalid YAML: Passage 1 notes must be a string"
+      );
+    });
+
+    it("should throw error for whitespace-only notes", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Adventure"
+  author: "Test Author"
+  version: "1.0"
+
+intro:
+  text: "Welcome to the test adventure."
+  action: "Start adventure"
+
+passages:
+  1:
+    notes: "   "
+    text: "Passage 1"
+    choices:
+      - text: "Go to 2"
+        goto: 2
+
+  2:
+    text: "Ending"
+    ending: true
+`;
+
+      expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
+        "Invalid YAML: Passage 1 notes must not be empty or whitespace-only"
       );
     });
 

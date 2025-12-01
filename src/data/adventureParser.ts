@@ -150,6 +150,11 @@ export class AdventureParser {
             `Invalid YAML: Passage ${passageId} notes must be a string`
           );
         }
+        if (!passageObj.notes.trim()) {
+          throw new Error(
+            `Invalid YAML: Passage ${passageId} notes must not be empty or whitespace-only`
+          );
+        }
       }
 
       // Validate optional choices array
