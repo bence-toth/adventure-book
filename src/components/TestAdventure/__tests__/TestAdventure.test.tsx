@@ -705,4 +705,80 @@ describe("TestAdventure Component", () => {
       });
     });
   });
+
+  describe("Debug Mode Choice Display", () => {
+    it("shows choice text without passage ID prefix when debug mode is disabled", async () => {
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        isDebugModeEnabled: false,
+      });
+
+      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
+      expect(firstChoice).toHaveTextContent("Go to mock passage 2");
+      expect(firstChoice).not.toHaveTextContent("2: Go to mock passage 2");
+    });
+
+    it("shows choice text with passage ID prefix when debug mode is enabled", async () => {
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        isDebugModeEnabled: true,
+      });
+
+      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
+      const secondChoice = await screen.findByTestId(getChoiceButtonTestId(1));
+      const thirdChoice = await screen.findByTestId(getChoiceButtonTestId(2));
+
+      expect(firstChoice).toHaveTextContent("2: Go to mock passage 2");
+      expect(secondChoice).toHaveTextContent("3: Go to mock passage 3");
+      expect(thirdChoice).toHaveTextContent("1: Return to start");
+    });
+
+    it("maintains correct navigation when debug mode is enabled", async () => {
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        isDebugModeEnabled: true,
+      });
+
+      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
+      expect(firstChoice).toHaveTextContent("2: Go to mock passage 2");
+      expect(firstChoice).toHaveAttribute("data-goto", "2");
+
+      fireEvent.click(firstChoice);
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        getPassageRoute(TEST_STORY_ID, 2)
+      );
+    });
+
+    it("formats multi-digit passage IDs correctly in debug mode", async () => {
+      const adventureWithHighPassageIds: Adventure = {
+        ...mockAdventure,
+        passages: {
+          ...mockAdventure.passages,
+          1: {
+            paragraphs: ["Test passage"],
+            choices: [
+              { text: "Go to passage 42", goto: 42 },
+              { text: "Go to passage 123", goto: 123 },
+            ],
+          },
+        },
+      };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: adventureWithHighPassageIds,
+        isDebugModeEnabled: true,
+      });
+
+      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
+      const secondChoice = await screen.findByTestId(getChoiceButtonTestId(1));
+
+      expect(firstChoice).toHaveTextContent("42: Go to passage 42");
+      expect(secondChoice).toHaveTextContent("123: Go to passage 123");
+    });
+  });
 });
