@@ -4,6 +4,7 @@ import { Play, PenTool, Waypoints } from "lucide-react";
 import {
   getAdventureTestRoute,
   getAdventureContentRoute,
+  getAdventureStructureRoute,
 } from "@/constants/routes";
 import { NavigationTab } from "@/components/common/NavigationTab/NavigationTab";
 import { TopBarNav } from "./AdventureNavigation.styles";
@@ -34,7 +35,10 @@ export const AdventureNavigation = ({
     [adventureId]
   );
 
-  const structureRoute = "structure";
+  const structureRoute = useMemo(
+    () => getAdventureStructureRoute(adventureId),
+    [adventureId]
+  );
 
   return (
     <TopBarNav as="nav" aria-label="Main navigation">

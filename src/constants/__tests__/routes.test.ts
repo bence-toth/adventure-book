@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   getAdventureTestRoute,
   getAdventureContentRoute,
+  getAdventureStructureRoute,
   getAdventureTestPassageRoute,
 } from "../routes";
 
@@ -43,6 +44,26 @@ describe("Route Helper Functions", () => {
 
     it("returns empty string for empty string adventureId", () => {
       expect(getAdventureContentRoute("")).toBe("");
+    });
+  });
+
+  describe("getAdventureStructureRoute", () => {
+    it("returns correct route for valid adventureId", () => {
+      expect(getAdventureStructureRoute("test-adventure-789")).toBe(
+        "/adventure/test-adventure-789/structure"
+      );
+    });
+
+    it("returns empty string for null adventureId", () => {
+      expect(getAdventureStructureRoute(null)).toBe("");
+    });
+
+    it("returns empty string for undefined adventureId", () => {
+      expect(getAdventureStructureRoute(undefined)).toBe("");
+    });
+
+    it("returns empty string for empty string adventureId", () => {
+      expect(getAdventureStructureRoute("")).toBe("");
     });
   });
 

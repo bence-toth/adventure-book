@@ -28,6 +28,10 @@ const App = () => {
                       path="content"
                       element={<div>Content view coming soon</div>}
                     />
+                    <Route
+                      path="structure"
+                      element={<div>Structure view coming soon</div>}
+                    />
                     <Route path="*" element={<Navigate to="test" replace />} />
                   </Routes>
                 </AdventureProvider>
