@@ -3,9 +3,6 @@ import type { Adventure, RawAdventure, InventoryItem } from "./types";
 
 export class AdventureParser {
   static parseFromString(yamlContent: string): Adventure {
-    // The 'yaml' package's parse() function is safe by default (unlike js-yaml's load())
-    // It only parses standard YAML types and doesn't execute arbitrary code or custom tags
-    // This is much safer than js-yaml.load() which could execute arbitrary JavaScript
     const parsed = parse(yamlContent, {
       // Explicitly disable custom tags for extra security
       customTags: [],
@@ -18,6 +15,9 @@ export class AdventureParser {
 
     // Convert multiline text to paragraphs and transform to processed Adventure
     const processedAdventure = this.processTextFields(rawAdventure);
+
+    // Validate all goto references exist
+    this.validateReferences(processedAdventure);
 
     return processedAdventure;
   }
@@ -218,9 +218,7 @@ export class AdventureParser {
           !validTypes.includes(passageObj.type)
         ) {
           throw new Error(
-            `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(
-              ", "
-            )}`
+            `Invalid YAML: Passage ${passageId} type must be one of: ${validTypes.join(", ")}`
           );
         }
         // Type can only be used with ending: true
@@ -340,8 +338,7 @@ export class AdventureParser {
       .filter((paragraph) => paragraph.length > 0);
   }
 
-  static validateAdventure(adventure: Adventure): string[] {
-    const errors: string[] = [];
+  private static validateReferences(adventure: Adventure): void {
     const passageNumbers = Object.keys(adventure.passages).map(Number);
 
     // Validate all goto references exist
@@ -349,15 +346,13 @@ export class AdventureParser {
       if ("choices" in passage && passage.choices) {
         for (const choice of passage.choices) {
           if (!passageNumbers.includes(choice.goto)) {
-            errors.push(
+            throw new Error(
               `Passage ${passageId} has invalid goto: ${choice.goto}`
             );
           }
         }
       }
     }
-
-    return errors;
   }
 
   static getEndingPassages(adventure: Adventure): number[] {

@@ -11,7 +11,7 @@ interface NewAdventureCardProps {
 export const NewAdventureCard = ({ onClick }: NewAdventureCardProps) => {
   return (
     <AdventureCardNew onClick={onClick}>
-      <SquarePlus size={48} strokeWidth={1.5} />
+      <SquarePlus size={48} strokeWidth={1.25} />
       <AdventureCardTitle>Create a new adventure</AdventureCardTitle>
     </AdventureCardNew>
   );

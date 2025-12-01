@@ -10,7 +10,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Enable Feature"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
         />
       );
@@ -25,7 +25,11 @@ describe("ToggleButton Component", () => {
     it("renders as unchecked by default", () => {
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -35,7 +39,11 @@ describe("ToggleButton Component", () => {
     it("renders as checked when checked prop is true", () => {
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={true} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={true}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -47,7 +55,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Test Toggle"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
           data-testid="custom-toggle"
         />
@@ -64,7 +72,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Accessible Toggle"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
         />
       );
@@ -76,7 +84,11 @@ describe("ToggleButton Component", () => {
     it("has correct aria-checked attribute when unchecked", () => {
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -86,7 +98,11 @@ describe("ToggleButton Component", () => {
     it("has correct aria-checked attribute when checked", () => {
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={true} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={true}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -98,7 +114,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Feature Toggle"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
         />
       );
@@ -112,7 +128,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Toggle"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
           aria-label="Custom accessibility label"
         />
@@ -129,7 +145,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Disabled Toggle"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
           disabled
         />
@@ -145,7 +161,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Disabled Toggle"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
           disabled
         />
@@ -163,7 +179,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -177,7 +197,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={true} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={true}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -191,7 +215,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       const { rerender } = render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -202,7 +230,11 @@ describe("ToggleButton Component", () => {
 
       // Rerender with new state
       rerender(
-        <ToggleButton label="Test Toggle" checked={true} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={true}
+          onChange={onChange}
+        />
       );
 
       // Second click: checked -> unchecked
@@ -216,7 +248,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Click Label" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Click Label"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const label = screen.getByText("Click Label");
@@ -231,7 +267,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -245,7 +285,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -258,7 +302,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -274,21 +322,33 @@ describe("ToggleButton Component", () => {
     it("maintains checked state after multiple renders", () => {
       const onChange = vi.fn();
       const { rerender } = render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       let toggle = screen.getByRole("switch");
       expect(toggle).not.toBeChecked();
 
       rerender(
-        <ToggleButton label="Test Toggle" checked={true} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={true}
+          onChange={onChange}
+        />
       );
 
       toggle = screen.getByRole("switch");
       expect(toggle).toBeChecked();
 
       rerender(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       toggle = screen.getByRole("switch");
@@ -298,14 +358,22 @@ describe("ToggleButton Component", () => {
     it("updates aria-checked when checked prop changes", () => {
       const onChange = vi.fn();
       const { rerender } = render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       let toggle = screen.getByRole("switch");
       expect(toggle).toHaveAttribute("aria-checked", "false");
 
       rerender(
-        <ToggleButton label="Test Toggle" checked={true} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={true}
+          onChange={onChange}
+        />
       );
 
       toggle = screen.getByRole("switch");
@@ -318,7 +386,11 @@ describe("ToggleButton Component", () => {
       const user = userEvent.setup();
       const onChange = vi.fn();
       render(
-        <ToggleButton label="Test Toggle" checked={false} onChange={onChange} />
+        <ToggleButton
+          label="Test Toggle"
+          isChecked={false}
+          onChange={onChange}
+        />
       );
 
       const toggle = screen.getByRole("switch");
@@ -336,7 +408,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label=""
-          checked={false}
+          isChecked={false}
           onChange={onChange}
           aria-label="Hidden label"
         />
@@ -351,7 +423,7 @@ describe("ToggleButton Component", () => {
       render(
         <ToggleButton
           label="Test Toggle"
-          checked={false}
+          isChecked={false}
           onChange={onChange}
           id="custom-id"
           name="toggle-name"

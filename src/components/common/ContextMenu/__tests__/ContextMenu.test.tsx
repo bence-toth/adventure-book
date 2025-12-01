@@ -10,7 +10,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -29,7 +29,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={false}
+          isOpen={false}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -44,7 +44,7 @@ describe("ContextMenu Component", () => {
 
     it("handles null triggerRef gracefully", () => {
       render(
-        <ContextMenu open={true} onOpenChange={vi.fn()} triggerRef={null}>
+        <ContextMenu isOpen={true} onOpenChange={vi.fn()} triggerRef={null}>
           <ContextMenuItem onClick={vi.fn()}>Test Item</ContextMenuItem>
         </ContextMenu>
       );
@@ -60,7 +60,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -84,7 +84,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -108,7 +108,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -135,7 +135,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -156,7 +156,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -179,7 +179,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -204,7 +204,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -218,6 +218,77 @@ describe("ContextMenu Component", () => {
     });
   });
 
+  describe("Menu Items with Icons", () => {
+    it("renders menu item with icon", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+      const TestIcon = () => <svg data-testid="test-icon" />;
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={vi.fn()} icon={TestIcon}>
+            Item with Icon
+          </ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.getByText("Item with Icon")).toBeInTheDocument();
+      expect(screen.getByTestId("test-icon")).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+
+    it("renders menu item without icon", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={vi.fn()}>Item without Icon</ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.getByText("Item without Icon")).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+
+    it("renders multiple menu items with different icons", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+      const Icon1 = () => <svg data-testid="icon-1" />;
+      const Icon2 = () => <svg data-testid="icon-2" />;
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={vi.fn()} icon={Icon1}>
+            Item 1
+          </ContextMenuItem>
+          <ContextMenuItem onClick={vi.fn()} icon={Icon2}>
+            Item 2
+          </ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.getByTestId("icon-1")).toBeInTheDocument();
+      expect(screen.getByTestId("icon-2")).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+  });
+
   describe("Accessibility", () => {
     it("renders menu items as buttons", () => {
       const triggerElement = document.createElement("button");
@@ -225,7 +296,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -246,7 +317,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -262,6 +333,57 @@ describe("ContextMenu Component", () => {
 
       document.body.removeChild(triggerElement);
     });
+
+    it("icons have aria-hidden attribute for screen readers", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+      // Mock icon component that accepts and spreads all props
+      const TestIcon = (props: Record<string, unknown>) => (
+        <svg data-testid="test-icon" {...props} />
+      );
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={vi.fn()} icon={TestIcon}>
+            Accessible Icon Item
+          </ContextMenuItem>
+        </ContextMenu>
+      );
+
+      // The aria-hidden attribute is on the SVG element itself
+      const icon = screen.getByTestId("test-icon");
+      expect(icon).toHaveAttribute("aria-hidden", "true");
+
+      document.body.removeChild(triggerElement);
+    });
+
+    it("menu items with icons remain clickable", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+      const handleClick = vi.fn();
+      const TestIcon = () => <svg data-testid="test-icon" />;
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={handleClick} icon={TestIcon}>
+            Clickable Icon Item
+          </ContextMenuItem>
+        </ContextMenu>
+      );
+
+      fireEvent.click(screen.getByText("Clickable Icon Item"));
+      expect(handleClick).toHaveBeenCalledTimes(1);
+
+      document.body.removeChild(triggerElement);
+    });
   });
 
   describe("Placement", () => {
@@ -271,7 +393,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -292,7 +414,7 @@ describe("ContextMenu Component", () => {
 
       render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
           placement="bottom-start"
@@ -314,7 +436,7 @@ describe("ContextMenu Component", () => {
 
       const { rerender } = render(
         <ContextMenu
-          open={false}
+          isOpen={false}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -326,7 +448,7 @@ describe("ContextMenu Component", () => {
 
       rerender(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement}
         >
@@ -347,7 +469,7 @@ describe("ContextMenu Component", () => {
 
       const { rerender } = render(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement1}
         >
@@ -359,7 +481,7 @@ describe("ContextMenu Component", () => {
 
       rerender(
         <ContextMenu
-          open={true}
+          isOpen={true}
           onOpenChange={vi.fn()}
           triggerRef={triggerElement2}
         >

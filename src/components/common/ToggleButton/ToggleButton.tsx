@@ -8,11 +8,13 @@ import {
   LabelText,
 } from "./ToggleButton.styles";
 
-interface ToggleButtonProps
-  extends Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "onChange"> {
+interface ToggleButtonProps extends Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "type" | "onChange"
+> {
   label: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
+  isChecked: boolean;
+  onChange: (isChecked: boolean) => void;
   "data-testid"?: string;
   "aria-label"?: string;
 }
@@ -21,7 +23,7 @@ export const ToggleButton = forwardRef<HTMLInputElement, ToggleButtonProps>(
   (
     {
       label,
-      checked,
+      isChecked,
       onChange,
       "data-testid": testId,
       "aria-label": ariaLabel,
@@ -37,16 +39,16 @@ export const ToggleButton = forwardRef<HTMLInputElement, ToggleButtonProps>(
       <ToggleButtonContainer>
         <HiddenCheckbox
           ref={ref}
-          checked={checked}
+          checked={isChecked}
           onChange={handleChange}
           data-testid={testId}
           aria-label={ariaLabel || label}
           role="switch"
-          aria-checked={checked}
+          aria-checked={isChecked}
           {...props}
         />
-        <ToggleTrack $checked={checked}>
-          <ToggleThumb $checked={checked} />
+        <ToggleTrack $isChecked={isChecked}>
+          <ToggleThumb $isChecked={isChecked} />
         </ToggleTrack>
         <LabelText>{label}</LabelText>
       </ToggleButtonContainer>

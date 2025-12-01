@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getInteractiveColor } from "@/utils/colorHelpers";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const ToggleButtonContainer = styled.label`
   display: inline-flex;
@@ -16,7 +16,7 @@ export const HiddenCheckbox = styled.input.attrs({ type: "checkbox" })`
   height: 0;
 `;
 
-export const ToggleTrack = styled.span<{ $checked: boolean }>`
+export const ToggleTrack = styled.span<{ $isChecked: boolean }>`
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -24,53 +24,96 @@ export const ToggleTrack = styled.span<{ $checked: boolean }>`
   height: var(--size-toggle-button-height);
   border-radius: calc(var(--size-toggle-button-height) * 0.5);
   background: ${(props) =>
-    props.$checked
-      ? getInteractiveColor("neutral", "background", "active")
-      : getInteractiveColor("neutral", "background", "default")};
+    props.$isChecked
+      ? getInteractiveColor({
+          variant: "neutral",
+          type: "background",
+          state: "active",
+        })
+      : getInteractiveColor({
+          variant: "neutral",
+          type: "background",
+          state: "default",
+        })};
   border: var(--border-width-interactive) solid
     ${(props) =>
-      props.$checked
-        ? getInteractiveColor("neutral", "border", "active")
-        : getInteractiveColor("neutral", "border", "default")};
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+      props.$isChecked
+        ? getInteractiveColor({
+            variant: "neutral",
+            type: "border",
+            state: "active",
+          })
+        : getInteractiveColor({
+            variant: "neutral",
+            type: "border",
+            state: "default",
+          })};
+  transition:
+    background-color var(--duration-medium) ease,
+    border-color var(--duration-medium) ease;
 
   ${ToggleButtonContainer}:hover & {
     background: ${(props) =>
-      props.$checked
-        ? getInteractiveColor("neutral", "background", "active")
-        : getInteractiveColor("neutral", "background", "hover")};
+      props.$isChecked
+        ? getInteractiveColor({
+            variant: "neutral",
+            type: "background",
+            state: "active",
+          })
+        : getInteractiveColor({
+            variant: "neutral",
+            type: "background",
+            state: "hover",
+          })};
     border-color: ${(props) =>
-      props.$checked
-        ? getInteractiveColor("neutral", "border", "active")
-        : getInteractiveColor("neutral", "border", "hover")};
+      props.$isChecked
+        ? getInteractiveColor({
+            variant: "neutral",
+            type: "border",
+            state: "active",
+          })
+        : getInteractiveColor({
+            variant: "neutral",
+            type: "border",
+            state: "hover",
+          })};
   }
 
   ${HiddenCheckbox}:focus-visible + & {
     outline: var(--border-width-interactive) solid
-      ${getInteractiveColor("neutral", "outline", "focus")};
+      ${getInteractiveColor({
+        variant: "neutral",
+        type: "outline",
+        state: "focus",
+      })};
     outline-offset: var(--space-1);
   }
 `;
 
-export const ToggleThumb = styled.span<{ $checked: boolean }>`
+export const ToggleThumb = styled.span<{ $isChecked: boolean }>`
   position: absolute;
   aspect-ratio: 1 / 1;
   height: calc(100% - calc(2 * var(--border-width-interactive)));
   border-radius: 50%;
-  background: ${getInteractiveColor("neutral", "foreground", "default")};
-  box-shadow: 0 var(--space-0-25) var(--space-0-5) var(--color-shadow-neutral);
+  background: ${getInteractiveColor({
+    variant: "neutral",
+    type: "foreground",
+    state: "default",
+  })};
+  box-shadow: 0 var(--space-0-25) var(--space-0-5)
+    ${getColor({ type: "shadow", variant: "neutral", isSurface: true })};
   transform: ${(props) =>
-    props.$checked
+    props.$isChecked
       ? `
         translateX(var(--size-toggle-button-width))
         translateX(-100%)
         translateX(calc(-3 * var(--border-width-interactive)))
         `
       : "translateX(var(--border-width-interactive))"};
-  transition: transform 0.2s ease;
+  transition: transform var(--duration-medium) ease;
 `;
 
 export const LabelText = styled.span`
   line-height: var(--line-height-dense);
-  color: var(--color-foreground-neutral);
+  color: ${getColor({ type: "foreground", variant: "neutral" })};
 `;

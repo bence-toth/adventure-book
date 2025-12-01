@@ -44,7 +44,7 @@ import {
 export const TestAdventure = () => {
   const { id, adventureId } = useParams<{ id: string; adventureId: string }>();
   const navigate = useNavigate();
-  const { adventure, loading, error } = useAdventure();
+  const { adventure, isLoading, error } = useAdventure();
 
   // If no id is provided, we're in introduction mode
   const isIntroduction = !id;
@@ -91,7 +91,7 @@ export const TestAdventure = () => {
     }
   }, [passageId, navigate, adventureId, adventure, isIntroduction]);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <>
         <TestAdventureTopBar />

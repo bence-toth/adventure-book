@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach } from "vitest";
 import "fake-indexeddb/auto";
 import {
   loadAdventureById,
@@ -11,7 +11,6 @@ import {
   getCurrentInventory,
 } from "../adventureLoader";
 import { saveAdventure, type StoredAdventure } from "../adventureDatabase";
-import { AdventureParser } from "../adventureParser";
 
 // Sample valid adventure YAML
 const sampleAdventureYAML = `metadata:
@@ -165,21 +164,9 @@ passages:
 
       await saveAdventure(adventure);
 
-      // Mock console.error to avoid noise in test output
-      const consoleSpy = vi
-        .spyOn(console, "error")
-        .mockImplementation(() => {});
-
       await expect(loadAdventureById("invalid-adventure")).rejects.toThrow(
-        "Adventure validation failed"
+        "Passage 1 has invalid goto: 999"
       );
-
-      expect(consoleSpy).toHaveBeenCalledWith(
-        "Adventure validation errors:",
-        expect.any(Array)
-      );
-
-      consoleSpy.mockRestore();
     });
 
     it("should throw error when adventure has parsing errors", async () => {
@@ -250,9 +237,7 @@ passages:
 
       const adventure = reloadAdventure();
 
-      // Validate that the adventure is valid
-      const errors = AdventureParser.validateAdventure(adventure);
-      expect(errors.length).toBe(0);
+      expect(adventure).toBeDefined();
     });
   });
 
@@ -273,45 +258,6 @@ passages:
         const adventure2 = loadAdventure();
 
         expect(adventure1).toBe(adventure2);
-      });
-
-      it("should throw error if default adventure validation fails", () => {
-        // First, clear cache and load successfully to ensure we have a clean state
-        reloadAdventure();
-
-        // Now mock the parser to simulate a validation error
-        const originalValidate = AdventureParser.validateAdventure;
-        AdventureParser.validateAdventure = vi
-          .fn()
-          .mockReturnValue(["Test validation error"]);
-
-        // Mock console.error to verify it's called
-        const consoleSpy = vi
-          .spyOn(console, "error")
-          .mockImplementation(() => {});
-
-        // Clear the cache to force a new load with the mocked validator
-        try {
-          reloadAdventure();
-          // If we get here, the test should fail
-          expect.fail("Expected reloadAdventure to throw an error");
-        } catch (error) {
-          // This should throw because validation returns errors
-          expect((error as Error).message).toContain(
-            "Adventure validation failed"
-          );
-          expect(consoleSpy).toHaveBeenCalledWith(
-            "Adventure validation errors:",
-            ["Test validation error"]
-          );
-        } finally {
-          // Restore mocks
-          AdventureParser.validateAdventure = originalValidate;
-          consoleSpy.mockRestore();
-
-          // Reload to get back to valid state
-          reloadAdventure();
-        }
       });
     });
 

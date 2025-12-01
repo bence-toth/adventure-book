@@ -1,14 +1,23 @@
 import styled from "styled-components";
+import { getColor } from "@/utils/colorHelpers";
 
 export const TopBarContainer = styled.div`
-  background: var(--color-background-surface-neutral);
+  background: ${getColor({
+    type: "background",
+    variant: "neutral",
+    isSurface: true,
+  })};
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-1) var(--space-2);
+  padding-inline: var(--space-2);
   border-bottom: var(--border-width-surface) solid
-    var(--color-border-surface-neutral);
-  box-shadow: var(--shadow-surface-neutral);
+    ${getColor({ type: "border", variant: "neutral", isSurface: true })};
+  box-shadow: ${getColor({
+    type: "shadow",
+    variant: "neutral",
+    isSurface: true,
+  })};
   position: relative;
   z-index: 2;
   height: var(--size-top-bar);

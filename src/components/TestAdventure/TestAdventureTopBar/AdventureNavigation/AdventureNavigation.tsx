@@ -5,7 +5,7 @@ import {
   getAdventureTestRoute,
   getAdventureEditRoute,
 } from "@/constants/routes";
-import { ButtonLink } from "@/components/common/ButtonLink/ButtonLink";
+import { NavigationTab } from "@/components/common/NavigationTab/NavigationTab";
 import { TopBarNav } from "./AdventureNavigation.styles";
 
 interface AdventureNavigationProps {
@@ -17,7 +17,7 @@ export const AdventureNavigation = ({
 }: AdventureNavigationProps) => {
   const location = useLocation();
 
-  const isActive = useCallback(
+  const getIsActive = useCallback(
     (path: string) => {
       return location.pathname === path || location.pathname.startsWith(path);
     },
@@ -36,22 +36,20 @@ export const AdventureNavigation = ({
 
   return (
     <TopBarNav as="nav" aria-label="Main navigation">
-      <ButtonLink
+      <NavigationTab
         to={testRoute}
-        variant={isActive(testRoute) ? "primary" : "neutral"}
-        size="small"
+        variant={getIsActive(testRoute) ? "primary" : "neutral"}
         icon={Play}
       >
         Test
-      </ButtonLink>
-      <ButtonLink
+      </NavigationTab>
+      <NavigationTab
         to={editRoute}
-        variant={isActive(editRoute) ? "primary" : "neutral"}
-        size="small"
+        variant={getIsActive(editRoute) ? "primary" : "neutral"}
         icon={PenTool}
       >
         Edit
-      </ButtonLink>
+      </NavigationTab>
     </TopBarNav>
   );
 };

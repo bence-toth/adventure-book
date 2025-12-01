@@ -17,41 +17,37 @@ import {
 interface AdventureCardProps {
   adventure: StoredAdventure;
   onOpen: (id: string) => void;
-  onDelete: () => Promise<void>;
+  onDeleteClick: () => void;
+  isDeleteModalOpen: boolean;
+  onConfirmDelete: () => Promise<void>;
+  onCancelDelete: () => void;
 }
 
 export const AdventureCard = ({
   adventure,
   onOpen,
-  onDelete,
+  onDeleteClick,
+  isDeleteModalOpen,
+  onConfirmDelete,
+  onCancelDelete,
 }: AdventureCardProps) => {
-  const [contextMenuOpen, setContextMenuOpen] = useState(false);
+  const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
   const [contextMenuTrigger, setContextMenuTrigger] =
     useState<HTMLElement | null>(null);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const handleMenuClick = useCallback(
     (e: React.MouseEvent, buttonRef: HTMLButtonElement) => {
       e.stopPropagation();
       setContextMenuTrigger(buttonRef);
-      setContextMenuOpen(true);
+      setIsContextMenuOpen(true);
     },
     []
   );
 
   const handleDeleteClick = useCallback(() => {
-    setDeleteModalOpen(true);
-    setContextMenuOpen(false);
-  }, []);
-
-  const handleConfirmDelete = useCallback(async () => {
-    await onDelete();
-    setDeleteModalOpen(false);
-  }, [onDelete]);
-
-  const handleCancelDelete = useCallback(() => {
-    setDeleteModalOpen(false);
-  }, []);
+    onDeleteClick();
+    setIsContextMenuOpen(false);
+  }, [onDeleteClick]);
 
   return (
     <>
@@ -79,16 +75,16 @@ export const AdventureCard = ({
         </AdventureCardFooter>
       </AdventureCardContainer>
       <AdventureCardContextMenu
-        open={contextMenuOpen}
-        onOpenChange={setContextMenuOpen}
+        isOpen={isContextMenuOpen}
+        onOpenChange={setIsContextMenuOpen}
         triggerRef={contextMenuTrigger}
         onDeleteClick={handleDeleteClick}
       />
       <AdventureCardDeleteModal
-        open={deleteModalOpen}
+        isOpen={isDeleteModalOpen}
         adventureTitle={adventure.title}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
+        onConfirm={onConfirmDelete}
+        onCancel={onCancelDelete}
       />
     </>
   );

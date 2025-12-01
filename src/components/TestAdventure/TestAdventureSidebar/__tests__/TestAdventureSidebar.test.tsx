@@ -7,7 +7,10 @@ import {
 } from "@/__tests__/mockAdventureData";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { TestAdventureSidebar } from "../TestAdventureSidebar";
-import { AdventureContext } from "@/context/AdventureContext";
+import {
+  AdventureContext,
+  type AdventureContextType,
+} from "@/context/AdventureContext";
 import * as inventoryManagement from "@/utils/inventoryManagement";
 
 vi.mock("@/utils/inventoryManagement", async () => {
@@ -189,15 +192,18 @@ describe("TestAdventureSidebar", () => {
     expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
   });
 
-  it("should return null when adventureId is not available", () => {
-    const mockContextValue = {
+  it("should return null when adventureId is null", () => {
+    const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
-      loading: false,
+      isLoading: false,
       error: null,
-      debugModeEnabled: false,
-      setDebugModeEnabled: () => {},
-      reloadAdventure: () => {},
+      isDebugModeEnabled: false,
+      isSaving: false,
+      setIsDebugModeEnabled: vi.fn(),
+      reloadAdventure: vi.fn(),
+      updateAdventure: vi.fn(),
+      withSaving: vi.fn(),
     };
 
     const { container } = render(
@@ -213,14 +219,17 @@ describe("TestAdventureSidebar", () => {
   });
 
   it("should return null when adventure is not loaded yet", () => {
-    const mockContextValue = {
+    const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
-      loading: true,
+      isLoading: true,
       error: null,
-      debugModeEnabled: false,
-      setDebugModeEnabled: () => {},
-      reloadAdventure: () => {},
+      isDebugModeEnabled: false,
+      isSaving: false,
+      setIsDebugModeEnabled: vi.fn(),
+      reloadAdventure: vi.fn(),
+      updateAdventure: vi.fn(),
+      withSaving: vi.fn(),
     };
 
     const { container } = render(
@@ -237,14 +246,17 @@ describe("TestAdventureSidebar", () => {
 
   it("should not set up event listeners when adventureId is empty", () => {
     // Render with mock context where adventureId is not available
-    const mockContextValue = {
+    const mockContextValue: AdventureContextType = {
       adventure: null,
       adventureId: null,
-      loading: false,
+      isLoading: false,
       error: null,
-      debugModeEnabled: false,
-      setDebugModeEnabled: () => {},
-      reloadAdventure: () => {},
+      isDebugModeEnabled: false,
+      isSaving: false,
+      setIsDebugModeEnabled: vi.fn(),
+      reloadAdventure: vi.fn(),
+      updateAdventure: vi.fn(),
+      withSaving: vi.fn(),
     };
 
     const { container } = render(
@@ -309,6 +321,152 @@ describe("TestAdventureSidebar", () => {
     window.addEventListener = originalAddEventListener;
   });
 
+  it("should parse passage ID from URL params", async () => {
+    // We need to use Routes to properly set up params
+    const { Route, Routes } = await import("react-router-dom");
+
+    render(
+      <MemoryRouter
+        initialEntries={[`/adventure/${TEST_STORY_ID}/test/passage/5`]}
+      >
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: TEST_STORY_ID,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: vi.fn(),
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <Routes>
+            <Route
+              path="/adventure/:adventureId/test/passage/:id"
+              element={<TestAdventureSidebar />}
+            />
+          </Routes>
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    // Component should render (passage ID is parsed internally but not used directly in render)
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
+  });
+
+  it("should handle cleanup when component unmounts", async () => {
+    const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
+
+    const { unmount } = renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
+
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
+
+    // Unmount the component
+    unmount();
+
+    // Verify event listeners were removed
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "storage",
+      expect.any(Function)
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "inventoryUpdate",
+      expect.any(Function)
+    );
+
+    removeEventListenerSpy.mockRestore();
+  });
+
+  it("should not update inventory after unmount", async () => {
+    const { unmount } = renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
+
+    expect(await screen.findByText("No items yet")).toBeInTheDocument();
+
+    // Unmount the component
+    unmount();
+
+    // Try to trigger update after unmount
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
+
+    await act(async () => {
+      window.dispatchEvent(new Event("inventoryUpdate"));
+    });
+
+    // Component is unmounted, so no errors should occur
+    // This tests the isMounted guard
+  });
+
+  it("should handle inventory change when adventureId is null", async () => {
+    const mockSetIsDebugModeEnabled = vi.fn();
+
+    // Start with valid adventure
+    const { rerender } = render(
+      <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: TEST_STORY_ID,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: mockSetIsDebugModeEnabled,
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
+
+    // Verify the toggle exists before changing context
+    expect(
+      screen.getByRole("switch", { name: "Mock Item One" })
+    ).toBeInTheDocument();
+
+    // Now change context to have null adventureId while keeping component mounted
+    rerender(
+      <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: null,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: mockSetIsDebugModeEnabled,
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    // Component should return null when adventureId is null
+    expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
+  });
+
   describe("Debug Mode", () => {
     beforeEach(() => {
       vi.clearAllMocks();
@@ -318,7 +476,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       // Both modes show "Inventory" as the title, but debug mode shows toggles
@@ -333,19 +491,25 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: false,
+        isDebugModeEnabled: false,
       });
 
       expect(await screen.findByText("Inventory")).toBeInTheDocument();
-      // Verify it's normal mode by checking no toggle switches exist
-      expect(screen.queryByRole("switch")).not.toBeInTheDocument();
+      // Verify the debug mode toggle is present in the footer
+      expect(
+        screen.getByRole("switch", { name: "Debug mode" })
+      ).toBeInTheDocument();
+      // Verify it's normal mode by checking no item toggle switches exist
+      expect(
+        screen.queryByRole("switch", { name: "Mock Item One" })
+      ).not.toBeInTheDocument();
     });
 
     it("should show all items with checkboxes in debug mode", async () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       expect(await screen.findByText("Mock Item One")).toBeInTheDocument();
@@ -356,7 +520,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       const toggle = (await screen.findByRole("switch", {
@@ -384,7 +548,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       const toggle1 = (await screen.findByRole("switch", {
@@ -402,7 +566,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: true,
+        isDebugModeEnabled: true,
       });
 
       expect(await screen.findByText("Passages")).toBeInTheDocument();
@@ -413,7 +577,7 @@ describe("TestAdventureSidebar", () => {
       renderWithAdventure(<TestAdventureSidebar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
-        debugModeEnabled: false,
+        isDebugModeEnabled: false,
       });
 
       expect(await screen.findByText("Inventory")).toBeInTheDocument();
@@ -421,6 +585,45 @@ describe("TestAdventureSidebar", () => {
       expect(
         screen.queryByTestId("debug-nav-introduction")
       ).not.toBeInTheDocument();
+    });
+
+    it("should always show debug mode toggle in footer", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        isDebugModeEnabled: false,
+      });
+
+      const debugToggle = await screen.findByRole("switch", {
+        name: "Debug mode",
+      });
+      expect(debugToggle).toBeInTheDocument();
+    });
+
+    it("should show debug toggle as unchecked when debug mode is disabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        isDebugModeEnabled: false,
+      });
+
+      const debugToggle = (await screen.findByRole("switch", {
+        name: "Debug mode",
+      })) as HTMLInputElement;
+      expect(debugToggle.checked).toBe(false);
+    });
+
+    it("should show debug toggle as checked when debug mode is enabled", async () => {
+      renderWithAdventure(<TestAdventureSidebar />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+        isDebugModeEnabled: true,
+      });
+
+      const debugToggle = (await screen.findByRole("switch", {
+        name: "Debug mode",
+      })) as HTMLInputElement;
+      expect(debugToggle.checked).toBe(true);
     });
   });
 });

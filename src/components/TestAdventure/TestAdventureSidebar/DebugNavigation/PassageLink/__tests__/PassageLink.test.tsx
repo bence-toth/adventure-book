@@ -194,6 +194,52 @@ describe("PassageLink Component", () => {
       expect(container.querySelector("svg")).toBeInTheDocument();
     });
 
+    it("renders move-up icon for passage with no choices property", () => {
+      const mockOnClick = vi.fn();
+      const passage: Passage = {
+        paragraphs: ["Passage with no choices property"],
+        choices: [],
+      };
+
+      const { container } = render(
+        <PassageLink passageId={12} passage={passage} onClick={mockOnClick} />
+      );
+
+      expect(screen.getByText("Passage 12")).toBeInTheDocument();
+      expect(container.querySelector("svg")).toBeInTheDocument();
+    });
+
+    it("renders move-up icon for passage without effects but with choices", () => {
+      const mockOnClick = vi.fn();
+      const passage: Passage = {
+        paragraphs: ["Passage without effects"],
+        choices: [{ text: "Continue", goto: 2 }],
+      };
+
+      const { container } = render(
+        <PassageLink passageId={13} passage={passage} onClick={mockOnClick} />
+      );
+
+      expect(screen.getByText("Passage 13")).toBeInTheDocument();
+      expect(container.querySelector("svg")).toBeInTheDocument();
+    });
+
+    it("renders move-up icon for passage with effects but no item changes", () => {
+      const mockOnClick = vi.fn();
+      const passage: Passage = {
+        paragraphs: ["Passage with non-item effects"],
+        choices: [{ text: "Continue", goto: 2 }],
+        effects: [],
+      };
+
+      const { container } = render(
+        <PassageLink passageId={14} passage={passage} onClick={mockOnClick} />
+      );
+
+      expect(screen.getByText("Passage 14")).toBeInTheDocument();
+      expect(container.querySelector("svg")).toBeInTheDocument();
+    });
+
     it("calls onClick when passage link is clicked", () => {
       const mockOnClick = vi.fn();
       const passage: Passage = {

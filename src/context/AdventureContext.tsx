@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { loadAdventureById } from "@/data/adventureLoader";
 import type { Adventure } from "@/data/types";
@@ -7,11 +7,14 @@ import type { Adventure } from "@/data/types";
 export interface AdventureContextType {
   adventure: Adventure | null;
   adventureId: string | null;
-  loading: boolean;
+  isLoading: boolean;
   error: string | null;
-  debugModeEnabled: boolean;
-  setDebugModeEnabled: (enabled: boolean) => void;
+  isDebugModeEnabled: boolean;
+  isSaving: boolean;
+  setIsDebugModeEnabled: (isEnabled: boolean) => void;
   reloadAdventure: () => void;
+  updateAdventure: (updater: (adventure: Adventure) => Adventure) => void;
+  withSaving: <T>(asyncOperation: () => Promise<T>) => Promise<T>;
 }
 
 export const AdventureContext = createContext<AdventureContextType | undefined>(
@@ -25,19 +28,63 @@ export const AdventureProvider = ({
 }) => {
   const { adventureId } = useParams<{ adventureId: string }>();
   const [adventure, setAdventure] = useState<Adventure | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [debugModeEnabled, setDebugModeEnabled] = useState(false);
+  const [isDebugModeEnabled, setIsDebugModeEnabled] = useState(false);
   const [reloadTrigger, setReloadTrigger] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
+  const savingCountRef = useRef(0);
+  const savingTimeoutRef = useRef<number | null>(null);
 
   const reloadAdventure = () => {
     setReloadTrigger((prev) => prev + 1);
   };
 
+  const updateAdventure = useCallback(
+    (updater: (adventure: Adventure) => Adventure) => {
+      setAdventure((prev) => {
+        if (!prev) return prev;
+        return updater(prev);
+      });
+    },
+    []
+  );
+
+  const withSaving = useCallback(
+    async <T,>(asyncOperation: () => Promise<T>): Promise<T> => {
+      savingCountRef.current += 1;
+
+      // Only show the saving indicator if the operation takes longer than 500ms
+      const timeoutId = window.setTimeout(() => {
+        if (savingCountRef.current > 0) {
+          setIsSaving(true);
+        }
+      }, 500);
+
+      savingTimeoutRef.current = timeoutId;
+
+      try {
+        return await asyncOperation();
+      } finally {
+        savingCountRef.current -= 1;
+
+        // Clear the timeout if the operation completes before 500ms
+        if (savingCountRef.current === 0) {
+          if (savingTimeoutRef.current !== null) {
+            clearTimeout(savingTimeoutRef.current);
+            savingTimeoutRef.current = null;
+          }
+          setIsSaving(false);
+        }
+      }
+    },
+    []
+  );
+
   useEffect(() => {
     if (!adventureId) {
       setAdventure(null);
-      setLoading(false);
+      setIsLoading(false);
       setError(null);
       return;
     }
@@ -47,7 +94,7 @@ export const AdventureProvider = ({
     const loadAdventure = async () => {
       try {
         if (isMounted) {
-          setLoading(true);
+          setIsLoading(true);
           setError(null);
         }
         const loadedAdventure = await loadAdventureById(adventureId);
@@ -65,7 +112,7 @@ export const AdventureProvider = ({
         }
       } finally {
         if (isMounted) {
-          setLoading(false);
+          setIsLoading(false);
         }
       }
     };
@@ -77,16 +124,28 @@ export const AdventureProvider = ({
     };
   }, [adventureId, reloadTrigger]);
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (savingTimeoutRef.current !== null) {
+        clearTimeout(savingTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <AdventureContext.Provider
       value={{
         adventure,
         adventureId: adventureId ?? null,
-        loading,
+        isLoading,
         error,
-        debugModeEnabled,
-        setDebugModeEnabled,
+        isDebugModeEnabled,
+        isSaving,
+        setIsDebugModeEnabled,
         reloadAdventure,
+        updateAdventure,
+        withSaving,
       }}
     >
       {children}

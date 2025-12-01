@@ -15,35 +15,33 @@ import {
   DialogTitle,
   DialogMessage,
   DialogActions,
-} from "./ConfirmationModal.styles";
+} from "./ModalDialog.styles";
 
-interface ConfirmationModalProps {
-  open: boolean;
+interface ModalAction {
+  label: string;
+  onClick: () => void;
+  variant?: "neutral" | "primary" | "danger";
+}
+
+interface ModalDialogProps {
+  isOpen: boolean;
   onOpenChange: () => void;
   title: string;
   message: ReactNode;
-  confirmLabel: string;
-  cancelLabel: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-  variant: "neutral" | "danger";
+  actions: ModalAction[];
   "data-testid"?: string;
 }
 
-export const ConfirmationModal = ({
-  open,
+export const ModalDialog = ({
+  isOpen,
   onOpenChange,
   title,
   message,
-  confirmLabel,
-  cancelLabel,
-  onConfirm,
-  onCancel,
-  variant,
+  actions,
   "data-testid": dataTestId,
-}: ConfirmationModalProps) => {
+}: ModalDialogProps) => {
   const { refs, context } = useFloating({
-    open,
+    open: isOpen,
     onOpenChange,
   });
 
@@ -57,7 +55,7 @@ export const ConfirmationModal = ({
 
   // Lock scroll when modal is open
   useEffect(() => {
-    if (open) {
+    if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
@@ -65,14 +63,14 @@ export const ConfirmationModal = ({
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);
+  }, [isOpen]);
 
-  if (!open) return null;
+  if (!isOpen || actions.length === 0) return null;
 
   return (
     <FloatingFocusManager context={context} modal initialFocus={0}>
       <ModalOverlay
-        onClick={onCancel}
+        onClick={onOpenChange}
         data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.OVERLAY}
       >
         <Dialog
@@ -98,10 +96,15 @@ export const ConfirmationModal = ({
             <DialogActions
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS}
             >
-              <Button onClick={onCancel}>{cancelLabel}</Button>
-              <Button variant={variant} onClick={onConfirm}>
-                {confirmLabel}
-              </Button>
+              {actions.map((action, index) => (
+                <Button
+                  key={index}
+                  variant={action.variant}
+                  onClick={action.onClick}
+                >
+                  {action.label}
+                </Button>
+              ))}
             </DialogActions>
           </DialogContent>
         </Dialog>

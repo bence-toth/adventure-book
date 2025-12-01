@@ -9,11 +9,14 @@ import {
 import adventureTemplate from "@/data/adventure.yaml?raw";
 import { getAdventureTestRoute, getPassageRoute } from "@/constants/routes";
 import { getCurrentPassageId } from "@/utils/localStorage";
+import { importYamlFile } from "@/utils/importYaml";
 import {
   StoriesLoadError,
   StoryCreateError,
   StoryDeleteError,
 } from "@/utils/errors";
+import { FileDropArea } from "@/components/common/FileDropArea/FileDropArea";
+import { ModalDialog } from "@/components/common/ModalDialog/ModalDialog";
 import { AdventureManagerTopBar } from "./AdventureManagerTopBar/AdventureManagerTopBar";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
@@ -27,6 +30,10 @@ export const AdventureManager = () => {
   const [stories, setStories] = useState<StoredAdventure[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<"load" | "create" | "delete" | null>(null);
+  const [deletingAdventureId, setDeletingAdventureId] = useState<string | null>(
+    null
+  );
+  const [importError, setImportError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const loadStories = useCallback(async () => {
@@ -81,23 +88,59 @@ export const AdventureManager = () => {
     }
   }, [navigate]);
 
-  const handleDeleteAdventure = useCallback(
-    async (adventureId: string) => {
-      try {
-        await deleteAdventure(adventureId);
+  const handleDeleteClick = useCallback((adventureId: string) => {
+    setDeletingAdventureId(adventureId);
+  }, []);
+
+  const handleConfirmDelete = useCallback(async () => {
+    if (!deletingAdventureId) return;
+
+    try {
+      await deleteAdventure(deletingAdventureId);
+      await loadStories();
+      setDeletingAdventureId(null);
+    } catch (err) {
+      console.error("Error deleting adventure:", err);
+      setError("delete");
+    }
+  }, [deletingAdventureId, loadStories]);
+
+  const handleCancelDelete = useCallback(() => {
+    setDeletingAdventureId(null);
+  }, []);
+
+  const handleFileImport = useCallback(
+    async (file: File) => {
+      const result = await importYamlFile(file);
+
+      if (result.success) {
+        // Reload stories to show the new adventure
         await loadStories();
-      } catch (err) {
-        console.error("Error deleting adventure:", err);
-        setError("delete");
+        // Navigate to the imported adventure
+        navigate(getAdventureTestRoute(result.adventureId));
+      } else {
+        // Show error modal
+        setImportError(result.error);
       }
     },
-    [loadStories]
+    [loadStories, navigate]
   );
+
+  const handleFileDrop = useCallback(
+    (file: File) => {
+      handleFileImport(file);
+    },
+    [handleFileImport]
+  );
+
+  const handleCloseImportError = useCallback(() => {
+    setImportError(null);
+  }, []);
 
   if (loading) {
     return (
       <>
-        <AdventureManagerTopBar />
+        <AdventureManagerTopBar onFileSelect={handleFileImport} />
         <AdventureManagerContainer>
           <AdventureManagerLoading>Loading stories...</AdventureManagerLoading>
         </AdventureManagerContainer>
@@ -116,22 +159,47 @@ export const AdventureManager = () => {
     throw new StoryDeleteError();
   }
 
+  const isModalOpen = deletingAdventureId !== null || importError !== null;
+
   return (
     <>
-      <AdventureManagerTopBar />
-      <AdventureManagerContainer>
-        <AdventureManagerList>
-          <NewAdventureCard onClick={handleCreateAdventure} />
-          {stories.map((adventure) => (
-            <AdventureCard
-              key={adventure.id}
-              adventure={adventure}
-              onOpen={handleOpenAdventure}
-              onDelete={() => handleDeleteAdventure(adventure.id)}
-            />
-          ))}
-        </AdventureManagerList>
-      </AdventureManagerContainer>
+      <AdventureManagerTopBar onFileSelect={handleFileImport} />
+      <FileDropArea
+        onFileDrop={handleFileDrop}
+        dropLabel="Drop YAML file here"
+        isDisabled={isModalOpen}
+        data-testid="adventure-manager-drop-area"
+      >
+        <AdventureManagerContainer>
+          <AdventureManagerList>
+            <NewAdventureCard onClick={handleCreateAdventure} />
+            {stories.map((adventure) => (
+              <AdventureCard
+                key={adventure.id}
+                adventure={adventure}
+                onOpen={handleOpenAdventure}
+                onDeleteClick={() => handleDeleteClick(adventure.id)}
+                isDeleteModalOpen={deletingAdventureId === adventure.id}
+                onConfirmDelete={handleConfirmDelete}
+                onCancelDelete={handleCancelDelete}
+              />
+            ))}
+          </AdventureManagerList>
+        </AdventureManagerContainer>
+      </FileDropArea>
+      <ModalDialog
+        isOpen={importError !== null}
+        onOpenChange={handleCloseImportError}
+        title="Import Failed"
+        message={importError || ""}
+        actions={[
+          {
+            label: "Close",
+            onClick: handleCloseImportError,
+            variant: "primary",
+          },
+        ]}
+      />
     </>
   );
 };

@@ -1,13 +1,23 @@
 import styled from "styled-components";
+import { getColor } from "@/utils/colorHelpers";
 
 export const SidebarContainer = styled.div`
   position: relative;
   z-index: 1;
-  background-color: var(--color-background-surface-neutral);
+  background-color: ${getColor({
+    type: "background",
+    variant: "neutral",
+    isSurface: true,
+  })};
   border-inline-end: var(--border-width-surface) solid
-    var(--color-border-surface-neutral);
-  box-shadow: var(--shadow-surface-neutral);
-  overflow-y: auto;
+    ${getColor({ type: "border", variant: "neutral", isSurface: true })};
+  box-shadow: ${getColor({
+    type: "shadow",
+    variant: "neutral",
+    isSurface: true,
+  })};
+  overflow: hidden;
   min-height: 0;
-  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
 `;

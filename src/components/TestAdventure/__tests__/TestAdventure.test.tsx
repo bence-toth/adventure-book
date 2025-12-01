@@ -157,7 +157,7 @@ describe("TestAdventure Component", () => {
 
       renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
-        loading: true,
+        isLoading: true,
       });
 
       const container = await screen.findByTestId(
@@ -365,9 +365,8 @@ describe("TestAdventure Component", () => {
     });
 
     it("handles remove_item effects for regular passages", async () => {
-      const { removeItemFromInventory } = await import(
-        "@/data/adventureLoader"
-      );
+      const { removeItemFromInventory } =
+        await import("@/data/adventureLoader");
       const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
 
       const adventureWithEffects: Adventure = {
@@ -406,9 +405,8 @@ describe("TestAdventure Component", () => {
     });
 
     it("handles multiple effects in a passage", async () => {
-      const { addItemToInventory, removeItemFromInventory } = await import(
-        "@/data/adventureLoader"
-      );
+      const { addItemToInventory, removeItemFromInventory } =
+        await import("@/data/adventureLoader");
       const mockAddItemToInventory = vi.mocked(addItemToInventory);
       const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
 
@@ -464,9 +462,8 @@ describe("TestAdventure Component", () => {
     });
 
     it("handles passages without effects", async () => {
-      const { addItemToInventory, removeItemFromInventory } = await import(
-        "@/data/adventureLoader"
-      );
+      const { addItemToInventory, removeItemFromInventory } =
+        await import("@/data/adventureLoader");
       const mockAddItemToInventory = vi.mocked(addItemToInventory);
       const mockRemoveItemFromInventory = vi.mocked(removeItemFromInventory);
 
@@ -510,6 +507,24 @@ describe("TestAdventure Component", () => {
       expect(mockAddItemToInventory).not.toHaveBeenCalled();
 
       consoleSpy.mockRestore();
+    });
+
+    it("does not execute effects for passage 0 (reset)", async () => {
+      const { addItemToInventory } = await import("@/data/adventureLoader");
+      const mockAddItemToInventory = vi.mocked(addItemToInventory);
+
+      mockParams = { id: "0", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      // Wait for reset passage to render
+      await screen.findByTestId(PASSAGE_TEST_IDS.RESET_PASSAGE);
+
+      // Should not execute effects for reset passage (id 0)
+      expect(mockAddItemToInventory).not.toHaveBeenCalled();
     });
   });
 
@@ -664,7 +679,7 @@ describe("TestAdventure Component", () => {
     it("shows loading message while adventure is loading", async () => {
       renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
-        loading: true,
+        isLoading: true,
       });
 
       const container = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);

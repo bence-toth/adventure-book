@@ -46,7 +46,7 @@ export const DebugInventory = ({
             <DebugInventoryItem key={item.id}>
               <ToggleButton
                 label={item.name}
-                checked={isChecked}
+                isChecked={isChecked}
                 onChange={(checked) => handleToggleItem(item.id, checked)}
                 data-testid={`debug-item-${item.id}`}
               />

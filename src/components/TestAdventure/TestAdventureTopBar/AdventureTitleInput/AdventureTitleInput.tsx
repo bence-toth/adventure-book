@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
-import { updateAdventureTitle, getAdventure } from "@/data/adventureDatabase";
-import { invalidateAdventureCache } from "@/data/adventureLoader";
+import { useState, useCallback, useRef, useEffect } from "react";
+import { updateAdventureTitle } from "@/data/adventureDatabase";
 import { useAdventure } from "@/context/useAdventure";
 import { TopBarTitleInput } from "./AdventureTitleInput.styles";
 
@@ -11,40 +10,58 @@ interface AdventureTitleInputProps {
 export const AdventureTitleInput = ({
   adventureId,
 }: AdventureTitleInputProps) => {
-  const [adventureTitle, setAdventureTitle] = useState<string>("");
-  const { reloadAdventure } = useAdventure();
+  const { adventure, updateAdventure, withSaving } = useAdventure();
 
+  // Track the title that the user is currently editing, or null if not editing
+  const [editingTitle, setEditingTitle] = useState<string | null>(null);
+  const prevAdventureTitleRef = useRef<string>("");
+
+  // Update the ref when adventure changes (no state update, just tracking)
   useEffect(() => {
-    if (!adventureId) return;
+    if (adventure) {
+      prevAdventureTitleRef.current = adventure.metadata.title;
+    }
+  }, [adventure]);
 
-    const loadAdventureTitle = async () => {
-      const adventure = await getAdventure(adventureId);
-      if (adventure) {
-        setAdventureTitle(adventure.title);
-      }
-    };
-    loadAdventureTitle();
-  }, [adventureId]);
+  // Display either the editing title or the adventure title
+  const displayTitle = editingTitle ?? adventure?.metadata.title ?? "";
 
   const handleTitleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setAdventureTitle(e.target.value);
+      setEditingTitle(e.target.value);
     },
     []
   );
 
   const handleTitleBlur = useCallback(async () => {
-    if (adventureId && adventureTitle.trim()) {
-      try {
-        await updateAdventureTitle(adventureId, adventureTitle.trim());
-        // Invalidate the cache and reload the adventure to pick up the new title
-        invalidateAdventureCache(adventureId);
-        reloadAdventure();
-      } catch (err) {
-        console.error("Failed to update adventure title:", err);
-      }
+    if (!adventureId || !editingTitle || !editingTitle.trim()) {
+      // Clear editing state without saving
+      setEditingTitle(null);
+      return;
     }
-  }, [adventureId, adventureTitle, reloadAdventure]);
+
+    const trimmedTitle = editingTitle.trim();
+
+    // Clear editing state first
+    setEditingTitle(null);
+
+    // Update local state immediately (optimistic update)
+    updateAdventure((currentAdventure) => ({
+      ...currentAdventure,
+      metadata: {
+        ...currentAdventure.metadata,
+        title: trimmedTitle,
+      },
+    }));
+
+    // Save to database asynchronously
+    try {
+      await withSaving(() => updateAdventureTitle(adventureId, trimmedTitle));
+    } catch (err) {
+      console.error("Failed to update adventure title:", err);
+      // Could add error recovery here - reload adventure or show toast
+    }
+  }, [adventureId, editingTitle, updateAdventure, withSaving]);
 
   const handleTitleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -58,7 +75,7 @@ export const AdventureTitleInput = ({
   return (
     <TopBarTitleInput
       type="text"
-      value={adventureTitle}
+      value={displayTitle}
       onChange={handleTitleChange}
       onBlur={handleTitleBlur}
       onKeyDown={handleTitleKeyDown}

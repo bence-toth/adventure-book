@@ -1,21 +1,21 @@
-import { ConfirmationModal } from "@/components/common/ConfirmationModal/ConfirmationModal";
+import { ModalDialog } from "@/components/common/ModalDialog/ModalDialog";
 
 interface AdventureCardDeleteModalProps {
-  open: boolean;
+  isOpen: boolean;
   adventureTitle: string;
   onConfirm: () => void;
   onCancel: () => void;
 }
 
 export const AdventureCardDeleteModal = ({
-  open,
+  isOpen,
   adventureTitle,
   onConfirm,
   onCancel,
 }: AdventureCardDeleteModalProps) => {
   return (
-    <ConfirmationModal
-      open={open}
+    <ModalDialog
+      isOpen={isOpen}
       onOpenChange={onCancel}
       title="Delete Adventure"
       message={
@@ -24,11 +24,10 @@ export const AdventureCardDeleteModal = ({
           be undone.
         </p>
       }
-      confirmLabel="Delete"
-      cancelLabel="Cancel"
-      onConfirm={onConfirm}
-      onCancel={onCancel}
-      variant="danger"
+      actions={[
+        { label: "Cancel", onClick: onCancel },
+        { label: "Delete", onClick: onConfirm, variant: "danger" },
+      ]}
     />
   );
 };

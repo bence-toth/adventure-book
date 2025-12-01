@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
-import { useEffect } from "react";
+import type { ReactNode, ComponentType } from "react";
+import { createElement, useEffect } from "react";
 import {
   useFloating,
   autoUpdate,
@@ -13,11 +13,11 @@ import {
   FloatingFocusManager,
   type Placement,
 } from "@floating-ui/react";
-import { MenuContainer, MenuItem } from "./ContextMenu.styles";
+import { MenuContainer, MenuItem, MenuItemIcon } from "./ContextMenu.styles";
 
 interface ContextMenuProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
   triggerRef: HTMLElement | null;
   children: ReactNode;
   placement?: Placement;
@@ -25,7 +25,7 @@ interface ContextMenuProps {
 }
 
 export const ContextMenu = ({
-  open,
+  isOpen,
   onOpenChange,
   triggerRef,
   children,
@@ -33,7 +33,7 @@ export const ContextMenu = ({
   "data-testid": dataTestId,
 }: ContextMenuProps) => {
   const { refs, floatingStyles, context } = useFloating({
-    open,
+    open: isOpen,
     onOpenChange,
     middleware: [offset(4), flip(), shift({ padding: 8 })],
     whileElementsMounted: autoUpdate,
@@ -53,7 +53,7 @@ export const ContextMenu = ({
     }
   }, [triggerRef, refs]);
 
-  if (!open) return null;
+  if (!isOpen) return null;
 
   return (
     <FloatingFocusManager context={context} modal={false}>
@@ -75,6 +75,7 @@ interface ContextMenuItemProps {
   onClick: () => void;
   children: ReactNode;
   variant?: "default" | "danger";
+  icon?: ComponentType<Record<string, unknown>>;
   "data-testid"?: string;
 }
 
@@ -82,14 +83,24 @@ export const ContextMenuItem = ({
   onClick,
   children,
   variant = "default",
+  icon,
   "data-testid": dataTestId,
 }: ContextMenuItemProps) => {
+  const iconElement = icon
+    ? createElement(icon, {
+        size: 16,
+        strokeWidth: 2,
+        "aria-hidden": true,
+      })
+    : null;
+
   return (
     <MenuItem
       $variant={variant}
       onClick={onClick}
       data-testid={dataTestId || "context-menu-item"}
     >
+      {iconElement && <MenuItemIcon>{iconElement}</MenuItemIcon>}
       {children}
     </MenuItem>
   );

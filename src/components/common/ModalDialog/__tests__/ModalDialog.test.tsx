@@ -1,9 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { ConfirmationModal } from "../ConfirmationModal";
+import { ModalDialog } from "../ModalDialog";
 import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "@/constants/testIds";
 
-describe("ConfirmationModal Component", () => {
+describe("ModalDialog Component", () => {
   let originalOverflow: string;
 
   beforeEach(() => {
@@ -17,16 +17,15 @@ describe("ConfirmationModal Component", () => {
   describe("Visibility", () => {
     it("renders when open is true", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Test Title"
           message="Test message"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -36,16 +35,15 @@ describe("ConfirmationModal Component", () => {
 
     it("does not render when open is false", () => {
       render(
-        <ConfirmationModal
-          open={false}
+        <ModalDialog
+          isOpen={false}
           onOpenChange={vi.fn()}
           title="Test Title"
           message="Test message"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -57,16 +55,15 @@ describe("ConfirmationModal Component", () => {
   describe("Content", () => {
     it("displays the title", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Delete Item"
           message="Are you sure?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -75,16 +72,15 @@ describe("ConfirmationModal Component", () => {
 
     it("displays string message", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="This is a test message"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -93,8 +89,8 @@ describe("ConfirmationModal Component", () => {
 
     it("displays ReactNode message", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message={
@@ -103,11 +99,10 @@ describe("ConfirmationModal Component", () => {
               <p>Line 2</p>
             </div>
           }
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -117,16 +112,15 @@ describe("ConfirmationModal Component", () => {
 
     it("displays custom button labels", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Yes, proceed"
-          cancelLabel="No, go back"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "No, go back", onClick: vi.fn() },
+            { label: "Yes, proceed", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -136,16 +130,15 @@ describe("ConfirmationModal Component", () => {
 
     it("displays provided button labels", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -159,20 +152,19 @@ describe("ConfirmationModal Component", () => {
   });
 
   describe("Button Actions", () => {
-    it("calls onConfirm when confirm button is clicked", () => {
+    it("calls action onClick when button is clicked", () => {
       const handleConfirm = vi.fn();
 
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={handleConfirm}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: handleConfirm, variant: "neutral" },
+          ]}
         />
       );
 
@@ -181,20 +173,19 @@ describe("ConfirmationModal Component", () => {
       expect(handleConfirm).toHaveBeenCalledTimes(1);
     });
 
-    it("calls onCancel when cancel button is clicked", () => {
+    it("calls correct action when any button is clicked", () => {
       const handleCancel = vi.fn();
 
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={handleCancel}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: handleCancel },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -203,20 +194,19 @@ describe("ConfirmationModal Component", () => {
       expect(handleCancel).toHaveBeenCalledTimes(1);
     });
 
-    it("calls onCancel when overlay is clicked", () => {
-      const handleCancel = vi.fn();
+    it("calls onOpenChange when overlay is clicked", () => {
+      const handleOpenChange = vi.fn();
 
       render(
-        <ConfirmationModal
-          open={true}
-          onOpenChange={vi.fn()}
+        <ModalDialog
+          isOpen={true}
+          onOpenChange={handleOpenChange}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={handleCancel}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -225,23 +215,22 @@ describe("ConfirmationModal Component", () => {
       );
       fireEvent.click(overlay);
 
-      expect(handleCancel).toHaveBeenCalledTimes(1);
+      expect(handleOpenChange).toHaveBeenCalledTimes(1);
     });
 
-    it("does not call onCancel when dialog content is clicked", () => {
-      const handleCancel = vi.fn();
+    it("does not call onOpenChange when dialog content is clicked", () => {
+      const handleOpenChange = vi.fn();
 
       render(
-        <ConfirmationModal
-          open={true}
-          onOpenChange={vi.fn()}
+        <ModalDialog
+          isOpen={true}
+          onOpenChange={handleOpenChange}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={handleCancel}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -250,23 +239,22 @@ describe("ConfirmationModal Component", () => {
       );
       fireEvent.click(dialog);
 
-      expect(handleCancel).not.toHaveBeenCalled();
+      expect(handleOpenChange).not.toHaveBeenCalled();
     });
   });
 
   describe("Button Variants", () => {
-    it("applies primary variant to confirm button", () => {
+    it("applies variant to button when specified", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -274,37 +262,35 @@ describe("ConfirmationModal Component", () => {
       expect(confirmButton).toBeInTheDocument();
     });
 
-    it("applies danger variant to confirm button when specified", () => {
+    it("applies danger variant to button when specified", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Delete"
           message="Are you sure?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="danger"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Delete", onClick: vi.fn(), variant: "danger" },
+          ]}
         />
       );
 
-      const confirmButton = screen.getByRole("button", { name: "Confirm" });
-      expect(confirmButton).toBeInTheDocument();
+      const deleteButton = screen.getByRole("button", { name: "Delete" });
+      expect(deleteButton).toBeInTheDocument();
     });
 
-    it("cancel button always uses default styling", () => {
+    it("button without variant uses default styling", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Delete"
           message="Are you sure?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="danger"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "danger" },
+          ]}
         />
       );
 
@@ -316,32 +302,30 @@ describe("ConfirmationModal Component", () => {
   describe("Scroll Lock", () => {
     it("locks body scroll when modal opens", async () => {
       const { rerender } = render(
-        <ConfirmationModal
-          open={false}
+        <ModalDialog
+          isOpen={false}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
       expect(document.body.style.overflow).toBe("");
 
       rerender(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -352,16 +336,15 @@ describe("ConfirmationModal Component", () => {
 
     it("unlocks body scroll when modal closes", async () => {
       const { rerender } = render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -370,16 +353,15 @@ describe("ConfirmationModal Component", () => {
       });
 
       rerender(
-        <ConfirmationModal
-          open={false}
+        <ModalDialog
+          isOpen={false}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -390,16 +372,15 @@ describe("ConfirmationModal Component", () => {
 
     it("restores body scroll on unmount", async () => {
       const { unmount } = render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -416,16 +397,15 @@ describe("ConfirmationModal Component", () => {
   describe("Component Structure", () => {
     it("renders modal overlay element", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -436,16 +416,15 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog element", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -456,16 +435,15 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog content element", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -476,16 +454,15 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog message element", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -496,16 +473,15 @@ describe("ConfirmationModal Component", () => {
 
     it("renders dialog actions element", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -518,16 +494,15 @@ describe("ConfirmationModal Component", () => {
   describe("Accessibility", () => {
     it("uses dialog element with open attribute", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -538,16 +513,15 @@ describe("ConfirmationModal Component", () => {
 
     it("renders buttons as actual button elements", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -560,16 +534,15 @@ describe("ConfirmationModal Component", () => {
 
     it("title is rendered as h2 heading", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Important Decision"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -582,16 +555,15 @@ describe("ConfirmationModal Component", () => {
       const handleCancel = vi.fn();
 
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={handleConfirm}
-          onCancel={handleCancel}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: handleCancel },
+            { label: "Confirm", onClick: handleConfirm, variant: "neutral" },
+          ]}
         />
       );
 
@@ -616,16 +588,15 @@ describe("ConfirmationModal Component", () => {
       const handleOpenChange = vi.fn();
 
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={handleOpenChange}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -639,16 +610,15 @@ describe("ConfirmationModal Component", () => {
 
     it("updates when open prop changes from false to true", () => {
       const { rerender } = render(
-        <ConfirmationModal
-          open={false}
+        <ModalDialog
+          isOpen={false}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -657,16 +627,15 @@ describe("ConfirmationModal Component", () => {
       ).not.toBeInTheDocument();
 
       rerender(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -677,16 +646,15 @@ describe("ConfirmationModal Component", () => {
 
     it("updates content when props change", () => {
       const { rerender } = render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="First Title"
           message="First message"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -694,16 +662,15 @@ describe("ConfirmationModal Component", () => {
       expect(screen.getByText("First message")).toBeInTheDocument();
 
       rerender(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Second Title"
           message="Second message"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 
@@ -715,18 +682,17 @@ describe("ConfirmationModal Component", () => {
   });
 
   describe("Button Order", () => {
-    it("renders cancel button before confirm button", () => {
+    it("renders buttons in the order specified in actions array", () => {
       render(
-        <ConfirmationModal
-          open={true}
+        <ModalDialog
+          isOpen={true}
           onOpenChange={vi.fn()}
           title="Confirm"
           message="Proceed?"
-          confirmLabel="Confirm"
-          cancelLabel="Cancel"
-          onConfirm={vi.fn()}
-          onCancel={vi.fn()}
-          variant="neutral"
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
         />
       );
 

@@ -5,30 +5,53 @@ import { AdventureTitleInput } from "../AdventureTitleInput";
 import * as adventureDatabase from "@/data/adventureDatabase";
 import { AdventureContext } from "@/context/AdventureContext";
 import type { AdventureContextType } from "@/context/AdventureContext";
+import type { Adventure } from "@/data/types";
 
 vi.mock("@/data/adventureDatabase", () => ({
-  getAdventure: vi.fn(),
   updateAdventureTitle: vi.fn(),
 }));
 
 describe("AdventureTitleInput", () => {
   const TEST_STORY_ID = "test-adventure-id";
   const TEST_TITLE = "Test Adventure Title";
-  const mockReloadAdventure = vi.fn();
+  const mockUpdateAdventure = vi.fn();
+  const mockWithSaving = vi.fn();
 
-  const mockContextValue: AdventureContextType = {
-    adventure: null,
-    adventureId: TEST_STORY_ID,
-    loading: false,
-    error: null,
-    debugModeEnabled: false,
-    setDebugModeEnabled: vi.fn(),
-    reloadAdventure: mockReloadAdventure,
+  const mockAdventure: Adventure = {
+    metadata: {
+      title: TEST_TITLE,
+      author: "Test Author",
+      version: "1.0.0",
+    },
+    intro: {
+      paragraphs: ["Test intro"],
+      action: "Start",
+    },
+    passages: {},
+    items: [],
   };
 
-  const renderWithContext = (component: React.ReactElement) => {
+  const mockContextValue: AdventureContextType = {
+    adventure: mockAdventure,
+    adventureId: TEST_STORY_ID,
+    isLoading: false,
+    error: null,
+    isDebugModeEnabled: false,
+    isSaving: false,
+    setIsDebugModeEnabled: vi.fn(),
+    reloadAdventure: vi.fn(),
+    updateAdventure: mockUpdateAdventure,
+    withSaving: mockWithSaving,
+  };
+
+  const renderWithContext = (
+    component: React.ReactElement,
+    contextOverride?: Partial<AdventureContextType>
+  ) => {
     return render(
-      <AdventureContext.Provider value={mockContextValue}>
+      <AdventureContext.Provider
+        value={{ ...mockContextValue, ...contextOverride }}
+      >
         {component}
       </AdventureContext.Provider>
     );
@@ -36,21 +59,16 @@ describe("AdventureTitleInput", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(adventureDatabase.getAdventure).mockResolvedValue({
-      id: TEST_STORY_ID,
-      title: TEST_TITLE,
-      content: "test content",
-      createdAt: new Date(),
-      lastEdited: new Date(),
-    });
+    mockWithSaving.mockImplementation((fn) => fn());
   });
 
   it("handles null adventureId gracefully", () => {
-    renderWithContext(<AdventureTitleInput adventureId={null} />);
+    renderWithContext(<AdventureTitleInput adventureId={null} />, {
+      adventure: null,
+    });
 
     const input = screen.getByLabelText("Adventure title");
     expect(input).toHaveValue("");
-    expect(adventureDatabase.getAdventure).not.toHaveBeenCalled();
   });
 
   it("loads and displays adventure title", async () => {
@@ -60,8 +78,6 @@ describe("AdventureTitleInput", () => {
       const input = screen.getByLabelText("Adventure title");
       expect(input).toHaveValue(TEST_TITLE);
     });
-
-    expect(adventureDatabase.getAdventure).toHaveBeenCalledWith(TEST_STORY_ID);
   });
 
   it("updates title on change", async () => {
@@ -79,7 +95,7 @@ describe("AdventureTitleInput", () => {
     expect(input).toHaveValue("New Title");
   });
 
-  it("saves title on blur", async () => {
+  it("saves title on blur with optimistic update", async () => {
     const user = userEvent.setup();
     renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
 
@@ -93,11 +109,15 @@ describe("AdventureTitleInput", () => {
     await user.tab(); // Trigger blur
 
     await waitFor(() => {
+      // Should update adventure context immediately
+      expect(mockUpdateAdventure).toHaveBeenCalledWith(expect.any(Function));
+
+      // Should save to database via withSaving
+      expect(mockWithSaving).toHaveBeenCalled();
       expect(adventureDatabase.updateAdventureTitle).toHaveBeenCalledWith(
         TEST_STORY_ID,
         "Updated Title"
       );
-      expect(mockReloadAdventure).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -114,11 +134,12 @@ describe("AdventureTitleInput", () => {
     await user.type(input, "Title via Enter{Enter}");
 
     await waitFor(() => {
+      expect(mockUpdateAdventure).toHaveBeenCalledWith(expect.any(Function));
+      expect(mockWithSaving).toHaveBeenCalled();
       expect(adventureDatabase.updateAdventureTitle).toHaveBeenCalledWith(
         TEST_STORY_ID,
         "Title via Enter"
       );
-      expect(mockReloadAdventure).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -135,6 +156,7 @@ describe("AdventureTitleInput", () => {
     await user.tab();
 
     await waitFor(() => {
+      expect(mockUpdateAdventure).not.toHaveBeenCalled();
       expect(adventureDatabase.updateAdventureTitle).not.toHaveBeenCalled();
     });
   });
@@ -153,11 +175,11 @@ describe("AdventureTitleInput", () => {
     await user.tab();
 
     await waitFor(() => {
+      expect(mockUpdateAdventure).toHaveBeenCalledWith(expect.any(Function));
       expect(adventureDatabase.updateAdventureTitle).toHaveBeenCalledWith(
         TEST_STORY_ID,
         "Spaced Title"
       );
-      expect(mockReloadAdventure).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -189,5 +211,35 @@ describe("AdventureTitleInput", () => {
     });
 
     consoleSpy.mockRestore();
+  });
+
+  it("updates context optimistically with correct title", async () => {
+    const user = userEvent.setup();
+    renderWithContext(<AdventureTitleInput adventureId={TEST_STORY_ID} />);
+
+    await waitFor(() => {
+      expect(screen.getByLabelText("Adventure title")).toHaveValue(TEST_TITLE);
+    });
+
+    const input = screen.getByLabelText("Adventure title");
+    await user.clear(input);
+    await user.type(input, "New Title");
+    await user.tab();
+
+    await waitFor(() => {
+      expect(mockUpdateAdventure).toHaveBeenCalled();
+    });
+
+    // Verify the updater function works correctly
+    const updaterFunction = mockUpdateAdventure.mock.calls[0][0];
+    const updatedAdventure = updaterFunction(mockAdventure);
+
+    expect(updatedAdventure.metadata.title).toBe("New Title");
+    expect(updatedAdventure.metadata.author).toBe(
+      mockAdventure.metadata.author
+    );
+    expect(updatedAdventure.metadata.version).toBe(
+      mockAdventure.metadata.version
+    );
   });
 });
