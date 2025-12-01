@@ -258,6 +258,30 @@ describe("AdventureManager Component", () => {
       expect(adventureDatabase.listStories).toHaveBeenCalledTimes(2);
     });
 
+    it("handles cancel during delete", async () => {
+      render(<AdventureManager />);
+
+      await screen.findByText("Adventure One");
+
+      // Open delete modal
+      const menuButton = screen.getByLabelText("Open menu for Adventure One");
+      fireEvent.click(menuButton);
+      const deleteMenuItem = screen.getByText("Delete");
+      fireEvent.click(deleteMenuItem);
+
+      // Cancel to clear deletingAdventureId
+      const cancelButton = screen.getByRole("button", { name: "Cancel" });
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+
+      // Verify delete was not called
+      expect(adventureDatabase.deleteAdventure).not.toHaveBeenCalled();
+      expect(screen.getByText("Adventure One")).toBeInTheDocument();
+    });
+
     it("throws StoryDeleteError when deletion fails", async () => {
       // Mock console.error to avoid noise
       const consoleSpy = vi

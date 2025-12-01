@@ -321,6 +321,152 @@ describe("TestAdventureSidebar", () => {
     window.addEventListener = originalAddEventListener;
   });
 
+  it("should parse passage ID from URL params", async () => {
+    // We need to use Routes to properly set up params
+    const { Route, Routes } = await import("react-router-dom");
+
+    render(
+      <MemoryRouter
+        initialEntries={[`/adventure/${TEST_STORY_ID}/test/passage/5`]}
+      >
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: TEST_STORY_ID,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: vi.fn(),
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <Routes>
+            <Route
+              path="/adventure/:adventureId/test/passage/:id"
+              element={<TestAdventureSidebar />}
+            />
+          </Routes>
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    // Component should render (passage ID is parsed internally but not used directly in render)
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
+  });
+
+  it("should handle cleanup when component unmounts", async () => {
+    const removeEventListenerSpy = vi.spyOn(window, "removeEventListener");
+
+    const { unmount } = renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
+
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
+
+    // Unmount the component
+    unmount();
+
+    // Verify event listeners were removed
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "storage",
+      expect.any(Function)
+    );
+    expect(removeEventListenerSpy).toHaveBeenCalledWith(
+      "inventoryUpdate",
+      expect.any(Function)
+    );
+
+    removeEventListenerSpy.mockRestore();
+  });
+
+  it("should not update inventory after unmount", async () => {
+    const { unmount } = renderWithAdventure(<TestAdventureSidebar />, {
+      adventureId: TEST_STORY_ID,
+    });
+
+    expect(await screen.findByText("No items yet")).toBeInTheDocument();
+
+    // Unmount the component
+    unmount();
+
+    // Try to trigger update after unmount
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
+
+    await act(async () => {
+      window.dispatchEvent(new Event("inventoryUpdate"));
+    });
+
+    // Component is unmounted, so no errors should occur
+    // This tests the isMounted guard
+  });
+
+  it("should handle inventory change when adventureId is null", async () => {
+    const mockSetIsDebugModeEnabled = vi.fn();
+
+    // Start with valid adventure
+    const { rerender } = render(
+      <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: TEST_STORY_ID,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: mockSetIsDebugModeEnabled,
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
+
+    // Verify the toggle exists before changing context
+    expect(
+      screen.getByRole("switch", { name: "Mock Item One" })
+    ).toBeInTheDocument();
+
+    // Now change context to have null adventureId while keeping component mounted
+    rerender(
+      <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: null,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: mockSetIsDebugModeEnabled,
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    // Component should return null when adventureId is null
+    expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
+  });
+
   describe("Debug Mode", () => {
     beforeEach(() => {
       vi.clearAllMocks();

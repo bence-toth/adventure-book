@@ -359,6 +359,37 @@ passages:
         expect(result.error).toBe("Database error");
       }
     });
+
+    it("handles unknown database errors gracefully", async () => {
+      const yamlContent = `
+metadata:
+  title: "Test"
+  author: "Author"
+  version: "1.0.0"
+intro:
+  text: "Intro"
+  action: "Start"
+passages:
+  1:
+    text: "Passage"
+    ending: true
+`;
+      const file = createMockFile(yamlContent, "test.yaml", "text/yaml");
+
+      vi.mocked(
+        adventureParser.AdventureParser.parseFromString
+      ).mockReturnValue(mockAdventure);
+      vi.mocked(adventureDatabase.createAdventure).mockRejectedValue(
+        "String error" // Non-Error object
+      );
+
+      const result = await importYamlFile(file);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toBe("Failed to save adventure to database");
+      }
+    });
   });
 
   describe("Error handling", () => {
@@ -376,6 +407,23 @@ passages:
       expect(result.success).toBe(false);
       if (!result.success) {
         expect(result.error).toBe("File read error");
+      }
+    });
+
+    it("handles non-Error file read failures", async () => {
+      // Create a file with a text() method that rejects with non-Error
+      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
+      Object.defineProperty(file, "text", {
+        value: () => Promise.reject("String error"),
+        writable: false,
+        configurable: true,
+      });
+
+      const result = await importYamlFile(file);
+
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error).toBe("Failed to read file");
       }
     });
 

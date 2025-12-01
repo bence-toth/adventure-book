@@ -150,6 +150,32 @@ describe("FileDropArea Component", () => {
 
       expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
     });
+
+    it("does not call onFileDrop when no files are dropped", () => {
+      render(
+        <FileDropArea
+          onFileDrop={mockOnFileDrop}
+          dropLabel="Drop file here"
+          data-testid="drop-area"
+        >
+          <div>Content</div>
+        </FileDropArea>
+      );
+
+      const dropArea = screen.getByTestId("drop-area");
+
+      fireEvent.dragEnter(dropArea, {
+        dataTransfer: { files: [] },
+      });
+      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
+
+      fireEvent.drop(dropArea, {
+        dataTransfer: { files: [] },
+      });
+
+      expect(mockOnFileDrop).not.toHaveBeenCalled();
+      expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
+    });
   });
 
   describe("Custom Drop Label", () => {

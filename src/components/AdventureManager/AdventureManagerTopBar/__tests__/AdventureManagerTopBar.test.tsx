@@ -118,4 +118,82 @@ describe("AdventureManagerTopBar Component", () => {
       });
     });
   });
+
+  describe("File Selection", () => {
+    it("calls onFileSelect when a file is selected", () => {
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
+
+      const fileInput = screen.getByTestId(
+        "adventure-manager-file-input"
+      ) as HTMLInputElement;
+
+      const file = new File(["test content"], "test.yaml", {
+        type: "text/yaml",
+      });
+
+      Object.defineProperty(fileInput, "files", {
+        value: [file],
+        writable: false,
+      });
+
+      fireEvent.change(fileInput);
+
+      expect(mockOnFileSelect).toHaveBeenCalledWith(file);
+      // After calling onFileSelect, the input value should be reset
+      expect(fileInput.value).toBe("");
+    });
+
+    it("does not call onFileSelect when no file is selected", () => {
+      mockOnFileSelect.mockClear();
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
+
+      const fileInput = screen.getByTestId(
+        "adventure-manager-file-input"
+      ) as HTMLInputElement;
+
+      Object.defineProperty(fileInput, "files", {
+        value: [],
+        writable: false,
+      });
+
+      fireEvent.change(fileInput);
+
+      expect(mockOnFileSelect).not.toHaveBeenCalled();
+      // Input should still be reset even when no file is selected
+      expect(fileInput.value).toBe("");
+    });
+
+    it("allows selecting the same file multiple times", () => {
+      mockOnFileSelect.mockClear();
+      render(<AdventureManagerTopBar onFileSelect={mockOnFileSelect} />);
+
+      const fileInput = screen.getByTestId(
+        "adventure-manager-file-input"
+      ) as HTMLInputElement;
+
+      const file = new File(["test content"], "test.yaml", {
+        type: "text/yaml",
+      });
+
+      // First selection
+      Object.defineProperty(fileInput, "files", {
+        value: [file],
+        writable: false,
+        configurable: true,
+      });
+      fireEvent.change(fileInput);
+      expect(mockOnFileSelect).toHaveBeenCalledTimes(1);
+      expect(fileInput.value).toBe("");
+
+      // Second selection of the same file (possible because value was reset)
+      Object.defineProperty(fileInput, "files", {
+        value: [file],
+        writable: false,
+        configurable: true,
+      });
+      fireEvent.change(fileInput);
+      expect(mockOnFileSelect).toHaveBeenCalledTimes(2);
+      expect(fileInput.value).toBe("");
+    });
+  });
 });

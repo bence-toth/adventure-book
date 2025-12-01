@@ -342,4 +342,32 @@ intro:
       expect(result2?.title).toBe("Adventure 2");
     });
   });
+
+  describe("Error Handling", () => {
+    it("should handle database open errors", async () => {
+      // Mock indexedDB.open to fail
+      const originalOpen = indexedDB.open;
+      indexedDB.open = vi.fn(() => {
+        const request = {} as IDBOpenDBRequest;
+        setTimeout(() => {
+          if (request.onerror) {
+            request.onerror(new Event("error"));
+          }
+        }, 0);
+        return request;
+      });
+
+      await expect(
+        saveAdventure({
+          id: "test-error",
+          title: "Error Test",
+          content: "content",
+          lastEdited: new Date(),
+          createdAt: new Date(),
+        })
+      ).rejects.toThrow("Failed to open database");
+
+      indexedDB.open = originalOpen;
+    });
+  });
 });

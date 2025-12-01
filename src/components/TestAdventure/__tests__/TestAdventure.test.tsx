@@ -508,6 +508,24 @@ describe("TestAdventure Component", () => {
 
       consoleSpy.mockRestore();
     });
+
+    it("does not execute effects for passage 0 (reset)", async () => {
+      const { addItemToInventory } = await import("@/data/adventureLoader");
+      const mockAddItemToInventory = vi.mocked(addItemToInventory);
+
+      mockParams = { id: "0", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<TestAdventure />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      // Wait for reset passage to render
+      await screen.findByTestId(PASSAGE_TEST_IDS.RESET_PASSAGE);
+
+      // Should not execute effects for reset passage (id 0)
+      expect(mockAddItemToInventory).not.toHaveBeenCalled();
+    });
   });
 
   describe("Error Handling", () => {
