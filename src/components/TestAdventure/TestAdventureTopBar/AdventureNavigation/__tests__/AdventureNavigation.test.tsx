@@ -4,22 +4,22 @@ import { AdventureNavigation } from "../AdventureNavigation";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import {
   getAdventureTestRoute,
-  getAdventureEditRoute,
+  getAdventureContentRoute,
 } from "@/constants/routes";
 
 describe("AdventureNavigation", () => {
   const TEST_STORY_ID = "test-adventure-id";
 
-  it("renders Test and Edit navigation links", () => {
+  it("renders Test and Content navigation links", () => {
     renderWithAdventure(<AdventureNavigation adventureId={TEST_STORY_ID} />, {
       adventureId: TEST_STORY_ID,
     });
 
     const testLink = screen.getByRole("link", { name: /test/i });
-    const editLink = screen.getByRole("link", { name: /edit/i });
+    const contentLink = screen.getByRole("link", { name: /content/i });
 
     expect(testLink).toBeInTheDocument();
-    expect(editLink).toBeInTheDocument();
+    expect(contentLink).toBeInTheDocument();
   });
 
   it("Test link has correct href", () => {
@@ -34,15 +34,15 @@ describe("AdventureNavigation", () => {
     );
   });
 
-  it("Edit link has correct href", () => {
+  it("Content link has correct href", () => {
     renderWithAdventure(<AdventureNavigation adventureId={TEST_STORY_ID} />, {
       adventureId: TEST_STORY_ID,
     });
 
-    const editLink = screen.getByRole("link", { name: /edit/i });
-    expect(editLink).toHaveAttribute(
+    const contentLink = screen.getByRole("link", { name: /content/i });
+    expect(contentLink).toHaveAttribute(
       "href",
-      getAdventureEditRoute(TEST_STORY_ID)
+      getAdventureContentRoute(TEST_STORY_ID)
     );
   });
 
@@ -57,15 +57,15 @@ describe("AdventureNavigation", () => {
     expect(testLink).toHaveAttribute("aria-current", "page");
   });
 
-  it("marks Edit link as selected when on edit route", () => {
-    const editRoute = getAdventureEditRoute(TEST_STORY_ID);
+  it("marks Content link as selected when on content route", () => {
+    const contentRoute = getAdventureContentRoute(TEST_STORY_ID);
     renderWithAdventure(<AdventureNavigation adventureId={TEST_STORY_ID} />, {
       adventureId: TEST_STORY_ID,
-      route: editRoute,
+      route: contentRoute,
     });
 
-    const editLink = screen.getByRole("link", { name: /edit/i });
-    expect(editLink).toHaveAttribute("aria-current", "page");
+    const contentLink = screen.getByRole("link", { name: /content/i });
+    expect(contentLink).toHaveAttribute("aria-current", "page");
   });
 
   it("renders navigation as a nav element", () => {

@@ -157,7 +157,7 @@ describe("renderWithAdventure", () => {
       const { getByTestId } = renderWithAdventure(<TestComponent />, {
         adventureId: "custom-id",
         adventure: null,
-        route: "/adventure/custom-id/edit",
+        route: "/adventure/custom-id/content",
       });
 
       expect(getByTestId("params-adventure-id")).toHaveTextContent("custom-id");

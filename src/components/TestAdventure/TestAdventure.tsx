@@ -10,7 +10,7 @@ import {
   clearInventory,
 } from "@/utils/localStorage";
 import {
-  getPassageRoute,
+  getAdventureTestPassageRoute,
   SPECIAL_PASSAGES,
   getAdventureTestRoute,
 } from "@/constants/routes";
@@ -125,7 +125,9 @@ export const TestAdventure = () => {
   // Handle introduction view
   if (isIntroduction) {
     const handleStartAdventure = () => {
-      navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.START));
+      navigate(
+        getAdventureTestPassageRoute(adventureId, SPECIAL_PASSAGES.START)
+      );
     };
 
     return (
@@ -200,7 +202,7 @@ export const TestAdventure = () => {
   }
 
   const handleChoiceClick = (nextId: number) => {
-    navigate(getPassageRoute(adventureId, nextId));
+    navigate(getAdventureTestPassageRoute(adventureId, nextId));
   };
 
   const handleRestartClick = () => {

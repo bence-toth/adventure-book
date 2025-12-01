@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from "react";
 import { useLocation } from "react-router-dom";
-import { Play, PenTool } from "lucide-react";
+import { Play, PenTool, Waypoints } from "lucide-react";
 import {
   getAdventureTestRoute,
-  getAdventureEditRoute,
+  getAdventureContentRoute,
 } from "@/constants/routes";
 import { NavigationTab } from "@/components/common/NavigationTab/NavigationTab";
 import { TopBarNav } from "./AdventureNavigation.styles";
@@ -29,26 +29,35 @@ export const AdventureNavigation = ({
     [adventureId]
   );
 
-  const editRoute = useMemo(
-    () => getAdventureEditRoute(adventureId),
+  const contentRoute = useMemo(
+    () => getAdventureContentRoute(adventureId),
     [adventureId]
   );
 
+  const structureRoute = "structure";
+
   return (
     <TopBarNav as="nav" aria-label="Main navigation">
+      <NavigationTab
+        to={structureRoute}
+        variant={getIsActive(structureRoute) ? "primary" : "neutral"}
+        icon={Waypoints}
+      >
+        Structure
+      </NavigationTab>
+      <NavigationTab
+        to={contentRoute}
+        variant={getIsActive(contentRoute) ? "primary" : "neutral"}
+        icon={PenTool}
+      >
+        Content
+      </NavigationTab>
       <NavigationTab
         to={testRoute}
         variant={getIsActive(testRoute) ? "primary" : "neutral"}
         icon={Play}
       >
         Test
-      </NavigationTab>
-      <NavigationTab
-        to={editRoute}
-        variant={getIsActive(editRoute) ? "primary" : "neutral"}
-        icon={PenTool}
-      >
-        Edit
       </NavigationTab>
     </TopBarNav>
   );

@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import {
   getAdventureTestRoute,
-  getAdventureEditRoute,
-  getPassageRoute,
+  getAdventureContentRoute,
+  getAdventureTestPassageRoute,
 } from "../routes";
 
 describe("Route Helper Functions", () => {
@@ -26,49 +26,49 @@ describe("Route Helper Functions", () => {
     });
   });
 
-  describe("getAdventureEditRoute", () => {
+  describe("getAdventureContentRoute", () => {
     it("returns correct route for valid adventureId", () => {
-      expect(getAdventureEditRoute("test-adventure-456")).toBe(
-        "/adventure/test-adventure-456/edit"
+      expect(getAdventureContentRoute("test-adventure-456")).toBe(
+        "/adventure/test-adventure-456/content"
       );
     });
 
     it("returns empty string for null adventureId", () => {
-      expect(getAdventureEditRoute(null)).toBe("");
+      expect(getAdventureContentRoute(null)).toBe("");
     });
 
     it("returns empty string for undefined adventureId", () => {
-      expect(getAdventureEditRoute(undefined)).toBe("");
+      expect(getAdventureContentRoute(undefined)).toBe("");
     });
 
     it("returns empty string for empty string adventureId", () => {
-      expect(getAdventureEditRoute("")).toBe("");
+      expect(getAdventureContentRoute("")).toBe("");
     });
   });
 
-  describe("getPassageRoute", () => {
+  describe("getAdventureTestPassageRoute", () => {
     it("returns correct route for valid adventureId and passageId", () => {
-      expect(getPassageRoute("test-adventure-789", 1)).toBe(
+      expect(getAdventureTestPassageRoute("test-adventure-789", 1)).toBe(
         "/adventure/test-adventure-789/test/passage/1"
       );
     });
 
     it("handles string passageId", () => {
-      expect(getPassageRoute("test-adventure-abc", "5")).toBe(
+      expect(getAdventureTestPassageRoute("test-adventure-abc", "5")).toBe(
         "/adventure/test-adventure-abc/test/passage/5"
       );
     });
 
     it("returns empty string for null adventureId", () => {
-      expect(getPassageRoute(null, 1)).toBe("");
+      expect(getAdventureTestPassageRoute(null, 1)).toBe("");
     });
 
     it("returns empty string for undefined adventureId", () => {
-      expect(getPassageRoute(undefined, 2)).toBe("");
+      expect(getAdventureTestPassageRoute(undefined, 2)).toBe("");
     });
 
     it("returns empty string for empty string adventureId", () => {
-      expect(getPassageRoute("", 3)).toBe("");
+      expect(getAdventureTestPassageRoute("", 3)).toBe("");
     });
   });
 });

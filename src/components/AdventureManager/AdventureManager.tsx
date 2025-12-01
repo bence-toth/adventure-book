@@ -7,7 +7,10 @@ import {
   type StoredAdventure,
 } from "@/data/adventureDatabase";
 import adventureTemplate from "@/data/adventure.yaml?raw";
-import { getAdventureTestRoute, getPassageRoute } from "@/constants/routes";
+import {
+  getAdventureTestRoute,
+  getAdventureTestPassageRoute,
+} from "@/constants/routes";
 import { getCurrentPassageId } from "@/utils/localStorage";
 import { importYamlFile } from "@/utils/importYaml";
 import {
@@ -61,7 +64,7 @@ export const AdventureManager = () => {
 
       if (savedPassageId !== null) {
         // Navigate directly to the saved passage
-        navigate(getPassageRoute(id, savedPassageId));
+        navigate(getAdventureTestPassageRoute(id, savedPassageId));
       } else {
         // Navigate to the introduction if no saved progress
         navigate(getAdventureTestRoute(id));

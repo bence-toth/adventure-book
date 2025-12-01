@@ -3,7 +3,10 @@ import { vi, beforeEach, describe, it, expect } from "vitest";
 import { TestAdventure } from "../TestAdventure";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
-import { getPassageRoute, getAdventureTestRoute } from "@/constants/routes";
+import {
+  getAdventureTestPassageRoute,
+  getAdventureTestRoute,
+} from "@/constants/routes";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 import {
   PASSAGE_TEST_IDS,
@@ -145,7 +148,7 @@ describe("TestAdventure Component", () => {
       fireEvent.click(button);
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        getPassageRoute(TEST_STORY_ID, 1)
+        getAdventureTestPassageRoute(TEST_STORY_ID, 1)
       );
     });
 
@@ -236,7 +239,7 @@ describe("TestAdventure Component", () => {
     fireEvent.click(firstChoice);
 
     expect(mockNavigate).toHaveBeenCalledWith(
-      getPassageRoute(TEST_STORY_ID, 2)
+      getAdventureTestPassageRoute(TEST_STORY_ID, 2)
     );
   });
 
@@ -749,7 +752,7 @@ describe("TestAdventure Component", () => {
       fireEvent.click(firstChoice);
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        getPassageRoute(TEST_STORY_ID, 2)
+        getAdventureTestPassageRoute(TEST_STORY_ID, 2)
       );
     });
 

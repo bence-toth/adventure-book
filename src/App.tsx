@@ -25,8 +25,8 @@ const App = () => {
                       element={<TestAdventure />}
                     />
                     <Route
-                      path="edit"
-                      element={<div>Edit view coming soon</div>}
+                      path="content"
+                      element={<div>Content view coming soon</div>}
                     />
                     <Route path="*" element={<Navigate to="test" replace />} />
                   </Routes>

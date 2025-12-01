@@ -1,7 +1,10 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Adventure } from "@/data/types";
-import { getPassageRoute, getAdventureTestRoute } from "@/constants/routes";
+import {
+  getAdventureTestPassageRoute,
+  getAdventureTestRoute,
+} from "@/constants/routes";
 import { PassageLink } from "./PassageLink/PassageLink";
 import {
   NavigationWrapper,
@@ -29,7 +32,7 @@ export const DebugNavigation = ({
 
   const handlePassageClick = useCallback(
     (passageId: number) => {
-      navigate(getPassageRoute(adventureId, passageId));
+      navigate(getAdventureTestPassageRoute(adventureId, passageId));
     },
     [navigate, adventureId]
   );

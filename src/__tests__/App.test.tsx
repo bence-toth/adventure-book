@@ -56,7 +56,7 @@ describe("App Component", () => {
     expect(document.body).toBeInTheDocument();
   });
 
-  it("handles adventure passage routes with parameters", async () => {
+  it("handles test adventure passage routes with parameters", async () => {
     renderAppWithRoute(`/adventure/${TEST_STORY_ID}/test/passage/2`);
 
     // Check for content from passage 2

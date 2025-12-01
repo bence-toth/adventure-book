@@ -46,9 +46,9 @@ describe("TestAdventureTopBar Component", () => {
 
       // Should have navigation links
       const testLink = await screen.findByRole("link", { name: /test/i });
-      const editLink = await screen.findByRole("link", { name: /edit/i });
+      const contentLink = await screen.findByRole("link", { name: /content/i });
       expect(testLink).toBeInTheDocument();
-      expect(editLink).toBeInTheDocument();
+      expect(contentLink).toBeInTheDocument();
     });
 
     it("returns null when adventureId is not available", () => {
