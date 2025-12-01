@@ -99,7 +99,7 @@ a {
   --color-yellow-850: oklch(28.125% 0.06 71.911deg);
   --color-yellow-900: oklch(25% 0.052 71.911deg);
   --color-yellow-950: oklch(20.833% 0.043 71.911deg);
-  --color-yellow-1000: oklch(20.833% 0.043 71.911deg);
+  --color-yellow-1000: oklch(18.333% 0.043 71.911deg);
   --color-green-0: oklch(100% 0 145.033deg);
   --color-green-50: oklch(95.833% 0.055 145.033deg);
   --color-green-100: oklch(90.625% 0.132 145.033deg);
@@ -121,27 +121,48 @@ a {
   --color-green-900: oklch(25% 0.077 145.033deg);
   --color-green-950: oklch(21.875% 0.066 145.033deg);
   --color-green-1000: oklch(17.708% 0.055 145.033deg);
-  --color-blue-0: oklch(100% 0 224.452deg);
-  --color-blue-50: oklch(95.833% 0.022 224.452deg);
-  --color-blue-100: oklch(91.667% 0.05 224.452deg);
-  --color-blue-150: oklch(88.542% 0.039 224.452deg);
-  --color-blue-200: oklch(84.375% 0.067 224.452deg);
-  --color-blue-250: oklch(80.208% 0.067 224.452deg);
-  --color-blue-300: oklch(76.042% 0.067 224.452deg);
-  --color-blue-350: oklch(71.875% 0.067 224.452deg);
-  --color-blue-400: oklch(67.708% 0.067 224.452deg);
-  --color-blue-450: oklch(63.542% 0.067 224.452deg);
-  --color-blue-500: oklch(59.375% 0.067 224.452deg);
-  --color-blue-550: oklch(55.208% 0.067 224.452deg);
-  --color-blue-600: oklch(51.042% 0.067 224.452deg);
-  --color-blue-650: oklch(45.833% 0.067 224.452deg);
-  --color-blue-700: oklch(41.667% 0.067 224.452deg);
-  --color-blue-750: oklch(36.458% 0.067 224.452deg);
-  --color-blue-800: oklch(33.333% 0.062 224.452deg);
-  --color-blue-850: oklch(30.208% 0.056 224.452deg);
-  --color-blue-900: oklch(23.958% 0.045 224.452deg);
-  --color-blue-950: oklch(20.833% 0.039 224.452deg);
-  --color-blue-1000: oklch(20.833% 0.039 224.452deg);
+  --color-turquoise-0: oklch(100% 0 224.452deg);
+  --color-turquoise-50: oklch(95.833% 0.022 224.452deg);
+  --color-turquoise-100: oklch(91.667% 0.05 224.452deg);
+  --color-turquoise-150: oklch(88.542% 0.039 224.452deg);
+  --color-turquoise-200: oklch(84.375% 0.067 224.452deg);
+  --color-turquoise-250: oklch(80.208% 0.067 224.452deg);
+  --color-turquoise-300: oklch(76.042% 0.067 224.452deg);
+  --color-turquoise-350: oklch(71.875% 0.067 224.452deg);
+  --color-turquoise-400: oklch(67.708% 0.067 224.452deg);
+  --color-turquoise-450: oklch(63.542% 0.067 224.452deg);
+  --color-turquoise-500: oklch(59.375% 0.067 224.452deg);
+  --color-turquoise-550: oklch(55.208% 0.067 224.452deg);
+  --color-turquoise-600: oklch(51.042% 0.067 224.452deg);
+  --color-turquoise-650: oklch(45.833% 0.067 224.452deg);
+  --color-turquoise-700: oklch(41.667% 0.067 224.452deg);
+  --color-turquoise-750: oklch(36.458% 0.067 224.452deg);
+  --color-turquoise-800: oklch(33.333% 0.062 224.452deg);
+  --color-turquoise-850: oklch(30.208% 0.056 224.452deg);
+  --color-turquoise-900: oklch(23.958% 0.045 224.452deg);
+  --color-turquoise-950: oklch(20.833% 0.039 224.452deg);
+  --color-turquoise-1000: oklch(18.333% 0.039 224.452deg);
+  --color-blue-0: oklch(100% 0 259.931deg);
+  --color-blue-50: oklch(95.833% 0.019 259.931deg);
+  --color-blue-100: oklch(92.708% 0.032 259.931deg);
+  --color-blue-150: oklch(88.542% 0.051 259.931deg);
+  --color-blue-200: oklch(84.375% 0.076 259.931deg);
+  --color-blue-250: oklch(80.208% 0.076 259.931deg);
+  --color-blue-300: oklch(76.042% 0.076 259.931deg);
+  --color-blue-350: oklch(72.917% 0.076 259.931deg);
+  --color-blue-400: oklch(68.75% 0.076 259.931deg);
+  --color-blue-450: oklch(64.583% 0.076 259.931deg);
+  --color-blue-500: oklch(59.375% 0.076 259.931deg);
+  --color-blue-550: oklch(55.208% 0.076 259.931deg);
+  --color-blue-600: oklch(51.042% 0.076 259.931deg);
+  --color-blue-650: oklch(46.875% 0.076 259.931deg);
+  --color-blue-700: oklch(41.667% 0.076 259.931deg);
+  --color-blue-750: oklch(37.5% 0.076 259.931deg);
+  --color-blue-800: oklch(32.292% 0.076 259.931deg);
+  --color-blue-850: oklch(27.083% 0.076 259.931deg);
+  --color-blue-900: oklch(21.875% 0.076 259.931deg);
+  --color-blue-950: oklch(18.75% 0.076 259.931deg);
+  --color-blue-1000: oklch(15.675% 0.076 259.931deg);
 
   /* Shadow variables */
   --shadow-surface-neutral: 0 0 var(--space-2) var(--color-shadow-neutral);
@@ -216,7 +237,7 @@ a {
     --color-interactive-background-focus-neutral: var(--color-gray-250);
     --color-interactive-foreground-focus-neutral: var(--color-gray-900);
     --color-interactive-border-focus-neutral: var(--color-gray-300);
-    --color-interactive-outline-focus-neutral: var(--color-blue-500);
+    --color-interactive-outline-focus-neutral: var(--color-turquoise-500);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
@@ -224,27 +245,27 @@ a {
     );
 
     /* Primary colors */
-    --color-background-primary: var(--color-blue-100);
-    --color-foreground-primary: var(--color-blue-900);
-    --color-foreground-primary-muted: var(--color-blue-700);
-    --color-background-surface-primary: var(--color-blue-150);
-    --color-border-surface-primary: var(--color-blue-200);
-    --color-interactive-background-default-primary: var(--color-blue-200);
-    --color-interactive-foreground-default-primary: var(--color-blue-900);
-    --color-interactive-border-default-primary: var(--color-blue-250);
-    --color-interactive-background-hover-primary: var(--color-blue-250);
-    --color-interactive-foreground-hover-primary: var(--color-blue-900);
-    --color-interactive-border-hover-primary: var(--color-blue-300);
-    --color-interactive-background-active-primary: var(--color-blue-300);
-    --color-interactive-foreground-active-primary: var(--color-blue-900);
-    --color-interactive-border-active-primary: var(--color-blue-350);
-    --color-interactive-background-focus-primary: var(--color-blue-250);
-    --color-interactive-foreground-focus-primary: var(--color-blue-900);
-    --color-interactive-border-focus-primary: var(--color-blue-300);
-    --color-interactive-outline-focus-primary: var(--color-blue-500);
+    --color-background-primary: var(--color-turquoise-100);
+    --color-foreground-primary: var(--color-turquoise-900);
+    --color-foreground-primary-muted: var(--color-turquoise-700);
+    --color-background-surface-primary: var(--color-turquoise-150);
+    --color-border-surface-primary: var(--color-turquoise-200);
+    --color-interactive-background-default-primary: var(--color-turquoise-200);
+    --color-interactive-foreground-default-primary: var(--color-turquoise-900);
+    --color-interactive-border-default-primary: var(--color-turquoise-250);
+    --color-interactive-background-hover-primary: var(--color-turquoise-250);
+    --color-interactive-foreground-hover-primary: var(--color-turquoise-900);
+    --color-interactive-border-hover-primary: var(--color-turquoise-300);
+    --color-interactive-background-active-primary: var(--color-turquoise-300);
+    --color-interactive-foreground-active-primary: var(--color-turquoise-900);
+    --color-interactive-border-active-primary: var(--color-turquoise-350);
+    --color-interactive-background-focus-primary: var(--color-turquoise-250);
+    --color-interactive-foreground-focus-primary: var(--color-turquoise-900);
+    --color-interactive-border-focus-primary: var(--color-turquoise-300);
+    --color-interactive-outline-focus-primary: var(--color-turquoise-500);
     --color-shadow-primary: color-mix(
       in srgb,
-      var(--color-blue-1000) 25%,
+      var(--color-turquoise-1000) 25%,
       transparent
     );
 
@@ -272,6 +293,31 @@ a {
       var(--color-red-1000) 25%,
       transparent
     );
+
+    /* Info colors */
+    --color-background-info: var(--color-blue-100);
+    --color-foreground-info: var(--color-blue-900);
+    --color-foreground-info-muted: var(--color-blue-700);
+    --color-background-surface-info: var(--color-blue-150);
+    --color-border-surface-info: var(--color-blue-200);
+    --color-interactive-background-default-info: var(--color-blue-200);
+    --color-interactive-foreground-default-info: var(--color-blue-900);
+    --color-interactive-border-default-info: var(--color-blue-250);
+    --color-interactive-background-hover-info: var(--color-blue-250);
+    --color-interactive-foreground-hover-info: var(--color-blue-900);
+    --color-interactive-border-hover-info: var(--color-blue-300);
+    --color-interactive-background-active-info: var(--color-blue-300);
+    --color-interactive-foreground-active-info: var(--color-blue-900);
+    --color-interactive-border-active-info: var(--color-blue-350);
+    --color-interactive-background-focus-info: var(--color-blue-250);
+    --color-interactive-foreground-focus-info: var(--color-blue-900);
+    --color-interactive-border-focus-info: var(--color-blue-300);
+    --color-interactive-outline-focus-info: var(--color-blue-500);
+    --color-shadow-info: color-mix(
+      in srgb,
+      var(--color-blue-1000) 25%,
+      transparent
+    );
   }
 }
 
@@ -295,7 +341,7 @@ a {
     --color-interactive-background-focus-neutral: var(--color-gray-750);
     --color-interactive-foreground-focus-neutral: var(--color-gray-100);
     --color-interactive-border-focus-neutral: var(--color-gray-700);
-    --color-interactive-outline-focus-neutral: var(--color-blue-300);
+    --color-interactive-outline-focus-neutral: var(--color-turquoise-300);
     --color-shadow-neutral: color-mix(
       in srgb,
       var(--color-gray-1000) 25%,
@@ -303,27 +349,27 @@ a {
     );
 
     /* Primary colors */
-    --color-background-primary: var(--color-blue-900);
-    --color-foreground-primary: var(--color-blue-100);
-    --color-foreground-primary-muted: var(--color-blue-300);
-    --color-background-surface-primary: var(--color-blue-850);
-    --color-border-surface-primary: var(--color-blue-800);
-    --color-interactive-background-default-primary: var(--color-blue-800);
-    --color-interactive-foreground-default-primary: var(--color-blue-100);
-    --color-interactive-border-default-primary: var(--color-blue-750);
-    --color-interactive-background-hover-primary: var(--color-blue-750);
-    --color-interactive-foreground-hover-primary: var(--color-blue-100);
-    --color-interactive-border-hover-primary: var(--color-blue-700);
-    --color-interactive-background-active-primary: var(--color-blue-700);
-    --color-interactive-foreground-active-primary: var(--color-blue-100);
-    --color-interactive-border-active-primary: var(--color-blue-650);
-    --color-interactive-background-focus-primary: var(--color-blue-750);
-    --color-interactive-foreground-focus-primary: var(--color-blue-100);
-    --color-interactive-border-focus-primary: var(--color-blue-700);
-    --color-interactive-outline-focus-primary: var(--color-blue-300);
+    --color-background-primary: var(--color-turquoise-900);
+    --color-foreground-primary: var(--color-turquoise-100);
+    --color-foreground-primary-muted: var(--color-turquoise-300);
+    --color-background-surface-primary: var(--color-turquoise-850);
+    --color-border-surface-primary: var(--color-turquoise-800);
+    --color-interactive-background-default-primary: var(--color-turquoise-800);
+    --color-interactive-foreground-default-primary: var(--color-turquoise-100);
+    --color-interactive-border-default-primary: var(--color-turquoise-750);
+    --color-interactive-background-hover-primary: var(--color-turquoise-750);
+    --color-interactive-foreground-hover-primary: var(--color-turquoise-100);
+    --color-interactive-border-hover-primary: var(--color-turquoise-700);
+    --color-interactive-background-active-primary: var(--color-turquoise-700);
+    --color-interactive-foreground-active-primary: var(--color-turquoise-100);
+    --color-interactive-border-active-primary: var(--color-turquoise-650);
+    --color-interactive-background-focus-primary: var(--color-turquoise-750);
+    --color-interactive-foreground-focus-primary: var(--color-turquoise-100);
+    --color-interactive-border-focus-primary: var(--color-turquoise-700);
+    --color-interactive-outline-focus-primary: var(--color-turquoise-300);
     --color-shadow-primary: color-mix(
       in srgb,
-      var(--color-blue-1000) 25%,
+      var(--color-turquoise-1000) 25%,
       transparent
     );
 
@@ -349,6 +395,31 @@ a {
     --color-shadow-danger: color-mix(
       in srgb,
       var(--color-red-1000) 25%,
+      transparent
+    );
+
+    /* Info colors */
+    --color-background-info: var(--color-blue-900);
+    --color-foreground-info: var(--color-blue-100);
+    --color-foreground-info-muted: var(--color-blue-300);
+    --color-background-surface-info: var(--color-blue-850);
+    --color-border-surface-info: var(--color-blue-800);
+    --color-interactive-background-default-info: var(--color-blue-800);
+    --color-interactive-foreground-default-info: var(--color-blue-100);
+    --color-interactive-border-default-info: var(--color-blue-750);
+    --color-interactive-background-hover-info: var(--color-blue-750);
+    --color-interactive-foreground-hover-info: var(--color-blue-100);
+    --color-interactive-border-hover-info: var(--color-blue-700);
+    --color-interactive-background-active-info: var(--color-blue-700);
+    --color-interactive-foreground-active-info: var(--color-blue-100);
+    --color-interactive-border-active-info: var(--color-blue-650);
+    --color-interactive-background-focus-info: var(--color-blue-750);
+    --color-interactive-foreground-focus-info: var(--color-blue-100);
+    --color-interactive-border-focus-info: var(--color-blue-700);
+    --color-interactive-outline-focus-info: var(--color-blue-500);
+    --color-shadow-info: color-mix(
+      in srgb,
+      var(--color-blue-1000) 25%,
       transparent
     );
   }
