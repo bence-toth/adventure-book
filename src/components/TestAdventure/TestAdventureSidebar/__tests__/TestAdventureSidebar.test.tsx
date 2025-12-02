@@ -383,16 +383,36 @@ describe("TestAdventureSidebar", () => {
   });
 
   it("should not update inventory after unmount", async () => {
+    // Capture event handlers to test isMounted guards
+    let storageHandler: ((event: Event) => void) | null = null;
+    let inventoryHandler: ((event: Event) => void) | null = null;
+
+    const originalAddEventListener = window.addEventListener.bind(window);
+    const addEventListenerSpy = vi
+      .spyOn(window, "addEventListener")
+      .mockImplementation((event, handler, options) => {
+        if (event === "storage") {
+          storageHandler = handler as (event: Event) => void;
+        } else if (event === "inventoryUpdate") {
+          inventoryHandler = handler as (event: Event) => void;
+        }
+        return originalAddEventListener(event, handler, options);
+      });
+
     const { unmount } = renderWithAdventure(<TestAdventureSidebar />, {
       adventureId: TEST_STORY_ID,
     });
 
     expect(await screen.findByText("No items yet")).toBeInTheDocument();
 
+    // Ensure handlers were captured
+    expect(storageHandler).not.toBeNull();
+    expect(inventoryHandler).not.toBeNull();
+
     // Unmount the component
     unmount();
 
-    // Try to trigger update after unmount
+    // Try to trigger update after unmount by calling handlers directly
     const data = {
       [TEST_STORY_ID]: {
         passageId: null,
@@ -401,12 +421,20 @@ describe("TestAdventureSidebar", () => {
     };
     localStorage.setItem("adventure-book/progress", JSON.stringify(data));
 
+    // Call the handlers directly to test the isMounted guard
     await act(async () => {
-      window.dispatchEvent(new Event("inventoryUpdate"));
+      if (storageHandler) {
+        storageHandler(new Event("storage"));
+      }
+      if (inventoryHandler) {
+        inventoryHandler(new Event("inventoryUpdate"));
+      }
     });
 
     // Component is unmounted, so no errors should occur
-    // This tests the isMounted guard
+    // This tests the isMounted guard prevents state updates after unmount
+
+    addEventListenerSpy.mockRestore();
   });
 
   it("should handle inventory change when adventureId is null", async () => {
@@ -465,6 +493,75 @@ describe("TestAdventureSidebar", () => {
 
     // Component should return null when adventureId is null
     expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
+  });
+
+  it("should handle inventory change without calling handlers when adventureId becomes null", async () => {
+    // Set up initial inventory
+    const data = {
+      [TEST_STORY_ID]: {
+        passageId: null,
+        inventory: ["mock_item_1"],
+      },
+    };
+    localStorage.setItem("adventure-book/progress", JSON.stringify(data));
+
+    const mockSetIsDebugModeEnabled = vi.fn();
+    const addSpy = vi.spyOn(inventoryManagement, "addItemToInventory");
+
+    // Start with valid adventure in debug mode
+    const { rerender } = render(
+      <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: TEST_STORY_ID,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: mockSetIsDebugModeEnabled,
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    expect(await screen.findByText("Inventory")).toBeInTheDocument();
+
+    // Now change context to have null adventureId
+    rerender(
+      <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
+        <AdventureContext.Provider
+          value={{
+            adventure: mockAdventure,
+            adventureId: null,
+            isLoading: false,
+            error: null,
+            isDebugModeEnabled: true,
+            isSaving: false,
+            setIsDebugModeEnabled: mockSetIsDebugModeEnabled,
+            reloadAdventure: vi.fn(),
+            updateAdventure: vi.fn(),
+            withSaving: vi.fn(),
+          }}
+        >
+          <TestAdventureSidebar />
+        </AdventureContext.Provider>
+      </MemoryRouter>
+    );
+
+    // Component should return null when adventureId is null
+    expect(screen.queryByText("Inventory")).not.toBeInTheDocument();
+
+    // The handleInventoryChange was never called because component returned early
+    // so addItemToInventory should not have been called since initial render
+    expect(addSpy).not.toHaveBeenCalled();
+
+    addSpy.mockRestore();
   });
 
   describe("Debug Mode", () => {

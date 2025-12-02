@@ -156,7 +156,7 @@ describe("PassageView Component", () => {
       />
     );
 
-    const container = screen.getByTestId(PASSAGE_TEST_IDS.CONTAINER);
+    const container = screen.getByTestId("passage-view");
     expect(container).toBeInTheDocument();
   });
 });

@@ -25,7 +25,7 @@ export const PassageView = ({
   onRestart,
 }: PassageViewProps) => {
   return (
-    <ContentContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
+    <ContentContainer data-testid="passage-view">
       {passage.notes && (
         <PassageNotes data-testid={PASSAGE_TEST_IDS.NOTES}>
           {passage.notes}

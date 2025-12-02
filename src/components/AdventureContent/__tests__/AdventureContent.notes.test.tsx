@@ -269,7 +269,7 @@ Each line provides context.`;
         adventure: mockAdventure,
       });
 
-      const container = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
+      const container = await screen.findByTestId("passage-view");
       const notes = await screen.findByTestId(PASSAGE_TEST_IDS.NOTES);
       const text = await screen.findByTestId(PASSAGE_TEST_IDS.TEXT);
 

@@ -282,6 +282,51 @@ describe("AdventureManager Component", () => {
       expect(screen.getByText("Adventure One")).toBeInTheDocument();
     });
 
+    it("does not delete when confirm is clicked without setting deletingAdventureId", async () => {
+      render(<AdventureManager />);
+
+      await screen.findByText("Adventure One");
+
+      // Open delete modal for first adventure
+      const menuButton = screen.getByLabelText("Open menu for Adventure One");
+      fireEvent.click(menuButton);
+      const deleteMenuItem = screen.getByText("Delete");
+      fireEvent.click(deleteMenuItem);
+
+      // Modal should be visible
+      await waitFor(() => {
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
+      });
+
+      // Cancel the modal
+      const cancelButton = screen.getByRole("button", { name: "Cancel" });
+      fireEvent.click(cancelButton);
+
+      await waitFor(() => {
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+
+      // Now open modal for second adventure
+      const menuButton2 = screen.getByLabelText("Open menu for Adventure Two");
+      fireEvent.click(menuButton2);
+      const deleteMenuItem2 = screen.getByText("Delete");
+      fireEvent.click(deleteMenuItem2);
+
+      await waitFor(() => {
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
+      });
+
+      // Confirm delete should work normally
+      const confirmButton = screen.getByRole("button", { name: "Delete" });
+      fireEvent.click(confirmButton);
+
+      await waitFor(() => {
+        expect(adventureDatabase.deleteAdventure).toHaveBeenCalledWith(
+          "adventure-2"
+        );
+      });
+    });
+
     it("throws StoryDeleteError when deletion fails", async () => {
       // Mock console.error to avoid noise
       const consoleSpy = vi

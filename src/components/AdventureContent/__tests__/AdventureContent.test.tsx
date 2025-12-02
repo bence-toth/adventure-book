@@ -270,4 +270,85 @@ describe("AdventureContent Component", () => {
       );
     });
   });
+
+  describe("Loading State", () => {
+    it("renders loading state when adventure is loading", async () => {
+      renderWithAdventure(<AdventureContent />, {
+        adventureId: TEST_STORY_ID,
+        isLoading: true,
+      });
+
+      // Should render the loading state component
+      const loadingElement = await screen.findByTestId("loading-state");
+      expect(loadingElement).toBeInTheDocument();
+    });
+
+    it("renders loading state for introduction when no passage ID is provided", async () => {
+      mockParams = {
+        id: undefined as unknown as string,
+        adventureId: TEST_STORY_ID,
+      };
+
+      renderWithAdventure(<AdventureContent />, {
+        adventureId: TEST_STORY_ID,
+        isLoading: true,
+      });
+
+      const loadingElement = await screen.findByTestId("loading-state");
+      expect(loadingElement).toBeInTheDocument();
+    });
+  });
+
+  describe("Reset Passage", () => {
+    it("renders reset passage when passage ID is 0", async () => {
+      mockParams = { id: "0", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<AdventureContent />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      // Should render the reset passage component
+      const resetElement = await screen.findByTestId("reset-passage");
+      expect(resetElement).toBeInTheDocument();
+    });
+  });
+
+  describe("Restart Functionality", () => {
+    it("navigates to introduction when restart button is clicked", async () => {
+      mockParams = { id: "4", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<AdventureContent />, {
+        adventureId: TEST_STORY_ID,
+        adventure: mockAdventure,
+      });
+
+      // Wait for passage to load
+      const passageElement = await screen.findByTestId("passage-view");
+      expect(passageElement).toBeInTheDocument();
+
+      // Click restart button
+      const restartButton = screen.getByRole("button", { name: /restart/i });
+      fireEvent.click(restartButton);
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `/adventure/${TEST_STORY_ID}/content`
+      );
+    });
+  });
+
+  describe("Loading State with isIntroduction", () => {
+    it("renders loading state for passage view", async () => {
+      mockParams = { id: "1", adventureId: TEST_STORY_ID };
+
+      renderWithAdventure(<AdventureContent />, {
+        adventureId: TEST_STORY_ID,
+        isLoading: true,
+      });
+
+      const loadingElement = await screen.findByTestId("loading-state");
+      expect(loadingElement).toBeInTheDocument();
+      expect(loadingElement).toHaveTextContent("Loading passage...");
+    });
+  });
 });

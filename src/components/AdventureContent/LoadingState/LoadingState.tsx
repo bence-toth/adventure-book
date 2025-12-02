@@ -14,7 +14,9 @@ export const LoadingState = ({ isIntroduction }: LoadingStateProps) => {
           : PASSAGE_TEST_IDS.CONTAINER
       }
     >
-      <p>Loading {isIntroduction ? "adventure" : "passage"}...</p>
+      <p data-testid="loading-state">
+        Loading {isIntroduction ? "adventure" : "passage"}...
+      </p>
     </ContentContainer>
   );
 };
