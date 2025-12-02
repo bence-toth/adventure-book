@@ -17,7 +17,12 @@ export const AdventureTitleInput = ({
   const [editingTitle, setEditingTitle] = useState<string | null>(null);
   const prevAdventureTitleRef = useRef<string>("");
 
-  // Update the ref when adventure changes (no state update, just tracking)
+  // Keep a reference to the adventure's persisted title for change detection.
+  // The component needs to distinguish between user edits (local state) and external
+  // changes to the adventure (e.g., from cache invalidation or database updates).
+  // This maintains a ref tracking the last known persisted title by updating the ref
+  // whenever the adventure prop changes, without triggering re-renders, which
+  // allows comparison in event handlers to detect whether the title actually changed.
   useEffect(() => {
     if (adventure) {
       prevAdventureTitleRef.current = adventure.metadata.title;

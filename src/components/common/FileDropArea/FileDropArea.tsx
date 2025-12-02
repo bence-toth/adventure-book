@@ -75,7 +75,12 @@ export const FileDropArea = ({
     [onFileDrop, isDisabled]
   );
 
-  // Handle drag end events globally to catch cancellations
+  // Cleanup drag state when drag operation is cancelled or completed outside the component.
+  // The drag counter tracks nested drag enter/leave events, but can get out of sync if
+  // the user cancels the drag (ESC key) or drops outside the drop area, leaving the overlay visible.
+  // This attaches global event listeners to detect drag cancellation and completion by
+  // listening to document-level 'dragend' (cancellation) and 'drop' (completion) events
+  // to reset the drag counter and hide the overlay.
   useEffect(() => {
     const handleDragEnd = () => {
       dragCounter.current = 0;
@@ -87,8 +92,6 @@ export const FileDropArea = ({
       setIsDragging(false);
     };
 
-    // Listen to dragend and drop events on the document
-    // to catch when drag is cancelled or dropped outside
     document.addEventListener("dragend", handleDragEnd);
     document.addEventListener("drop", handleDocumentDrop);
 

@@ -44,7 +44,13 @@ export const TestAdventure = () => {
     setLastInventoryKey(inventoryKey);
   }
 
-  // Execute passage effects when navigating to a passage
+  // Apply passage effects to inventory when the user navigates to a new passage.
+  // Each passage can define inventory effects (add/remove items) that should modify the inventory
+  // when they arrive at that passage, supporting conditional choices and narrative state.
+  // This processes passage effects and updates the inventory state accordingly.
+  // It runs whenever passageId changes, iterating through the passage's effects array and
+  // applying add_item or remove_item transformations to the inventory. Endings are skipped
+  // since they don't have effects by design.
   useEffect(() => {
     if (!adventure || isIntroduction || passageId === null || isNaN(passageId))
       return;

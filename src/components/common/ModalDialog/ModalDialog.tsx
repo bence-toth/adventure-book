@@ -53,7 +53,12 @@ export const ModalDialog = ({
 
   const { getFloatingProps } = useInteractions([dismiss, role]);
 
-  // Lock scroll when modal is open
+  // Prevent background scrolling when the modal is open to maintain focus on the dialog.
+  // When a modal is open, the user should only interact with the modal content, and
+  // background scrolling can be disorienting and break the modal's visual prominence.
+  // This locks/unlocks the document body scroll based on modal open state by
+  // setting body overflow to 'hidden' when modal opens, restoring it when modal closes,
+  // and ensuring cleanup on unmount to prevent scroll being permanently locked.
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
