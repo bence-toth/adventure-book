@@ -11,8 +11,6 @@ import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 import {
   PASSAGE_TEST_IDS,
   INTRODUCTION_TEST_IDS,
-  getPassageParagraphTestId,
-  getIntroParagraphTestId,
   getChoiceButtonTestId,
 } from "@/constants/testIds";
 import * as localStorage from "@/utils/localStorage";
@@ -86,51 +84,6 @@ describe("TestAdventure Component", () => {
       expect(introText).toBeInTheDocument();
     });
 
-    it("renders all introduction paragraphs", async () => {
-      mockParams = {
-        id: undefined as unknown as string,
-        adventureId: TEST_STORY_ID,
-      };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: mockAdventure,
-      });
-
-      // Check that the correct number of paragraphs are rendered
-      const expectedParagraphs = [
-        "This is the first mock introduction paragraph.",
-        "This is the second mock introduction paragraph.",
-        "This is the third mock introduction paragraph.",
-      ];
-
-      for (let index = 0; index < expectedParagraphs.length; index++) {
-        const paragraph = await screen.findByTestId(
-          getIntroParagraphTestId(index)
-        );
-        expect(paragraph).toBeInTheDocument();
-        expect(paragraph).toHaveTextContent(expectedParagraphs[index]);
-      }
-    });
-
-    it("renders start adventure button in introduction mode", async () => {
-      mockParams = {
-        id: undefined as unknown as string,
-        adventureId: TEST_STORY_ID,
-      };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: mockAdventure,
-      });
-
-      const button = await screen.findByTestId(
-        INTRODUCTION_TEST_IDS.START_BUTTON
-      );
-      expect(button).toBeInTheDocument();
-      expect(button).toHaveTextContent("Begin your test adventure");
-    });
-
     it("navigates to passage 1 when start button is clicked in introduction mode", async () => {
       mockParams = {
         id: undefined as unknown as string,
@@ -150,23 +103,6 @@ describe("TestAdventure Component", () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         getAdventureTestPassageRoute(TEST_STORY_ID, 1)
       );
-    });
-
-    it("shows loading message in introduction mode while adventure is loading", async () => {
-      mockParams = {
-        id: undefined as unknown as string,
-        adventureId: TEST_STORY_ID,
-      };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        isLoading: true,
-      });
-
-      const container = await screen.findByTestId(
-        INTRODUCTION_TEST_IDS.CONTAINER
-      );
-      expect(container).toHaveTextContent("Loading adventure...");
     });
 
     it("clears inventory and passage ID when introduction is displayed", async () => {
@@ -192,41 +128,6 @@ describe("TestAdventure Component", () => {
     });
   });
 
-  it("renders the first passage correctly", async () => {
-    renderWithAdventure(<TestAdventure />, {
-      adventureId: TEST_STORY_ID,
-      adventure: mockAdventure,
-    });
-
-    const passage = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
-    expect(passage).toBeInTheDocument();
-
-    const passageText = await screen.findByTestId(PASSAGE_TEST_IDS.TEXT);
-    expect(passageText).toBeInTheDocument();
-
-    // Check that paragraphs are rendered
-    expect(
-      await screen.findByTestId(getPassageParagraphTestId(0))
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByTestId(getPassageParagraphTestId(1))
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByTestId(getPassageParagraphTestId(2))
-    ).toBeInTheDocument();
-
-    // Check that choices are rendered
-    expect(
-      await screen.findByTestId(getChoiceButtonTestId(0))
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByTestId(getChoiceButtonTestId(1))
-    ).toBeInTheDocument();
-    expect(
-      await screen.findByTestId(getChoiceButtonTestId(2))
-    ).toBeInTheDocument();
-  });
-
   it("navigates to correct passage when choice is clicked", async () => {
     renderWithAdventure(<TestAdventure />, {
       adventureId: TEST_STORY_ID,
@@ -243,39 +144,7 @@ describe("TestAdventure Component", () => {
     );
   });
 
-  it("renders multiple paragraphs correctly", async () => {
-    renderWithAdventure(<TestAdventure />, {
-      adventureId: TEST_STORY_ID,
-      adventure: mockAdventure,
-    });
-
-    const paragraphs = [
-      await screen.findByTestId(getPassageParagraphTestId(0)),
-      await screen.findByTestId(getPassageParagraphTestId(1)),
-      await screen.findByTestId(getPassageParagraphTestId(2)),
-    ];
-
-    paragraphs.forEach((paragraph) => {
-      expect(paragraph).toBeInTheDocument();
-    });
-  });
-
   describe("Ending Passages", () => {
-    it("renders restart button for ending passages", async () => {
-      mockParams = { id: "4", adventureId: TEST_STORY_ID };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: mockAdventure,
-      });
-
-      const restartButton = await screen.findByTestId(
-        PASSAGE_TEST_IDS.RESTART_BUTTON
-      );
-      expect(restartButton).toBeInTheDocument();
-      expect(restartButton).toHaveTextContent("Restart adventure");
-    });
-
     it("clears progress and navigates to introduction when restart is clicked", async () => {
       mockParams = { id: "4", adventureId: TEST_STORY_ID };
 
@@ -678,18 +547,6 @@ describe("TestAdventure Component", () => {
     });
   });
 
-  describe("Loading State", () => {
-    it("shows loading message while adventure is loading", async () => {
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        isLoading: true,
-      });
-
-      const container = await screen.findByTestId(PASSAGE_TEST_IDS.CONTAINER);
-      expect(container).toHaveTextContent("Loading passage...");
-    });
-  });
-
   describe("LocalStorage Integration", () => {
     it("saves current passage ID for regular passages", async () => {
       const mockSaveCurrentPassageId = vi.mocked(
@@ -710,34 +567,6 @@ describe("TestAdventure Component", () => {
   });
 
   describe("Debug Mode Choice Display", () => {
-    it("shows choice text without passage ID prefix when debug mode is disabled", async () => {
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: mockAdventure,
-        isDebugModeEnabled: false,
-      });
-
-      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
-      expect(firstChoice).toHaveTextContent("Go to mock passage 2");
-      expect(firstChoice).not.toHaveTextContent("2: Go to mock passage 2");
-    });
-
-    it("shows choice text with passage ID prefix when debug mode is enabled", async () => {
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: mockAdventure,
-        isDebugModeEnabled: true,
-      });
-
-      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
-      const secondChoice = await screen.findByTestId(getChoiceButtonTestId(1));
-      const thirdChoice = await screen.findByTestId(getChoiceButtonTestId(2));
-
-      expect(firstChoice).toHaveTextContent("2: Go to mock passage 2");
-      expect(secondChoice).toHaveTextContent("3: Go to mock passage 3");
-      expect(thirdChoice).toHaveTextContent("1: Return to start");
-    });
-
     it("maintains correct navigation when debug mode is enabled", async () => {
       renderWithAdventure(<TestAdventure />, {
         adventureId: TEST_STORY_ID,
@@ -754,34 +583,6 @@ describe("TestAdventure Component", () => {
       expect(mockNavigate).toHaveBeenCalledWith(
         getAdventureTestPassageRoute(TEST_STORY_ID, 2)
       );
-    });
-
-    it("formats multi-digit passage IDs correctly in debug mode", async () => {
-      const adventureWithHighPassageIds: Adventure = {
-        ...mockAdventure,
-        passages: {
-          ...mockAdventure.passages,
-          1: {
-            paragraphs: ["Test passage"],
-            choices: [
-              { text: "Go to passage 42", goto: 42 },
-              { text: "Go to passage 123", goto: 123 },
-            ],
-          },
-        },
-      };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: adventureWithHighPassageIds,
-        isDebugModeEnabled: true,
-      });
-
-      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
-      const secondChoice = await screen.findByTestId(getChoiceButtonTestId(1));
-
-      expect(firstChoice).toHaveTextContent("42: Go to passage 42");
-      expect(secondChoice).toHaveTextContent("123: Go to passage 123");
     });
   });
 });

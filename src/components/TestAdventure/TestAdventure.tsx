@@ -14,14 +14,6 @@ import {
   SPECIAL_PASSAGES,
   getAdventureTestRoute,
 } from "@/constants/routes";
-import {
-  PASSAGE_TEST_IDS,
-  INTRODUCTION_TEST_IDS,
-  getPassageParagraphTestId,
-  getIntroParagraphTestId,
-  getChoiceButtonTestId,
-} from "@/constants/testIds";
-import { Button } from "@/components/common/Button/Button";
 import { useAdventure } from "@/context/useAdventure";
 import {
   AdventureLoadError,
@@ -29,18 +21,12 @@ import {
   InvalidPassageIdError,
   PassageNotFoundError,
 } from "@/utils/errors";
-import { AdventureTopBar } from "@/components/AdventureTopBar/AdventureTopBar";
+import { AdventureLayout } from "@/components/layouts/AdventureLayout/AdventureLayout";
 import { TestAdventureSidebar } from "./TestAdventureSidebar/TestAdventureSidebar";
-import {
-  PageLayout,
-  PageContent,
-  ContentContainer,
-  ContentText,
-  ContentParagraph,
-  PassageNotes,
-  Choices,
-  ContentTitle,
-} from "./TestAdventure.styles";
+import { LoadingState } from "./LoadingState/LoadingState";
+import { IntroductionView } from "./IntroductionView/IntroductionView";
+import { ResetPassage } from "./ResetPassage/ResetPassage";
+import { PassageView } from "./PassageView/PassageView";
 
 export const TestAdventure = () => {
   const { id, adventureId } = useParams<{ id: string; adventureId: string }>();
@@ -94,23 +80,9 @@ export const TestAdventure = () => {
 
   if (isLoading) {
     return (
-      <>
-        <AdventureTopBar />
-        <PageLayout>
-          <TestAdventureSidebar />
-          <PageContent>
-            <ContentContainer
-              data-testid={
-                isIntroduction
-                  ? INTRODUCTION_TEST_IDS.CONTAINER
-                  : PASSAGE_TEST_IDS.CONTAINER
-              }
-            >
-              <p>Loading {isIntroduction ? "adventure" : "passage"}...</p>
-            </ContentContainer>
-          </PageContent>
-        </PageLayout>
-      </>
+      <AdventureLayout sidebar={<TestAdventureSidebar />}>
+        <LoadingState isIntroduction={isIntroduction} />
+      </AdventureLayout>
     );
   }
 
@@ -131,37 +103,12 @@ export const TestAdventure = () => {
     };
 
     return (
-      <>
-        <AdventureTopBar />
-        <PageLayout>
-          <TestAdventureSidebar />
-          <PageContent>
-            <ContentContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-              <ContentTitle data-testid={INTRODUCTION_TEST_IDS.TITLE}>
-                {adventure.metadata.title}
-              </ContentTitle>
-              <ContentText data-testid={INTRODUCTION_TEST_IDS.TEXT}>
-                {adventure.intro.paragraphs.map((paragraph, index) => (
-                  <ContentParagraph
-                    key={index}
-                    data-testid={getIntroParagraphTestId(index)}
-                  >
-                    {paragraph}
-                  </ContentParagraph>
-                ))}
-              </ContentText>
-              <Choices>
-                <Button
-                  onClick={handleStartAdventure}
-                  data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
-                >
-                  {adventure.intro.action}
-                </Button>
-              </Choices>
-            </ContentContainer>
-          </PageContent>
-        </PageLayout>
-      </>
+      <AdventureLayout sidebar={<TestAdventureSidebar />}>
+        <IntroductionView
+          adventure={adventure}
+          onStart={handleStartAdventure}
+        />
+      </AdventureLayout>
     );
   }
 
@@ -179,19 +126,9 @@ export const TestAdventure = () => {
   // the rest of the component from rendering while the redirect happens
   if (passageId === SPECIAL_PASSAGES.RESET) {
     return (
-      <>
-        <AdventureTopBar />
-        <PageLayout>
-          <TestAdventureSidebar />
-          <PageContent>
-            <ContentContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
-              <ContentText>
-                <ContentParagraph>Resetting your adventure…</ContentParagraph>
-              </ContentText>
-            </ContentContainer>
-          </PageContent>
-        </PageLayout>
-      </>
+      <AdventureLayout sidebar={<TestAdventureSidebar />}>
+        <ResetPassage />
+      </AdventureLayout>
     );
   }
 
@@ -212,53 +149,13 @@ export const TestAdventure = () => {
   };
 
   return (
-    <>
-      <AdventureTopBar />
-      <PageLayout>
-        <TestAdventureSidebar />
-        <PageContent>
-          <ContentContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
-            {isDebugModeEnabled && currentPassage.notes && (
-              <PassageNotes data-testid={PASSAGE_TEST_IDS.NOTES}>
-                {currentPassage.notes}
-              </PassageNotes>
-            )}
-            <ContentText data-testid={PASSAGE_TEST_IDS.TEXT}>
-              {currentPassage.paragraphs.map((paragraph, index) => (
-                <ContentParagraph
-                  key={index}
-                  data-testid={getPassageParagraphTestId(index)}
-                >
-                  {paragraph}
-                </ContentParagraph>
-              ))}
-            </ContentText>
-            <Choices data-testid={PASSAGE_TEST_IDS.CHOICES}>
-              {currentPassage.ending ? (
-                <Button
-                  onClick={handleRestartClick}
-                  data-testid={PASSAGE_TEST_IDS.RESTART_BUTTON}
-                >
-                  Restart adventure
-                </Button>
-              ) : (
-                currentPassage.choices!.map((choice, index) => (
-                  <Button
-                    key={index}
-                    onClick={() => handleChoiceClick(choice.goto)}
-                    data-testid={getChoiceButtonTestId(index)}
-                    data-goto={choice.goto}
-                  >
-                    {isDebugModeEnabled
-                      ? `${choice.goto}: ${choice.text}`
-                      : choice.text}
-                  </Button>
-                ))
-              )}
-            </Choices>
-          </ContentContainer>
-        </PageContent>
-      </PageLayout>
-    </>
+    <AdventureLayout sidebar={<TestAdventureSidebar />}>
+      <PassageView
+        passage={currentPassage}
+        isDebugModeEnabled={isDebugModeEnabled}
+        onChoiceClick={handleChoiceClick}
+        onRestart={handleRestartClick}
+      />
+    </AdventureLayout>
   );
 };
