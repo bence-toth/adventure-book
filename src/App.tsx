@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
+import { AdventureContent } from "@/components/AdventureContent/AdventureContent";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
 import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
 import { ROUTES } from "@/constants/routes";
@@ -24,9 +25,10 @@ const App = () => {
                       path="test/passage/:id"
                       element={<TestAdventure />}
                     />
+                    <Route path="content" element={<AdventureContent />} />
                     <Route
-                      path="content"
-                      element={<div>Content view coming soon</div>}
+                      path="content/passage/:id"
+                      element={<AdventureContent />}
                     />
                     <Route
                       path="structure"

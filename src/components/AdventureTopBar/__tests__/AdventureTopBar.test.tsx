@@ -7,7 +7,7 @@ import {
 } from "@testing-library/react";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import { TestAdventureTopBar } from "../TestAdventureTopBar";
+import { AdventureTopBar } from "../AdventureTopBar";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { setupTestAdventure } from "@/__tests__/mockAdventureData";
 import { AdventureContext } from "@/context/AdventureContext";
@@ -15,14 +15,14 @@ import type { AdventureContextType } from "@/context/AdventureContext";
 
 const TEST_STORY_ID = "test-adventure-id";
 
-describe("TestAdventureTopBar Component", () => {
+describe("AdventureTopBar Component", () => {
   beforeEach(async () => {
     await setupTestAdventure(TEST_STORY_ID);
   });
 
   describe("Rendering", () => {
     it("renders the header element", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
       });
       const header = await screen.findByRole("banner");
@@ -30,7 +30,7 @@ describe("TestAdventureTopBar Component", () => {
     });
 
     it("renders back button, title input, and navigation", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
       });
 
@@ -68,7 +68,7 @@ describe("TestAdventureTopBar Component", () => {
       const { container } = render(
         <MemoryRouter initialEntries={["/"]}>
           <AdventureContext.Provider value={mockContextValue}>
-            <TestAdventureTopBar />
+            <AdventureTopBar />
           </AdventureContext.Provider>
         </MemoryRouter>
       );
@@ -80,12 +80,12 @@ describe("TestAdventureTopBar Component", () => {
 
   describe("Context Menu", () => {
     it("opens context menu when menu button is clicked", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
       });
 
       const menuButton = await screen.findByTestId(
-        "test-adventure-context-menu-button"
+        "adventure-context-menu-button"
       );
       fireEvent.click(menuButton);
 
@@ -95,12 +95,12 @@ describe("TestAdventureTopBar Component", () => {
     });
 
     it("renders download menu item with download icon", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
       });
 
       const menuButton = await screen.findByTestId(
-        "test-adventure-context-menu-button"
+        "adventure-context-menu-button"
       );
       fireEvent.click(menuButton);
 
@@ -115,7 +115,7 @@ describe("TestAdventureTopBar Component", () => {
 
   describe("Saving Indicator", () => {
     it("shows saving indicator when isSaving is true", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
         contextOverride: { isSaving: true },
       });
@@ -126,7 +126,7 @@ describe("TestAdventureTopBar Component", () => {
     });
 
     it("does not show saving indicator when isSaving is false", async () => {
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
         contextOverride: { isSaving: false },
       });
@@ -161,12 +161,12 @@ describe("TestAdventureTopBar Component", () => {
         .spyOn(await import("@/utils/fileDownload"), "downloadFile")
         .mockImplementationOnce(() => {});
 
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
       });
 
       const menuButton = await screen.findByTestId(
-        "test-adventure-context-menu-button"
+        "adventure-context-menu-button"
       );
       fireEvent.click(menuButton);
 
@@ -215,7 +215,7 @@ describe("TestAdventureTopBar Component", () => {
 
       // Start with valid adventure, but then set it to null to test the guard
       // We need the component to render first with a valid adventure
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
@@ -224,7 +224,7 @@ describe("TestAdventureTopBar Component", () => {
       // Since we can't easily set adventure to null after render in this test setup,
       // this test verifies that when adventure IS present, the download works
       const menuButton = await screen.findByTestId(
-        "test-adventure-context-menu-button"
+        "adventure-context-menu-button"
       );
       expect(menuButton).toBeInTheDocument();
 
@@ -241,12 +241,12 @@ describe("TestAdventureTopBar Component", () => {
         .spyOn(await import("@/data/adventureDatabase"), "getAdventure")
         .mockRejectedValueOnce(new Error("Database error"));
 
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
       });
 
       const menuButton = await screen.findByTestId(
-        "test-adventure-context-menu-button"
+        "adventure-context-menu-button"
       );
       fireEvent.click(menuButton);
 
@@ -280,12 +280,12 @@ describe("TestAdventureTopBar Component", () => {
         .spyOn(await import("@/data/adventureDatabase"), "getAdventure")
         .mockResolvedValueOnce(undefined);
 
-      renderWithAdventure(<TestAdventureTopBar />, {
+      renderWithAdventure(<AdventureTopBar />, {
         adventureId: TEST_STORY_ID,
       });
 
       const menuButton = await screen.findByTestId(
-        "test-adventure-context-menu-button"
+        "adventure-context-menu-button"
       );
       fireEvent.click(menuButton);
 
@@ -324,15 +324,13 @@ describe("TestAdventureTopBar Component", () => {
       render(
         <MemoryRouter initialEntries={["/"]}>
           <AdventureContext.Provider value={mockContextValue}>
-            <TestAdventureTopBar />
+            <AdventureTopBar />
           </AdventureContext.Provider>
         </MemoryRouter>
       );
 
       // Component should return null, so no menu button should be present
-      const menuButton = screen.queryByTestId(
-        "test-adventure-context-menu-button"
-      );
+      const menuButton = screen.queryByTestId("adventure-context-menu-button");
       expect(menuButton).not.toBeInTheDocument();
     });
   });

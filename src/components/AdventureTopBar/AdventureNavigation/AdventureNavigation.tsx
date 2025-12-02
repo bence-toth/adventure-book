@@ -1,10 +1,12 @@
 import { useCallback, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Play, PenTool, Waypoints } from "lucide-react";
 import {
   getAdventureTestRoute,
   getAdventureContentRoute,
   getAdventureStructureRoute,
+  getAdventureTestPassageRoute,
+  getAdventureContentPassageRoute,
 } from "@/constants/routes";
 import { NavigationTab } from "@/components/common/NavigationTab/NavigationTab";
 import { TopBarNav } from "./AdventureNavigation.styles";
@@ -17,6 +19,7 @@ export const AdventureNavigation = ({
   adventureId,
 }: AdventureNavigationProps) => {
   const location = useLocation();
+  const { id } = useParams<{ id: string }>();
 
   const getIsActive = useCallback(
     (path: string) => {
@@ -25,15 +28,24 @@ export const AdventureNavigation = ({
     [location.pathname]
   );
 
-  const testRoute = useMemo(
-    () => getAdventureTestRoute(adventureId),
-    [adventureId]
-  );
+  // Preserve passage ID when switching between test and content views
+  const passageId = id ? parseInt(id, 10) : null;
 
-  const contentRoute = useMemo(
-    () => getAdventureContentRoute(adventureId),
-    [adventureId]
-  );
+  const testRoute = useMemo(() => {
+    if (!adventureId) return "";
+    if (passageId !== null && !isNaN(passageId)) {
+      return getAdventureTestPassageRoute(adventureId, passageId);
+    }
+    return getAdventureTestRoute(adventureId);
+  }, [adventureId, passageId]);
+
+  const contentRoute = useMemo(() => {
+    if (!adventureId) return "";
+    if (passageId !== null && !isNaN(passageId)) {
+      return getAdventureContentPassageRoute(adventureId, passageId);
+    }
+    return getAdventureContentRoute(adventureId);
+  }, [adventureId, passageId]);
 
   const structureRoute = useMemo(
     () => getAdventureStructureRoute(adventureId),

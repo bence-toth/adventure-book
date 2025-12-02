@@ -4,31 +4,31 @@ import {
   ContextMenuItem,
 } from "@/components/common/ContextMenu/ContextMenu";
 
-interface TestAdventureContextMenuProps {
+interface AdventureContextMenuProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   triggerRef: HTMLElement | null;
   onYAMLDownloadClick: () => void;
 }
 
-export const TestAdventureContextMenu = ({
+export const AdventureContextMenu = ({
   isOpen,
   onOpenChange,
   triggerRef,
   onYAMLDownloadClick,
-}: TestAdventureContextMenuProps) => {
+}: AdventureContextMenuProps) => {
   return (
     <ContextMenu
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       triggerRef={triggerRef}
       placement="bottom-end"
-      data-testid="test-adventure-context-menu"
+      data-testid="adventure-context-menu"
     >
       <ContextMenuItem
         onClick={onYAMLDownloadClick}
         icon={Download}
-        data-testid="test-adventure-context-menu-download"
+        data-testid="adventure-context-menu-download"
       >
         Download adventure as YAML
       </ContextMenuItem>

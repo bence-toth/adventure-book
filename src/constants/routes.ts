@@ -27,6 +27,14 @@ export const getAdventureContentRoute = (
   return `/adventure/${adventureId}/content`;
 };
 
+export const getAdventureContentPassageRoute = (
+  adventureId: string | null | undefined,
+  passageId: number | string
+): string => {
+  if (!adventureId) return "";
+  return `/adventure/${adventureId}/content/passage/${passageId}`;
+};
+
 export const getAdventureStructureRoute = (
   adventureId: string | null | undefined
 ): string => {

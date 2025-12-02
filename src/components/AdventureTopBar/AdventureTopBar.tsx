@@ -9,15 +9,15 @@ import { sanitizeFilename, downloadFile } from "@/utils/fileDownload";
 import { BackButton } from "./BackButton/BackButton";
 import { AdventureTitleInput } from "./AdventureTitleInput/AdventureTitleInput";
 import { AdventureNavigation } from "./AdventureNavigation/AdventureNavigation";
-import { TestAdventureContextMenu } from "./TestAdventureContextMenu/TestAdventureContextMenu";
+import { AdventureContextMenu } from "./AdventureContextMenu/AdventureContextMenu";
 import {
   TopBarStartContainer,
   SavingIndicator,
   TopBarEndContainer,
   ContextMenuButton,
-} from "./TestAdventureTopBar.styles";
+} from "./AdventureTopBar.styles";
 
-export const TestAdventureTopBar = () => {
+export const AdventureTopBar = () => {
   const { adventureId } = useParams<{ adventureId: string }>();
   const { adventure, isSaving } = useAdventure();
   const [isContextMenuOpen, setIsContextMenuOpen] = useState(false);
@@ -89,14 +89,14 @@ export const TestAdventureTopBar = () => {
                 handleMenuClick(e, e.currentTarget as HTMLButtonElement)
               }
               aria-label="Open adventure menu"
-              data-testid="test-adventure-context-menu-button"
+              data-testid="adventure-context-menu-button"
             >
               <EllipsisVertical size={20} strokeWidth={2} />
             </ContextMenuButton>
           </TopBarEndContainer>
         }
       />
-      <TestAdventureContextMenu
+      <AdventureContextMenu
         isOpen={isContextMenuOpen}
         onOpenChange={setIsContextMenuOpen}
         triggerRef={contextMenuTrigger}

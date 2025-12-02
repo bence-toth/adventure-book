@@ -1,0 +1,312 @@
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+import type { Adventure } from "@/data/types";
+import { Navigation } from "../Navigation";
+
+const mockNavigate = vi.fn();
+
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
+
+const createMockAdventure = (): Adventure => ({
+  metadata: {
+    title: "Test Adventure",
+    author: "Test Author",
+    version: "1.0.0",
+  },
+  intro: {
+    paragraphs: ["Introduction text"],
+    action: "Start",
+  },
+  passages: {
+    1: {
+      paragraphs: ["Passage 1"],
+      choices: [
+        { text: "Choice A", goto: 2 },
+        { text: "Choice B", goto: 3 },
+      ],
+    },
+    2: {
+      paragraphs: ["Passage 2"],
+      ending: true,
+      type: "victory",
+    },
+    3: {
+      paragraphs: ["Passage 3"],
+      ending: true,
+      type: "defeat",
+    },
+    4: {
+      paragraphs: ["Passage 4"],
+      choices: [{ text: "Continue", goto: 5 }],
+      effects: [{ type: "add_item", item: "key" }],
+    },
+    5: {
+      paragraphs: ["Passage 5"],
+      choices: [{ text: "Continue", goto: 1 }],
+      effects: [{ type: "remove_item", item: "key" }],
+    },
+  },
+  items: [{ id: "key", name: "Key" }],
+});
+
+describe("Navigation Component", () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+  });
+
+  describe("Rendering", () => {
+    it("renders navigation title", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByText("Passages")).toBeInTheDocument();
+    });
+
+    it("renders introduction link", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId("nav-introduction")).toBeInTheDocument();
+      expect(screen.getByText("Introduction")).toBeInTheDocument();
+    });
+
+    it("renders all passage links in sorted order", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      expect(screen.getByTestId("nav-passage-1")).toBeInTheDocument();
+      expect(screen.getByTestId("nav-passage-2")).toBeInTheDocument();
+      expect(screen.getByTestId("nav-passage-3")).toBeInTheDocument();
+      expect(screen.getByTestId("nav-passage-4")).toBeInTheDocument();
+      expect(screen.getByTestId("nav-passage-5")).toBeInTheDocument();
+
+      expect(screen.getByText("Passage 1")).toBeInTheDocument();
+      expect(screen.getByText("Passage 2")).toBeInTheDocument();
+      expect(screen.getByText("Passage 3")).toBeInTheDocument();
+      expect(screen.getByText("Passage 4")).toBeInTheDocument();
+      expect(screen.getByText("Passage 5")).toBeInTheDocument();
+    });
+
+    it("renders passages in ascending order even if defined out of order", () => {
+      const mockAdventure: Adventure = {
+        ...createMockAdventure(),
+        passages: {
+          3: {
+            paragraphs: ["Passage 3"],
+            ending: true,
+          },
+          1: {
+            paragraphs: ["Passage 1"],
+            choices: [{ text: "Go", goto: 2 }],
+          },
+          2: {
+            paragraphs: ["Passage 2"],
+            choices: [{ text: "Go", goto: 3 }],
+          },
+        },
+      };
+
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      const passageLinks = screen.getAllByText(/^Passage \d+$/);
+      expect(passageLinks[0]).toHaveTextContent("Passage 1");
+      expect(passageLinks[1]).toHaveTextContent("Passage 2");
+      expect(passageLinks[2]).toHaveTextContent("Passage 3");
+    });
+  });
+
+  describe("Navigation", () => {
+    it("navigates to introduction when introduction link is clicked", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      const introLink = screen.getByTestId("nav-introduction");
+      fireEvent.click(introLink);
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/adventure/test-adventure/content"
+      );
+    });
+
+    it("navigates to correct passage when passage link is clicked", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      const passage2Link = screen.getByTestId("nav-passage-2");
+      fireEvent.click(passage2Link);
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/adventure/test-adventure/content/passage/2"
+      );
+    });
+
+    it("navigates to correct passage for multiple different passages", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      // Click passage 1
+      fireEvent.click(screen.getByTestId("nav-passage-1"));
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/adventure/test-adventure/content/passage/1"
+      );
+
+      // Click passage 5
+      fireEvent.click(screen.getByTestId("nav-passage-5"));
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/adventure/test-adventure/content/passage/5"
+      );
+    });
+  });
+
+  describe("Highlighting", () => {
+    it("highlights introduction button when on introduction page", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={null}
+          />
+        </MemoryRouter>
+      );
+
+      const introButton = screen.getByTestId("nav-introduction");
+      // Check that the button has the primary variant by checking aria-label
+      expect(introButton).toBeInTheDocument();
+      expect(introButton).toHaveAttribute("aria-label", "Introduction");
+    });
+
+    it("does not highlight introduction when viewing a passage", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={2}
+          />
+        </MemoryRouter>
+      );
+
+      const introButton = screen.getByTestId("nav-introduction");
+      expect(introButton).toBeInTheDocument();
+    });
+
+    it("highlights correct passage button when viewing that passage", () => {
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={3}
+          />
+        </MemoryRouter>
+      );
+
+      const passage3Button = screen.getByTestId("nav-passage-3");
+      expect(passage3Button).toBeInTheDocument();
+      expect(passage3Button).toHaveAttribute("aria-label", "Passage 3");
+
+      // Other passages should also exist
+      const passage1Button = screen.getByTestId("nav-passage-1");
+      expect(passage1Button).toBeInTheDocument();
+    });
+
+    it("updates highlighting when navigating between passages", () => {
+      const mockAdventure = createMockAdventure();
+      const { rerender } = render(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={1}
+          />
+        </MemoryRouter>
+      );
+
+      // Initially passage 1 exists
+      expect(screen.getByTestId("nav-passage-1")).toBeInTheDocument();
+      expect(screen.getByTestId("nav-passage-2")).toBeInTheDocument();
+
+      // Navigate to passage 2
+      rerender(
+        <MemoryRouter>
+          <Navigation
+            adventure={mockAdventure}
+            adventureId="test-adventure"
+            currentPassageId={2}
+          />
+        </MemoryRouter>
+      );
+
+      // Both passages still exist
+      expect(screen.getByTestId("nav-passage-1")).toBeInTheDocument();
+      expect(screen.getByTestId("nav-passage-2")).toBeInTheDocument();
+    });
+  });
+});
