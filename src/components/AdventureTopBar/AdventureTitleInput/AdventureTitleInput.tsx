@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { updateAdventureTitle } from "@/data/adventureDatabase";
+import { invalidateAdventureCache } from "@/data/adventureLoader";
 import { useAdventure } from "@/context/useAdventure";
 import { TopBarTitleInput } from "./AdventureTitleInput.styles";
 
@@ -57,6 +58,8 @@ export const AdventureTitleInput = ({
     // Save to database asynchronously
     try {
       await withSaving(() => updateAdventureTitle(adventureId, trimmedTitle));
+      // Invalidate the cache so the next load gets fresh data
+      invalidateAdventureCache(adventureId);
     } catch (err) {
       console.error("Failed to update adventure title:", err);
       // Could add error recovery here - reload adventure or show toast

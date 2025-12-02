@@ -3,12 +3,17 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { AdventureTitleInput } from "../AdventureTitleInput";
 import * as adventureDatabase from "@/data/adventureDatabase";
+import * as adventureLoader from "@/data/adventureLoader";
 import { AdventureContext } from "@/context/AdventureContext";
 import type { AdventureContextType } from "@/context/AdventureContext";
 import type { Adventure } from "@/data/types";
 
 vi.mock("@/data/adventureDatabase", () => ({
   updateAdventureTitle: vi.fn(),
+}));
+
+vi.mock("@/data/adventureLoader", () => ({
+  invalidateAdventureCache: vi.fn(),
 }));
 
 describe("AdventureTitleInput", () => {
@@ -118,6 +123,11 @@ describe("AdventureTitleInput", () => {
         TEST_STORY_ID,
         "Updated Title"
       );
+
+      // Should invalidate the cache
+      expect(adventureLoader.invalidateAdventureCache).toHaveBeenCalledWith(
+        TEST_STORY_ID
+      );
     });
   });
 
@@ -139,6 +149,9 @@ describe("AdventureTitleInput", () => {
       expect(adventureDatabase.updateAdventureTitle).toHaveBeenCalledWith(
         TEST_STORY_ID,
         "Title via Enter"
+      );
+      expect(adventureLoader.invalidateAdventureCache).toHaveBeenCalledWith(
+        TEST_STORY_ID
       );
     });
   });
@@ -179,6 +192,9 @@ describe("AdventureTitleInput", () => {
       expect(adventureDatabase.updateAdventureTitle).toHaveBeenCalledWith(
         TEST_STORY_ID,
         "Spaced Title"
+      );
+      expect(adventureLoader.invalidateAdventureCache).toHaveBeenCalledWith(
+        TEST_STORY_ID
       );
     });
   });
