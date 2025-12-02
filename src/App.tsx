@@ -20,12 +20,26 @@ const App = () => {
               element={
                 <AdventureProvider>
                   <Routes>
-                    <Route path="test" element={<TestAdventure />} />
+                    <Route
+                      path="test"
+                      element={<Navigate to="introduction" replace />}
+                    />
+                    <Route
+                      path="test/introduction"
+                      element={<TestAdventure />}
+                    />
                     <Route
                       path="test/passage/:id"
                       element={<TestAdventure />}
                     />
-                    <Route path="content" element={<AdventureContent />} />
+                    <Route
+                      path="content"
+                      element={<Navigate to="introduction" replace />}
+                    />
+                    <Route
+                      path="content/introduction"
+                      element={<AdventureContent />}
+                    />
                     <Route
                       path="content/passage/:id"
                       element={<AdventureContent />}
@@ -34,7 +48,10 @@ const App = () => {
                       path="structure"
                       element={<div>Structure view coming soon</div>}
                     />
-                    <Route path="*" element={<Navigate to="test" replace />} />
+                    <Route
+                      path="*"
+                      element={<Navigate to="test/introduction" replace />}
+                    />
                   </Routes>
                 </AdventureProvider>
               }

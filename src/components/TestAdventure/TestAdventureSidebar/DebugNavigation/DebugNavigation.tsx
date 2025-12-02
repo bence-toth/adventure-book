@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Adventure } from "@/data/types";
+import { useAdventure } from "@/context/useAdventure";
 import {
   getAdventureTestPassageRoute,
   getAdventureTestRoute,
@@ -15,23 +16,24 @@ import {
 
 interface DebugNavigationProps {
   adventure: Adventure;
-  adventureId: string;
   currentPassageId: number | null;
 }
 
 export const DebugNavigation = ({
   adventure,
-  adventureId,
   currentPassageId,
 }: DebugNavigationProps) => {
   const navigate = useNavigate();
+  const { adventureId } = useAdventure();
 
   const handleIntroductionClick = useCallback(() => {
+    if (!adventureId) return;
     navigate(getAdventureTestRoute(adventureId));
   }, [navigate, adventureId]);
 
   const handlePassageClick = useCallback(
     (passageId: number) => {
+      if (!adventureId) return;
       navigate(getAdventureTestPassageRoute(adventureId, passageId));
     },
     [navigate, adventureId]

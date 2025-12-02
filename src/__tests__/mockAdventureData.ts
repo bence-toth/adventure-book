@@ -1,9 +1,4 @@
 import type { Adventure, Passage, IntroductionContent } from "@/data/types";
-import { getInventory } from "@/utils/localStorage";
-import {
-  addItemToInventory,
-  removeItemFromInventory,
-} from "@/utils/inventoryManagement";
 import { saveAdventure } from "@/data/adventureDatabase";
 import { AdventureSerializer } from "@/data/adventureSerializer";
 import { vi } from "vitest";
@@ -192,7 +187,6 @@ export const setupTestAdventure = async (
 // Factory function to create a mock adventure loader module
 // This can be used in vi.mock() calls to replace the actual adventure loader
 export const createMockAdventureLoader = () => {
-  const testAdventureId = "test-adventure-id";
   let currentAdventure = { ...mockAdventure };
 
   return {
@@ -209,12 +203,6 @@ export const createMockAdventureLoader = () => {
     getPassage: (id: number) => currentAdventure.passages[id],
     getAllPassages: () => currentAdventure.passages,
     getInventoryItems: () => currentAdventure.items,
-    getCurrentInventory: (adventureId: string = testAdventureId) =>
-      getInventory(adventureId),
-    addItemToInventory: (adventureId: string, itemId: string) =>
-      addItemToInventory(adventureId, itemId),
-    removeItemFromInventory: (adventureId: string, itemId: string) =>
-      removeItemFromInventory(adventureId, itemId),
   };
 };
 
@@ -222,7 +210,6 @@ export const createMockAdventureLoader = () => {
 export const createCustomMockAdventureLoader = (
   customAdventure: Partial<Adventure>
 ) => {
-  const testAdventureId = "test-adventure-id";
   const adventure = { ...mockAdventure, ...customAdventure };
   const introduction: IntroductionContent = {
     title: adventure.metadata.title,
@@ -240,12 +227,6 @@ export const createCustomMockAdventureLoader = (
     getPassage: (id: number) => adventure.passages[id],
     getAllPassages: () => adventure.passages,
     getInventoryItems: () => adventure.items,
-    getCurrentInventory: (adventureId: string = testAdventureId) =>
-      getInventory(adventureId),
-    addItemToInventory: (adventureId: string, itemId: string) =>
-      addItemToInventory(adventureId, itemId),
-    removeItemFromInventory: (adventureId: string, itemId: string) =>
-      removeItemFromInventory(adventureId, itemId),
   };
 };
 

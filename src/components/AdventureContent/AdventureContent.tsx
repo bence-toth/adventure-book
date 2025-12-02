@@ -15,7 +15,6 @@ import { AdventureLayout } from "@/components/layouts/AdventureLayout/AdventureL
 import { AdventureContentSidebar } from "./AdventureContentSidebar/AdventureContentSidebar";
 import { LoadingState } from "./LoadingState/LoadingState";
 import { IntroductionView } from "./IntroductionView/IntroductionView";
-import { ResetPassage } from "./ResetPassage/ResetPassage";
 import { PassageView } from "./PassageView/PassageView";
 
 export const AdventureContent = () => {
@@ -69,15 +68,6 @@ export const AdventureContent = () => {
     !Number.isInteger(passageId)
   ) {
     throw new InvalidPassageIdError(id || "undefined");
-  }
-
-  // Handle passage 0 (reset) - redirect to introduction
-  if (passageId === SPECIAL_PASSAGES.RESET) {
-    return (
-      <AdventureLayout sidebar={<AdventureContentSidebar />}>
-        <ResetPassage />
-      </AdventureLayout>
-    );
   }
 
   const currentPassage = adventure.passages[passageId];

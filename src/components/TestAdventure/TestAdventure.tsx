@@ -1,14 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import {
-  addItemToInventory,
-  removeItemFromInventory,
-} from "@/data/adventureLoader";
-import {
-  saveCurrentPassageId,
-  clearCurrentPassageId,
-  clearInventory,
-} from "@/utils/localStorage";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   getAdventureTestPassageRoute,
   SPECIAL_PASSAGES,
@@ -25,7 +16,6 @@ import { AdventureLayout } from "@/components/layouts/AdventureLayout/AdventureL
 import { TestAdventureSidebar } from "./TestAdventureSidebar/TestAdventureSidebar";
 import { LoadingState } from "./LoadingState/LoadingState";
 import { IntroductionView } from "./IntroductionView/IntroductionView";
-import { ResetPassage } from "./ResetPassage/ResetPassage";
 import { PassageView } from "./PassageView/PassageView";
 
 export const TestAdventure = () => {
@@ -37,50 +27,62 @@ export const TestAdventure = () => {
   const isIntroduction = !id;
   const passageId = id ? parseInt(id, 10) : null;
 
-  // Clear inventory and passage ID when viewing introduction
+  // Manage inventory in component state
+  // Key insight: inventory should be reset based on route, not in an effect
+  const inventoryKey = useMemo(
+    () => (isIntroduction ? "intro" : passageId),
+    [isIntroduction, passageId]
+  );
+  const [inventory, setInventory] = useState<string[]>([]);
+  const [lastInventoryKey, setLastInventoryKey] = useState(inventoryKey);
+
+  // Reset inventory when route changes to introduction
+  if (inventoryKey !== lastInventoryKey) {
+    if (inventoryKey === "intro") {
+      setInventory([]);
+    }
+    setLastInventoryKey(inventoryKey);
+  }
+
+  // Execute passage effects when navigating to a passage
   useEffect(() => {
-    if (!adventureId || !isIntroduction) return;
-
-    clearCurrentPassageId(adventureId);
-    clearInventory(adventureId);
-
-    // Dispatch event to notify sidebar
-    window.dispatchEvent(new Event("inventoryUpdate"));
-  }, [adventureId, isIntroduction]);
-
-  useEffect(() => {
-    if (!adventureId || !adventure || isIntroduction || passageId === null)
+    if (!adventure || isIntroduction || passageId === null || isNaN(passageId))
       return;
 
-    if (!isNaN(passageId)) {
-      if (passageId === SPECIAL_PASSAGES.RESET) {
-        // Special case: passage 0 clears localStorage and redirects to introduction
-        navigate(getAdventureTestRoute(adventureId));
-        return;
-      } else if (passageId >= 1) {
-        saveCurrentPassageId(adventureId, passageId);
-
-        // Execute effects for this passage (only non-ending passages have effects)
-        const passage = adventure.passages[passageId];
-        if (passage && !passage.ending && passage.effects) {
-          passage.effects.forEach((effect) => {
-            if (effect.type === "add_item") {
-              addItemToInventory(adventureId, effect.item);
-            } else if (effect.type === "remove_item") {
-              removeItemFromInventory(adventureId, effect.item);
-            }
-          });
-
-          // Dispatch an event to notify other components
-          window.dispatchEvent(new Event("inventoryUpdate"));
+    const passage = adventure.passages[passageId];
+    if (passage && !passage.ending && passage.effects) {
+      passage.effects.forEach((effect) => {
+        if (effect.type === "add_item") {
+          setInventory((prev) =>
+            prev.includes(effect.item) ? prev : [...prev, effect.item]
+          );
+        } else if (effect.type === "remove_item") {
+          setInventory((prev) => prev.filter((id) => id !== effect.item));
         }
-      }
+      });
     }
-  }, [passageId, navigate, adventureId, adventure, isIntroduction]);
+  }, [passageId, adventure, isIntroduction]);
+
+  // Inventory management callbacks for debug mode
+  const handleAddItem = useCallback((itemId: string) => {
+    setInventory((prev) => (prev.includes(itemId) ? prev : [...prev, itemId]));
+  }, []);
+
+  const handleRemoveItem = useCallback((itemId: string) => {
+    setInventory((prev) => prev.filter((id) => id !== itemId));
+  }, []);
 
   if (isLoading) {
     return (
-      <AdventureLayout sidebar={<TestAdventureSidebar />}>
+      <AdventureLayout
+        sidebar={
+          <TestAdventureSidebar
+            inventory={inventory}
+            onAddItem={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+          />
+        }
+      >
         <LoadingState isIntroduction={isIntroduction} />
       </AdventureLayout>
     );
@@ -103,7 +105,15 @@ export const TestAdventure = () => {
     };
 
     return (
-      <AdventureLayout sidebar={<TestAdventureSidebar />}>
+      <AdventureLayout
+        sidebar={
+          <TestAdventureSidebar
+            inventory={inventory}
+            onAddItem={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+          />
+        }
+      >
         <IntroductionView
           adventure={adventure}
           onStart={handleStartAdventure}
@@ -122,16 +132,6 @@ export const TestAdventure = () => {
     throw new InvalidPassageIdError(id || "undefined");
   }
 
-  // Handle passage 0 (reset) - this will be handled in useEffect, but we need to prevent
-  // the rest of the component from rendering while the redirect happens
-  if (passageId === SPECIAL_PASSAGES.RESET) {
-    return (
-      <AdventureLayout sidebar={<TestAdventureSidebar />}>
-        <ResetPassage />
-      </AdventureLayout>
-    );
-  }
-
   const currentPassage = adventure.passages[passageId];
 
   if (!currentPassage) {
@@ -143,13 +143,19 @@ export const TestAdventure = () => {
   };
 
   const handleRestartClick = () => {
-    clearCurrentPassageId(adventureId);
-    clearInventory(adventureId);
     navigate(getAdventureTestRoute(adventureId));
   };
 
   return (
-    <AdventureLayout sidebar={<TestAdventureSidebar />}>
+    <AdventureLayout
+      sidebar={
+        <TestAdventureSidebar
+          inventory={inventory}
+          onAddItem={handleAddItem}
+          onRemoveItem={handleRemoveItem}
+        />
+      }
+    >
       <PassageView
         passage={currentPassage}
         isDebugModeEnabled={isDebugModeEnabled}

@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getCurrentInventory } from "@/data/adventureLoader";
 import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "@/components/common/Sidebar/Sidebar";
 import { ToggleButton } from "@/components/common/ToggleButton/ToggleButton";
@@ -13,68 +11,30 @@ import {
   SidebarFooter,
 } from "./TestAdventureSidebar.styles";
 
-export const TestAdventureSidebar = () => {
+interface TestAdventureSidebarProps {
+  inventory: string[];
+  onAddItem: (itemId: string) => void;
+  onRemoveItem: (itemId: string) => void;
+}
+
+export const TestAdventureSidebar = ({
+  inventory,
+  onAddItem,
+  onRemoveItem,
+}: TestAdventureSidebarProps) => {
   const { id } = useParams<{ id: string }>();
-  const [currentInventoryIds, setCurrentInventoryIds] = useState<string[]>([]);
-  const { adventure, adventureId, isDebugModeEnabled, setIsDebugModeEnabled } =
+  const { adventure, isDebugModeEnabled, setIsDebugModeEnabled } =
     useAdventure();
 
   // Parse current passage ID from URL (null means we're on introduction)
   const currentPassageId = id ? parseInt(id, 10) : null;
 
-  useEffect(() => {
-    if (!adventureId) {
-      return;
-    }
-
-    let isMounted = true;
-
-    // Load initial inventory from localStorage on mount and when adventureId changes
-    const updateInventory = () => {
-      if (isMounted) {
-        setCurrentInventoryIds(getCurrentInventory(adventureId));
-      }
-    };
-
-    updateInventory();
-
-    // Set up a listener for storage changes
-    const handleStorageChange = () => {
-      if (isMounted) {
-        setCurrentInventoryIds(getCurrentInventory(adventureId));
-      }
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-
-    // Also listen for custom events from the same window
-    const handleInventoryUpdate = () => {
-      if (isMounted) {
-        setCurrentInventoryIds(getCurrentInventory(adventureId));
-      }
-    };
-
-    window.addEventListener("inventoryUpdate", handleInventoryUpdate);
-
-    return () => {
-      isMounted = false;
-      window.removeEventListener("storage", handleStorageChange);
-      window.removeEventListener("inventoryUpdate", handleInventoryUpdate);
-    };
-  }, [adventureId]);
-
-  const handleInventoryChange = () => {
-    if (!adventureId) return;
-    setCurrentInventoryIds(getCurrentInventory(adventureId));
-    window.dispatchEvent(new Event("inventoryUpdate"));
-  };
-
-  if (!adventure || !adventureId) {
+  if (!adventure) {
     return null;
   }
 
   const currentItems = adventure.items.filter((item) =>
-    currentInventoryIds.includes(item.id)
+    inventory.includes(item.id)
   );
 
   return (
@@ -85,13 +45,12 @@ export const TestAdventureSidebar = () => {
             <>
               <DebugInventory
                 allItems={adventure.items}
-                currentItemIds={currentInventoryIds}
-                adventureId={adventureId}
-                onInventoryChange={handleInventoryChange}
+                currentItemIds={inventory}
+                onAddItem={onAddItem}
+                onRemoveItem={onRemoveItem}
               />
               <DebugNavigation
                 adventure={adventure}
-                adventureId={adventureId}
                 currentPassageId={currentPassageId}
               />
             </>

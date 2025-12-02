@@ -7,11 +7,7 @@ import {
   type StoredAdventure,
 } from "@/data/adventureDatabase";
 import adventureTemplate from "@/data/adventure.yaml?raw";
-import {
-  getAdventureTestRoute,
-  getAdventureTestPassageRoute,
-} from "@/constants/routes";
-import { getCurrentPassageId } from "@/utils/localStorage";
+import { getAdventureTestRoute } from "@/constants/routes";
 import { importYamlFile } from "@/utils/importYaml";
 import {
   StoriesLoadError,
@@ -59,16 +55,7 @@ export const AdventureManager = () => {
 
   const handleOpenAdventure = useCallback(
     (id: string) => {
-      // Check if there's a saved passage for this adventure
-      const savedPassageId = getCurrentPassageId(id);
-
-      if (savedPassageId !== null) {
-        // Navigate directly to the saved passage
-        navigate(getAdventureTestPassageRoute(id, savedPassageId));
-      } else {
-        // Navigate to the introduction if no saved progress
-        navigate(getAdventureTestRoute(id));
-      }
+      navigate(getAdventureTestRoute(id));
     },
     [navigate]
   );

@@ -9,7 +9,7 @@ export const getAdventureTestRoute = (
   adventureId: string | null | undefined
 ): string => {
   if (!adventureId) return "";
-  return `/adventure/${adventureId}/test`;
+  return `/adventure/${adventureId}/test/introduction`;
 };
 
 export const getAdventureTestPassageRoute = (
@@ -24,7 +24,7 @@ export const getAdventureContentRoute = (
   adventureId: string | null | undefined
 ): string => {
   if (!adventureId) return "";
-  return `/adventure/${adventureId}/content`;
+  return `/adventure/${adventureId}/content/introduction`;
 };
 
 export const getAdventureContentPassageRoute = (
@@ -43,6 +43,5 @@ export const getAdventureStructureRoute = (
 };
 
 export const SPECIAL_PASSAGES = {
-  RESET: 0,
   START: 1,
 } as const;

@@ -7,11 +7,6 @@ import type {
   IntroductionContent,
   InventoryItem,
 } from "./types";
-import { getInventory } from "@/utils/localStorage";
-import {
-  addItemToInventory,
-  removeItemFromInventory,
-} from "@/utils/inventoryManagement";
 import { getAdventure, updateAdventureContent } from "./adventureDatabase";
 
 // Import the YAML file as a string (for backwards compatibility)
@@ -95,10 +90,6 @@ export const getInventoryItems = (): InventoryItem[] => {
   return adventure.items;
 };
 
-export const getCurrentInventory = (adventureId: string): string[] => {
-  return getInventory(adventureId);
-};
-
 // Save an adventure back to the database
 export const saveAdventureById = async (
   adventureId: string,
@@ -113,6 +104,3 @@ export const saveAdventureById = async (
   // Invalidate the cache to force reload on next access
   invalidateAdventureCache(adventureId);
 };
-
-// Re-export inventory management functions from the shared utility
-export { addItemToInventory, removeItemFromInventory };
