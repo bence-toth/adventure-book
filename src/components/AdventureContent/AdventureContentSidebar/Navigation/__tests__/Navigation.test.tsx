@@ -171,7 +171,7 @@ describe("Navigation Component", () => {
       fireEvent.click(introLink);
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        "/adventure/test-adventure/content"
+        "/adventure/test-adventure/content/introduction"
       );
     });
 

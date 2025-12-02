@@ -152,7 +152,7 @@ describe("AdventureManager Component", () => {
 
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith(
-          "/adventure/new-adventure-id/test"
+          "/adventure/new-adventure-id/test/introduction"
         );
       });
     });
@@ -216,7 +216,9 @@ describe("AdventureManager Component", () => {
       const openButtons = screen.getAllByLabelText(/^Open Adventure/);
       fireEvent.click(openButtons[0]);
 
-      expect(mockNavigate).toHaveBeenCalledWith("/adventure/adventure-1/test");
+      expect(mockNavigate).toHaveBeenCalledWith(
+        "/adventure/adventure-1/test/introduction"
+      );
     });
   });
 
@@ -479,43 +481,6 @@ describe("AdventureManager Component", () => {
     });
   });
 
-  describe("Saved Progress Navigation", () => {
-    it("navigates to saved passage when progress exists", async () => {
-      const adventure: StoredAdventure = {
-        id: "test-id",
-        title: "Adventure with Progress",
-        content: "mock content",
-        lastEdited: new Date(),
-        createdAt: new Date(),
-      };
-      vi.mocked(adventureDatabase.listStories).mockResolvedValue([adventure]);
-
-      // Mock saved progress
-      localStorage.setItem(
-        "adventure-book/progress",
-        JSON.stringify({
-          "test-id": {
-            passageId: 5,
-            inventory: [],
-          },
-        })
-      );
-
-      render(<AdventureManager />);
-
-      const openButton = await screen.findByLabelText(
-        "Open Adventure with Progress"
-      );
-      fireEvent.click(openButton);
-
-      await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith(
-          "/adventure/test-id/test/passage/5"
-        );
-      });
-    });
-  });
-
   describe("File Drop", () => {
     beforeEach(() => {
       vi.mocked(adventureDatabase.listStories).mockResolvedValue(mockStories);
@@ -559,7 +524,7 @@ describe("AdventureManager Component", () => {
 
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith(
-          "/adventure/imported-id/test"
+          "/adventure/imported-id/test/introduction"
         );
       });
     });
@@ -789,7 +754,7 @@ describe("AdventureManager Component", () => {
 
       await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith(
-          "/adventure/imported-id/test"
+          "/adventure/imported-id/test/introduction"
         );
       });
     });

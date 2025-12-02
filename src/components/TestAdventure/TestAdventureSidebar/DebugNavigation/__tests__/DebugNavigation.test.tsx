@@ -5,6 +5,7 @@ import type { Adventure } from "@/data/types";
 import { DebugNavigation } from "../DebugNavigation";
 
 const mockNavigate = vi.fn();
+let mockAdventureId: string | null = "test-adventure";
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
@@ -13,6 +14,21 @@ vi.mock("react-router-dom", async () => {
     useNavigate: () => mockNavigate,
   };
 });
+
+vi.mock("@/context/useAdventure", () => ({
+  useAdventure: () => ({
+    adventureId: mockAdventureId,
+    adventure: null,
+    isLoading: false,
+    error: null,
+    isDebugModeEnabled: false,
+    isSaving: false,
+    setIsDebugModeEnabled: vi.fn(),
+    reloadAdventure: vi.fn(),
+    updateAdventure: vi.fn(),
+    withSaving: vi.fn(),
+  }),
+}));
 
 const createMockAdventure = (): Adventure => ({
   metadata: {
@@ -59,6 +75,7 @@ const createMockAdventure = (): Adventure => ({
 describe("DebugNavigation Component", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
+    mockAdventureId = "test-adventure";
   });
 
   describe("Rendering", () => {
@@ -66,11 +83,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -81,11 +94,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -97,11 +106,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -139,11 +144,7 @@ describe("DebugNavigation Component", () => {
 
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -159,11 +160,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -171,7 +168,7 @@ describe("DebugNavigation Component", () => {
       fireEvent.click(introLink);
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        "/adventure/test-adventure/test"
+        "/adventure/test-adventure/test/introduction"
       );
     });
 
@@ -179,11 +176,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -199,11 +192,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -226,11 +215,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={null}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
         </MemoryRouter>
       );
 
@@ -244,11 +229,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={2}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={2} />
         </MemoryRouter>
       );
 
@@ -260,11 +241,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={3}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={3} />
         </MemoryRouter>
       );
 
@@ -281,11 +258,7 @@ describe("DebugNavigation Component", () => {
       const mockAdventure = createMockAdventure();
       const { rerender } = render(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={1}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={1} />
         </MemoryRouter>
       );
 
@@ -296,17 +269,49 @@ describe("DebugNavigation Component", () => {
       // Navigate to passage 2
       rerender(
         <MemoryRouter>
-          <DebugNavigation
-            adventure={mockAdventure}
-            adventureId="test-adventure"
-            currentPassageId={2}
-          />
+          <DebugNavigation adventure={mockAdventure} currentPassageId={2} />
         </MemoryRouter>
       );
 
       // Both passages still exist
       expect(screen.getByTestId("debug-nav-passage-1")).toBeInTheDocument();
       expect(screen.getByTestId("debug-nav-passage-2")).toBeInTheDocument();
+    });
+  });
+
+  describe("Navigation without adventureId", () => {
+    it("does not navigate when introduction link is clicked and adventureId is null", () => {
+      mockAdventureId = null;
+
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
+        </MemoryRouter>
+      );
+
+      const introLink = screen.getByTestId("debug-nav-introduction");
+      fireEvent.click(introLink);
+
+      // Navigation should not have been called
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it("does not navigate when passage link is clicked and adventureId is null", () => {
+      mockAdventureId = null;
+
+      const mockAdventure = createMockAdventure();
+      render(
+        <MemoryRouter>
+          <DebugNavigation adventure={mockAdventure} currentPassageId={null} />
+        </MemoryRouter>
+      );
+
+      const passage1Link = screen.getByTestId("debug-nav-passage-1");
+      fireEvent.click(passage1Link);
+
+      // Navigation should not have been called
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
   });
 });

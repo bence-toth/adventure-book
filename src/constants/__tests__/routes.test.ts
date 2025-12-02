@@ -10,7 +10,7 @@ describe("Route Helper Functions", () => {
   describe("getAdventureTestRoute", () => {
     it("returns correct route for valid adventureId", () => {
       expect(getAdventureTestRoute("test-adventure-123")).toBe(
-        "/adventure/test-adventure-123/test"
+        "/adventure/test-adventure-123/test/introduction"
       );
     });
 
@@ -30,7 +30,7 @@ describe("Route Helper Functions", () => {
   describe("getAdventureContentRoute", () => {
     it("returns correct route for valid adventureId", () => {
       expect(getAdventureContentRoute("test-adventure-456")).toBe(
-        "/adventure/test-adventure-456/content"
+        "/adventure/test-adventure-456/content/introduction"
       );
     });
 

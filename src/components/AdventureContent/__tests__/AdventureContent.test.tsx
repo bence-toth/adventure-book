@@ -299,21 +299,6 @@ describe("AdventureContent Component", () => {
     });
   });
 
-  describe("Reset Passage", () => {
-    it("renders reset passage when passage ID is 0", async () => {
-      mockParams = { id: "0", adventureId: TEST_STORY_ID };
-
-      renderWithAdventure(<AdventureContent />, {
-        adventureId: TEST_STORY_ID,
-        adventure: mockAdventure,
-      });
-
-      // Should render the reset passage component
-      const resetElement = await screen.findByTestId("reset-passage");
-      expect(resetElement).toBeInTheDocument();
-    });
-  });
-
   describe("Restart Functionality", () => {
     it("navigates to introduction when restart button is clicked", async () => {
       mockParams = { id: "4", adventureId: TEST_STORY_ID };
@@ -332,7 +317,7 @@ describe("AdventureContent Component", () => {
       fireEvent.click(restartButton);
 
       expect(mockNavigate).toHaveBeenCalledWith(
-        `/adventure/${TEST_STORY_ID}/content`
+        `/adventure/${TEST_STORY_ID}/content/introduction`
       );
     });
   });

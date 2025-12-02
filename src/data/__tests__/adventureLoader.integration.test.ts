@@ -8,7 +8,6 @@ import {
   getPassage,
   getAllPassages,
   getInventoryItems,
-  getCurrentInventory,
 } from "../adventureLoader";
 import { saveAdventure, type StoredAdventure } from "../adventureDatabase";
 
@@ -309,20 +308,6 @@ passages:
           expect(item.id).toBeDefined();
           expect(item.name).toBeDefined();
         });
-      });
-    });
-
-    describe("getCurrentInventory", () => {
-      it("should return current inventory for an adventure", () => {
-        const inventory = getCurrentInventory("test-adventure");
-
-        expect(Array.isArray(inventory)).toBe(true);
-      });
-
-      it("should return empty array for new adventure", () => {
-        const inventory = getCurrentInventory("brand-new-adventure");
-
-        expect(inventory).toEqual([]);
       });
     });
   });
