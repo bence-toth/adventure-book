@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useAdventure } from "@/context/useAdventure";
 import { Textarea } from "@/components/common/Textarea/Textarea";
@@ -83,6 +83,12 @@ export const PassageEditView = ({
 
   const [isEnding, setIsEnding] = useState(passage.ending || false);
 
+  // Refs for auto-focusing newly added items
+  const choiceRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const effectRefs = useRef<(HTMLSelectElement | null)[]>([]);
+  const shouldFocusChoice = useRef<number | null>(null);
+  const shouldFocusEffect = useRef<number | null>(null);
+
   // Get available passage IDs for choice dropdowns
   const availablePassages = adventure
     ? Object.keys(adventure.passages)
@@ -101,6 +107,24 @@ export const PassageEditView = ({
     label: item.name,
   }));
 
+  // Auto-focus newly added choice
+  useEffect(() => {
+    if (shouldFocusChoice.current !== null) {
+      const index = shouldFocusChoice.current;
+      choiceRefs.current[index]?.focus();
+      shouldFocusChoice.current = null;
+    }
+  }, [choices]);
+
+  // Auto-focus newly added effect
+  useEffect(() => {
+    if (shouldFocusEffect.current !== null) {
+      const index = shouldFocusEffect.current;
+      effectRefs.current[index]?.focus();
+      shouldFocusEffect.current = null;
+    }
+  }, [effects]);
+
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
     if (textError) setTextError(undefined);
@@ -111,7 +135,9 @@ export const PassageEditView = ({
   };
 
   const handleAddChoice = () => {
+    const newIndex = choices.length;
     setChoices([...choices, { text: "", goto: null }]);
+    shouldFocusChoice.current = newIndex;
   };
 
   const handleRemoveChoice = (index: number) => {
@@ -139,7 +165,9 @@ export const PassageEditView = ({
   };
 
   const handleAddEffect = () => {
+    const newIndex = effects.length;
     setEffects([...effects, { type: "", item: "" }]);
+    shouldFocusEffect.current = newIndex;
     if (effectsError) setEffectsError(undefined);
   };
 
@@ -359,6 +387,9 @@ export const PassageEditView = ({
                 <EffectRow key={index}>
                   <EffectControls>
                     <Select
+                      ref={(el) => {
+                        effectRefs.current[index] = el;
+                      }}
                       label="Effect type"
                       options={[
                         { value: "add_item", label: "Add item to inventory" },
@@ -413,6 +444,9 @@ export const PassageEditView = ({
               <ChoiceRow key={index}>
                 <ChoiceControls>
                   <Input
+                    ref={(el) => {
+                      choiceRefs.current[index] = el;
+                    }}
                     label="Text"
                     value={choice.text}
                     onChange={(e) =>

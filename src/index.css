@@ -206,6 +206,9 @@ h6 {
   --space-3: calc(var(--space-base) * 3);
   --space-4: calc(var(--space-base) * 4);
   --space-5: calc(var(--space-base) * 5);
+  --space-6: calc(var(--space-base) * 6);
+  --space-7: calc(var(--space-base) * 7);
+  --space-8: calc(var(--space-base) * 8);
 
   /* Border variables */
   --border-width-surface: 1px;
