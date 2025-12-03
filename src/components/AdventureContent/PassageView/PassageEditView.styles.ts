@@ -55,6 +55,7 @@ export const ChoiceControls = styled.div`
 
 export const RemoveButton = styled(Button)`
   flex-shrink: 0;
+  padding-block: var(--space-2);
 `;
 
 export const AddButton = styled(Button)`

@@ -24,7 +24,7 @@ export const StyledTextarea = styled.textarea<{ $hasError: boolean }>`
     variant: "neutral",
     isSurface: true,
   })};
-  border: var(--border-width-surface) solid
+  border: var(--border-width-interactive) solid
     ${(props) =>
       getColor({
         type: "border",

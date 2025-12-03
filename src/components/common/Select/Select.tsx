@@ -3,6 +3,7 @@ import { forwardRef } from "react";
 import {
   SelectContainer,
   Label,
+  SelectWrapper,
   StyledSelect,
   ErrorMessage,
 } from "./Select.styles";
@@ -40,26 +41,28 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <SelectContainer className={className}>
         <Label htmlFor={selectId}>{label}</Label>
-        <StyledSelect
-          ref={ref}
-          id={selectId}
-          $hasError={!!error}
-          aria-invalid={!!error}
-          aria-describedby={errorId}
-          data-testid={testId}
-          {...props}
-        >
-          {placeholder && (
-            <option value="" disabled>
-              {placeholder}
-            </option>
-          )}
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </StyledSelect>
+        <SelectWrapper>
+          <StyledSelect
+            ref={ref}
+            id={selectId}
+            $hasError={!!error}
+            aria-invalid={!!error}
+            aria-describedby={errorId}
+            data-testid={testId}
+            {...props}
+          >
+            {placeholder && (
+              <option value="" disabled>
+                {placeholder}
+              </option>
+            )}
+            {options.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </StyledSelect>
+        </SelectWrapper>
         {error && (
           <ErrorMessage id={errorId} role="alert">
             {error}

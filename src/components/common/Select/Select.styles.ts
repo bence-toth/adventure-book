@@ -6,6 +6,7 @@ export const SelectContainer = styled.div`
   flex-direction: column;
   gap: var(--space-1);
   width: 100%;
+  position: relative;
 `;
 
 export const Label = styled.label`
@@ -13,8 +14,30 @@ export const Label = styled.label`
   color: ${getColor({ type: "foreground", variant: "neutral" })};
 `;
 
+export const SelectWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  &::after {
+    content: "";
+    position: absolute;
+    right: var(--space-2);
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: var(--space-0-5) solid transparent;
+    border-right: var(--space-0-5) solid transparent;
+    border-top: var(--space-0-5) solid
+      ${getColor({ type: "foreground", variant: "neutral" })};
+    pointer-events: none;
+  }
+`;
+
 export const StyledSelect = styled.select<{ $hasError: boolean }>`
   padding: var(--space-2);
+  padding-inline-end: var(--space-4);
   font-size: var(--font-size-md);
   font-family: var(--font-family-default);
   color: ${getColor({ type: "foreground", variant: "neutral" })};
@@ -23,7 +46,7 @@ export const StyledSelect = styled.select<{ $hasError: boolean }>`
     variant: "neutral",
     isSurface: true,
   })};
-  border: var(--border-width-surface) solid
+  border: var(--border-width-interactive) solid
     ${(props) =>
       getColor({
         type: "border",
@@ -32,6 +55,8 @@ export const StyledSelect = styled.select<{ $hasError: boolean }>`
       })};
   border-radius: var(--space-0-5);
   cursor: pointer;
+  appearance: none;
+  width: 100%;
 
   &:focus-visible {
     outline-offset: var(--space-1);
