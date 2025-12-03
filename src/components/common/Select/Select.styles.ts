@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { getColor } from "@/utils/colorHelpers";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
 
 export const SelectContainer = styled.div`
   display: flex;
@@ -40,18 +40,24 @@ export const StyledSelect = styled.select<{ $hasError: boolean }>`
   padding-inline-end: var(--space-4);
   font-size: var(--font-size-md);
   font-family: var(--font-family-default);
-  color: ${getColor({ type: "foreground", variant: "neutral" })};
-  background: ${getColor({
-    type: "background",
-    variant: "neutral",
-    isSurface: true,
-  })};
+  color: ${(props) =>
+    getInteractiveColor({
+      variant: props.$hasError ? "danger" : "neutral",
+      type: "foreground",
+      state: "default",
+    })};
+  background: ${() =>
+    getInteractiveColor({
+      variant: "neutral",
+      type: "background",
+      state: "default",
+    })};
   border: var(--border-width-interactive) solid
     ${(props) =>
-      getColor({
-        type: "border",
+      getInteractiveColor({
         variant: props.$hasError ? "danger" : "neutral",
-        isSurface: true,
+        type: "border",
+        state: "default",
       })};
   border-radius: var(--space-0-5);
   cursor: pointer;
