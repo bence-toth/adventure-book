@@ -1,22 +1,29 @@
 import type { Effect } from "@/data/types";
 
+export const validateTitle = (title: string): string | undefined => {
+  if (!title || title.trim().length === 0) {
+    return "Title must not be blank";
+  }
+  return undefined;
+};
+
 export const validateIntroductionText = (text: string): string | undefined => {
   if (!text || text.trim().length === 0) {
-    return "Introduction text must not be blank";
+    return "Introduction content must not be blank";
   }
   return undefined;
 };
 
 export const validatePassageText = (text: string): string | undefined => {
   if (!text || text.trim().length === 0) {
-    return "Passage text must not be blank";
+    return "Passage content must not be blank";
   }
   return undefined;
 };
 
 export const validateChoiceText = (text: string): string | undefined => {
   if (!text || text.trim().length === 0) {
-    return "Choice text must not be blank";
+    return "Choice content must not be blank";
   }
   return undefined;
 };
@@ -25,7 +32,7 @@ export const validateChoiceTarget = (
   target: number | null
 ): string | undefined => {
   if (target === null || target < 1) {
-    return "Choice target passage must be selected";
+    return "Go to passage must be selected";
   }
   return undefined;
 };

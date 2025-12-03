@@ -1,12 +1,12 @@
 import { useState, useCallback } from "react";
 import { useAdventure } from "@/context/useAdventure";
+import { Input } from "@/components/common/Input/Input";
 import { Textarea } from "@/components/common/Textarea/Textarea";
 import { Button } from "@/components/common/Button/Button";
-import { validateIntroductionText } from "@/utils/validation";
+import { validateTitle, validateIntroductionText } from "@/utils/validation";
 import type { Adventure } from "@/data/types";
 import {
   EditContainer,
-  EditTitle,
   FormSection,
   ButtonGroup,
 } from "./IntroductionEditView.styles";
@@ -19,20 +19,32 @@ export const IntroductionEditView = ({
   adventure,
 }: IntroductionEditViewProps) => {
   const { updateIntroduction } = useAdventure();
+  const [title, setTitle] = useState(adventure.metadata.title);
   const [text, setText] = useState(adventure.intro.paragraphs.join("\n\n"));
+  const [titleError, setTitleError] = useState<string | undefined>();
   const [textError, setTextError] = useState<string | undefined>();
 
   const handleSave = useCallback(async () => {
     // Validate
-    const error = validateIntroductionText(text);
-    if (error) {
-      setTextError(error);
+    const titleValidationError = validateTitle(title);
+    const textValidationError = validateIntroductionText(text);
+
+    if (titleValidationError || textValidationError) {
+      setTitleError(titleValidationError);
+      setTextError(textValidationError);
       return;
     }
 
     // Save
-    await updateIntroduction(text);
-  }, [text, updateIntroduction]);
+    await updateIntroduction(title, text);
+  }, [title, text, updateIntroduction]);
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+    if (titleError) {
+      setTitleError(undefined);
+    }
+  };
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
@@ -43,10 +55,18 @@ export const IntroductionEditView = ({
 
   return (
     <EditContainer>
-      <EditTitle>{adventure.metadata.title}</EditTitle>
+      <FormSection>
+        <Input
+          label="Title"
+          value={title}
+          onChange={handleTitleChange}
+          error={titleError}
+          data-testid="introduction-title-input"
+        />
+      </FormSection>
       <FormSection>
         <Textarea
-          label="Introduction Text"
+          label="Introduction content"
           value={text}
           onChange={handleTextChange}
           error={textError}
@@ -56,7 +76,7 @@ export const IntroductionEditView = ({
       </FormSection>
       <ButtonGroup>
         <Button onClick={handleSave} variant="primary">
-          Save
+          Save introduction
         </Button>
       </ButtonGroup>
     </EditContainer>

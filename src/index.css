@@ -24,6 +24,15 @@ a {
   outline-color: var(--color-interactive-outline-focus-neutral);
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: inherit;
+}
+
 :root {
   color-scheme: light dark;
   color: var(--color-foreground-neutral);

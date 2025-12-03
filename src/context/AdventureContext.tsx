@@ -16,7 +16,7 @@ export interface AdventureContextType {
   setIsDebugModeEnabled: (isEnabled: boolean) => void;
   reloadAdventure: () => void;
   updateAdventure: (updater: (adventure: Adventure) => Adventure) => void;
-  updateIntroduction: (text: string) => Promise<void>;
+  updateIntroduction: (title: string, text: string) => Promise<void>;
   updatePassage: (passageId: number, passage: Passage) => Promise<void>;
   withSaving: <T>(asyncOperation: () => Promise<T>) => Promise<T>;
 }
@@ -85,7 +85,7 @@ export const AdventureProvider = ({
   );
 
   const updateIntroduction = useCallback(
-    async (text: string) => {
+    async (title: string, text: string) => {
       if (!adventure || !adventureId) return;
 
       await withSaving(async () => {
@@ -98,6 +98,10 @@ export const AdventureProvider = ({
         // Update adventure state
         const updatedAdventure: Adventure = {
           ...adventure,
+          metadata: {
+            ...adventure.metadata,
+            title,
+          },
           intro: {
             ...adventure.intro,
             paragraphs,

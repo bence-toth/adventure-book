@@ -19,9 +19,8 @@ export const FormSection = styled.div`
 
 export const SectionTitle = styled.h2`
   font-size: var(--font-size-lg);
-  font-weight: 600;
   color: ${getColor({ type: "foreground", variant: "neutral" })};
-  margin: 0;
+  margin-block: var(--space-4) var(--space-1);
 `;
 
 export const ButtonGroup = styled.div`

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { getColor } from "@/utils/colorHelpers";
 
 export const EditContainer = styled.div`
   display: flex;
@@ -8,13 +7,6 @@ export const EditContainer = styled.div`
   padding: var(--space-3);
   width: 100%;
   max-width: var(--size-content);
-`;
-
-export const EditTitle = styled.h1`
-  font-size: var(--font-size-xl);
-  font-weight: 700;
-  color: ${getColor({ type: "foreground", variant: "neutral" })};
-  margin: 0;
 `;
 
 export const FormSection = styled.div`

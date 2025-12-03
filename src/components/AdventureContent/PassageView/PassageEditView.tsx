@@ -301,7 +301,7 @@ export const PassageEditView = ({
     <EditContainer>
       <FormSection>
         <Textarea
-          label="Passage Text"
+          label="Passage content"
           value={text}
           onChange={handleTextChange}
           error={textError}
@@ -312,7 +312,7 @@ export const PassageEditView = ({
 
       <FormSection>
         <Textarea
-          label="Passage Notes (optional)"
+          label="Notes"
           value={notes}
           onChange={handleNotesChange}
           rows={3}
@@ -321,12 +321,11 @@ export const PassageEditView = ({
       </FormSection>
 
       <FormSection>
-        <SectionTitle>Passage Type</SectionTitle>
         <Select
-          label="Type"
+          label="Passage type"
           options={[
-            { value: "regular", label: "Regular Passage" },
-            { value: "ending", label: "Ending" },
+            { value: "regular", label: "Regular passage" },
+            { value: "ending", label: "Ending passage" },
           ]}
           value={isEnding ? "ending" : "regular"}
           onChange={(e) => handleIsEndingChange(e.target.value === "ending")}
@@ -337,7 +336,7 @@ export const PassageEditView = ({
       {isEnding ? (
         <FormSection>
           <Select
-            label="Ending Type"
+            label="Ending type"
             options={[
               { value: "victory", label: "Victory" },
               { value: "defeat", label: "Defeat" },
@@ -354,16 +353,19 @@ export const PassageEditView = ({
         <>
           {itemOptions.length > 0 && (
             <FormSection>
-              <SectionTitle>Effects (optional)</SectionTitle>
+              <SectionTitle>Effects</SectionTitle>
               {effectsError && <ErrorText>{effectsError}</ErrorText>}
               {effects.map((effect, index) => (
                 <EffectRow key={index}>
                   <EffectControls>
                     <Select
-                      label="Effect Type"
+                      label="Effect type"
                       options={[
-                        { value: "add_item", label: "Add Item" },
-                        { value: "remove_item", label: "Remove Item" },
+                        { value: "add_item", label: "Add item to inventory" },
+                        {
+                          value: "remove_item",
+                          label: "Remove item from inventory",
+                        },
                       ]}
                       value={effect.type}
                       onChange={(e) =>
@@ -400,7 +402,7 @@ export const PassageEditView = ({
                 variant="neutral"
                 data-testid="add-effect-button"
               >
-                Add Effect
+                Add effect
               </AddButton>
             </FormSection>
           )}
@@ -411,7 +413,7 @@ export const PassageEditView = ({
               <ChoiceRow key={index}>
                 <ChoiceControls>
                   <Input
-                    label="Choice Text"
+                    label="Text"
                     value={choice.text}
                     onChange={(e) =>
                       handleChoiceTextChange(index, e.target.value)
@@ -420,7 +422,7 @@ export const PassageEditView = ({
                     data-testid={`choice-text-${index}`}
                   />
                   <Select
-                    label="Target Passage"
+                    label="Go to"
                     options={passageOptions}
                     value={choice.goto ? String(choice.goto) : ""}
                     onChange={(e) =>
@@ -447,7 +449,7 @@ export const PassageEditView = ({
               variant="neutral"
               data-testid="add-choice-button"
             >
-              Add Choice
+              Add choice
             </AddButton>
           </FormSection>
         </>
@@ -459,7 +461,7 @@ export const PassageEditView = ({
           variant="primary"
           data-testid="save-button"
         >
-          Save
+          Save passage
         </Button>
       </ButtonGroup>
     </EditContainer>
