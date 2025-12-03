@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useAdventure } from "@/context/useAdventure";
 import { Textarea } from "@/components/common/Textarea/Textarea";
 import { Input } from "@/components/common/Input/Input";
@@ -388,7 +388,7 @@ export const PassageEditView = ({
                   </EffectControls>
                   <RemoveButton
                     onClick={() => handleRemoveEffect(index)}
-                    icon={X}
+                    icon={Trash2}
                     variant="danger"
                     size="small"
                     aria-label="Remove effect"
@@ -435,7 +435,7 @@ export const PassageEditView = ({
                 </ChoiceControls>
                 <RemoveButton
                   onClick={() => handleRemoveChoice(index)}
-                  icon={X}
+                  icon={Trash2}
                   variant="danger"
                   size="small"
                   aria-label="Remove choice"
