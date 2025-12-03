@@ -3,10 +3,7 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import { render } from "@testing-library/react";
 import { IntroductionView } from "../IntroductionView";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
-import {
-  INTRODUCTION_TEST_IDS,
-  getIntroParagraphTestId,
-} from "@/constants/testIds";
+import { INTRODUCTION_TEST_IDS, getIntroParagraphTestId } from "../../testIds";
 
 describe("IntroductionView Component", () => {
   const mockOnStart = vi.fn();

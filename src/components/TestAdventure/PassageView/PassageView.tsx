@@ -2,7 +2,7 @@ import {
   PASSAGE_TEST_IDS,
   getPassageParagraphTestId,
   getChoiceButtonTestId,
-} from "@/constants/testIds";
+} from "../testIds";
 import { Button } from "@/components/common/Button/Button";
 import type { Passage } from "@/data/types";
 import {

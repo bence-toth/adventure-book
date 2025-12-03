@@ -16,6 +16,7 @@ import {
 } from "@/utils/errors";
 import { FileDropArea } from "@/components/common/FileDropArea/FileDropArea";
 import { ModalDialog } from "@/components/common/ModalDialog/ModalDialog";
+import { ADVENTURE_MANAGER_TEST_IDS } from "./testIds";
 import { AdventureManagerTopBar } from "./AdventureManagerTopBar/AdventureManagerTopBar";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
@@ -158,7 +159,7 @@ export const AdventureManager = () => {
         onFileDrop={handleFileDrop}
         dropLabel="Drop YAML file here"
         isDisabled={isModalOpen}
-        data-testid="adventure-manager-drop-area"
+        data-testid={ADVENTURE_MANAGER_TEST_IDS.DROP_AREA}
       >
         <AdventureManagerContainer>
           <AdventureManagerList>

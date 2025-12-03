@@ -7,7 +7,7 @@ import {
   PASSAGE_TEST_IDS,
   getPassageParagraphTestId,
   getChoiceButtonTestId,
-} from "@/constants/testIds";
+} from "../../testIds";
 import type { Passage } from "@/data/types";
 
 describe("PassageView Component", () => {

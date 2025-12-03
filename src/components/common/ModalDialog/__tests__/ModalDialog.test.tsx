@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { ModalDialog } from "../ModalDialog";
-import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "@/constants/testIds";
+import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "../testIds";
 
 describe("ModalDialog Component", () => {
   let originalOverflow: string;

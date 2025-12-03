@@ -5,10 +5,7 @@ import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
 import { getAdventureContentPassageRoute } from "@/constants/routes";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
-import {
-  INTRODUCTION_TEST_IDS,
-  getChoiceButtonTestId,
-} from "@/constants/testIds";
+import { INTRODUCTION_TEST_IDS, getChoiceButtonTestId } from "../testIds";
 
 const TEST_STORY_ID = "test-adventure-id";
 

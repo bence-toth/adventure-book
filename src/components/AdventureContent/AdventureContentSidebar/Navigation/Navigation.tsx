@@ -5,6 +5,7 @@ import {
   getAdventureContentPassageRoute,
   getAdventureContentRoute,
 } from "@/constants/routes";
+import { NAVIGATION_TEST_IDS, getNavigationPassageTestId } from "./testIds";
 import { PassageLink } from "./PassageLink/PassageLink";
 import {
   NavigationWrapper,
@@ -51,7 +52,7 @@ export const Navigation = ({
             label="Introduction"
             onClick={handleIntroductionClick}
             isActive={currentPassageId === null}
-            data-testid="nav-introduction"
+            data-testid={NAVIGATION_TEST_IDS.INTRODUCTION}
           />
         </NavigationItem>
         {passageIds.map((passageId) => {
@@ -63,7 +64,7 @@ export const Navigation = ({
                 passage={passage}
                 onClick={() => handlePassageClick(passageId)}
                 isActive={currentPassageId === passageId}
-                data-testid={`nav-passage-${passageId}`}
+                data-testid={getNavigationPassageTestId(passageId)}
               />
             </NavigationItem>
           );

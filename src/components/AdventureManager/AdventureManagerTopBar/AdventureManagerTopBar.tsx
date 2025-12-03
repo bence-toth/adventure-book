@@ -1,6 +1,7 @@
 import { useCallback, useState, useRef } from "react";
 import { Swords, EllipsisVertical } from "lucide-react";
-import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
+import { TOP_BAR_TEST_IDS } from "@/components/AdventureTopBar/testIds";
+import { ADVENTURE_MANAGER_TEST_IDS } from "../testIds";
 import { TopBar } from "@/components/common/TopBar/TopBar";
 import { AdventureManagerContextMenu } from "./AdventureManagerContextMenu/AdventureManagerContextMenu";
 import {
@@ -70,7 +71,7 @@ export const AdventureManagerTopBar = ({
                 handleMenuClick(e, e.currentTarget as HTMLButtonElement)
               }
               aria-label="Open adventure manager menu"
-              data-testid="adventure-manager-context-menu-button"
+              data-testid={ADVENTURE_MANAGER_TEST_IDS.CONTEXT_MENU_BUTTON}
             >
               <EllipsisVertical size={20} strokeWidth={2} />
             </ContextMenuButton>
@@ -89,7 +90,7 @@ export const AdventureManagerTopBar = ({
         accept=".yaml,.yml"
         onChange={handleFileChange}
         style={{ display: "none" }}
-        data-testid="adventure-manager-file-input"
+        data-testid={ADVENTURE_MANAGER_TEST_IDS.FILE_INPUT}
       />
     </>
   );

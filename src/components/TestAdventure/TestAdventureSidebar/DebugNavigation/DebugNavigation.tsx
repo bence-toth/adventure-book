@@ -6,6 +6,10 @@ import {
   getAdventureTestPassageRoute,
   getAdventureTestRoute,
 } from "@/constants/routes";
+import {
+  DEBUG_NAVIGATION_TEST_IDS,
+  getDebugNavigationPassageTestId,
+} from "../testIds";
 import { PassageLink } from "./PassageLink/PassageLink";
 import {
   NavigationWrapper,
@@ -55,7 +59,7 @@ export const DebugNavigation = ({
             label="Introduction"
             onClick={handleIntroductionClick}
             isActive={currentPassageId === null}
-            data-testid="debug-nav-introduction"
+            data-testid={DEBUG_NAVIGATION_TEST_IDS.INTRODUCTION}
           />
         </DebugNavigationItem>
         {passageIds.map((passageId) => {
@@ -67,7 +71,7 @@ export const DebugNavigation = ({
                 passage={passage}
                 onClick={() => handlePassageClick(passageId)}
                 isActive={currentPassageId === passageId}
-                data-testid={`debug-nav-passage-${passageId}`}
+                data-testid={getDebugNavigationPassageTestId(passageId)}
               />
             </DebugNavigationItem>
           );

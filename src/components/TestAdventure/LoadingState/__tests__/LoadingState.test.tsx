@@ -2,7 +2,7 @@ import { screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { render } from "@testing-library/react";
 import { LoadingState } from "../LoadingState";
-import { INTRODUCTION_TEST_IDS, PASSAGE_TEST_IDS } from "@/constants/testIds";
+import { INTRODUCTION_TEST_IDS, PASSAGE_TEST_IDS } from "../../testIds";
 
 describe("LoadingState Component", () => {
   it("renders loading message for introduction", () => {

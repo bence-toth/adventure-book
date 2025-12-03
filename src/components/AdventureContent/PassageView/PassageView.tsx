@@ -2,7 +2,7 @@ import {
   PASSAGE_TEST_IDS,
   getPassageParagraphTestId,
   getChoiceButtonTestId,
-} from "@/constants/testIds";
+} from "../testIds";
 import { Button } from "@/components/common/Button/Button";
 import type { Passage } from "@/data/types";
 import {
@@ -25,7 +25,7 @@ export const PassageView = ({
   onRestart,
 }: PassageViewProps) => {
   return (
-    <ContentContainer data-testid="passage-view">
+    <ContentContainer data-testid={PASSAGE_TEST_IDS.VIEW}>
       {passage.notes && (
         <PassageNotes data-testid={PASSAGE_TEST_IDS.NOTES}>
           {passage.notes}

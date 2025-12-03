@@ -2,11 +2,11 @@ import { screen, fireEvent } from "@testing-library/react";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, it, expect, vi } from "vitest";
+import { INTRODUCTION_TEST_IDS } from "@/components/AdventureContent/testIds";
 import {
-  INTRODUCTION_TEST_IDS,
   PASSAGE_TEST_IDS,
   getChoiceButtonTestId,
-} from "@/constants/testIds";
+} from "@/components/AdventureContent/testIds";
 import { createMockAdventureLoader } from "./mockAdventureData";
 
 // Mock adventureLoader using the factory function

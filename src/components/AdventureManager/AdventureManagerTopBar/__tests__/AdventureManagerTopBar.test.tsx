@@ -1,7 +1,7 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { AdventureManagerTopBar } from "../AdventureManagerTopBar";
-import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
+import { TOP_BAR_TEST_IDS } from "@/components/AdventureTopBar/testIds";
 import { render } from "@/__tests__/testUtils";
 
 describe("AdventureManagerTopBar Component", () => {

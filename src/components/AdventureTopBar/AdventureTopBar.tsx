@@ -1,7 +1,11 @@
 import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import { EllipsisVertical } from "lucide-react";
-import { TOP_BAR_TEST_IDS } from "@/constants/testIds";
+import { TOP_BAR_TEST_IDS } from "./testIds";
+import {
+  ADVENTURE_TOP_BAR_TEST_IDS,
+  ADVENTURE_CONTEXT_MENU_TEST_IDS,
+} from "./testIds";
 import { TopBar } from "@/components/common/TopBar/TopBar";
 import { useAdventure } from "@/context/useAdventure";
 import { getAdventure } from "@/data/adventureDatabase";
@@ -75,7 +79,9 @@ export const AdventureTopBar = () => {
             <BackButton />
             <AdventureTitleInput adventureId={adventureId} />
             {isSaving && (
-              <SavingIndicator data-testid="saving-indicator">
+              <SavingIndicator
+                data-testid={ADVENTURE_TOP_BAR_TEST_IDS.SAVING_INDICATOR}
+              >
                 Saving...
               </SavingIndicator>
             )}
@@ -89,7 +95,7 @@ export const AdventureTopBar = () => {
                 handleMenuClick(e, e.currentTarget as HTMLButtonElement)
               }
               aria-label="Open adventure menu"
-              data-testid="adventure-context-menu-button"
+              data-testid={ADVENTURE_CONTEXT_MENU_TEST_IDS.BUTTON}
             >
               <EllipsisVertical size={20} strokeWidth={2} />
             </ContextMenuButton>

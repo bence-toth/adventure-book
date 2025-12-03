@@ -3,7 +3,7 @@ import { vi, beforeEach, describe, it, expect } from "vitest";
 import { TestAdventure } from "../TestAdventure";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { createMockPassage } from "@/__tests__/mockAdventureData";
-import { PASSAGE_TEST_IDS } from "@/constants/testIds";
+import { PASSAGE_TEST_IDS } from "../testIds";
 import type { Adventure } from "@/data/types";
 
 const TEST_STORY_ID = "test-adventure-id";

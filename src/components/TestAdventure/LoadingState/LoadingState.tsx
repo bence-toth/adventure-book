@@ -1,4 +1,4 @@
-import { INTRODUCTION_TEST_IDS, PASSAGE_TEST_IDS } from "@/constants/testIds";
+import { INTRODUCTION_TEST_IDS, PASSAGE_TEST_IDS } from "../testIds";
 import { ContentContainer } from "./LoadingState.styles";
 
 interface LoadingStateProps {

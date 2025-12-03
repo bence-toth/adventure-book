@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "@/components/common/Sidebar/Sidebar";
 import { ToggleButton } from "@/components/common/ToggleButton/ToggleButton";
+import { TEST_ADVENTURE_SIDEBAR_TEST_IDS } from "./testIds";
 import { Inventory } from "./Inventory/Inventory";
 import { DebugInventory } from "./DebugInventory/DebugInventory";
 import { DebugNavigation } from "./DebugNavigation/DebugNavigation";
@@ -63,7 +64,7 @@ export const TestAdventureSidebar = ({
             label="Debug mode"
             isChecked={isDebugModeEnabled}
             onChange={setIsDebugModeEnabled}
-            data-testid="debug-mode-toggle"
+            data-testid={TEST_ADVENTURE_SIDEBAR_TEST_IDS.DEBUG_MODE_TOGGLE}
           />
         </SidebarFooter>
       </SidebarLayout>

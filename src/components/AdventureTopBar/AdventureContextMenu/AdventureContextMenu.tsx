@@ -3,6 +3,7 @@ import {
   ContextMenu,
   ContextMenuItem,
 } from "@/components/common/ContextMenu/ContextMenu";
+import { ADVENTURE_CONTEXT_MENU_TEST_IDS } from "../testIds";
 
 interface AdventureContextMenuProps {
   isOpen: boolean;
@@ -23,12 +24,12 @@ export const AdventureContextMenu = ({
       onOpenChange={onOpenChange}
       triggerRef={triggerRef}
       placement="bottom-end"
-      data-testid="adventure-context-menu"
+      data-testid={ADVENTURE_CONTEXT_MENU_TEST_IDS.MENU}
     >
       <ContextMenuItem
         onClick={onYAMLDownloadClick}
         icon={Download}
-        data-testid="adventure-context-menu-download"
+        data-testid={ADVENTURE_CONTEXT_MENU_TEST_IDS.DOWNLOAD}
       >
         Download adventure as YAML
       </ContextMenuItem>

@@ -6,6 +6,7 @@ import {
   type ReactNode,
   type DragEvent,
 } from "react";
+import { FILE_DROP_AREA_TEST_IDS } from "./testIds";
 import {
   DropAreaContainer,
   DropAreaOverlay,
@@ -111,7 +112,7 @@ export const FileDropArea = ({
     >
       {children}
       {isDragging && (
-        <DropAreaOverlay data-testid="file-drop-overlay">
+        <DropAreaOverlay data-testid={FILE_DROP_AREA_TEST_IDS.OVERLAY}>
           <DropAreaContent>{dropLabel}</DropAreaContent>
         </DropAreaOverlay>
       )}

@@ -1,7 +1,4 @@
-import {
-  INTRODUCTION_TEST_IDS,
-  getIntroParagraphTestId,
-} from "@/constants/testIds";
+import { INTRODUCTION_TEST_IDS, getIntroParagraphTestId } from "../testIds";
 import { Button } from "@/components/common/Button/Button";
 import type { Adventure } from "@/data/types";
 import {

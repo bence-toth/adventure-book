@@ -12,7 +12,7 @@ import {
   INTRODUCTION_TEST_IDS,
   PASSAGE_TEST_IDS,
   getChoiceButtonTestId,
-} from "@/constants/testIds";
+} from "../testIds";
 import type { Adventure } from "@/data/types";
 
 const TEST_STORY_ID = "test-adventure-id";
