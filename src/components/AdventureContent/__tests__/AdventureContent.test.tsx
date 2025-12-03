@@ -1,11 +1,9 @@
-import { screen, fireEvent } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { AdventureContent } from "../AdventureContent";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
-import { getAdventureContentPassageRoute } from "@/constants/routes";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
-import { INTRODUCTION_TEST_IDS, getChoiceButtonTestId } from "../testIds";
 
 const TEST_STORY_ID = "test-adventure-id";
 
@@ -40,7 +38,7 @@ describe("AdventureContent Component", () => {
   });
 
   describe("Introduction Mode", () => {
-    it("renders introduction when no passage id is provided", async () => {
+    it("renders introduction edit view when no passage id is provided", async () => {
       mockParams = {
         id: undefined as unknown as string,
         adventureId: TEST_STORY_ID,
@@ -51,20 +49,18 @@ describe("AdventureContent Component", () => {
         adventure: mockAdventure,
       });
 
-      const introContainer = await screen.findByTestId(
-        INTRODUCTION_TEST_IDS.CONTAINER
+      // Should render introduction edit view with textarea
+      const introTextInput = await screen.findByTestId(
+        "introduction-text-input"
       );
-      expect(introContainer).toBeInTheDocument();
+      expect(introTextInput).toBeInTheDocument();
 
-      const introTitle = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
-      expect(introTitle).toBeInTheDocument();
-      expect(introTitle).toHaveTextContent(mockAdventure.metadata.title);
-
-      const introText = await screen.findByTestId(INTRODUCTION_TEST_IDS.TEXT);
-      expect(introText).toBeInTheDocument();
+      // Should have save button
+      const saveButton = await screen.findByRole("button", { name: /save/i });
+      expect(saveButton).toBeInTheDocument();
     });
 
-    it("navigates to passage 1 when start button is clicked in introduction mode", async () => {
+    it("renders introduction text in textarea", async () => {
       mockParams = {
         id: undefined as unknown as string,
         adventureId: TEST_STORY_ID,
@@ -75,35 +71,34 @@ describe("AdventureContent Component", () => {
         adventure: mockAdventure,
       });
 
-      const button = await screen.findByTestId(
-        INTRODUCTION_TEST_IDS.START_BUTTON
+      const introTextInput = await screen.findByTestId(
+        "introduction-text-input"
       );
-      fireEvent.click(button);
 
-      expect(mockNavigate).toHaveBeenCalledWith(
-        getAdventureContentPassageRoute(TEST_STORY_ID, 1)
+      // Check that introduction text is present
+      expect(introTextInput).toHaveValue(
+        mockAdventure.intro.paragraphs.join("\n\n")
       );
     });
   });
 
-  it("navigates to correct passage when choice is clicked", async () => {
+  it("renders passage edit view for valid passage", async () => {
     renderWithAdventure(<AdventureContent />, {
       adventureId: TEST_STORY_ID,
       adventure: mockAdventure,
     });
 
-    const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
-    expect(firstChoice).toHaveAttribute("data-goto", "2");
+    // Should render passage edit view with text input
+    const passageTextInput = await screen.findByTestId("passage-text-input");
+    expect(passageTextInput).toBeInTheDocument();
 
-    fireEvent.click(firstChoice);
-
-    expect(mockNavigate).toHaveBeenCalledWith(
-      getAdventureContentPassageRoute(TEST_STORY_ID, 2)
-    );
+    // Should have save button
+    const saveButton = await screen.findByRole("button", { name: /save/i });
+    expect(saveButton).toBeInTheDocument();
   });
 
   describe("Error Handling", () => {
-    it("renders introduction view when id param is undefined", async () => {
+    it("renders introduction edit view when id param is undefined", async () => {
       mockParams = {
         id: undefined as unknown as string,
         adventureId: TEST_STORY_ID,
@@ -114,20 +109,14 @@ describe("AdventureContent Component", () => {
         adventure: mockAdventure,
       });
 
-      // Should render introduction instead of throwing an error
-      const introContainer = await screen.findByTestId(
-        INTRODUCTION_TEST_IDS.CONTAINER
+      // Should render introduction edit view instead of throwing an error
+      const introTextInput = await screen.findByTestId(
+        "introduction-text-input"
       );
-      expect(introContainer).toBeInTheDocument();
+      expect(introTextInput).toBeInTheDocument();
 
-      const introTitle = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
-      expect(introTitle).toBeInTheDocument();
-      expect(introTitle).toHaveTextContent(mockAdventure.metadata.title);
-
-      const startButton = await screen.findByTestId(
-        INTRODUCTION_TEST_IDS.START_BUTTON
-      );
-      expect(startButton).toBeInTheDocument();
+      const saveButton = await screen.findByRole("button", { name: /save/i });
+      expect(saveButton).toBeInTheDocument();
     });
 
     it("throws AdventureLoadError when there is a load error", async () => {
@@ -249,22 +238,26 @@ describe("AdventureContent Component", () => {
     });
   });
 
-  describe("Debug Mode Choice Display", () => {
-    it("maintains correct navigation", async () => {
+  describe("Edit Mode Rendering", () => {
+    it("renders passage edit view with form controls", async () => {
       renderWithAdventure(<AdventureContent />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
 
-      const firstChoice = await screen.findByTestId(getChoiceButtonTestId(0));
-      expect(firstChoice).toHaveTextContent("2: Go to mock passage 2");
-      expect(firstChoice).toHaveAttribute("data-goto", "2");
+      // Should render passage edit view with text input
+      const passageTextInput = await screen.findByTestId("passage-text-input");
+      expect(passageTextInput).toBeInTheDocument();
 
-      fireEvent.click(firstChoice);
-
-      expect(mockNavigate).toHaveBeenCalledWith(
-        getAdventureContentPassageRoute(TEST_STORY_ID, 2)
+      // Should have passage type select
+      const passageTypeSelect = await screen.findByTestId(
+        "passage-type-select"
       );
+      expect(passageTypeSelect).toBeInTheDocument();
+
+      // Should have save button
+      const saveButton = await screen.findByRole("button", { name: /save/i });
+      expect(saveButton).toBeInTheDocument();
     });
   });
 
@@ -296,8 +289,8 @@ describe("AdventureContent Component", () => {
     });
   });
 
-  describe("Restart Functionality", () => {
-    it("navigates to introduction when restart button is clicked", async () => {
+  describe("Sidebar Navigation", () => {
+    it("renders content sidebar with passage edit view", async () => {
       mockParams = { id: "4", adventureId: TEST_STORY_ID };
 
       renderWithAdventure(<AdventureContent />, {
@@ -305,17 +298,13 @@ describe("AdventureContent Component", () => {
         adventure: mockAdventure,
       });
 
-      // Wait for passage to load
-      const passageElement = await screen.findByTestId("passage-view");
-      expect(passageElement).toBeInTheDocument();
+      // Wait for passage edit view to load
+      const passageTextInput = await screen.findByTestId("passage-text-input");
+      expect(passageTextInput).toBeInTheDocument();
 
-      // Click restart button
-      const restartButton = screen.getByRole("button", { name: /restart/i });
-      fireEvent.click(restartButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith(
-        `/adventure/${TEST_STORY_ID}/content/introduction`
-      );
+      // Sidebar should be present with navigation
+      const sidebar = screen.getByRole("complementary");
+      expect(sidebar).toBeInTheDocument();
     });
   });
 

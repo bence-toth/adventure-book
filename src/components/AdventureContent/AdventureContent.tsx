@@ -1,9 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
-import {
-  getAdventureContentPassageRoute,
-  SPECIAL_PASSAGES,
-  getAdventureContentRoute,
-} from "@/constants/routes";
+import { useParams } from "react-router-dom";
 import { useAdventure } from "@/context/useAdventure";
 import {
   AdventureLoadError,
@@ -14,12 +9,11 @@ import {
 import { AdventureLayout } from "@/components/layouts/AdventureLayout/AdventureLayout";
 import { AdventureContentSidebar } from "./AdventureContentSidebar/AdventureContentSidebar";
 import { LoadingState } from "./LoadingState/LoadingState";
-import { IntroductionView } from "./IntroductionView/IntroductionView";
-import { PassageView } from "./PassageView/PassageView";
+import { IntroductionEditView } from "./IntroductionView/IntroductionEditView";
+import { PassageEditView } from "./PassageView/PassageEditView";
 
 export const AdventureContent = () => {
   const { id, adventureId } = useParams<{ id: string; adventureId: string }>();
-  const navigate = useNavigate();
   const { adventure, isLoading, error } = useAdventure();
 
   // If no id is provided, we're in introduction mode
@@ -44,18 +38,9 @@ export const AdventureContent = () => {
 
   // Handle introduction view
   if (isIntroduction) {
-    const handleStartAdventure = () => {
-      navigate(
-        getAdventureContentPassageRoute(adventureId, SPECIAL_PASSAGES.START)
-      );
-    };
-
     return (
       <AdventureLayout sidebar={<AdventureContentSidebar />}>
-        <IntroductionView
-          adventure={adventure}
-          onStart={handleStartAdventure}
-        />
+        <IntroductionEditView adventure={adventure} />
       </AdventureLayout>
     );
   }
@@ -76,21 +61,9 @@ export const AdventureContent = () => {
     throw new PassageNotFoundError(passageId);
   }
 
-  const handleChoiceClick = (nextId: number) => {
-    navigate(getAdventureContentPassageRoute(adventureId, nextId));
-  };
-
-  const handleRestartClick = () => {
-    navigate(getAdventureContentRoute(adventureId));
-  };
-
   return (
     <AdventureLayout sidebar={<AdventureContentSidebar />}>
-      <PassageView
-        passage={currentPassage}
-        onChoiceClick={handleChoiceClick}
-        onRestart={handleRestartClick}
-      />
+      <PassageEditView passageId={passageId} passage={currentPassage} />
     </AdventureLayout>
   );
 };

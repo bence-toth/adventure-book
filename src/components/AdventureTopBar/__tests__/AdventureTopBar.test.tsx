@@ -62,6 +62,8 @@ describe("AdventureTopBar Component", () => {
         setIsDebugModeEnabled: vi.fn(),
         reloadAdventure: vi.fn(),
         updateAdventure: vi.fn(),
+        updateIntroduction: vi.fn(),
+        updatePassage: vi.fn(),
         withSaving: vi.fn(),
       };
 
@@ -318,6 +320,8 @@ describe("AdventureTopBar Component", () => {
         setIsDebugModeEnabled: vi.fn(),
         reloadAdventure: vi.fn(),
         updateAdventure: vi.fn(),
+        updateIntroduction: vi.fn(),
+        updatePassage: vi.fn(),
         withSaving: vi.fn(),
       };
 

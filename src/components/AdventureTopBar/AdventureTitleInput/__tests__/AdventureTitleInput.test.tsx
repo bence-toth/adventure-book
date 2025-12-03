@@ -46,6 +46,8 @@ describe("AdventureTitleInput", () => {
     setIsDebugModeEnabled: vi.fn(),
     reloadAdventure: vi.fn(),
     updateAdventure: mockUpdateAdventure,
+    updateIntroduction: vi.fn(),
+    updatePassage: vi.fn(),
     withSaving: mockWithSaving,
   };
 

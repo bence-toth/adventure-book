@@ -40,6 +40,7 @@ export class AdventureSerializer {
         // Ending passage
         rawPassages[id] = {
           text: passageText,
+          ...(passage.notes && { notes: passage.notes }),
           ending: true,
           ...(passage.type && { type: passage.type }),
         };
@@ -47,6 +48,7 @@ export class AdventureSerializer {
         // Regular passage with choices
         rawPassages[id] = {
           text: passageText,
+          ...(passage.notes && { notes: passage.notes }),
           choices: passage.choices,
           ...(passage.effects &&
             passage.effects.length > 0 && { effects: passage.effects }),

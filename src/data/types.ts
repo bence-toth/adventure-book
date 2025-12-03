@@ -8,7 +8,7 @@ export interface InventoryItem {
   name: string;
 }
 
-type Effect =
+export type Effect =
   | {
       type: "add_item";
       item: string;

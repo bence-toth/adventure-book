@@ -92,6 +92,8 @@ export const renderWithAdventure = (
       setIsDebugModeEnabled: () => {},
       reloadAdventure: () => {},
       updateAdventure: () => {},
+      updateIntroduction: async () => {},
+      updatePassage: async () => {},
       withSaving: (fn) => fn(),
     };
 

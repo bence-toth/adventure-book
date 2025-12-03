@@ -3,54 +3,29 @@ import { vi, beforeEach, describe, it, expect } from "vitest";
 import { AdventureContent } from "../AdventureContent";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { createMockPassage } from "@/__tests__/mockAdventureData";
-import { PASSAGE_TEST_IDS } from "../testIds";
 import type { Adventure } from "@/data/types";
 
 const TEST_STORY_ID = "test-adventure-id";
 
-// Mock react-router-dom navigate function
-const mockNavigate = vi.fn();
 let mockParams = { id: "1", adventureId: TEST_STORY_ID };
 
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
     ...actual,
-    useNavigate: () => mockNavigate,
+    useNavigate: () => vi.fn(),
     useParams: () => mockParams,
   };
 });
 
-// Mock localStorage utilities
-vi.mock("@/utils/localStorage", async () => {
-  const actual = await vi.importActual("@/utils/localStorage");
-  return {
-    ...actual,
-    saveCurrentPassageId: vi.fn(),
-    clearCurrentPassageId: vi.fn(),
-    clearInventory: vi.fn(),
-  };
-});
-
-// Mock adventureLoader
-vi.mock("@/data/adventureLoader", async () => {
-  const actual = await vi.importActual("@/data/adventureLoader");
-  return {
-    ...actual,
-    addItemToInventory: vi.fn(),
-    removeItemFromInventory: vi.fn(),
-  };
-});
-
-describe("AdventureContent - Passage Notes", () => {
+describe("AdventureContent - Passage Notes Editing", () => {
   beforeEach(() => {
-    mockNavigate.mockClear();
     vi.clearAllMocks();
     mockParams = { id: "1", adventureId: TEST_STORY_ID };
   });
 
-  describe("notes display", () => {
-    it("should always display notes when passage has notes", async () => {
+  describe("notes input field", () => {
+    it("should display notes textarea with existing notes", async () => {
       const passageWithNotes = createMockPassage(
         ["First paragraph", "Second paragraph"],
         {
@@ -74,7 +49,10 @@ describe("AdventureContent - Passage Notes", () => {
         },
         passages: {
           1: passageWithNotes,
-          2: createMockPassage(["Ending"], { ending: true, type: "victory" }),
+          2: createMockPassage(["Ending"], {
+            ending: true,
+            type: "victory",
+          }),
         },
         items: [],
       };
@@ -84,14 +62,14 @@ describe("AdventureContent - Passage Notes", () => {
         adventure: mockAdventure,
       });
 
-      const notes = await screen.findByTestId(PASSAGE_TEST_IDS.NOTES);
-      expect(notes).toBeInTheDocument();
-      expect(notes).toHaveTextContent(
+      const notesInput = await screen.findByTestId("passage-notes-input");
+      expect(notesInput).toBeInTheDocument();
+      expect(notesInput).toHaveValue(
         "This is a developer note about this passage."
       );
     });
 
-    it("should NOT display notes section when passage has no notes", async () => {
+    it("should display empty notes textarea when passage has no notes", async () => {
       const passageWithoutNotes = createMockPassage(
         ["First paragraph", "Second paragraph"],
         {
@@ -114,7 +92,10 @@ describe("AdventureContent - Passage Notes", () => {
         },
         passages: {
           1: passageWithoutNotes,
-          2: createMockPassage(["Ending"], { ending: true, type: "victory" }),
+          2: createMockPassage(["Ending"], {
+            ending: true,
+            type: "victory",
+          }),
         },
         items: [],
       };
@@ -124,11 +105,12 @@ describe("AdventureContent - Passage Notes", () => {
         adventure: mockAdventure,
       });
 
-      const notes = screen.queryByTestId(PASSAGE_TEST_IDS.NOTES);
-      expect(notes).not.toBeInTheDocument();
+      const notesInput = await screen.findByTestId("passage-notes-input");
+      expect(notesInput).toBeInTheDocument();
+      expect(notesInput).toHaveValue("");
     });
 
-    it("should display notes on ending passages", async () => {
+    it("should display notes textarea on ending passages", async () => {
       mockParams = { id: "2", adventureId: TEST_STORY_ID };
 
       const endingPassageWithNotes = createMockPassage(
@@ -161,12 +143,12 @@ describe("AdventureContent - Passage Notes", () => {
         adventure: mockAdventure,
       });
 
-      const notes = await screen.findByTestId(PASSAGE_TEST_IDS.NOTES);
-      expect(notes).toBeInTheDocument();
-      expect(notes).toHaveTextContent("Victory ending - player succeeded.");
+      const notesInput = await screen.findByTestId("passage-notes-input");
+      expect(notesInput).toBeInTheDocument();
+      expect(notesInput).toHaveValue("Victory ending - player succeeded.");
     });
 
-    it("should handle empty string notes by not displaying them", async () => {
+    it("should handle empty string notes by showing empty textarea", async () => {
       const passageWithEmptyNotes = createMockPassage(["First paragraph"], {
         choices: [{ text: "Choice 1", goto: 2 }],
       });
@@ -184,7 +166,10 @@ describe("AdventureContent - Passage Notes", () => {
         },
         passages: {
           1: passageWithEmptyNotes,
-          2: createMockPassage(["Ending"], { ending: true, type: "victory" }),
+          2: createMockPassage(["Ending"], {
+            ending: true,
+            type: "victory",
+          }),
         },
         items: [],
       };
@@ -194,12 +179,13 @@ describe("AdventureContent - Passage Notes", () => {
         adventure: mockAdventure,
       });
 
-      // Empty notes should not be rendered
-      const notes = screen.queryByTestId(PASSAGE_TEST_IDS.NOTES);
-      expect(notes).not.toBeInTheDocument();
+      // Empty notes should show empty textarea
+      const notesInput = await screen.findByTestId("passage-notes-input");
+      expect(notesInput).toBeInTheDocument();
+      expect(notesInput).toHaveValue("");
     });
 
-    it("should display multi-line notes correctly", async () => {
+    it("should display multi-line notes correctly in textarea", async () => {
       const passageWithMultilineNotes = createMockPassage(["First paragraph"], {
         choices: [{ text: "Choice 1", goto: 2 }],
       });
@@ -219,7 +205,10 @@ Each line provides context.`;
         },
         passages: {
           1: passageWithMultilineNotes,
-          2: createMockPassage(["Ending"], { ending: true, type: "victory" }),
+          2: createMockPassage(["Ending"], {
+            ending: true,
+            type: "victory",
+          }),
         },
         items: [],
       };
@@ -229,23 +218,23 @@ Each line provides context.`;
         adventure: mockAdventure,
       });
 
-      const notes = await screen.findByTestId(PASSAGE_TEST_IDS.NOTES);
-      expect(notes).toBeInTheDocument();
-      expect(notes).toHaveTextContent("This is a multi-line note.");
-      expect(notes).toHaveTextContent("It has multiple lines.");
-      expect(notes).toHaveTextContent("Each line provides context.");
+      const notesInput = await screen.findByTestId("passage-notes-input");
+      expect(notesInput).toBeInTheDocument();
+      expect(notesInput).toHaveValue(`This is a multi-line note.
+It has multiple lines.
+Each line provides context.`);
     });
   });
 
-  describe("notes positioning", () => {
-    it("should render notes before passage text", async () => {
+  describe("notes textarea positioning", () => {
+    it("should render notes textarea in the edit form", async () => {
       const passageWithNotes = createMockPassage(
         ["This is the passage text."],
         {
           choices: [{ text: "Choice 1", goto: 2 }],
         }
       );
-      passageWithNotes.notes = "Notes should appear first.";
+      passageWithNotes.notes = "Notes should appear in the form.";
 
       const mockAdventure: Adventure = {
         metadata: {
@@ -259,7 +248,10 @@ Each line provides context.`;
         },
         passages: {
           1: passageWithNotes,
-          2: createMockPassage(["Ending"], { ending: true, type: "victory" }),
+          2: createMockPassage(["Ending"], {
+            ending: true,
+            type: "victory",
+          }),
         },
         items: [],
       };
@@ -269,16 +261,12 @@ Each line provides context.`;
         adventure: mockAdventure,
       });
 
-      const container = await screen.findByTestId("passage-view");
-      const notes = await screen.findByTestId(PASSAGE_TEST_IDS.NOTES);
-      const text = await screen.findByTestId(PASSAGE_TEST_IDS.TEXT);
+      const textInput = await screen.findByTestId("passage-text-input");
+      const notesInput = await screen.findByTestId("passage-notes-input");
 
-      // Check that notes appears before text in the DOM
-      const containerChildren = Array.from(container.children);
-      const notesIndex = containerChildren.indexOf(notes);
-      const textIndex = containerChildren.indexOf(text);
-
-      expect(notesIndex).toBeLessThan(textIndex);
+      // Both inputs should be in the edit view
+      expect(textInput).toBeInTheDocument();
+      expect(notesInput).toBeInTheDocument();
     });
   });
 });
