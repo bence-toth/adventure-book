@@ -18,6 +18,8 @@ p {
 
 input,
 button,
+textarea,
+select,
 a {
   outline-color: var(--color-interactive-outline-focus-neutral);
 }

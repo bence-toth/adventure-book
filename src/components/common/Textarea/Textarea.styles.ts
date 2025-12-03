@@ -32,17 +32,11 @@ export const StyledTextarea = styled.textarea<{ $hasError: boolean }>`
         isSurface: true,
       })};
   border-radius: var(--space-0-5);
-  outline: none;
   resize: vertical;
   min-height: 100px;
-  transition: border-color var(--duration-fast);
 
-  &:focus {
-    border-color: ${getColor({
-      type: "border",
-      variant: "primary",
-      isSurface: true,
-    })};
+  &:focus-visible {
+    outline-offset: var(--space-1);
   }
 
   &:disabled {

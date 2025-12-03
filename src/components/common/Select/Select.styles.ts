@@ -31,16 +31,10 @@ export const StyledSelect = styled.select<{ $hasError: boolean }>`
         isSurface: true,
       })};
   border-radius: var(--space-0-5);
-  outline: none;
   cursor: pointer;
-  transition: border-color var(--duration-fast);
 
-  &:focus {
-    border-color: ${getColor({
-      type: "border",
-      variant: "primary",
-      isSurface: true,
-    })};
+  &:focus-visible {
+    outline-offset: var(--space-1);
   }
 
   &:disabled {
