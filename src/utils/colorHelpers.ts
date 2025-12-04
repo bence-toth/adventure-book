@@ -66,7 +66,7 @@ export function getColor({
 }
 
 type InteractiveColorType = "background" | "foreground" | "border" | "outline";
-type InteractiveColorState = "default" | "hover" | "active" | "focus";
+type InteractiveColorState = "default" | "hover" | "active" | "focus" | "input";
 
 interface GetInteractiveColorParams {
   variant: ColorVariant;

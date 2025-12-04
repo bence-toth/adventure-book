@@ -44,20 +44,20 @@ export const StyledSelect = styled.select<{ $hasError: boolean }>`
     getInteractiveColor({
       variant: props.$hasError ? "danger" : "neutral",
       type: "foreground",
-      state: "default",
+      state: "input",
     })};
   background: ${() =>
     getInteractiveColor({
       variant: "neutral",
       type: "background",
-      state: "default",
+      state: "input",
     })};
   border: var(--border-width-interactive) solid
     ${(props) =>
       getInteractiveColor({
         variant: props.$hasError ? "danger" : "neutral",
         type: "border",
-        state: "default",
+        state: "input",
       })};
   border-radius: var(--space-0-5);
   cursor: pointer;
