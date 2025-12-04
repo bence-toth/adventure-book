@@ -6,9 +6,12 @@ import { Button } from "@/components/common/Button/Button";
 import { validateTitle, validateIntroductionText } from "@/utils/validation";
 import type { Adventure } from "@/data/types";
 import {
+  EditViewLayout,
+  EditScrollableContent,
+  ContentWrapper,
   EditContainer,
+  EditFooter,
   FormSection,
-  ButtonGroup,
 } from "./IntroductionEditView.styles";
 
 interface IntroductionEditViewProps {
@@ -54,31 +57,44 @@ export const IntroductionEditView = ({
   };
 
   return (
-    <EditContainer>
-      <FormSection>
-        <Input
-          label="Title"
-          value={title}
-          onChange={handleTitleChange}
-          error={titleError}
-          data-testid="introduction-title-input"
-        />
-      </FormSection>
-      <FormSection>
-        <Textarea
-          label="Introduction content"
-          value={text}
-          onChange={handleTextChange}
-          error={textError}
-          rows={10}
-          data-testid="introduction-text-input"
-        />
-      </FormSection>
-      <ButtonGroup>
-        <Button onClick={handleSave} variant="primary">
+    <EditViewLayout>
+      <EditScrollableContent>
+        <ContentWrapper>
+          <EditContainer>
+            <FormSection>
+              <Input
+                label="Title"
+                value={title}
+                onChange={handleTitleChange}
+                error={titleError}
+                data-testid="introduction-title-input"
+              />
+            </FormSection>
+            <FormSection>
+              <Textarea
+                label="Introduction content"
+                value={text}
+                onChange={handleTextChange}
+                error={textError}
+                rows={10}
+                data-testid="introduction-text-input"
+              />
+            </FormSection>
+          </EditContainer>
+        </ContentWrapper>
+      </EditScrollableContent>
+      <EditFooter>
+        <Button
+          onClick={handleSave}
+          variant="primary"
+          data-testid="save-button"
+        >
           Save introduction
         </Button>
-      </ButtonGroup>
-    </EditContainer>
+        <Button variant="neutral" data-testid="reset-button">
+          Reset
+        </Button>
+      </EditFooter>
+    </EditViewLayout>
   );
 };

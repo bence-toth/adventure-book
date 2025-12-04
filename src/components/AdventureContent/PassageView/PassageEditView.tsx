@@ -14,10 +14,13 @@ import {
 } from "@/utils/validation";
 import type { Passage, Effect } from "@/data/types";
 import {
+  EditViewLayout,
+  EditScrollableContent,
+  ContentWrapper,
   EditContainer,
+  EditFooter,
   FormSection,
   SectionTitle,
-  ButtonGroup,
   EffectRow,
   EffectControls,
   ChoiceRow,
@@ -326,174 +329,186 @@ export const PassageEditView = ({
   ]);
 
   return (
-    <EditContainer>
-      <FormSection>
-        <Textarea
-          label="Passage content"
-          value={text}
-          onChange={handleTextChange}
-          error={textError}
-          rows={10}
-          data-testid="passage-text-input"
-        />
-      </FormSection>
-
-      <FormSection>
-        <Textarea
-          label="Notes"
-          value={notes}
-          onChange={handleNotesChange}
-          rows={3}
-          data-testid="passage-notes-input"
-        />
-      </FormSection>
-
-      <FormSection>
-        <Select
-          label="Passage type"
-          options={[
-            { value: "regular", label: "Regular passage" },
-            { value: "ending", label: "Ending passage" },
-          ]}
-          value={isEnding ? "ending" : "regular"}
-          onChange={(e) => handleIsEndingChange(e.target.value === "ending")}
-          data-testid="passage-type-select"
-        />
-      </FormSection>
-
-      {isEnding ? (
-        <FormSection>
-          <Select
-            label="Ending type"
-            options={[
-              { value: "victory", label: "Victory" },
-              { value: "defeat", label: "Defeat" },
-              { value: "neutral", label: "Neutral" },
-            ]}
-            value={endingType}
-            onChange={(e) => handleEndingTypeChange(e.target.value)}
-            error={endingTypeError}
-            placeholder="Select ending type"
-            data-testid="ending-type-select"
-          />
-        </FormSection>
-      ) : (
-        <>
-          {itemOptions.length > 0 && (
+    <EditViewLayout>
+      <EditScrollableContent>
+        <ContentWrapper>
+          <EditContainer>
             <FormSection>
-              <SectionTitle>Effects</SectionTitle>
-              {effectsError && <ErrorText>{effectsError}</ErrorText>}
-              {effects.map((effect, index) => (
-                <EffectRow key={index}>
-                  <EffectControls>
-                    <Select
-                      ref={(el) => {
-                        effectRefs.current[index] = el;
-                      }}
-                      id={`effect-type-${index}`}
-                      label="Effect type"
-                      options={[
-                        { value: "add_item", label: "Add item to inventory" },
-                        {
-                          value: "remove_item",
-                          label: "Remove item from inventory",
-                        },
-                      ]}
-                      value={effect.type}
-                      onChange={(e) =>
-                        handleEffectTypeChange(index, e.target.value)
-                      }
-                      placeholder="Select effect type"
-                      error={effect.error}
-                      data-testid={`effect-type-${index}`}
-                    />
-                    <Select
-                      id={`effect-item-${index}`}
-                      label="Item"
-                      options={itemOptions}
-                      value={effect.item}
-                      onChange={(e) =>
-                        handleEffectItemChange(index, e.target.value)
-                      }
-                      placeholder="Select item"
-                      data-testid={`effect-item-${index}`}
-                    />
-                  </EffectControls>
-                  <RemoveButton
-                    onClick={() => handleRemoveEffect(index)}
-                    icon={Trash2}
-                    variant="danger"
-                    size="small"
-                    aria-label="Remove effect"
-                    data-testid={`remove-effect-${index}`}
-                  />
-                </EffectRow>
-              ))}
-              <AddButton
-                onClick={handleAddEffect}
-                icon={Plus}
-                variant="neutral"
-                data-testid="add-effect-button"
-              >
-                Add effect
-              </AddButton>
+              <Textarea
+                label="Passage content"
+                value={text}
+                onChange={handleTextChange}
+                error={textError}
+                rows={10}
+                data-testid="passage-text-input"
+              />
             </FormSection>
-          )}
 
-          <FormSection>
-            <SectionTitle>Choices</SectionTitle>
-            {choices.map((choice, index) => (
-              <ChoiceRow key={index}>
-                <ChoiceControls>
-                  <Input
-                    ref={(el) => {
-                      choiceRefs.current[index] = el;
-                    }}
-                    id={`choice-text-${index}`}
-                    label="Text"
-                    value={choice.text}
-                    onChange={(e) =>
-                      handleChoiceTextChange(index, e.target.value)
-                    }
-                    error={choice.textError}
-                    data-testid={`choice-text-${index}`}
-                  />
-                  <Select
-                    id={`choice-goto-${index}`}
-                    label="Go to"
-                    options={passageOptions}
-                    value={choice.goto ? String(choice.goto) : ""}
-                    onChange={(e) =>
-                      handleChoiceGotoChange(index, e.target.value)
-                    }
-                    error={choice.gotoError}
-                    placeholder="Select passage"
-                    data-testid={`choice-goto-${index}`}
-                  />
-                </ChoiceControls>
-                <RemoveButton
-                  onClick={() => handleRemoveChoice(index)}
-                  icon={Trash2}
-                  variant="danger"
-                  size="small"
-                  aria-label="Remove choice"
-                  data-testid={`remove-choice-${index}`}
+            <FormSection>
+              <Textarea
+                label="Notes"
+                value={notes}
+                onChange={handleNotesChange}
+                rows={3}
+                data-testid="passage-notes-input"
+              />
+            </FormSection>
+
+            <FormSection>
+              <Select
+                label="Passage type"
+                options={[
+                  { value: "regular", label: "Regular passage" },
+                  { value: "ending", label: "Ending passage" },
+                ]}
+                value={isEnding ? "ending" : "regular"}
+                onChange={(e) =>
+                  handleIsEndingChange(e.target.value === "ending")
+                }
+                data-testid="passage-type-select"
+              />
+            </FormSection>
+
+            {isEnding ? (
+              <FormSection>
+                <Select
+                  label="Ending type"
+                  options={[
+                    { value: "victory", label: "Victory" },
+                    { value: "defeat", label: "Defeat" },
+                    { value: "neutral", label: "Neutral" },
+                  ]}
+                  value={endingType}
+                  onChange={(e) => handleEndingTypeChange(e.target.value)}
+                  error={endingTypeError}
+                  placeholder="Select ending type"
+                  data-testid="ending-type-select"
                 />
-              </ChoiceRow>
-            ))}
-            <AddButton
-              onClick={handleAddChoice}
-              icon={Plus}
-              variant="neutral"
-              data-testid="add-choice-button"
-            >
-              Add choice
-            </AddButton>
-          </FormSection>
-        </>
-      )}
+              </FormSection>
+            ) : (
+              <>
+                {itemOptions.length > 0 && (
+                  <FormSection>
+                    <SectionTitle>Effects</SectionTitle>
+                    {effectsError && <ErrorText>{effectsError}</ErrorText>}
+                    {effects.map((effect, index) => (
+                      <EffectRow key={index}>
+                        <EffectControls>
+                          <Select
+                            ref={(el) => {
+                              effectRefs.current[index] = el;
+                            }}
+                            id={`effect-type-${index}`}
+                            label="Effect type"
+                            options={[
+                              {
+                                value: "add_item",
+                                label: "Add item to inventory",
+                              },
+                              {
+                                value: "remove_item",
+                                label: "Remove item from inventory",
+                              },
+                            ]}
+                            value={effect.type}
+                            onChange={(e) =>
+                              handleEffectTypeChange(index, e.target.value)
+                            }
+                            placeholder="Select effect type"
+                            error={effect.error}
+                            data-testid={`effect-type-${index}`}
+                          />
+                          <Select
+                            id={`effect-item-${index}`}
+                            label="Item"
+                            options={itemOptions}
+                            value={effect.item}
+                            onChange={(e) =>
+                              handleEffectItemChange(index, e.target.value)
+                            }
+                            placeholder="Select item"
+                            data-testid={`effect-item-${index}`}
+                          />
+                        </EffectControls>
+                        <RemoveButton
+                          onClick={() => handleRemoveEffect(index)}
+                          icon={Trash2}
+                          variant="danger"
+                          size="small"
+                          aria-label="Remove effect"
+                          data-testid={`remove-effect-${index}`}
+                        />
+                      </EffectRow>
+                    ))}
+                    <AddButton
+                      onClick={handleAddEffect}
+                      icon={Plus}
+                      variant="neutral"
+                      size="small"
+                      data-testid="add-effect-button"
+                    >
+                      Add effect
+                    </AddButton>
+                  </FormSection>
+                )}
 
-      <ButtonGroup>
+                <FormSection>
+                  <SectionTitle>Choices</SectionTitle>
+                  {choices.map((choice, index) => (
+                    <ChoiceRow key={index}>
+                      <ChoiceControls>
+                        <Input
+                          ref={(el) => {
+                            choiceRefs.current[index] = el;
+                          }}
+                          id={`choice-text-${index}`}
+                          label="Text"
+                          value={choice.text}
+                          onChange={(e) =>
+                            handleChoiceTextChange(index, e.target.value)
+                          }
+                          error={choice.textError}
+                          data-testid={`choice-text-${index}`}
+                        />
+                        <Select
+                          id={`choice-goto-${index}`}
+                          label="Go to"
+                          options={passageOptions}
+                          value={choice.goto ? String(choice.goto) : ""}
+                          onChange={(e) =>
+                            handleChoiceGotoChange(index, e.target.value)
+                          }
+                          error={choice.gotoError}
+                          placeholder="Select passage"
+                          data-testid={`choice-goto-${index}`}
+                        />
+                      </ChoiceControls>
+                      <RemoveButton
+                        onClick={() => handleRemoveChoice(index)}
+                        icon={Trash2}
+                        variant="danger"
+                        size="small"
+                        aria-label="Remove choice"
+                        data-testid={`remove-choice-${index}`}
+                      />
+                    </ChoiceRow>
+                  ))}
+                  <AddButton
+                    onClick={handleAddChoice}
+                    icon={Plus}
+                    variant="neutral"
+                    size="small"
+                    data-testid="add-choice-button"
+                  >
+                    Add choice
+                  </AddButton>
+                </FormSection>
+              </>
+            )}
+          </EditContainer>
+        </ContentWrapper>
+      </EditScrollableContent>
+      <EditFooter>
         <Button
           onClick={handleSave}
           variant="primary"
@@ -501,7 +516,10 @@ export const PassageEditView = ({
         >
           Save passage
         </Button>
-      </ButtonGroup>
-    </EditContainer>
+        <Button variant="neutral" data-testid="reset-button">
+          Reset
+        </Button>
+      </EditFooter>
+    </EditViewLayout>
   );
 };

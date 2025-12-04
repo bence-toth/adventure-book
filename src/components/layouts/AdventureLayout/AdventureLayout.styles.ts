@@ -15,5 +15,4 @@ export const MainContent = styled.main`
   place-items: center;
   background: ${getColor({ type: "background", variant: "neutral" })};
   min-height: 0;
-  padding: var(--space-4);
 `;
