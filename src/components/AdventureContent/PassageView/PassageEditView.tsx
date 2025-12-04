@@ -390,6 +390,7 @@ export const PassageEditView = ({
                       ref={(el) => {
                         effectRefs.current[index] = el;
                       }}
+                      id={`effect-type-${index}`}
                       label="Effect type"
                       options={[
                         { value: "add_item", label: "Add item to inventory" },
@@ -407,6 +408,7 @@ export const PassageEditView = ({
                       data-testid={`effect-type-${index}`}
                     />
                     <Select
+                      id={`effect-item-${index}`}
                       label="Item"
                       options={itemOptions}
                       value={effect.item}
@@ -447,6 +449,7 @@ export const PassageEditView = ({
                     ref={(el) => {
                       choiceRefs.current[index] = el;
                     }}
+                    id={`choice-text-${index}`}
                     label="Text"
                     value={choice.text}
                     onChange={(e) =>
@@ -456,6 +459,7 @@ export const PassageEditView = ({
                     data-testid={`choice-text-${index}`}
                   />
                   <Select
+                    id={`choice-goto-${index}`}
                     label="Go to"
                     options={passageOptions}
                     value={choice.goto ? String(choice.goto) : ""}
