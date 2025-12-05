@@ -54,9 +54,3 @@ export const FormSection = styled.div`
   flex-direction: column;
   gap: var(--space-2);
 `;
-
-export const ButtonGroup = styled.div`
-  display: flex;
-  gap: var(--space-1);
-  justify-content: flex-start;
-`;

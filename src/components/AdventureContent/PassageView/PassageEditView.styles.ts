@@ -62,12 +62,6 @@ export const SectionTitle = styled.h2`
   margin-block: var(--space-4) var(--space-1);
 `;
 
-export const ButtonGroup = styled.div`
-  display: flex;
-  gap: var(--space-1);
-  justify-content: flex-start;
-`;
-
 export const EffectRow = styled.div`
   display: flex;
   gap: var(--space-1);

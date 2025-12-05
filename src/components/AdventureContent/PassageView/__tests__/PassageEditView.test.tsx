@@ -509,6 +509,93 @@ describe("PassageEditView Component", () => {
     });
   });
 
+  describe("Validation", () => {
+    it("shows error when trying to save a regular passage with no choices", async () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Remove the only choice
+      fireEvent.click(screen.getByTestId("remove-choice-0"));
+
+      // Try to save
+      const saveButton = screen.getByTestId("save-button");
+      fireEvent.click(saveButton);
+
+      // Verify error message is shown
+      await waitFor(() => {
+        expect(
+          screen.getByText("Regular passages must have at least one choice")
+        ).toBeInTheDocument();
+      });
+
+      // Verify updatePassage was not called
+      expect(mockUpdatePassage).not.toHaveBeenCalled();
+    });
+
+    it("clears validation error when a choice is added", async () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Remove the only choice
+      fireEvent.click(screen.getByTestId("remove-choice-0"));
+
+      // Try to save to trigger error
+      const saveButton = screen.getByTestId("save-button");
+      fireEvent.click(saveButton);
+
+      // Verify error is shown
+      await waitFor(() => {
+        expect(
+          screen.getByText("Regular passages must have at least one choice")
+        ).toBeInTheDocument();
+      });
+
+      // Add a choice
+      fireEvent.click(screen.getByTestId("add-choice-button"));
+
+      // Verify error is cleared
+      await waitFor(() => {
+        expect(
+          screen.queryByText("Regular passages must have at least one choice")
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it("does not show choices error for ending passages", async () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        ending: true,
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Select ending type
+      const endingTypeSelect = screen.getByTestId("ending-type-select");
+      fireEvent.change(endingTypeSelect, { target: { value: "victory" } });
+
+      // Try to save
+      const saveButton = screen.getByTestId("save-button");
+      fireEvent.click(saveButton);
+
+      // Verify no choices error
+      await waitFor(() => {
+        expect(mockUpdatePassage).toHaveBeenCalled();
+      });
+
+      expect(
+        screen.queryByText("Regular passages must have at least one choice")
+      ).not.toBeInTheDocument();
+    });
+  });
+
   describe("Save button state", () => {
     it("is disabled when no changes are made", () => {
       const passage: Passage = {

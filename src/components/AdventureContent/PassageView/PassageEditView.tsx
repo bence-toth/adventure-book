@@ -56,6 +56,7 @@ export const PassageEditView = ({
   const [text, setText] = useState(passage.paragraphs.join("\n\n"));
   const [notes, setNotes] = useState(passage.notes || "");
   const [textError, setTextError] = useState<string | undefined>();
+  const [choicesError, setChoicesError] = useState<string | undefined>();
   const [effectsError, setEffectsError] = useState<string | undefined>();
 
   // Initialize choices
@@ -209,6 +210,7 @@ export const PassageEditView = ({
     const newIndex = choices.length;
     setChoices([...choices, { text: "", goto: null }]);
     shouldFocusChoice.current = newIndex;
+    if (choicesError) setChoicesError(undefined);
   };
 
   const handleRemoveChoice = (index: number) => {
@@ -320,6 +322,12 @@ export const PassageEditView = ({
         hasErrors = true;
       }
     } else {
+      // Validate that there is at least one choice
+      if (choices.length === 0) {
+        setChoicesError("Regular passages must have at least one choice");
+        hasErrors = true;
+      }
+
       // Validate choices
       const newChoices = [...choices];
       for (let i = 0; i < newChoices.length; i++) {
@@ -417,6 +425,7 @@ export const PassageEditView = ({
     setText(passage.paragraphs.join("\n\n"));
     setNotes(passage.notes || "");
     setTextError(undefined);
+    setChoicesError(undefined);
     setEffectsError(undefined);
 
     const isPassageEnding = passage.ending || false;
@@ -576,6 +585,7 @@ export const PassageEditView = ({
 
                 <FormSection>
                   <SectionTitle>Choices</SectionTitle>
+                  {choicesError && <ErrorText>{choicesError}</ErrorText>}
                   {choices.map((choice, index) => (
                     <ChoiceRow key={index}>
                       <ChoiceControls>
