@@ -277,4 +277,126 @@ describe("IntroductionEditView Component", () => {
     const saveButton = screen.getByRole("button", { name: /save/i });
     expect(saveButton).toBeInTheDocument();
   });
+
+  describe("Button state management", () => {
+    it("disables both buttons when no changes are made", () => {
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      const saveButton = screen.getByTestId("save-button");
+      const resetButton = screen.getByTestId("reset-button");
+
+      expect(saveButton).toBeDisabled();
+      expect(resetButton).toBeDisabled();
+    });
+
+    it("enables both buttons when title is modified", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      const titleInput = screen.getByTestId("introduction-title-input");
+      await user.type(titleInput, "x");
+
+      const saveButton = screen.getByTestId("save-button");
+      const resetButton = screen.getByTestId("reset-button");
+
+      expect(saveButton).toBeEnabled();
+      expect(resetButton).toBeEnabled();
+    });
+
+    it("enables both buttons when text is modified", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      const textInput = screen.getByTestId("introduction-text-input");
+      await user.type(textInput, "x");
+
+      const saveButton = screen.getByTestId("save-button");
+      const resetButton = screen.getByTestId("reset-button");
+
+      expect(saveButton).toBeEnabled();
+      expect(resetButton).toBeEnabled();
+    });
+
+    it("disables both buttons after reset is clicked", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      // Make changes
+      const titleInput = screen.getByTestId("introduction-title-input");
+      await user.type(titleInput, "Modified");
+
+      // Verify buttons are enabled
+      const saveButton = screen.getByTestId("save-button");
+      const resetButton = screen.getByTestId("reset-button");
+      expect(saveButton).toBeEnabled();
+      expect(resetButton).toBeEnabled();
+
+      // Click reset
+      await user.click(resetButton);
+
+      // Verify buttons are disabled
+      expect(saveButton).toBeDisabled();
+      expect(resetButton).toBeDisabled();
+    });
+
+    it("restores original title when reset is clicked", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      const titleInput = screen.getByTestId(
+        "introduction-title-input"
+      ) as HTMLInputElement;
+
+      await user.clear(titleInput);
+      await user.type(titleInput, "Modified Title");
+      expect(titleInput.value).toBe("Modified Title");
+
+      const resetButton = screen.getByTestId("reset-button");
+      await user.click(resetButton);
+
+      expect(titleInput.value).toBe(mockAdventure.metadata.title);
+    });
+
+    it("restores original text when reset is clicked", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      const textInput = screen.getByTestId(
+        "introduction-text-input"
+      ) as HTMLTextAreaElement;
+
+      await user.clear(textInput);
+      await user.type(textInput, "Modified text");
+      expect(textInput.value).toBe("Modified text");
+
+      const resetButton = screen.getByTestId("reset-button");
+      await user.click(resetButton);
+
+      expect(textInput.value).toBe(mockAdventure.intro.paragraphs.join("\n\n"));
+    });
+
+    it("clears validation errors when reset is clicked", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      const titleInput = screen.getByTestId("introduction-title-input");
+      const saveButton = screen.getByTestId("save-button");
+
+      // Create validation error
+      await user.clear(titleInput);
+      await user.click(saveButton);
+
+      await waitFor(() => {
+        expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
+      });
+
+      // Reset should clear the error
+      const resetButton = screen.getByTestId("reset-button");
+      await user.click(resetButton);
+
+      expect(
+        screen.queryByText("Title must not be blank")
+      ).not.toBeInTheDocument();
+    });
+  });
 });

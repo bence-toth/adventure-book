@@ -47,7 +47,7 @@ export const StyledButton = styled.button<{
         state: "default",
       })};
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${(props) =>
       getInteractiveColor({
         variant: props.$variant,
@@ -68,7 +68,7 @@ export const StyledButton = styled.button<{
       })};
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background: ${(props) =>
       getInteractiveColor({
         variant: props.$variant,
@@ -113,6 +113,28 @@ export const StyledButton = styled.button<{
       props.$variant !== "neutral"
         ? `outline-color: ${getInteractiveColor({ variant: props.$variant, type: "outline", state: "focus" })};`
         : ""};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: ${(props) =>
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "background",
+        state: "disabled",
+      })};
+    color: ${(props) =>
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "foreground",
+        state: "disabled",
+      })};
+    border-color: ${(props) =>
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "border",
+        state: "disabled",
+      })};
   }
 `;
 

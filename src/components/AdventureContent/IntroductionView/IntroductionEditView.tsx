@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useAdventure } from "@/context/useAdventure";
 import { Input } from "@/components/common/Input/Input";
 import { Textarea } from "@/components/common/Textarea/Textarea";
@@ -26,6 +26,13 @@ export const IntroductionEditView = ({
   const [text, setText] = useState(adventure.intro.paragraphs.join("\n\n"));
   const [titleError, setTitleError] = useState<string | undefined>();
   const [textError, setTextError] = useState<string | undefined>();
+
+  // Check if any changes have been made
+  const hasChanges = useMemo(() => {
+    if (title !== adventure.metadata.title) return true;
+    if (text !== adventure.intro.paragraphs.join("\n\n")) return true;
+    return false;
+  }, [title, text, adventure]);
 
   const handleSave = useCallback(async () => {
     // Validate
@@ -55,6 +62,13 @@ export const IntroductionEditView = ({
       setTextError(undefined);
     }
   };
+
+  const handleReset = useCallback(() => {
+    setTitle(adventure.metadata.title);
+    setText(adventure.intro.paragraphs.join("\n\n"));
+    setTitleError(undefined);
+    setTextError(undefined);
+  }, [adventure]);
 
   return (
     <EditViewLayout>
@@ -87,11 +101,17 @@ export const IntroductionEditView = ({
         <Button
           onClick={handleSave}
           variant="primary"
+          disabled={!hasChanges}
           data-testid="save-button"
         >
           Save introduction
         </Button>
-        <Button variant="neutral" data-testid="reset-button">
+        <Button
+          onClick={handleReset}
+          variant="neutral"
+          disabled={!hasChanges}
+          data-testid="reset-button"
+        >
           Undo changes
         </Button>
       </EditFooter>

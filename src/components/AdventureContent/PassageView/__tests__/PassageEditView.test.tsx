@@ -508,4 +508,237 @@ describe("PassageEditView Component", () => {
       );
     });
   });
+
+  describe("Save button state", () => {
+    it("is disabled when no changes are made", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const saveButton = screen.getByTestId("save-button");
+      const resetButton = screen.getByTestId("reset-button");
+      expect(saveButton).toBeDisabled();
+      expect(resetButton).toBeDisabled();
+    });
+
+    it("is enabled when text is modified", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const textInput = screen.getByTestId("passage-text-input");
+      fireEvent.change(textInput, { target: { value: "Modified text" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when notes are modified", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const notesInput = screen.getByTestId("passage-notes-input");
+      fireEvent.change(notesInput, { target: { value: "New notes" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when passage type is changed", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const passageTypeSelect = screen.getByTestId("passage-type-select");
+      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when ending type is changed", () => {
+      const passage: Passage = {
+        paragraphs: ["You win!"],
+        ending: true,
+        type: "victory",
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const endingTypeSelect = screen.getByTestId("ending-type-select");
+      fireEvent.change(endingTypeSelect, { target: { value: "defeat" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when a choice text is modified", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Original choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const choiceInput = screen.getByTestId("choice-text-0");
+      fireEvent.change(choiceInput, { target: { value: "Modified choice" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when a choice target is modified", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const choiceGotoSelect = screen.getByTestId("choice-goto-0");
+      fireEvent.change(choiceGotoSelect, { target: { value: "3" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when a choice is added", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const addChoiceButton = screen.getByTestId("add-choice-button");
+      fireEvent.click(addChoiceButton);
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when a choice is removed", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [
+          { text: "Choice 1", goto: 2 },
+          { text: "Choice 2", goto: 3 },
+        ],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const removeButton = screen.getByTestId("remove-choice-0");
+      fireEvent.click(removeButton);
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when an effect type is modified", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+        effects: [{ type: "add_item", item: "key" }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const effectTypeSelect = screen.getByTestId("effect-type-0");
+      fireEvent.change(effectTypeSelect, { target: { value: "remove_item" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when an effect item is modified", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+        effects: [{ type: "add_item", item: "key" }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const effectItemSelect = screen.getByTestId("effect-item-0");
+      fireEvent.change(effectItemSelect, { target: { value: "sword" } });
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when an effect is added", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+        effects: [],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const addEffectButton = screen.getByTestId("add-effect-button");
+      fireEvent.click(addEffectButton);
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is enabled when an effect is removed", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+        effects: [
+          { type: "add_item", item: "key" },
+          { type: "remove_item", item: "sword" },
+        ],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const removeButton = screen.getByTestId("remove-effect-0");
+      fireEvent.click(removeButton);
+
+      const saveButton = screen.getByTestId("save-button");
+      expect(saveButton).toBeEnabled();
+    });
+
+    it("is disabled after reset is clicked", () => {
+      const passage: Passage = {
+        paragraphs: ["Test paragraph"],
+        choices: [{ text: "Test choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Make a change
+      const textInput = screen.getByTestId("passage-text-input");
+      fireEvent.change(textInput, { target: { value: "Modified text" } });
+
+      // Verify both buttons are enabled
+      const saveButton = screen.getByTestId("save-button");
+      const resetButton = screen.getByTestId("reset-button");
+      expect(saveButton).toBeEnabled();
+      expect(resetButton).toBeEnabled();
+
+      // Reset
+      fireEvent.click(resetButton);
+
+      // Verify both buttons are disabled again
+      expect(saveButton).toBeDisabled();
+      expect(resetButton).toBeDisabled();
+    });
+  });
 });

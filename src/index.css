@@ -252,6 +252,9 @@ h6 {
     --color-interactive-foreground-focus-neutral: var(--color-gray-900);
     --color-interactive-border-focus-neutral: var(--color-gray-300);
     --color-interactive-outline-focus-neutral: var(--color-turquoise-500);
+    --color-interactive-background-disabled-neutral: var(--color-gray-450);
+    --color-interactive-foreground-disabled-neutral: var(--color-gray-850);
+    --color-interactive-border-disabled-neutral: var(--color-gray-500);
     --color-interactive-background-input-neutral: var(--color-gray-50);
     --color-interactive-foreground-input-neutral: var(--color-gray-800);
     --color-interactive-border-input-neutral: var(--color-gray-150);
@@ -280,6 +283,9 @@ h6 {
     --color-interactive-foreground-focus-primary: var(--color-turquoise-900);
     --color-interactive-border-focus-primary: var(--color-turquoise-300);
     --color-interactive-outline-focus-primary: var(--color-turquoise-500);
+    --color-interactive-background-disabled-primary: var(--color-turquoise-450);
+    --color-interactive-foreground-disabled-primary: var(--color-turquoise-850);
+    --color-interactive-border-disabled-primary: var(--color-turquoise-500);
     --color-interactive-background-input-primary: var(--color-turquoise-50);
     --color-interactive-foreground-input-primary: var(--color-turquoise-200);
     --color-interactive-border-input-primary: var(--color-turquoise-150);
@@ -308,6 +314,9 @@ h6 {
     --color-interactive-foreground-focus-danger: var(--color-red-900);
     --color-interactive-border-focus-danger: var(--color-red-300);
     --color-interactive-outline-focus-danger: var(--color-red-500);
+    --color-interactive-background-disabled-danger: var(--color-red-450);
+    --color-interactive-foreground-disabled-danger: var(--color-red-850);
+    --color-interactive-border-disabled-danger: var(--color-red-500);
     --color-interactive-background-input-danger: var(--color-red-50);
     --color-interactive-foreground-input-danger: var(--color-red-200);
     --color-interactive-border-input-danger: var(--color-red-150);
@@ -336,6 +345,9 @@ h6 {
     --color-interactive-foreground-focus-info: var(--color-blue-900);
     --color-interactive-border-focus-info: var(--color-blue-300);
     --color-interactive-outline-focus-info: var(--color-blue-500);
+    --color-interactive-background-disabled-info: var(--color-blue-450);
+    --color-interactive-foreground-disabled-info: var(--color-blue-850);
+    --color-interactive-border-disabled-info: var(--color-blue-500);
     --color-interactive-background-input-info: var(--color-blue-50);
     --color-interactive-foreground-input-info: var(--color-blue-200);
     --color-interactive-border-input-info: var(--color-blue-150);
@@ -368,6 +380,9 @@ h6 {
     --color-interactive-foreground-focus-neutral: var(--color-gray-100);
     --color-interactive-border-focus-neutral: var(--color-gray-700);
     --color-interactive-outline-focus-neutral: var(--color-turquoise-300);
+    --color-interactive-background-disabled-neutral: var(--color-gray-550);
+    --color-interactive-foreground-disabled-neutral: var(--color-gray-150);
+    --color-interactive-border-disabled-neutral: var(--color-gray-500);
     --color-interactive-background-input-neutral: var(--color-gray-950);
     --color-interactive-foreground-input-neutral: var(--color-gray-200);
     --color-interactive-border-input-neutral: var(--color-gray-850);
@@ -396,6 +411,9 @@ h6 {
     --color-interactive-foreground-focus-primary: var(--color-turquoise-100);
     --color-interactive-border-focus-primary: var(--color-turquoise-700);
     --color-interactive-outline-focus-primary: var(--color-turquoise-300);
+    --color-interactive-background-disabled-primary: var(--color-turquoise-550);
+    --color-interactive-foreground-disabled-primary: var(--color-turquoise-150);
+    --color-interactive-border-disabled-primary: var(--color-turquoise-500);
     --color-interactive-background-input-primary: var(--color-turquoise-950);
     --color-interactive-foreground-input-primary: var(--color-turquoise-200);
     --color-interactive-border-input-primary: var(--color-turquoise-850);
@@ -424,6 +442,9 @@ h6 {
     --color-interactive-foreground-focus-danger: var(--color-red-100);
     --color-interactive-border-focus-danger: var(--color-red-700);
     --color-interactive-outline-focus-danger: var(--color-red-500);
+    --color-interactive-background-disabled-danger: var(--color-red-550);
+    --color-interactive-foreground-disabled-danger: var(--color-red-150);
+    --color-interactive-border-disabled-danger: var(--color-red-500);
     --color-interactive-background-input-danger: var(--color-red-950);
     --color-interactive-foreground-input-danger: var(--color-red-200);
     --color-interactive-border-input-danger: var(--color-red-850);
@@ -452,6 +473,9 @@ h6 {
     --color-interactive-foreground-focus-info: var(--color-blue-100);
     --color-interactive-border-focus-info: var(--color-blue-700);
     --color-interactive-outline-focus-info: var(--color-blue-500);
+    --color-interactive-background-disabled-info: var(--color-blue-550);
+    --color-interactive-foreground-disabled-info: var(--color-blue-150);
+    --color-interactive-border-disabled-info: var(--color-blue-500);
     --color-interactive-background-input-info: var(--color-blue-950);
     --color-interactive-foreground-input-info: var(--color-blue-200);
     --color-interactive-border-input-info: var(--color-blue-850);

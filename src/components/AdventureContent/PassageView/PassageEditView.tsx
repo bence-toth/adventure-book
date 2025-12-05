@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useMemo } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useAdventure } from "@/context/useAdventure";
 import { Textarea } from "@/components/common/Textarea/Textarea";
@@ -132,6 +132,69 @@ export const PassageEditView = ({
       shouldFocusEffect.current = null;
     }
   }, [effects]);
+
+  // Check if any changes have been made
+  const hasChanges = useMemo(() => {
+    // Check text changes
+    if (text !== passage.paragraphs.join("\n\n")) return true;
+
+    // Check notes changes
+    if (notes !== (passage.notes || "")) return true;
+
+    // Check passage type changes
+    const originalIsEnding = passage.ending || false;
+    if (isEnding !== originalIsEnding) return true;
+
+    // If it's an ending, check ending type
+    if (isEnding) {
+      const originalEndingType = passage.ending ? passage.type || "" : "";
+      if (endingType !== originalEndingType) return true;
+    } else {
+      // If it's a regular passage, check choices and effects
+      const originalChoices = passage.ending
+        ? []
+        : passage.choices!.map((c) => ({
+            text: c.text,
+            goto: c.goto,
+          }));
+
+      // Check if choices length changed
+      if (choices.length !== originalChoices.length) return true;
+
+      // Check if any choice changed
+      for (let i = 0; i < choices.length; i++) {
+        if (
+          choices[i].text !== originalChoices[i].text ||
+          choices[i].goto !== originalChoices[i].goto
+        ) {
+          return true;
+        }
+      }
+
+      // Check effects
+      const originalEffects = passage.ending
+        ? []
+        : (passage.effects || []).map((e) => ({
+            type: e.type,
+            item: e.item,
+          }));
+
+      // Check if effects length changed
+      if (effects.length !== originalEffects.length) return true;
+
+      // Check if any effect changed
+      for (let i = 0; i < effects.length; i++) {
+        if (
+          effects[i].type !== originalEffects[i].type ||
+          effects[i].item !== originalEffects[i].item
+        ) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }, [text, notes, isEnding, endingType, choices, effects, passage]);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setText(e.target.value);
@@ -571,6 +634,7 @@ export const PassageEditView = ({
         <Button
           onClick={handleSave}
           variant="primary"
+          disabled={!hasChanges}
           data-testid="save-button"
         >
           Save passage
@@ -578,6 +642,7 @@ export const PassageEditView = ({
         <Button
           onClick={handleReset}
           variant="neutral"
+          disabled={!hasChanges}
           data-testid="reset-button"
         >
           Undo changes
