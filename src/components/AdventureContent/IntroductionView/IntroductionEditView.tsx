@@ -92,7 +92,7 @@ export const IntroductionEditView = ({
           Save introduction
         </Button>
         <Button variant="neutral" data-testid="reset-button">
-          Reset
+          Undo changes
         </Button>
       </EditFooter>
     </EditViewLayout>

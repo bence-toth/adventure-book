@@ -92,6 +92,11 @@ export const PassageEditView = ({
   const shouldFocusChoice = useRef<number | null>(null);
   const shouldFocusEffect = useRef<number | null>(null);
 
+  // Refs for preserving state when switching between regular and ending passages
+  const savedChoices = useRef<ChoiceData[]>([]);
+  const savedEffects = useRef<EffectData[]>([]);
+  const savedEndingType = useRef<string>("");
+
   // Get available passage IDs for choice dropdowns
   const availablePassages = adventure
     ? Object.keys(adventure.passages)
@@ -209,12 +214,28 @@ export const PassageEditView = ({
   const handleIsEndingChange = (value: boolean) => {
     setIsEnding(value);
     if (value) {
+      // Save current choices and effects before switching to ending
+      savedChoices.current = [...choices];
+      savedEffects.current = [...effects];
       // Clear choices and effects when switching to ending
       setChoices([]);
       setEffects([]);
+      // Restore previously saved ending type
+      if (savedEndingType.current) {
+        setEndingType(savedEndingType.current);
+      }
     } else {
+      // Save current ending type before switching to regular
+      savedEndingType.current = endingType;
       // Clear ending type when switching to regular passage
       setEndingType("");
+      // Restore previously saved choices and effects
+      if (savedChoices.current.length > 0) {
+        setChoices(savedChoices.current);
+      }
+      if (savedEffects.current.length > 0) {
+        setEffects(savedEffects.current);
+      }
     }
   };
 
@@ -327,6 +348,44 @@ export const PassageEditView = ({
     updatePassage,
     passageId,
   ]);
+
+  const handleReset = useCallback(() => {
+    // Reset all fields to their initial values from the passage prop
+    setText(passage.paragraphs.join("\n\n"));
+    setNotes(passage.notes || "");
+    setTextError(undefined);
+    setEffectsError(undefined);
+
+    const isPassageEnding = passage.ending || false;
+    setIsEnding(isPassageEnding);
+
+    if (isPassageEnding) {
+      setEndingType(passage.type || "");
+      setEndingTypeError(undefined);
+      setChoices([]);
+      setEffects([]);
+    } else {
+      setChoices(
+        passage.choices!.map((c) => ({
+          text: c.text,
+          goto: c.goto,
+        }))
+      );
+      setEffects(
+        (passage.effects || []).map((e) => ({
+          type: e.type,
+          item: e.item,
+        }))
+      );
+      setEndingType("");
+      setEndingTypeError(undefined);
+    }
+
+    // Clear saved state in refs
+    savedChoices.current = [];
+    savedEffects.current = [];
+    savedEndingType.current = "";
+  }, [passage]);
 
   return (
     <EditViewLayout>
@@ -516,8 +575,12 @@ export const PassageEditView = ({
         >
           Save passage
         </Button>
-        <Button variant="neutral" data-testid="reset-button">
-          Reset
+        <Button
+          onClick={handleReset}
+          variant="neutral"
+          data-testid="reset-button"
+        >
+          Undo changes
         </Button>
       </EditFooter>
     </EditViewLayout>
