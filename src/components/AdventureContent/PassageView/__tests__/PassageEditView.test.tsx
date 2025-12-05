@@ -15,103 +15,68 @@ vi.mock("@/context/useAdventure", () => ({
   }),
 }));
 
-describe("PassageEditView Component", () => {
+describe("PassageEditView Integration", () => {
   beforeEach(() => {
     mockUpdatePassage.mockClear();
   });
 
-  describe("Auto-focus functionality", () => {
-    it("focuses the first input when a new choice is added", async () => {
+  describe("Component integration with hooks", () => {
+    it("integrates usePassageEditState and usePassageSaveActions to save changes", async () => {
       const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Existing choice", goto: 2 }],
+        paragraphs: ["Original text"],
+        choices: [{ text: "Choice 1", goto: 2 }],
       };
 
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
 
-      const addChoiceButton = screen.getByTestId("add-choice-button");
-      fireEvent.click(addChoiceButton);
+      // Modify text using state hook
+      const textarea = screen.getByTestId("passage-text-input");
+      fireEvent.change(textarea, { target: { value: "Updated text" } });
 
+      // Save using save actions hook
+      const saveButton = screen.getByTestId("save-button");
       await waitFor(() => {
-        const newChoiceInput = screen.getByTestId("choice-text-1");
-        expect(newChoiceInput).toHaveFocus();
+        expect(saveButton).not.toBeDisabled();
+      });
+
+      fireEvent.click(saveButton);
+
+      // Verify integration worked
+      await waitFor(() => {
+        expect(mockUpdatePassage).toHaveBeenCalledWith(
+          1,
+          expect.objectContaining({
+            paragraphs: ["Updated text"],
+          })
+        );
       });
     });
 
-    it("focuses the first select when a new effect is added", async () => {
+    it("resets state through integrated hooks", () => {
       const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-        effects: [{ type: "add_item", item: "key" }],
+        paragraphs: ["Original text"],
+        choices: [{ text: "Choice 1", goto: 2 }],
       };
 
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
 
-      const addEffectButton = screen.getByTestId("add-effect-button");
-      fireEvent.click(addEffectButton);
+      // Make changes
+      const textarea = screen.getByTestId("passage-text-input");
+      fireEvent.change(textarea, { target: { value: "Modified text" } });
 
-      await waitFor(() => {
-        const newEffectSelect = screen.getByTestId("effect-type-1");
-        expect(newEffectSelect).toHaveFocus();
-      });
-    });
+      // Reset
+      const resetButton = screen.getByTestId("reset-button");
+      fireEvent.click(resetButton);
 
-    it("focuses correctly when multiple choices are added sequentially", async () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const addChoiceButton = screen.getByTestId("add-choice-button");
-
-      // Add first choice
-      fireEvent.click(addChoiceButton);
-      await waitFor(() => {
-        const firstChoice = screen.getByTestId("choice-text-0");
-        expect(firstChoice).toHaveFocus();
-      });
-
-      // Add second choice
-      fireEvent.click(addChoiceButton);
-      await waitFor(() => {
-        const secondChoice = screen.getByTestId("choice-text-1");
-        expect(secondChoice).toHaveFocus();
-      });
-    });
-
-    it("focuses correctly when multiple effects are added sequentially", async () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-        effects: [],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const addEffectButton = screen.getByTestId("add-effect-button");
-
-      // Add first effect
-      fireEvent.click(addEffectButton);
-      await waitFor(() => {
-        const firstEffect = screen.getByTestId("effect-type-0");
-        expect(firstEffect).toHaveFocus();
-      });
-
-      // Add second effect
-      fireEvent.click(addEffectButton);
-      await waitFor(() => {
-        const secondEffect = screen.getByTestId("effect-type-1");
-        expect(secondEffect).toHaveFocus();
-      });
+      // Verify reset worked
+      expect(textarea).toHaveValue("Original text");
     });
   });
 
-  describe("Choice management", () => {
-    it("renders existing choices", () => {
+  describe("Component integration with ChoiceList and ChoiceItem", () => {
+    it("renders choices through ChoiceList component", () => {
       const passage: Passage = {
-        paragraphs: ["Test paragraph"],
+        paragraphs: ["Test"],
         choices: [
           { text: "First choice", goto: 2 },
           { text: "Second choice", goto: 3 },
@@ -120,19 +85,32 @@ describe("PassageEditView Component", () => {
 
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
 
-      const firstChoiceInput = screen.getByTestId("choice-text-0");
-      const secondChoiceInput = screen.getByTestId("choice-text-1");
-
-      expect(firstChoiceInput).toHaveValue("First choice");
-      expect(secondChoiceInput).toHaveValue("Second choice");
+      expect(screen.getByTestId("choice-text-0")).toHaveValue("First choice");
+      expect(screen.getByTestId("choice-text-1")).toHaveValue("Second choice");
     });
 
-    it("removes a choice when remove button is clicked", () => {
+    it("adds choices through ChoiceList integration", async () => {
       const passage: Passage = {
-        paragraphs: ["Test paragraph"],
+        paragraphs: ["Test"],
+        choices: [{ text: "Existing", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const addButton = screen.getByTestId("add-choice-button");
+      fireEvent.click(addButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("choice-text-1")).toBeInTheDocument();
+      });
+    });
+
+    it("removes choices through ChoiceItem integration", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
         choices: [
-          { text: "First choice", goto: 2 },
-          { text: "Second choice", goto: 3 },
+          { text: "First", goto: 2 },
+          { text: "Second", goto: 3 },
         ],
       };
 
@@ -141,655 +119,69 @@ describe("PassageEditView Component", () => {
       const removeButton = screen.getByTestId("remove-choice-0");
       fireEvent.click(removeButton);
 
-      const firstChoiceInput = screen.getByTestId("choice-text-0");
-      expect(firstChoiceInput).toHaveValue("Second choice");
+      expect(screen.queryByTestId("choice-text-1")).not.toBeInTheDocument();
+      expect(screen.getByTestId("choice-text-0")).toHaveValue("Second");
+    });
+
+    it("updates choice text through ChoiceItem integration", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        choices: [{ text: "Original", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const input = screen.getByTestId("choice-text-0");
+      fireEvent.change(input, { target: { value: "Updated choice" } });
+
+      expect(input).toHaveValue("Updated choice");
     });
   });
 
-  describe("Effect management", () => {
-    it("renders existing effects", () => {
+  describe("Component integration with EffectList and EffectItem", () => {
+    it("renders effects through EffectList component", () => {
       const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
+        paragraphs: ["Test"],
+        choices: [{ text: "Go", goto: 2 }],
         effects: [
-          { type: "add_item", item: "key" },
-          { type: "remove_item", item: "sword" },
+          { type: "add_item", item: "test_key" },
+          { type: "remove_item", item: "test_map" },
         ],
       };
 
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
 
-      const firstEffectType = screen.getByTestId("effect-type-0");
-      const secondEffectType = screen.getByTestId("effect-type-1");
-
-      expect(firstEffectType).toHaveValue("add_item");
-      expect(secondEffectType).toHaveValue("remove_item");
-    });
-
-    it("removes an effect when remove button is clicked", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-        effects: [
-          { type: "add_item", item: "key" },
-          { type: "remove_item", item: "sword" },
-        ],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const removeButton = screen.getByTestId("remove-effect-0");
-      fireEvent.click(removeButton);
-
-      const firstEffectType = screen.getByTestId("effect-type-0");
-      expect(firstEffectType).toHaveValue("remove_item");
-    });
-  });
-
-  describe("Passage type handling", () => {
-    it("renders ending type selector for ending passages", () => {
-      const passage: Passage = {
-        paragraphs: ["You win!"],
-        ending: true,
-        type: "victory",
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const endingTypeSelect = screen.getByTestId("ending-type-select");
-      expect(endingTypeSelect).toBeInTheDocument();
-      expect(endingTypeSelect).toHaveValue("victory");
-    });
-
-    it("renders choices and effects for regular passages", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const addChoiceButton = screen.getByTestId("add-choice-button");
-      expect(addChoiceButton).toBeInTheDocument();
-    });
-
-    it("preserves choices and effects when switching to ending and back", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-        effects: [{ type: "add_item", item: "key" }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Verify initial state
-      expect(screen.getByTestId("choice-text-0")).toHaveValue("Test choice");
-      expect(screen.getByTestId("effect-type-0")).toHaveValue("add_item");
-
-      // Switch to ending
-      const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-
-      // Verify choices and effects are hidden
-      expect(screen.queryByTestId("choice-text-0")).not.toBeInTheDocument();
-      expect(screen.queryByTestId("effect-type-0")).not.toBeInTheDocument();
-      expect(screen.getByTestId("ending-type-select")).toBeInTheDocument();
-
-      // Switch back to regular
-      fireEvent.change(passageTypeSelect, { target: { value: "regular" } });
-
-      // Verify choices and effects are restored
-      expect(screen.getByTestId("choice-text-0")).toHaveValue("Test choice");
-      expect(screen.getByTestId("effect-type-0")).toHaveValue("add_item");
-    });
-
-    it("preserves ending type when switching to regular and back", () => {
-      const passage: Passage = {
-        paragraphs: ["You win!"],
-        ending: true,
-        type: "victory",
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Verify initial state
-      expect(screen.getByTestId("ending-type-select")).toHaveValue("victory");
-
-      // Switch to regular
-      const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "regular" } });
-
-      // Verify ending type is hidden
-      expect(
-        screen.queryByTestId("ending-type-select")
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId("add-choice-button")).toBeInTheDocument();
-
-      // Switch back to ending
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-
-      // Verify ending type is restored
-      expect(screen.getByTestId("ending-type-select")).toHaveValue("victory");
-    });
-
-    it("preserves user-entered choices when switching passage types multiple times", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Original choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Modify the choice text
-      const choiceInput = screen.getByTestId("choice-text-0");
-      fireEvent.change(choiceInput, { target: { value: "Modified choice" } });
-      expect(choiceInput).toHaveValue("Modified choice");
-
-      // Add a new choice
-      fireEvent.click(screen.getByTestId("add-choice-button"));
-      const newChoiceInput = screen.getByTestId("choice-text-1");
-      fireEvent.change(newChoiceInput, { target: { value: "New choice" } });
-
-      // Switch to ending
-      const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-
-      // Select ending type
-      const endingTypeSelect = screen.getByTestId("ending-type-select");
-      fireEvent.change(endingTypeSelect, { target: { value: "defeat" } });
-
-      // Switch back to regular
-      fireEvent.change(passageTypeSelect, { target: { value: "regular" } });
-
-      // Verify modified choices are restored
-      expect(screen.getByTestId("choice-text-0")).toHaveValue(
-        "Modified choice"
-      );
-      expect(screen.getByTestId("choice-text-1")).toHaveValue("New choice");
-
-      // Switch to ending again
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-
-      // Verify ending type is restored
-      expect(screen.getByTestId("ending-type-select")).toHaveValue("defeat");
-    });
-  });
-
-  describe("Reset functionality", () => {
-    it("resets text to original value", () => {
-      const passage: Passage = {
-        paragraphs: ["Original text"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const textInput = screen.getByTestId("passage-text-input");
-      fireEvent.change(textInput, { target: { value: "Modified text" } });
-      expect(textInput).toHaveValue("Modified text");
-
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      expect(textInput).toHaveValue("Original text");
-    });
-
-    it("resets notes to original value", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        notes: "Original notes",
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const notesInput = screen.getByTestId("passage-notes-input");
-      fireEvent.change(notesInput, { target: { value: "Modified notes" } });
-      expect(notesInput).toHaveValue("Modified notes");
-
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      expect(notesInput).toHaveValue("Original notes");
-    });
-
-    it("resets choices to original values", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [
-          { text: "Original choice 1", goto: 2 },
-          { text: "Original choice 2", goto: 3 },
-        ],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Modify first choice
-      const choiceInput0 = screen.getByTestId("choice-text-0");
-      fireEvent.change(choiceInput0, { target: { value: "Modified choice" } });
-
-      // Remove second choice
-      fireEvent.click(screen.getByTestId("remove-choice-1"));
-
-      // Add a new choice
-      fireEvent.click(screen.getByTestId("add-choice-button"));
-
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      // Verify original choices are restored
-      expect(screen.getByTestId("choice-text-0")).toHaveValue(
-        "Original choice 1"
-      );
-      expect(screen.getByTestId("choice-text-1")).toHaveValue(
-        "Original choice 2"
-      );
-      expect(screen.queryByTestId("choice-text-2")).not.toBeInTheDocument();
-    });
-
-    it("resets effects to original values", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-        effects: [
-          { type: "add_item", item: "key" },
-          { type: "remove_item", item: "sword" },
-        ],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Remove first effect
-      fireEvent.click(screen.getByTestId("remove-effect-0"));
-
-      // Modify second effect (which is now first)
-      const effectTypeSelect = screen.getByTestId("effect-type-0");
-      fireEvent.change(effectTypeSelect, { target: { value: "add_item" } });
-
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      // Verify original effects are restored
+      // Verify effects are rendered
+      expect(screen.getByTestId("effect-type-0")).toBeInTheDocument();
+      expect(screen.getByTestId("effect-type-1")).toBeInTheDocument();
       expect(screen.getByTestId("effect-type-0")).toHaveValue("add_item");
       expect(screen.getByTestId("effect-type-1")).toHaveValue("remove_item");
     });
 
-    it("resets ending type to original value", () => {
+    it("adds effects through EffectList integration", async () => {
       const passage: Passage = {
-        paragraphs: ["You win!"],
-        ending: true,
-        type: "victory",
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const endingTypeSelect = screen.getByTestId("ending-type-select");
-      fireEvent.change(endingTypeSelect, { target: { value: "defeat" } });
-      expect(endingTypeSelect).toHaveValue("defeat");
-
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      expect(endingTypeSelect).toHaveValue("victory");
-    });
-
-    it("resets passage type from ending to regular", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Switch to ending
-      const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-      expect(screen.getByTestId("ending-type-select")).toBeInTheDocument();
-
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      // Verify it's back to regular
-      expect(
-        screen.queryByTestId("ending-type-select")
-      ).not.toBeInTheDocument();
-      expect(screen.getByTestId("choice-text-0")).toHaveValue("Test choice");
-    });
-
-    it("resets passage type from regular to ending", () => {
-      const passage: Passage = {
-        paragraphs: ["You win!"],
-        ending: true,
-        type: "victory",
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Switch to regular
-      const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "regular" } });
-      expect(screen.getByTestId("add-choice-button")).toBeInTheDocument();
-
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      // Verify it's back to ending
-      expect(screen.getByTestId("ending-type-select")).toHaveValue("victory");
-    });
-
-    it("clears saved state in refs when reset is clicked", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Original choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Modify choice
-      const choiceInput = screen.getByTestId("choice-text-0");
-      fireEvent.change(choiceInput, { target: { value: "Modified choice" } });
-
-      // Switch to ending (this saves choices to ref)
-      const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-
-      // Reset (this should clear saved state)
-      const resetButton = screen.getByTestId("reset-button");
-      fireEvent.click(resetButton);
-
-      // Now switch to ending again
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-
-      // Switch back to regular - should show original, not modified
-      fireEvent.change(passageTypeSelect, { target: { value: "regular" } });
-
-      expect(screen.getByTestId("choice-text-0")).toHaveValue(
-        "Original choice"
-      );
-    });
-  });
-
-  describe("Validation", () => {
-    it("shows error when trying to save a regular passage with no choices", async () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Remove the only choice
-      fireEvent.click(screen.getByTestId("remove-choice-0"));
-
-      // Try to save
-      const saveButton = screen.getByTestId("save-button");
-      fireEvent.click(saveButton);
-
-      // Verify error message is shown
-      await waitFor(() => {
-        expect(
-          screen.getByText("Regular passages must have at least one choice")
-        ).toBeInTheDocument();
-      });
-
-      // Verify updatePassage was not called
-      expect(mockUpdatePassage).not.toHaveBeenCalled();
-    });
-
-    it("clears validation error when a choice is added", async () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Remove the only choice
-      fireEvent.click(screen.getByTestId("remove-choice-0"));
-
-      // Try to save to trigger error
-      const saveButton = screen.getByTestId("save-button");
-      fireEvent.click(saveButton);
-
-      // Verify error is shown
-      await waitFor(() => {
-        expect(
-          screen.getByText("Regular passages must have at least one choice")
-        ).toBeInTheDocument();
-      });
-
-      // Add a choice
-      fireEvent.click(screen.getByTestId("add-choice-button"));
-
-      // Verify error is cleared
-      await waitFor(() => {
-        expect(
-          screen.queryByText("Regular passages must have at least one choice")
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it("does not show choices error for ending passages", async () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        ending: true,
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      // Select ending type
-      const endingTypeSelect = screen.getByTestId("ending-type-select");
-      fireEvent.change(endingTypeSelect, { target: { value: "victory" } });
-
-      // Try to save
-      const saveButton = screen.getByTestId("save-button");
-      fireEvent.click(saveButton);
-
-      // Verify no choices error
-      await waitFor(() => {
-        expect(mockUpdatePassage).toHaveBeenCalled();
-      });
-
-      expect(
-        screen.queryByText("Regular passages must have at least one choice")
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  describe("Save button state", () => {
-    it("is disabled when no changes are made", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const saveButton = screen.getByTestId("save-button");
-      const resetButton = screen.getByTestId("reset-button");
-      expect(saveButton).toBeDisabled();
-      expect(resetButton).toBeDisabled();
-    });
-
-    it("is enabled when text is modified", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const textInput = screen.getByTestId("passage-text-input");
-      fireEvent.change(textInput, { target: { value: "Modified text" } });
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when notes are modified", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const notesInput = screen.getByTestId("passage-notes-input");
-      fireEvent.change(notesInput, { target: { value: "New notes" } });
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when passage type is changed", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when ending type is changed", () => {
-      const passage: Passage = {
-        paragraphs: ["You win!"],
-        ending: true,
-        type: "victory",
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const endingTypeSelect = screen.getByTestId("ending-type-select");
-      fireEvent.change(endingTypeSelect, { target: { value: "defeat" } });
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when a choice text is modified", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Original choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const choiceInput = screen.getByTestId("choice-text-0");
-      fireEvent.change(choiceInput, { target: { value: "Modified choice" } });
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when a choice target is modified", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const choiceGotoSelect = screen.getByTestId("choice-goto-0");
-      fireEvent.change(choiceGotoSelect, { target: { value: "3" } });
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when a choice is added", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const addChoiceButton = screen.getByTestId("add-choice-button");
-      fireEvent.click(addChoiceButton);
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when a choice is removed", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [
-          { text: "Choice 1", goto: 2 },
-          { text: "Choice 2", goto: 3 },
-        ],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const removeButton = screen.getByTestId("remove-choice-0");
-      fireEvent.click(removeButton);
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when an effect type is modified", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
+        paragraphs: ["Test"],
+        choices: [{ text: "Go", goto: 2 }],
         effects: [{ type: "add_item", item: "key" }],
       };
 
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
 
-      const effectTypeSelect = screen.getByTestId("effect-type-0");
-      fireEvent.change(effectTypeSelect, { target: { value: "remove_item" } });
+      const addButton = screen.getByTestId("add-effect-button");
+      fireEvent.click(addButton);
 
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
+      await waitFor(() => {
+        expect(screen.getByTestId("effect-type-1")).toBeInTheDocument();
+      });
     });
 
-    it("is enabled when an effect item is modified", () => {
+    it("removes effects through EffectItem integration", () => {
       const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-        effects: [{ type: "add_item", item: "key" }],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const effectItemSelect = screen.getByTestId("effect-item-0");
-      fireEvent.change(effectItemSelect, { target: { value: "sword" } });
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when an effect is added", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
-        effects: [],
-      };
-
-      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
-
-      const addEffectButton = screen.getByTestId("add-effect-button");
-      fireEvent.click(addEffectButton);
-
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
-    });
-
-    it("is enabled when an effect is removed", () => {
-      const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
+        paragraphs: ["Test"],
+        choices: [{ text: "Go", goto: 2 }],
         effects: [
           { type: "add_item", item: "key" },
-          { type: "remove_item", item: "sword" },
+          { type: "remove_item", item: "map" },
         ],
       };
 
@@ -798,34 +190,147 @@ describe("PassageEditView Component", () => {
       const removeButton = screen.getByTestId("remove-effect-0");
       fireEvent.click(removeButton);
 
-      const saveButton = screen.getByTestId("save-button");
-      expect(saveButton).toBeEnabled();
+      expect(screen.queryByTestId("effect-type-1")).not.toBeInTheDocument();
+      expect(screen.getByTestId("effect-type-0")).toHaveValue("remove_item");
     });
 
-    it("is disabled after reset is clicked", () => {
+    it("updates effect values through EffectItem integration", () => {
       const passage: Passage = {
-        paragraphs: ["Test paragraph"],
-        choices: [{ text: "Test choice", goto: 2 }],
+        paragraphs: ["Test"],
+        choices: [{ text: "Go", goto: 2 }],
+        effects: [{ type: "add_item", item: "key" }],
       };
 
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
 
-      // Make a change
-      const textInput = screen.getByTestId("passage-text-input");
-      fireEvent.change(textInput, { target: { value: "Modified text" } });
+      const effectType = screen.getByTestId("effect-type-0");
+      fireEvent.change(effectType, { target: { value: "remove_item" } });
 
-      // Verify both buttons are enabled
+      // Verify the change was applied
+      expect(effectType).toHaveValue("remove_item");
+    });
+  });
+
+  describe("Component integration with PassageEditFooter", () => {
+    it("shows footer with save and reset buttons", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        choices: [{ text: "Go", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      expect(screen.getByTestId("save-button")).toBeInTheDocument();
+      expect(screen.getByTestId("reset-button")).toBeInTheDocument();
+    });
+
+    it("disables save button when no changes through footer integration", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        choices: [{ text: "Go", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      expect(screen.getByTestId("save-button")).toBeDisabled();
+    });
+
+    it("enables save button when changes detected through footer integration", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        choices: [{ text: "Go", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      const textarea = screen.getByTestId("passage-text-input");
+      fireEvent.change(textarea, { target: { value: "Modified" } });
+
+      expect(screen.getByTestId("save-button")).not.toBeDisabled();
+    });
+  });
+
+  describe("Full workflow integration", () => {
+    it("completes full edit workflow with all components", async () => {
+      const passage: Passage = {
+        paragraphs: ["Original passage"],
+        choices: [{ text: "Original choice", goto: 2 }],
+        effects: [{ type: "add_item", item: "key" }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Edit text
+      const textarea = screen.getByTestId("passage-text-input");
+      fireEvent.change(textarea, { target: { value: "New passage text" } });
+
+      // Add a choice
+      const addChoiceButton = screen.getByTestId("add-choice-button");
+      fireEvent.click(addChoiceButton);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("choice-text-1")).toBeInTheDocument();
+      });
+
+      // Edit the new choice
+      const newChoiceText = screen.getByTestId("choice-text-1");
+      fireEvent.change(newChoiceText, { target: { value: "New choice" } });
+
+      const newChoiceTarget = screen.getByTestId("choice-goto-1");
+      fireEvent.change(newChoiceTarget, { target: { value: "3" } });
+
+      // Update existing effect type
+      const effectType = screen.getByTestId("effect-type-0");
+      fireEvent.change(effectType, { target: { value: "remove_item" } });
+
+      // Save everything
       const saveButton = screen.getByTestId("save-button");
-      const resetButton = screen.getByTestId("reset-button");
-      expect(saveButton).toBeEnabled();
-      expect(resetButton).toBeEnabled();
+      fireEvent.click(saveButton);
 
-      // Reset
-      fireEvent.click(resetButton);
+      // Verify save was called (integration between state and save hooks)
+      await waitFor(() => {
+        expect(mockUpdatePassage).toHaveBeenCalledWith(
+          1,
+          expect.objectContaining({
+            paragraphs: ["New passage text"],
+          })
+        );
+      });
+    });
 
-      // Verify both buttons are disabled again
-      expect(saveButton).toBeDisabled();
-      expect(resetButton).toBeDisabled();
+    it("handles ending passage workflow through all components", async () => {
+      const passage: Passage = {
+        paragraphs: ["Ending text"],
+        choices: [{ text: "Should disappear", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Switch to ending using the select dropdown
+      const passageTypeSelect = screen.getByTestId("passage-type-select");
+      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
+
+      // Verify choices are hidden
+      expect(screen.queryByTestId("choice-text-0")).not.toBeInTheDocument();
+
+      // Set ending type
+      const endingTypeSelect = screen.getByTestId("ending-type-select");
+      fireEvent.change(endingTypeSelect, { target: { value: "victory" } });
+
+      // Save
+      const saveButton = screen.getByTestId("save-button");
+      fireEvent.click(saveButton);
+
+      await waitFor(() => {
+        expect(mockUpdatePassage).toHaveBeenCalledWith(
+          1,
+          expect.objectContaining({
+            ending: true,
+            type: "victory",
+            paragraphs: ["Ending text"],
+          })
+        );
+      });
     });
   });
 });
