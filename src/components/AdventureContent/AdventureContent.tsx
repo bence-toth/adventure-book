@@ -40,7 +40,7 @@ export const AdventureContent = () => {
   if (isIntroduction) {
     return (
       <AdventureLayout sidebar={<AdventureContentSidebar />}>
-        <IntroductionEditView adventure={adventure} />
+        <IntroductionEditView key={adventureId} adventure={adventure} />
       </AdventureLayout>
     );
   }
@@ -63,7 +63,11 @@ export const AdventureContent = () => {
 
   return (
     <AdventureLayout sidebar={<AdventureContentSidebar />}>
-      <PassageEditView passageId={passageId} passage={currentPassage} />
+      <PassageEditView
+        key={passageId}
+        passageId={passageId}
+        passage={currentPassage}
+      />
     </AdventureLayout>
   );
 };
