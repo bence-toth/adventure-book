@@ -90,7 +90,9 @@ describe("useAdventureImport", () => {
         type: "text/yaml",
       });
 
-      await result.current.handleFileImport(mockFile);
+      await act(async () => {
+        await result.current.handleFileImport(mockFile);
+      });
 
       await waitFor(() => {
         expect(result.current.importError).toBe(errorMessage);
@@ -111,7 +113,9 @@ describe("useAdventureImport", () => {
         type: "text/yaml",
       });
 
-      await result.current.handleFileImport(mockFile);
+      await act(async () => {
+        await result.current.handleFileImport(mockFile);
+      });
 
       await waitFor(() => {
         expect(result.current.importError).toBe("Error message");

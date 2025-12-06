@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { renderHook, waitFor, act } from "@testing-library/react";
 import { useAdventureStories } from "../useAdventureStories";
 import * as adventureDatabase from "@/data/adventureDatabase";
 import type { StoredAdventure } from "@/data/adventureDatabase";
@@ -112,7 +112,9 @@ describe("useAdventureStories", () => {
         updatedStories
       );
 
-      await result.current.loadStories();
+      await act(async () => {
+        await result.current.loadStories();
+      });
 
       await waitFor(() => {
         expect(result.current.stories).toEqual(updatedStories);
@@ -153,7 +155,9 @@ describe("useAdventureStories", () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.handleCreateAdventure();
+      await act(async () => {
+        await result.current.handleCreateAdventure();
+      });
 
       expect(adventureDatabase.createAdventure).toHaveBeenCalledWith(
         "Untitled adventure",
@@ -179,7 +183,9 @@ describe("useAdventureStories", () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.handleCreateAdventure();
+      await act(async () => {
+        await result.current.handleCreateAdventure();
+      });
 
       await waitFor(() => {
         expect(result.current.error).toBe("create");
@@ -203,7 +209,9 @@ describe("useAdventureStories", () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.handleDeleteAdventure("adventure-1");
+      await act(async () => {
+        await result.current.handleDeleteAdventure("adventure-1");
+      });
 
       expect(adventureDatabase.deleteAdventure).toHaveBeenCalledWith(
         "adventure-1"
@@ -228,7 +236,9 @@ describe("useAdventureStories", () => {
         expect(result.current.loading).toBe(false);
       });
 
-      await result.current.handleDeleteAdventure("adventure-1");
+      await act(async () => {
+        await result.current.handleDeleteAdventure("adventure-1");
+      });
 
       await waitFor(() => {
         expect(result.current.error).toBe("delete");
