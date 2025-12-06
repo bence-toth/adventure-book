@@ -1,9 +1,9 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useEffect, useCallback, useRef } from "react";
+import { createContext, useState, useCallback, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { loadAdventureById } from "@/data/adventureLoader";
-import { updateAdventureContent } from "@/data/adventureDatabase";
-import { AdventureSerializer } from "@/data/adventureSerializer";
+import { useAdventureLoader } from "./useAdventureLoader";
+import { useSavingState } from "./useSavingState";
+import { useAdventureUpdater } from "./useAdventureUpdater";
 import type { Adventure, Passage } from "@/data/types";
 
 export interface AdventureContextType {
@@ -31,175 +31,46 @@ export const AdventureProvider = ({
   children: React.ReactNode;
 }) => {
   const { adventureId } = useParams<{ adventureId: string }>();
-  const [adventure, setAdventure] = useState<Adventure | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [isDebugModeEnabled, setIsDebugModeEnabled] = useState(false);
-  const [reloadTrigger, setReloadTrigger] = useState(0);
-  const [isSaving, setIsSaving] = useState(false);
-  const savingCountRef = useRef(0);
-  const savingTimeoutRef = useRef<number | null>(null);
 
-  const reloadAdventure = () => {
-    setReloadTrigger((prev) => prev + 1);
-  };
+  // Use custom hooks for complex logic
+  const { adventure, isLoading, error, reloadAdventure } =
+    useAdventureLoader(adventureId);
+
+  const { isSaving, withSaving } = useSavingState();
+
+  // Track local adventure state for optimistic updates
+  // Initialize with null, sync in useEffect
+  const [localAdventure, setLocalAdventure] = useState<Adventure | null>(null);
+
+  // Sync localAdventure with loaded adventure
+  // This updates when adventure changes from the loader
+  useEffect(() => {
+    setLocalAdventure(adventure);
+  }, [adventure]);
+
+  const { updateIntroduction, updatePassage } = useAdventureUpdater(
+    localAdventure,
+    adventureId ?? null,
+    setLocalAdventure,
+    withSaving
+  );
 
   const updateAdventure = useCallback(
     (updater: (adventure: Adventure) => Adventure) => {
-      setAdventure((prev) => {
+      setLocalAdventure((prev) => {
         if (!prev) return prev;
         return updater(prev);
       });
     },
     []
   );
-  const withSaving = useCallback(
-    async <T,>(asyncOperation: () => Promise<T>): Promise<T> => {
-      savingCountRef.current += 1;
-
-      // Only show the saving indicator if the operation takes longer than 500ms
-      const timeoutId = window.setTimeout(() => {
-        if (savingCountRef.current > 0) {
-          setIsSaving(true);
-        }
-      }, 500);
-
-      savingTimeoutRef.current = timeoutId;
-
-      try {
-        return await asyncOperation();
-      } finally {
-        savingCountRef.current -= 1;
-
-        // Clear the timeout if the operation completes before 500ms
-        if (savingCountRef.current === 0) {
-          if (savingTimeoutRef.current !== null) {
-            clearTimeout(savingTimeoutRef.current);
-            savingTimeoutRef.current = null;
-          }
-          setIsSaving(false);
-        }
-      }
-    },
-    []
-  );
-
-  const updateIntroduction = useCallback(
-    async (title: string, text: string) => {
-      if (!adventure || !adventureId) return;
-
-      await withSaving(async () => {
-        // Split text into paragraphs
-        const paragraphs = text
-          .split("\n\n")
-          .map((p) => p.trim())
-          .filter((p) => p.length > 0);
-
-        // Update adventure state
-        const updatedAdventure: Adventure = {
-          ...adventure,
-          metadata: {
-            ...adventure.metadata,
-            title,
-          },
-          intro: {
-            ...adventure.intro,
-            paragraphs,
-          },
-        };
-
-        setAdventure(updatedAdventure);
-
-        // Serialize and save to database
-        const yamlContent =
-          AdventureSerializer.serializeToString(updatedAdventure);
-        await updateAdventureContent(adventureId, yamlContent);
-      });
-    },
-    [adventure, adventureId, withSaving]
-  );
-
-  const updatePassage = useCallback(
-    async (passageId: number, passage: Passage) => {
-      if (!adventure || !adventureId) return;
-
-      await withSaving(async () => {
-        // Update adventure state
-        const updatedAdventure: Adventure = {
-          ...adventure,
-          passages: {
-            ...adventure.passages,
-            [passageId]: passage,
-          },
-        };
-
-        setAdventure(updatedAdventure);
-
-        // Serialize and save to database
-        const yamlContent =
-          AdventureSerializer.serializeToString(updatedAdventure);
-        await updateAdventureContent(adventureId, yamlContent);
-      });
-    },
-    [adventure, adventureId, withSaving]
-  );
-
-  useEffect(() => {
-    if (!adventureId) {
-      setAdventure(null);
-      setIsLoading(false);
-      setError(null);
-      return;
-    }
-
-    let isMounted = true;
-
-    const loadAdventure = async () => {
-      try {
-        if (isMounted) {
-          setIsLoading(true);
-          setError(null);
-        }
-        const loadedAdventure = await loadAdventureById(adventureId);
-        if (isMounted) {
-          setAdventure(loadedAdventure);
-        }
-      } catch (err) {
-        if (isMounted) {
-          if (err instanceof Error) {
-            setError(err.message);
-          } else {
-            setError("Failed to load adventure");
-          }
-          setAdventure(null);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadAdventure();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [adventureId, reloadTrigger]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (savingTimeoutRef.current !== null) {
-        clearTimeout(savingTimeoutRef.current);
-      }
-    };
-  }, []);
 
   return (
     <AdventureContext.Provider
       value={{
-        adventure,
+        // Use localAdventure if available (for optimistic updates), otherwise use adventure (while loading)
+        adventure: localAdventure ?? adventure,
         adventureId: adventureId ?? null,
         isLoading,
         error,
