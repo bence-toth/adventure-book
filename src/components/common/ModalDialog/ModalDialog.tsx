@@ -7,7 +7,7 @@ import {
   FloatingFocusManager,
 } from "@floating-ui/react";
 import { Button } from "@/components/common/Button/Button";
-import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "@/constants/testIds";
+import { DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS } from "./testIds";
 import {
   ModalOverlay,
   Dialog,
@@ -27,10 +27,23 @@ interface ModalDialogProps {
   isOpen: boolean;
   onOpenChange: () => void;
   title: string;
-  message: ReactNode;
+  message: string | string[] | ReactNode;
   actions: ModalAction[];
   "data-testid"?: string;
 }
+
+const renderMessage = (message: string | string[] | ReactNode) => {
+  if (Array.isArray(message)) {
+    return (
+      <>
+        {message.map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
+      </>
+    );
+  }
+  return message;
+};
 
 export const ModalDialog = ({
   isOpen,
@@ -53,7 +66,12 @@ export const ModalDialog = ({
 
   const { getFloatingProps } = useInteractions([dismiss, role]);
 
-  // Lock scroll when modal is open
+  // Prevent background scrolling when the modal is open to maintain focus on the dialog.
+  // When a modal is open, the user should only interact with the modal content, and
+  // background scrolling can be disorienting and break the modal's visual prominence.
+  // This locks/unlocks the document body scroll based on modal open state by
+  // setting body overflow to 'hidden' when modal opens, restoring it when modal closes,
+  // and ensuring cleanup on unmount to prevent scroll being permanently locked.
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -91,7 +109,7 @@ export const ModalDialog = ({
             <DialogMessage
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.MESSAGE}
             >
-              {message}
+              {renderMessage(message)}
             </DialogMessage>
             <DialogActions
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS}

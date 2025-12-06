@@ -20,6 +20,7 @@ intro:
 
 passages:
   1:
+    notes: "Entry passage - introduces the adventure world and presents the first major choice between functional programming and data structures."
     text: |
       In the beginning, there was code. And the code was good.
 
@@ -72,6 +73,7 @@ passages:
         goto: 1
 
   5:
+    notes: "Lambda wisdom passage - teaches immutability and composition. Awards the lambda_scroll item."
     text: |
       The lambda whispers secrets of immutability and composition. Its voice carries the weight of countless transformations and the elegance of pure logic.
 
@@ -145,6 +147,7 @@ passages:
         goto: 5
 
   11:
+    notes: "Recursion trap - demonstrates unbounded recursion. Removes lambda_scroll if player has it. Can lead to infinite loop."
     text: |
       You embrace the recursion and find yourself in an infinite loop of discovery. Each iteration reveals new patterns — the Tower of Hanoi unfolds its ancient puzzle, fractals bloom with self-similar beauty.
 

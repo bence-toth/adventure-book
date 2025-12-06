@@ -2,16 +2,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { DebugInventory } from "../DebugInventory";
 import type { InventoryItem } from "@/data/types";
-import * as inventoryManagement from "@/utils/inventoryManagement";
-
-vi.mock("@/utils/inventoryManagement", () => ({
-  addItemToInventory: vi.fn(),
-  removeItemFromInventory: vi.fn(),
-}));
 
 describe("DebugInventory", () => {
-  const mockAdventureId = "test-adventure-id";
-  const mockOnInventoryChange = vi.fn();
+  const mockOnAddItem = vi.fn();
+  const mockOnRemoveItem = vi.fn();
 
   const mockItems: InventoryItem[] = [
     { id: "item-1", name: "Test Item One" },
@@ -28,8 +22,8 @@ describe("DebugInventory", () => {
       <DebugInventory
         allItems={mockItems}
         currentItemIds={[]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
     expect(screen.getByText("Inventory")).toBeInTheDocument();
@@ -40,8 +34,8 @@ describe("DebugInventory", () => {
       <DebugInventory
         allItems={mockItems}
         currentItemIds={[]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 
@@ -55,8 +49,8 @@ describe("DebugInventory", () => {
       <DebugInventory
         allItems={mockItems}
         currentItemIds={["item-1", "item-3"]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 
@@ -75,44 +69,36 @@ describe("DebugInventory", () => {
     expect(toggle3.checked).toBe(true);
   });
 
-  it("should call addItemToInventory when checking an unchecked item", () => {
+  it("should call onAddItem when checking an unchecked item", () => {
     render(
       <DebugInventory
         allItems={mockItems}
         currentItemIds={[]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 
     const toggle = screen.getByRole("switch", { name: "Test Item One" });
     fireEvent.click(toggle);
 
-    expect(inventoryManagement.addItemToInventory).toHaveBeenCalledWith(
-      mockAdventureId,
-      "item-1"
-    );
-    expect(mockOnInventoryChange).toHaveBeenCalled();
+    expect(mockOnAddItem).toHaveBeenCalledWith("item-1");
   });
 
-  it("should call removeItemFromInventory when unchecking a checked item", () => {
+  it("should call onRemoveItem when unchecking a checked item", () => {
     render(
       <DebugInventory
         allItems={mockItems}
         currentItemIds={["item-2"]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 
     const toggle = screen.getByRole("switch", { name: "Test Item Two" });
     fireEvent.click(toggle);
 
-    expect(inventoryManagement.removeItemFromInventory).toHaveBeenCalledWith(
-      mockAdventureId,
-      "item-2"
-    );
-    expect(mockOnInventoryChange).toHaveBeenCalled();
+    expect(mockOnRemoveItem).toHaveBeenCalledWith("item-2");
   });
 
   it("should render items in a list", () => {
@@ -120,8 +106,8 @@ describe("DebugInventory", () => {
       <DebugInventory
         allItems={mockItems}
         currentItemIds={[]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 
@@ -135,8 +121,8 @@ describe("DebugInventory", () => {
       <DebugInventory
         allItems={[]}
         currentItemIds={[]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 
@@ -150,26 +136,21 @@ describe("DebugInventory", () => {
       <DebugInventory
         allItems={mockItems}
         currentItemIds={["item-1"]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 
     // Check item 2
     fireEvent.click(screen.getByRole("switch", { name: "Test Item Two" }));
-    expect(inventoryManagement.addItemToInventory).toHaveBeenCalledWith(
-      mockAdventureId,
-      "item-2"
-    );
+    expect(mockOnAddItem).toHaveBeenCalledWith("item-2");
 
     // Uncheck item 1
     fireEvent.click(screen.getByRole("switch", { name: "Test Item One" }));
-    expect(inventoryManagement.removeItemFromInventory).toHaveBeenCalledWith(
-      mockAdventureId,
-      "item-1"
-    );
+    expect(mockOnRemoveItem).toHaveBeenCalledWith("item-1");
 
-    expect(mockOnInventoryChange).toHaveBeenCalledTimes(2);
+    expect(mockOnAddItem).toHaveBeenCalledTimes(1);
+    expect(mockOnRemoveItem).toHaveBeenCalledTimes(1);
   });
 
   it("should use unique IDs for checkboxes and labels", () => {
@@ -177,8 +158,8 @@ describe("DebugInventory", () => {
       <DebugInventory
         allItems={mockItems}
         currentItemIds={[]}
-        adventureId={mockAdventureId}
-        onInventoryChange={mockOnInventoryChange}
+        onAddItem={mockOnAddItem}
+        onRemoveItem={mockOnRemoveItem}
       />
     );
 

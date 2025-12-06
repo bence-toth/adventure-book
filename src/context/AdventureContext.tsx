@@ -2,7 +2,9 @@
 import { createContext, useState, useEffect, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { loadAdventureById } from "@/data/adventureLoader";
-import type { Adventure } from "@/data/types";
+import { updateAdventureContent } from "@/data/adventureDatabase";
+import { AdventureSerializer } from "@/data/adventureSerializer";
+import type { Adventure, Passage } from "@/data/types";
 
 export interface AdventureContextType {
   adventure: Adventure | null;
@@ -14,6 +16,8 @@ export interface AdventureContextType {
   setIsDebugModeEnabled: (isEnabled: boolean) => void;
   reloadAdventure: () => void;
   updateAdventure: (updater: (adventure: Adventure) => Adventure) => void;
+  updateIntroduction: (title: string, text: string) => Promise<void>;
+  updatePassage: (passageId: number, passage: Passage) => Promise<void>;
   withSaving: <T>(asyncOperation: () => Promise<T>) => Promise<T>;
 }
 
@@ -49,7 +53,6 @@ export const AdventureProvider = ({
     },
     []
   );
-
   const withSaving = useCallback(
     async <T,>(asyncOperation: () => Promise<T>): Promise<T> => {
       savingCountRef.current += 1;
@@ -79,6 +82,66 @@ export const AdventureProvider = ({
       }
     },
     []
+  );
+
+  const updateIntroduction = useCallback(
+    async (title: string, text: string) => {
+      if (!adventure || !adventureId) return;
+
+      await withSaving(async () => {
+        // Split text into paragraphs
+        const paragraphs = text
+          .split("\n\n")
+          .map((p) => p.trim())
+          .filter((p) => p.length > 0);
+
+        // Update adventure state
+        const updatedAdventure: Adventure = {
+          ...adventure,
+          metadata: {
+            ...adventure.metadata,
+            title,
+          },
+          intro: {
+            ...adventure.intro,
+            paragraphs,
+          },
+        };
+
+        setAdventure(updatedAdventure);
+
+        // Serialize and save to database
+        const yamlContent =
+          AdventureSerializer.serializeToString(updatedAdventure);
+        await updateAdventureContent(adventureId, yamlContent);
+      });
+    },
+    [adventure, adventureId, withSaving]
+  );
+
+  const updatePassage = useCallback(
+    async (passageId: number, passage: Passage) => {
+      if (!adventure || !adventureId) return;
+
+      await withSaving(async () => {
+        // Update adventure state
+        const updatedAdventure: Adventure = {
+          ...adventure,
+          passages: {
+            ...adventure.passages,
+            [passageId]: passage,
+          },
+        };
+
+        setAdventure(updatedAdventure);
+
+        // Serialize and save to database
+        const yamlContent =
+          AdventureSerializer.serializeToString(updatedAdventure);
+        await updateAdventureContent(adventureId, yamlContent);
+      });
+    },
+    [adventure, adventureId, withSaving]
   );
 
   useEffect(() => {
@@ -145,6 +208,8 @@ export const AdventureProvider = ({
         setIsDebugModeEnabled,
         reloadAdventure,
         updateAdventure,
+        updateIntroduction,
+        updatePassage,
         withSaving,
       }}
     >

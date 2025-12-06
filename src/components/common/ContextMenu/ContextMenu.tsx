@@ -46,7 +46,12 @@ export const ContextMenu = ({
 
   const { getFloatingProps } = useInteractions([click, dismiss, role]);
 
-  // Set the reference element when it changes
+  // Sync the floating-ui reference element when the trigger element changes.
+  // floating-ui needs to know which element to position the menu relative to, but the
+  // trigger element may not be available during initial render (parent state) or may change.
+  // This updates floating-ui's internal reference to the trigger element by calling
+  // refs.setReference whenever triggerRef changes, allowing the menu to position
+  // itself correctly relative to the current trigger element.
   useEffect(() => {
     if (triggerRef) {
       refs.setReference(triggerRef);

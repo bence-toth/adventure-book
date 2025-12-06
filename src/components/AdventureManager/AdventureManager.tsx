@@ -7,8 +7,7 @@ import {
   type StoredAdventure,
 } from "@/data/adventureDatabase";
 import adventureTemplate from "@/data/adventure.yaml?raw";
-import { getAdventureTestRoute, getPassageRoute } from "@/constants/routes";
-import { getCurrentPassageId } from "@/utils/localStorage";
+import { getAdventureTestRoute } from "@/constants/routes";
 import { importYamlFile } from "@/utils/importYaml";
 import {
   StoriesLoadError,
@@ -17,6 +16,7 @@ import {
 } from "@/utils/errors";
 import { FileDropArea } from "@/components/common/FileDropArea/FileDropArea";
 import { ModalDialog } from "@/components/common/ModalDialog/ModalDialog";
+import { ADVENTURE_MANAGER_TEST_IDS } from "./testIds";
 import { AdventureManagerTopBar } from "./AdventureManagerTopBar/AdventureManagerTopBar";
 import { NewAdventureCard } from "./NewAdventureCard/NewAdventureCard";
 import { AdventureCard } from "./AdventureCard/AdventureCard";
@@ -56,16 +56,7 @@ export const AdventureManager = () => {
 
   const handleOpenAdventure = useCallback(
     (id: string) => {
-      // Check if there's a saved passage for this adventure
-      const savedPassageId = getCurrentPassageId(id);
-
-      if (savedPassageId !== null) {
-        // Navigate directly to the saved passage
-        navigate(getPassageRoute(id, savedPassageId));
-      } else {
-        // Navigate to the introduction if no saved progress
-        navigate(getAdventureTestRoute(id));
-      }
+      navigate(getAdventureTestRoute(id));
     },
     [navigate]
   );
@@ -168,7 +159,7 @@ export const AdventureManager = () => {
         onFileDrop={handleFileDrop}
         dropLabel="Drop YAML file here"
         isDisabled={isModalOpen}
-        data-testid="adventure-manager-drop-area"
+        data-testid={ADVENTURE_MANAGER_TEST_IDS.DROP_AREA}
       >
         <AdventureManagerContainer>
           <AdventureManagerList>

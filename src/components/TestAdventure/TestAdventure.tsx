@@ -1,27 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
-  addItemToInventory,
-  removeItemFromInventory,
-} from "@/data/adventureLoader";
-import {
-  saveCurrentPassageId,
-  clearCurrentPassageId,
-  clearInventory,
-} from "@/utils/localStorage";
-import {
-  getPassageRoute,
+  getAdventureTestPassageRoute,
   SPECIAL_PASSAGES,
   getAdventureTestRoute,
 } from "@/constants/routes";
-import {
-  PASSAGE_TEST_IDS,
-  INTRODUCTION_TEST_IDS,
-  getPassageParagraphTestId,
-  getIntroParagraphTestId,
-  getChoiceButtonTestId,
-} from "@/constants/testIds";
-import { Button } from "@/components/common/Button/Button";
 import { useAdventure } from "@/context/useAdventure";
 import {
   AdventureLoadError,
@@ -29,87 +12,85 @@ import {
   InvalidPassageIdError,
   PassageNotFoundError,
 } from "@/utils/errors";
-import { TestAdventureTopBar } from "./TestAdventureTopBar/TestAdventureTopBar";
+import { AdventureLayout } from "@/components/layouts/AdventureLayout/AdventureLayout";
 import { TestAdventureSidebar } from "./TestAdventureSidebar/TestAdventureSidebar";
-import {
-  PageLayout,
-  PageContent,
-  ContentContainer,
-  ContentText,
-  ContentParagraph,
-  Choices,
-  ContentTitle,
-} from "./TestAdventure.styles";
+import { LoadingState } from "./LoadingState/LoadingState";
+import { IntroductionView } from "./IntroductionView/IntroductionView";
+import { PassageView } from "./PassageView/PassageView";
 
 export const TestAdventure = () => {
   const { id, adventureId } = useParams<{ id: string; adventureId: string }>();
   const navigate = useNavigate();
-  const { adventure, isLoading, error } = useAdventure();
+  const { adventure, isLoading, error, isDebugModeEnabled } = useAdventure();
 
   // If no id is provided, we're in introduction mode
   const isIntroduction = !id;
   const passageId = id ? parseInt(id, 10) : null;
 
-  // Clear inventory and passage ID when viewing introduction
+  // Manage inventory in component state
+  // Key insight: inventory should be reset based on route, not in an effect
+  const inventoryKey = useMemo(
+    () => (isIntroduction ? "intro" : passageId),
+    [isIntroduction, passageId]
+  );
+  const [inventory, setInventory] = useState<string[]>([]);
+  const [lastInventoryKey, setLastInventoryKey] = useState(inventoryKey);
+
+  // Reset inventory when route changes to introduction
+  if (inventoryKey !== lastInventoryKey) {
+    if (inventoryKey === "intro") {
+      setInventory([]);
+    }
+    setLastInventoryKey(inventoryKey);
+  }
+
+  // Apply passage effects to inventory when the user navigates to a new passage.
+  // Each passage can define inventory effects (add/remove items) that should modify the inventory
+  // when they arrive at that passage, supporting conditional choices and narrative state.
+  // This processes passage effects and updates the inventory state accordingly.
+  // It runs whenever passageId changes, iterating through the passage's effects array and
+  // applying add_item or remove_item transformations to the inventory. Endings are skipped
+  // since they don't have effects by design.
   useEffect(() => {
-    if (!adventureId || !isIntroduction) return;
-
-    clearCurrentPassageId(adventureId);
-    clearInventory(adventureId);
-
-    // Dispatch event to notify sidebar
-    window.dispatchEvent(new Event("inventoryUpdate"));
-  }, [adventureId, isIntroduction]);
-
-  useEffect(() => {
-    if (!adventureId || !adventure || isIntroduction || passageId === null)
+    if (!adventure || isIntroduction || passageId === null || isNaN(passageId))
       return;
 
-    if (!isNaN(passageId)) {
-      if (passageId === SPECIAL_PASSAGES.RESET) {
-        // Special case: passage 0 clears localStorage and redirects to introduction
-        navigate(getAdventureTestRoute(adventureId));
-        return;
-      } else if (passageId >= 1) {
-        saveCurrentPassageId(adventureId, passageId);
-
-        // Execute effects for this passage (only non-ending passages have effects)
-        const passage = adventure.passages[passageId];
-        if (passage && !passage.ending && passage.effects) {
-          passage.effects.forEach((effect) => {
-            if (effect.type === "add_item") {
-              addItemToInventory(adventureId, effect.item);
-            } else if (effect.type === "remove_item") {
-              removeItemFromInventory(adventureId, effect.item);
-            }
-          });
-
-          // Dispatch an event to notify other components
-          window.dispatchEvent(new Event("inventoryUpdate"));
+    const passage = adventure.passages[passageId];
+    if (passage && !passage.ending && passage.effects) {
+      passage.effects.forEach((effect) => {
+        if (effect.type === "add_item") {
+          setInventory((prev) =>
+            prev.includes(effect.item) ? prev : [...prev, effect.item]
+          );
+        } else if (effect.type === "remove_item") {
+          setInventory((prev) => prev.filter((id) => id !== effect.item));
         }
-      }
+      });
     }
-  }, [passageId, navigate, adventureId, adventure, isIntroduction]);
+  }, [passageId, adventure, isIntroduction]);
+
+  // Inventory management callbacks for debug mode
+  const handleAddItem = useCallback((itemId: string) => {
+    setInventory((prev) => (prev.includes(itemId) ? prev : [...prev, itemId]));
+  }, []);
+
+  const handleRemoveItem = useCallback((itemId: string) => {
+    setInventory((prev) => prev.filter((id) => id !== itemId));
+  }, []);
 
   if (isLoading) {
     return (
-      <>
-        <TestAdventureTopBar />
-        <PageLayout>
-          <TestAdventureSidebar />
-          <PageContent>
-            <ContentContainer
-              data-testid={
-                isIntroduction
-                  ? INTRODUCTION_TEST_IDS.CONTAINER
-                  : PASSAGE_TEST_IDS.CONTAINER
-              }
-            >
-              <p>Loading {isIntroduction ? "adventure" : "passage"}...</p>
-            </ContentContainer>
-          </PageContent>
-        </PageLayout>
-      </>
+      <AdventureLayout
+        sidebar={
+          <TestAdventureSidebar
+            inventory={inventory}
+            onAddItem={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+          />
+        }
+      >
+        <LoadingState isIntroduction={isIntroduction} />
+      </AdventureLayout>
     );
   }
 
@@ -124,41 +105,26 @@ export const TestAdventure = () => {
   // Handle introduction view
   if (isIntroduction) {
     const handleStartAdventure = () => {
-      navigate(getPassageRoute(adventureId, SPECIAL_PASSAGES.START));
+      navigate(
+        getAdventureTestPassageRoute(adventureId, SPECIAL_PASSAGES.START)
+      );
     };
 
     return (
-      <>
-        <TestAdventureTopBar />
-        <PageLayout>
-          <TestAdventureSidebar />
-          <PageContent>
-            <ContentContainer data-testid={INTRODUCTION_TEST_IDS.CONTAINER}>
-              <ContentTitle data-testid={INTRODUCTION_TEST_IDS.TITLE}>
-                {adventure.metadata.title}
-              </ContentTitle>
-              <ContentText data-testid={INTRODUCTION_TEST_IDS.TEXT}>
-                {adventure.intro.paragraphs.map((paragraph, index) => (
-                  <ContentParagraph
-                    key={index}
-                    data-testid={getIntroParagraphTestId(index)}
-                  >
-                    {paragraph}
-                  </ContentParagraph>
-                ))}
-              </ContentText>
-              <Choices>
-                <Button
-                  onClick={handleStartAdventure}
-                  data-testid={INTRODUCTION_TEST_IDS.START_BUTTON}
-                >
-                  {adventure.intro.action}
-                </Button>
-              </Choices>
-            </ContentContainer>
-          </PageContent>
-        </PageLayout>
-      </>
+      <AdventureLayout
+        sidebar={
+          <TestAdventureSidebar
+            inventory={inventory}
+            onAddItem={handleAddItem}
+            onRemoveItem={handleRemoveItem}
+          />
+        }
+      >
+        <IntroductionView
+          adventure={adventure}
+          onStart={handleStartAdventure}
+        />
+      </AdventureLayout>
     );
   }
 
@@ -172,26 +138,6 @@ export const TestAdventure = () => {
     throw new InvalidPassageIdError(id || "undefined");
   }
 
-  // Handle passage 0 (reset) - this will be handled in useEffect, but we need to prevent
-  // the rest of the component from rendering while the redirect happens
-  if (passageId === SPECIAL_PASSAGES.RESET) {
-    return (
-      <>
-        <TestAdventureTopBar />
-        <PageLayout>
-          <TestAdventureSidebar />
-          <PageContent>
-            <ContentContainer data-testid={PASSAGE_TEST_IDS.RESET_PASSAGE}>
-              <ContentText>
-                <ContentParagraph>Resetting your adventure…</ContentParagraph>
-              </ContentText>
-            </ContentContainer>
-          </PageContent>
-        </PageLayout>
-      </>
-    );
-  }
-
   const currentPassage = adventure.passages[passageId];
 
   if (!currentPassage) {
@@ -199,56 +145,29 @@ export const TestAdventure = () => {
   }
 
   const handleChoiceClick = (nextId: number) => {
-    navigate(getPassageRoute(adventureId, nextId));
+    navigate(getAdventureTestPassageRoute(adventureId, nextId));
   };
 
   const handleRestartClick = () => {
-    clearCurrentPassageId(adventureId);
-    clearInventory(adventureId);
     navigate(getAdventureTestRoute(adventureId));
   };
 
   return (
-    <>
-      <TestAdventureTopBar />
-      <PageLayout>
-        <TestAdventureSidebar />
-        <PageContent>
-          <ContentContainer data-testid={PASSAGE_TEST_IDS.CONTAINER}>
-            <ContentText data-testid={PASSAGE_TEST_IDS.TEXT}>
-              {currentPassage.paragraphs.map((paragraph, index) => (
-                <ContentParagraph
-                  key={index}
-                  data-testid={getPassageParagraphTestId(index)}
-                >
-                  {paragraph}
-                </ContentParagraph>
-              ))}
-            </ContentText>
-            <Choices data-testid={PASSAGE_TEST_IDS.CHOICES}>
-              {currentPassage.ending ? (
-                <Button
-                  onClick={handleRestartClick}
-                  data-testid={PASSAGE_TEST_IDS.RESTART_BUTTON}
-                >
-                  Restart adventure
-                </Button>
-              ) : (
-                currentPassage.choices!.map((choice, index) => (
-                  <Button
-                    key={index}
-                    onClick={() => handleChoiceClick(choice.goto)}
-                    data-testid={getChoiceButtonTestId(index)}
-                    data-goto={choice.goto}
-                  >
-                    {choice.text}
-                  </Button>
-                ))
-              )}
-            </Choices>
-          </ContentContainer>
-        </PageContent>
-      </PageLayout>
-    </>
+    <AdventureLayout
+      sidebar={
+        <TestAdventureSidebar
+          inventory={inventory}
+          onAddItem={handleAddItem}
+          onRemoveItem={handleRemoveItem}
+        />
+      }
+    >
+      <PassageView
+        passage={currentPassage}
+        isDebugModeEnabled={isDebugModeEnabled}
+        onChoiceClick={handleChoiceClick}
+        onRestart={handleRestartClick}
+      />
+    </AdventureLayout>
   );
 };

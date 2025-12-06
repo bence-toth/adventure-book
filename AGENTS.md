@@ -39,9 +39,10 @@ YAML Adventure Files → Parser → Validation → Type-Safe Objects → React C
 ### Component Hierarchy
 
 - **App**: Route management and error boundaries
-- **Introduction/Passage**: Presentational components consuming adventure data
+- **AdventureManager**: Main interface for managing and testing adventures
+- **TestAdventure**: Adventure playback and testing interface
 - **ErrorBoundary**: Centralized error handling for data loading failures
-- **Adventure System**: Pure functions for parsing, validation, and data access
+- **Adventure System**: Pure functions for parsing, validation, and data access via IndexedDB
 
 ### State Management Philosophy
 
@@ -87,18 +88,28 @@ The adventure system transforms YAML content through several stages:
 ### Key Interfaces
 
 ```typescript
-// Raw YAML structure (input)
-interface RawAdventure {
-  metadata: { title: string; author: string; version: string };
-  intro: { text: string; action: string };
-  passages: Record<number, RawPassage>;
+// Adventure metadata
+interface AdventureMetadata {
+  id: string; // Unique identifier
+  title: string; // Adventure title
+  author?: string; // Optional author name
+  createdAt: number; // Timestamp
+  updatedAt: number; // Last modified timestamp
 }
 
-// Processed structure (output)
+// Passage structure
+interface Passage {
+  id: number; // Unique passage ID
+  paragraphs: string[]; // Content paragraphs
+  choices?: Choice[]; // Optional choices (endings have none)
+  isEnding?: boolean; // Whether this is an ending
+}
+
+// Adventure structure (stored in IndexedDB)
 interface Adventure {
-  metadata: { title: string; author: string; version: string };
-  intro: { paragraphs: string[]; action: string };
+  metadata: AdventureMetadata;
   passages: Record<number, Passage>;
+  yamlContent: string; // Original YAML for editing
 }
 ```
 
@@ -183,20 +194,24 @@ if (currentPassageId === 1) navigate("/passage/2"); // Brittle
 - **Error Boundary Testing**: Verify error handling with invalid or missing content
 - **State Management Testing**: Ensure persistence works regardless of adventure structure
 
-### Adventure Loader Architecture
+### Adventure Database Architecture
 
-The adventure loader acts as the crucial abstraction layer:
+The application uses IndexedDB for persistent storage of adventures:
 
 ```typescript
-// Good: Abstract interface that works with any adventure
-interface AdventureLoader {
-  loadAdventure(): Adventure;
-  getPassage(id: number): Passage | undefined;
-  introduction: IntroductionContent;
+// Database operations for adventure management
+interface AdventureDatabase {
+  saveAdventure(adventure: Adventure): Promise<void>;
+  getAdventure(id: string): Promise<Adventure | undefined>;
+  getAllAdventures(): Promise<Adventure[]>;
+  deleteAdventure(id: string): Promise<void>;
 }
 
-// The actual adventure content is an implementation detail
+// Context provides current adventure to components
+const adventure = useAdventure(); // Returns Adventure | null
 ```
+
+The actual adventure content is stored in IndexedDB and loaded via React Context.
 
 ### Content Change Resilience
 
@@ -267,12 +282,233 @@ export const ComponentName = () => {
 };
 ```
 
-### CSS Organization
+### CSS Organization and Guidelines
 
-- **Component-Scoped**: Each component has its own CSS file
-- **CSS Variables**: Use design tokens for consistency
+#### Core Principles
+
+- **Styled Components**: All styles are written using styled-components in separate `ComponentName.styles.ts` files
+- **Component-Scoped**: Each component has its own `.styles.ts` file colocated with the component
+- **Modern CSS**: Use modern CSS features (logical properties, container queries, color functions, etc.)
+- **CSS Variables for Spacing/Sizing**: Never use hardcoded units (px, rem, em) - always use CSS variables from `index.css`
+- **Color Helpers for Colors**: Never reference color CSS variables directly - use `getColor()` and `getInteractiveColor()` helper functions
 - **Semantic Classes**: Class names reflect purpose, not appearance
 - **Responsive**: Mobile-first design with progressive enhancement
+
+#### File Structure
+
+Each component should have a corresponding `.styles.ts` file:
+
+```
+ComponentName/
+  ComponentName.tsx
+  ComponentName.styles.ts
+  __tests__/
+```
+
+Styled components are imported and used in the component file:
+
+```typescript
+import { StyledButton, IconWrapper } from "./Button.styles";
+```
+
+#### Color Helpers (from `src/utils/colorHelpers.ts`)
+
+**CRITICAL**: Never reference color CSS variables directly. Always use the color helper functions.
+
+**`getColor()`** - For non-interactive elements:
+
+```typescript
+import { getColor } from "@/utils/colorHelpers";
+
+const Container = styled.div`
+  background: ${getColor({ type: "background", variant: "neutral" })};
+  color: ${getColor({ type: "foreground", variant: "neutral" })};
+  border: 1px solid
+    ${getColor({ type: "border", variant: "neutral", isSurface: true })};
+  box-shadow: ${getColor({
+    type: "shadow",
+    variant: "neutral",
+    isSurface: true,
+  })};
+`;
+```
+
+Parameters:
+
+- `type`: "background" | "foreground" | "foreground-muted" | "border" | "shadow"
+- `variant`: "neutral" | "primary" | "danger"
+- `isSurface`: boolean (required for border/shadow, optional for background)
+- `isElevated`: boolean (optional, for elevated surfaces)
+
+**`getInteractiveColor()`** - For interactive elements with state:
+
+```typescript
+import { getInteractiveColor } from "@/utils/colorHelpers";
+
+const Button = styled.button<{ $variant: "neutral" | "primary" | "danger" }>`
+  background: ${(props) =>
+    getInteractiveColor({
+      variant: props.$variant,
+      type: "background",
+      state: "default",
+    })};
+  color: ${(props) =>
+    getInteractiveColor({
+      variant: props.$variant,
+      type: "foreground",
+      state: "default",
+    })};
+
+  &:hover {
+    background: ${(props) =>
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "background",
+        state: "hover",
+      })};
+  }
+`;
+```
+
+Parameters:
+
+- `variant`: "neutral" | "primary" | "danger"
+- `type`: "background" | "foreground" | "border" | "outline"
+- `state`: "default" | "hover" | "active" | "focus"
+
+#### CSS Variable Categories (from `index.css`)
+
+**Colors** - Use color helper functions instead of direct variable references:
+
+- ❌ `var(--color-background-neutral)` - Don't use directly
+- ✅ `getColor({ type: "background", variant: "neutral" })` - Use helper function
+
+**Spacing** - Use space variables for all sizing:
+
+- `--space-0-25`, `--space-0-5`, `--space-1` through `--space-5` - Consistent spacing scale
+- Never use `px`, `rem`, or `em` directly
+
+**Typography**:
+
+- `--font-family-{type}` - display, monospace, default
+- `--font-size-{size}` - sm, md, lg, xl
+- `--line-height-{spacing}` - dense, normal, relaxed, loose
+
+**Element Sizing**:
+
+- `--size-{element}` - Pre-defined sizes for common elements (top-bar, sidebar, content, etc.)
+
+**Borders**:
+
+- `--border-width-{type}` - surface, interactive
+
+**Animations**:
+
+- `--duration-{speed}` - fast, medium, slow
+
+**Shadows**:
+
+- `--shadow-{type}-{variant}` - Pre-defined shadow utilities
+
+#### Styling Best Practices
+
+✅ **Use styled-components with CSS variables and color helpers**
+
+```typescript
+import styled from "styled-components";
+import { getColor, getInteractiveColor } from "@/utils/colorHelpers";
+
+const Container = styled.div`
+  padding: var(--space-2);
+  color: ${getColor({ type: "foreground", variant: "neutral" })};
+  font-size: var(--font-size-md);
+  border-width: var(--border-width-surface);
+`;
+
+const Button = styled.button<{ $variant: "neutral" | "primary" }>`
+  background: ${(props) =>
+    getInteractiveColor({
+      variant: props.$variant,
+      type: "background",
+      state: "default",
+    })};
+
+  &:hover {
+    background: ${(props) =>
+      getInteractiveColor({
+        variant: props.$variant,
+        type: "background",
+        state: "hover",
+      })};
+  }
+`;
+```
+
+❌ **Never use hardcoded units**
+
+```typescript
+const Wrong = styled.div`
+  padding: 16px; /* Wrong - use var(--space-2) */
+  font-size: 1rem; /* Wrong - use var(--font-size-md) */
+  border-width: 1px; /* Wrong - use var(--border-width-surface) */
+`;
+```
+
+❌ **Never reference color variables directly**
+
+```typescript
+const Wrong = styled.button`
+  /* Wrong - use getInteractiveColor() helper instead */
+  background-color: var(--color-interactive-background-default-primary);
+  color: var(--color-interactive-foreground-default-primary);
+`;
+```
+
+❌ **Avoid italic text**
+
+```typescript
+const Text = styled.p`
+  font-style: italic; /* Avoid - italic is generally not used in this project */
+`;
+```
+
+✅ **Use modern CSS features**
+
+```typescript
+const Component = styled.div`
+  /* Logical properties for internationalization */
+  padding-inline: var(--space-2);
+  margin-block-start: var(--space-3);
+
+  /* Container queries when appropriate */
+  container-type: inline-size;
+`;
+```
+
+❌ **Never define new custom values in component styles**
+
+```typescript
+const Wrong = styled.div`
+  --custom-size: 42px; /* Wrong - should be added to index.css if needed project-wide */
+  padding: var(--custom-size);
+`;
+```
+
+#### Color Utility Selection Guide
+
+- **Neutral**: Default UI elements, text, backgrounds
+- **Primary**: Main actions, highlights, brand elements (turquoise)
+- **Danger**: Destructive actions, errors (red)
+- **Info**: Informational content, non-critical alerts (blue)
+
+Each variant has full state support (default, hover, active, focus) for interactive elements.
+
+#### When CSS Variables Don't Exist
+
+If a needed value doesn't exist in `index.css`:
+
+1. Consider if the design needs adjustment to fit existing tokens
+2. Only if absolutely necessary, propose adding a new variable to `index.css` in a separate change
 
 ## Error Handling Philosophy
 
@@ -292,12 +528,20 @@ export const ComponentName = () => {
 
 ## Development Workflow
 
+### Automated Quality Checks
+
+**ALWAYS run these commands when making changes:**
+
+1. **Fix Lint Errors Automatically**: `npm run lint:fix` - Auto-fixes all ESLint, Stylelint, and Prettier issues
+2. **Run Tests Non-Interactively**: `npm run test:run` - Runs all tests once without watch mode (no user interaction needed)
+3. **Check for Type Errors**: `npm run test:types` - Verify TypeScript compilation
+
 ### Feature Development Cycle
 
 1. **Understand Requirements**: What adventure feature or user need are we addressing?
 2. **Write Tests**: Define expected behavior through tests
 3. **Implement Incrementally**: Build functionality step by step
-4. **Validate**: Run tests, linting, and type checking
+4. **Validate**: Run `npm run lint:fix`, `npm run test:types` and `npm run test:run`
 5. **Manual Testing**: Test user flows in the browser
 6. **Refactor**: Simplify and optimize the implementation
 
@@ -396,12 +640,12 @@ npm run preview          # Preview production build locally
 
 ```bash
 # Running tests
-npm test                 # Run tests in watch mode
 npm run test:run         # Run tests once (CI mode)
-npm run test:ui          # Open Vitest UI for interactive testing
 npm run test:coverage    # Generate test coverage report
 npm run test:types       # Type check without emitting files
 ```
+
+**Important**: Always use `npm run test:run` when running tests automatically or in scripts. This runs tests once without requiring user interaction (no need to press 'q' to quit).
 
 ### Linting and Code Quality
 
@@ -424,13 +668,13 @@ npm run lint:unused-code # Check for unused exports and dependencies with Knip
 
 ### Pre-Commit Checklist
 
-Before committing changes, ensure:
+**Always run these commands before committing:**
 
-1. **Tests Pass**: `npm run test:run`
-2. **Types Check**: `npm run test:types`
-3. **Code Quality**: `npm run lint` (or `npm run lint:fix` to auto-fix)
-4. **No Unused Code**: `npm run lint:unused-code`
-5. **Build Works**: `npm run build`
+1. **Auto-fix Code Quality**: `npm run lint:fix` - Fixes all auto-fixable issues
+2. **Run Tests**: `npm run test:run` - Non-interactive test execution
+3. **Check Types**: `npm run test:types` - Verify TypeScript compilation
+4. **Check Unused Code**: `npm run lint` - Run all linters sequentially
+5. **Verify Build**: `npm run build` - Ensure production build works
 
 ### Common Workflows
 
@@ -443,10 +687,11 @@ npm run dev
 # In another terminal, run tests in watch mode
 npm test
 
-# Before committing
-npm run lint:fix
-npm run test:run
-npm run lint:unused-code
+# Before committing (ALWAYS RUN THESE)
+npm run lint:fix          # Auto-fix all linting issues
+npm run test:run          # Run all tests non-interactively
+npm run test:types        # Verify TypeScript compilation
+npm run lint              # Run all linters sequentially
 ```
 
 #### Fixing Linting Issues
@@ -459,8 +704,9 @@ npm run lint
 npm run lint:fix
 
 # Fix specific linters
-npm run lint:ts:fix      # Fix JS/TS issues
-npm run lint:styles:fix  # Fix CSS issues
+npm run lint:ts:fix       # Fix JS/TS issues
+npm run lint:styles:fix   # Fix CSS issues
+npm run lint:prettier:fix # Fix prettier issues
 ```
 
 #### Cleaning Up Unused Code

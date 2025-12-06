@@ -1,9 +1,5 @@
 import { useCallback } from "react";
 import type { InventoryItem } from "@/data/types";
-import {
-  addItemToInventory,
-  removeItemFromInventory,
-} from "@/utils/inventoryManagement";
 import { ToggleButton } from "@/components/common/ToggleButton/ToggleButton";
 import {
   DebugInventoryTitle,
@@ -14,26 +10,25 @@ import {
 interface DebugInventoryProps {
   allItems: InventoryItem[];
   currentItemIds: string[];
-  adventureId: string;
-  onInventoryChange: () => void;
+  onAddItem: (itemId: string) => void;
+  onRemoveItem: (itemId: string) => void;
 }
 
 export const DebugInventory = ({
   allItems,
   currentItemIds,
-  adventureId,
-  onInventoryChange,
+  onAddItem,
+  onRemoveItem,
 }: DebugInventoryProps) => {
   const handleToggleItem = useCallback(
     (itemId: string, isChecked: boolean) => {
       if (isChecked) {
-        addItemToInventory(adventureId, itemId);
+        onAddItem(itemId);
       } else {
-        removeItemFromInventory(adventureId, itemId);
+        onRemoveItem(itemId);
       }
-      onInventoryChange();
     },
-    [adventureId, onInventoryChange]
+    [onAddItem, onRemoveItem]
   );
 
   return (

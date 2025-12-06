@@ -2,7 +2,7 @@
 import { render as rtlRender } from "@testing-library/react";
 import type { RenderOptions } from "@testing-library/react";
 import type { ReactElement } from "react";
-import { BrowserRouter, MemoryRouter, Route, Routes } from "react-router-dom";
+import { createMemoryRouter, RouterProvider } from "react-router-dom";
 import {
   AdventureProvider,
   AdventureContext,
@@ -10,9 +10,9 @@ import {
 } from "@/context/AdventureContext";
 import type { Adventure } from "@/data/types";
 
-// Wrapper component for providers
+// Wrapper component for providers (simple wrapper for basic components)
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
-  return <BrowserRouter>{children}</BrowserRouter>;
+  return <>{children}</>;
 };
 
 // Wrapper for components that need AdventureContext
@@ -23,16 +23,19 @@ export const AdventureTestWrapper = ({
   children: React.ReactNode;
   adventureId?: string;
 }) => {
-  return (
-    <MemoryRouter initialEntries={[`/${adventureId}/test`]}>
-      <Routes>
-        <Route
-          path="/:adventureId/*"
-          element={<AdventureProvider>{children}</AdventureProvider>}
-        />
-      </Routes>
-    </MemoryRouter>
+  const router = createMemoryRouter(
+    [
+      {
+        path: "/:adventureId/*",
+        element: <AdventureProvider>{children}</AdventureProvider>,
+      },
+    ],
+    {
+      initialEntries: [`/${adventureId}/test`],
+    }
   );
+
+  return <RouterProvider router={router} />;
 };
 
 // Custom render function
@@ -92,6 +95,8 @@ export const renderWithAdventure = (
       setIsDebugModeEnabled: () => {},
       reloadAdventure: () => {},
       updateAdventure: () => {},
+      updateIntroduction: async () => {},
+      updatePassage: async () => {},
       withSaving: (fn) => fn(),
     };
 
@@ -100,36 +105,51 @@ export const renderWithAdventure = (
       ...contextOverride,
     };
 
-    return rtlRender(ui, {
-      wrapper: ({ children }) => (
-        <MemoryRouter initialEntries={[initialRoute]}>
-          <AdventureContext.Provider value={mockContextValue}>
-            <Routes>
-              <Route path="/" element={children} />
-              <Route path="/adventure/:adventureId/*" element={children} />
-            </Routes>
-          </AdventureContext.Provider>
-        </MemoryRouter>
-      ),
-      ...options,
-    });
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/",
+          element: (
+            <AdventureContext.Provider value={mockContextValue}>
+              {ui}
+            </AdventureContext.Provider>
+          ),
+        },
+        {
+          path: "/adventure/:adventureId/*",
+          element: (
+            <AdventureContext.Provider value={mockContextValue}>
+              {ui}
+            </AdventureContext.Provider>
+          ),
+        },
+      ],
+      {
+        initialEntries: [initialRoute],
+      }
+    );
+
+    return rtlRender(<RouterProvider router={router} />, options);
   }
 
   // Otherwise use the real AdventureProvider
-  return rtlRender(ui, {
-    wrapper: ({ children }) => (
-      <MemoryRouter initialEntries={[initialRoute]}>
-        <Routes>
-          <Route path="/" element={children} />
-          <Route
-            path="/adventure/:adventureId/*"
-            element={<AdventureProvider>{children}</AdventureProvider>}
-          />
-        </Routes>
-      </MemoryRouter>
-    ),
-    ...options,
-  });
+  const router = createMemoryRouter(
+    [
+      {
+        path: "/",
+        element: ui,
+      },
+      {
+        path: "/adventure/:adventureId/*",
+        element: <AdventureProvider>{ui}</AdventureProvider>,
+      },
+    ],
+    {
+      initialEntries: [initialRoute],
+    }
+  );
+
+  return rtlRender(<RouterProvider router={router} />, options);
 };
 
 // Re-export specific testing utilities to avoid export * issues

@@ -81,6 +81,11 @@
           "minLength": 1,
           "description": "Passage content. Use YAML pipe (|) notation for multi-line text. Separate paragraphs with blank lines."
         },
+        "notes": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Optional development notes about the passage. Only visible in debug mode. Must not be empty or whitespace-only."
+        },
         "choices": {
           "type": "array",
           "description": "Available choices for the reader. Omit this field for ending passages.",

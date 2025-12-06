@@ -1,32 +1,88 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { render } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import { beforeEach, describe, it, expect, vi } from "vitest";
+import { createMemoryRouter, RouterProvider, Navigate } from "react-router-dom";
+import { describe, it, expect, vi } from "vitest";
+import { INTRODUCTION_TEST_IDS } from "@/components/AdventureContent/testIds";
 import {
-  INTRODUCTION_TEST_IDS,
   PASSAGE_TEST_IDS,
   getChoiceButtonTestId,
-} from "@/constants/testIds";
+} from "@/components/AdventureContent/testIds";
 import { createMockAdventureLoader } from "./mockAdventureData";
 
 // Mock adventureLoader using the factory function
 vi.mock("@/data/adventureLoader", () => createMockAdventureLoader());
 
-import App from "../App";
+import App, { AdventureLayout } from "../App";
+import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
+import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
+import { AdventureContent } from "@/components/AdventureContent/AdventureContent";
+import { ROUTES } from "@/constants/routes";
 
 const TEST_STORY_ID = "test-adventure-id";
 
 describe("Adventure Book Integration Tests", () => {
-  beforeEach(() => {
-    // Tests now use mocked adventureLoader
-  });
-
   const renderApp = (initialRoute = "/") => {
-    return render(
-      <MemoryRouter initialEntries={[initialRoute]}>
-        <App />
-      </MemoryRouter>
+    const router = createMemoryRouter(
+      [
+        {
+          path: "/",
+          element: <App />,
+          children: [
+            {
+              index: true,
+              element: <AdventureManager />,
+            },
+            {
+              path: "adventure/:adventureId",
+              element: <AdventureLayout />,
+              children: [
+                {
+                  path: "test",
+                  element: <Navigate to="introduction" replace />,
+                },
+                {
+                  path: "test/introduction",
+                  element: <TestAdventure />,
+                },
+                {
+                  path: "test/passage/:id",
+                  element: <TestAdventure />,
+                },
+                {
+                  path: "content",
+                  element: <Navigate to="introduction" replace />,
+                },
+                {
+                  path: "content/introduction",
+                  element: <AdventureContent />,
+                },
+                {
+                  path: "content/passage/:id",
+                  element: <AdventureContent />,
+                },
+                {
+                  path: "structure",
+                  element: <div>Structure view coming soon</div>,
+                },
+                {
+                  path: "*",
+                  element: <Navigate to="test/introduction" replace />,
+                },
+              ],
+            },
+            {
+              path: "*",
+              element: <Navigate to={ROUTES.ROOT} replace />,
+            },
+          ],
+        },
+      ],
+      {
+        initialEntries: [initialRoute],
+      }
     );
+
+    return render(<RouterProvider router={router} />);
   };
 
   it("completes a full adventure flow", async () => {

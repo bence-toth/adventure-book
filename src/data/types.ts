@@ -8,7 +8,7 @@ export interface InventoryItem {
   name: string;
 }
 
-type Effect =
+export type Effect =
   | {
       type: "add_item";
       item: string;
@@ -21,6 +21,7 @@ type Effect =
 type RawPassage =
   | {
       text: string;
+      notes?: string;
       ending: true;
       type?: "victory" | "defeat" | "neutral";
       choices?: never;
@@ -28,6 +29,7 @@ type RawPassage =
     }
   | {
       text: string;
+      notes?: string;
       choices: Choice[];
       ending?: never;
       type?: never;
@@ -53,6 +55,7 @@ export interface RawAdventure {
 export type Passage =
   | {
       paragraphs: string[];
+      notes?: string;
       ending: true;
       type?: "victory" | "defeat" | "neutral";
       choices?: never;
@@ -60,6 +63,7 @@ export type Passage =
     }
   | {
       paragraphs: string[];
+      notes?: string;
       choices: Choice[];
       ending?: never;
       type?: never;

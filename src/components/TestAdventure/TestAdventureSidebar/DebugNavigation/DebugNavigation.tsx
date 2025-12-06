@@ -1,7 +1,15 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Adventure } from "@/data/types";
-import { getPassageRoute, getAdventureTestRoute } from "@/constants/routes";
+import { useAdventure } from "@/context/useAdventure";
+import {
+  getAdventureTestPassageRoute,
+  getAdventureTestRoute,
+} from "@/constants/routes";
+import {
+  DEBUG_NAVIGATION_TEST_IDS,
+  getDebugNavigationPassageTestId,
+} from "../testIds";
 import { PassageLink } from "./PassageLink/PassageLink";
 import {
   NavigationWrapper,
@@ -12,24 +20,25 @@ import {
 
 interface DebugNavigationProps {
   adventure: Adventure;
-  adventureId: string;
   currentPassageId: number | null;
 }
 
 export const DebugNavigation = ({
   adventure,
-  adventureId,
   currentPassageId,
 }: DebugNavigationProps) => {
   const navigate = useNavigate();
+  const { adventureId } = useAdventure();
 
   const handleIntroductionClick = useCallback(() => {
+    if (!adventureId) return;
     navigate(getAdventureTestRoute(adventureId));
   }, [navigate, adventureId]);
 
   const handlePassageClick = useCallback(
     (passageId: number) => {
-      navigate(getPassageRoute(adventureId, passageId));
+      if (!adventureId) return;
+      navigate(getAdventureTestPassageRoute(adventureId, passageId));
     },
     [navigate, adventureId]
   );
@@ -50,7 +59,7 @@ export const DebugNavigation = ({
             label="Introduction"
             onClick={handleIntroductionClick}
             isActive={currentPassageId === null}
-            data-testid="debug-nav-introduction"
+            data-testid={DEBUG_NAVIGATION_TEST_IDS.INTRODUCTION}
           />
         </DebugNavigationItem>
         {passageIds.map((passageId) => {
@@ -62,7 +71,7 @@ export const DebugNavigation = ({
                 passage={passage}
                 onClick={() => handlePassageClick(passageId)}
                 isActive={currentPassageId === passageId}
-                data-testid={`debug-nav-passage-${passageId}`}
+                data-testid={getDebugNavigationPassageTestId(passageId)}
               />
             </DebugNavigationItem>
           );
