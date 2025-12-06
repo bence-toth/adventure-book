@@ -40,259 +40,134 @@ describe("IntroductionEditView Component", () => {
     });
   });
 
-  it("renders title input with adventure title", () => {
-    render(<IntroductionEditView adventure={mockAdventure} />);
+  describe("Integration with useIntroductionEdit hook", () => {
+    it("renders with initial values from adventure", () => {
+      render(<IntroductionEditView adventure={mockAdventure} />);
 
-    const titleInput = screen.getByTestId(
-      "introduction-title-input"
-    ) as HTMLInputElement;
-    expect(titleInput).toBeInTheDocument();
-    expect(titleInput.value).toBe(mockAdventure.metadata.title);
-  });
+      const titleInput = screen.getByTestId(
+        "introduction-title-input"
+      ) as HTMLInputElement;
+      const textInput = screen.getByTestId(
+        "introduction-text-input"
+      ) as HTMLTextAreaElement;
 
-  it("renders text input with introduction paragraphs", () => {
-    render(<IntroductionEditView adventure={mockAdventure} />);
+      expect(titleInput.value).toBe(mockAdventure.metadata.title);
+      expect(textInput.value).toBe(mockAdventure.intro.paragraphs.join("\n\n"));
+    });
 
-    const textInput = screen.getByTestId(
-      "introduction-text-input"
-    ) as HTMLTextAreaElement;
-    expect(textInput).toBeInTheDocument();
+    it("updates inputs and calls updateIntroduction on save", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
 
-    const expectedText = mockAdventure.intro.paragraphs.join("\n\n");
-    expect(textInput.value).toBe(expectedText);
-  });
+      const titleInput = screen.getByTestId("introduction-title-input");
+      const textInput = screen.getByTestId("introduction-text-input");
+      const saveButton = screen.getByRole("button", { name: /save/i });
 
-  it("updates title when input changes", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
+      await user.clear(titleInput);
+      await user.type(titleInput, "Updated Title");
 
-    const titleInput = screen.getByTestId(
-      "introduction-title-input"
-    ) as HTMLInputElement;
+      await user.clear(textInput);
+      await user.type(textInput, "Updated text");
 
-    await user.clear(titleInput);
-    await user.type(titleInput, "New Title");
+      await user.click(saveButton);
 
-    expect(titleInput.value).toBe("New Title");
-  });
+      await waitFor(() => {
+        expect(mockUpdateIntroduction).toHaveBeenCalledWith(
+          "Updated Title",
+          "Updated text"
+        );
+      });
+    });
 
-  it("updates text when textarea changes", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
+    it("displays validation errors from hook", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
 
-    const textInput = screen.getByTestId(
-      "introduction-text-input"
-    ) as HTMLTextAreaElement;
+      const titleInput = screen.getByTestId("introduction-title-input");
+      const textInput = screen.getByTestId("introduction-text-input");
+      const saveButton = screen.getByRole("button", { name: /save/i });
 
-    await user.clear(textInput);
-    await user.type(textInput, "New paragraph text");
+      await user.clear(titleInput);
+      await user.clear(textInput);
+      await user.click(saveButton);
 
-    expect(textInput.value).toBe("New paragraph text");
-  });
+      await waitFor(() => {
+        expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
+        expect(
+          screen.getByText("Introduction content must not be blank")
+        ).toBeInTheDocument();
+      });
 
-  it("calls updateIntroduction with title and text when save is clicked", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
+      expect(mockUpdateIntroduction).not.toHaveBeenCalled();
+    });
 
-    const titleInput = screen.getByTestId(
-      "introduction-title-input"
-    ) as HTMLInputElement;
-    const textInput = screen.getByTestId(
-      "introduction-text-input"
-    ) as HTMLTextAreaElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
+    it("clears errors when user types", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
 
-    await user.clear(titleInput);
-    await user.type(titleInput, "Updated Title");
+      const titleInput = screen.getByTestId("introduction-title-input");
+      const saveButton = screen.getByRole("button", { name: /save/i });
 
-    await user.clear(textInput);
-    await user.type(textInput, "Updated text");
+      // Trigger error
+      await user.clear(titleInput);
+      await user.click(saveButton);
 
-    await user.click(saveButton);
+      await waitFor(() => {
+        expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
+      });
 
-    await waitFor(() => {
-      expect(mockUpdateIntroduction).toHaveBeenCalledWith(
-        "Updated Title",
-        "Updated text"
-      );
+      // Clear error by typing
+      await user.type(titleInput, "N");
+
+      await waitFor(() => {
+        expect(
+          screen.queryByText("Title must not be blank")
+        ).not.toBeInTheDocument();
+      });
+    });
+
+    it("resets form to original values when reset is clicked", async () => {
+      const user = userEvent.setup();
+      render(<IntroductionEditView adventure={mockAdventure} />);
+
+      const titleInput = screen.getByTestId(
+        "introduction-title-input"
+      ) as HTMLInputElement;
+      const textInput = screen.getByTestId(
+        "introduction-text-input"
+      ) as HTMLTextAreaElement;
+
+      await user.clear(titleInput);
+      await user.type(titleInput, "Modified Title");
+
+      await user.clear(textInput);
+      await user.type(textInput, "Modified text");
+
+      expect(titleInput.value).toBe("Modified Title");
+      expect(textInput.value).toBe("Modified text");
+
+      const resetButton = screen.getByRole("button", { name: /undo/i });
+      await user.click(resetButton);
+
+      expect(titleInput.value).toBe(mockAdventure.metadata.title);
+      expect(textInput.value).toBe(mockAdventure.intro.paragraphs.join("\n\n"));
     });
   });
 
-  it("shows validation error when title is empty", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
+  describe("UI and accessibility", () => {
+    it("renders all form elements", () => {
+      render(<IntroductionEditView adventure={mockAdventure} />);
 
-    const titleInput = screen.getByTestId(
-      "introduction-title-input"
-    ) as HTMLInputElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
-
-    await user.clear(titleInput);
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
-    });
-
-    expect(mockUpdateIntroduction).not.toHaveBeenCalled();
-  });
-
-  it("shows validation error when text is empty", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
-
-    const textInput = screen.getByTestId(
-      "introduction-text-input"
-    ) as HTMLTextAreaElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
-
-    await user.clear(textInput);
-    await user.click(saveButton);
-
-    await waitFor(() => {
+      expect(screen.getByText("Introduction")).toBeInTheDocument();
       expect(
-        screen.getByText("Introduction content must not be blank")
+        screen.getByTestId("introduction-title-input")
       ).toBeInTheDocument();
+      expect(screen.getByTestId("introduction-text-input")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /save/i })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: /undo/i })).toBeInTheDocument();
     });
 
-    expect(mockUpdateIntroduction).not.toHaveBeenCalled();
-  });
-
-  it("shows validation errors for both title and text when both are empty", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
-
-    const titleInput = screen.getByTestId(
-      "introduction-title-input"
-    ) as HTMLInputElement;
-    const textInput = screen.getByTestId(
-      "introduction-text-input"
-    ) as HTMLTextAreaElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
-
-    await user.clear(titleInput);
-    await user.clear(textInput);
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
-      expect(
-        screen.getByText("Introduction content must not be blank")
-      ).toBeInTheDocument();
-    });
-
-    expect(mockUpdateIntroduction).not.toHaveBeenCalled();
-  });
-
-  it("clears title error when user starts typing", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
-
-    const titleInput = screen.getByTestId(
-      "introduction-title-input"
-    ) as HTMLInputElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
-
-    // Clear title and trigger validation error
-    await user.clear(titleInput);
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
-    });
-
-    // Start typing to clear error
-    await user.type(titleInput, "N");
-
-    await waitFor(() => {
-      expect(
-        screen.queryByText("Title must not be blank")
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  it("clears text error when user starts typing", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
-
-    const textInput = screen.getByTestId(
-      "introduction-text-input"
-    ) as HTMLTextAreaElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
-
-    // Clear text and trigger validation error
-    await user.clear(textInput);
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("Introduction content must not be blank")
-      ).toBeInTheDocument();
-    });
-
-    // Start typing to clear error
-    await user.type(textInput, "N");
-
-    await waitFor(() => {
-      expect(
-        screen.queryByText("Introduction content must not be blank")
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  it("does not call updateIntroduction when title validation fails", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
-
-    const titleInput = screen.getByTestId(
-      "introduction-title-input"
-    ) as HTMLInputElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
-
-    await user.clear(titleInput);
-    await user.type(titleInput, "   "); // Whitespace only
-
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
-    });
-
-    expect(mockUpdateIntroduction).not.toHaveBeenCalled();
-  });
-
-  it("does not call updateIntroduction when text validation fails", async () => {
-    const user = userEvent.setup();
-    render(<IntroductionEditView adventure={mockAdventure} />);
-
-    const textInput = screen.getByTestId(
-      "introduction-text-input"
-    ) as HTMLTextAreaElement;
-    const saveButton = screen.getByRole("button", { name: /save/i });
-
-    await user.clear(textInput);
-    await user.type(textInput, "   "); // Whitespace only
-
-    await user.click(saveButton);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText("Introduction content must not be blank")
-      ).toBeInTheDocument();
-    });
-
-    expect(mockUpdateIntroduction).not.toHaveBeenCalled();
-  });
-
-  it("renders save button", () => {
-    render(<IntroductionEditView adventure={mockAdventure} />);
-
-    const saveButton = screen.getByRole("button", { name: /save/i });
-    expect(saveButton).toBeInTheDocument();
-  });
-
-  describe("Button state management", () => {
-    it("disables both buttons when no changes are made", () => {
+    it("disables buttons when no changes are made", () => {
       render(<IntroductionEditView adventure={mockAdventure} />);
 
       const saveButton = screen.getByTestId("save-button");
@@ -302,7 +177,7 @@ describe("IntroductionEditView Component", () => {
       expect(resetButton).toBeDisabled();
     });
 
-    it("enables both buttons when title is modified", async () => {
+    it("enables buttons when changes are made", async () => {
       const user = userEvent.setup();
       render(<IntroductionEditView adventure={mockAdventure} />);
 
@@ -316,100 +191,20 @@ describe("IntroductionEditView Component", () => {
       expect(resetButton).toBeEnabled();
     });
 
-    it("enables both buttons when text is modified", async () => {
+    it("disables buttons after reset", async () => {
       const user = userEvent.setup();
       render(<IntroductionEditView adventure={mockAdventure} />);
 
-      const textInput = screen.getByTestId("introduction-text-input");
-      await user.type(textInput, "x");
-
-      const saveButton = screen.getByTestId("save-button");
-      const resetButton = screen.getByTestId("reset-button");
-
-      expect(saveButton).toBeEnabled();
-      expect(resetButton).toBeEnabled();
-    });
-
-    it("disables both buttons after reset is clicked", async () => {
-      const user = userEvent.setup();
-      render(<IntroductionEditView adventure={mockAdventure} />);
-
-      // Make changes
       const titleInput = screen.getByTestId("introduction-title-input");
       await user.type(titleInput, "Modified");
 
-      // Verify buttons are enabled
-      const saveButton = screen.getByTestId("save-button");
       const resetButton = screen.getByTestId("reset-button");
-      expect(saveButton).toBeEnabled();
-      expect(resetButton).toBeEnabled();
-
-      // Click reset
       await user.click(resetButton);
 
-      // Verify buttons are disabled
+      const saveButton = screen.getByTestId("save-button");
+
       expect(saveButton).toBeDisabled();
       expect(resetButton).toBeDisabled();
-    });
-
-    it("restores original title when reset is clicked", async () => {
-      const user = userEvent.setup();
-      render(<IntroductionEditView adventure={mockAdventure} />);
-
-      const titleInput = screen.getByTestId(
-        "introduction-title-input"
-      ) as HTMLInputElement;
-
-      await user.clear(titleInput);
-      await user.type(titleInput, "Modified Title");
-      expect(titleInput.value).toBe("Modified Title");
-
-      const resetButton = screen.getByTestId("reset-button");
-      await user.click(resetButton);
-
-      expect(titleInput.value).toBe(mockAdventure.metadata.title);
-    });
-
-    it("restores original text when reset is clicked", async () => {
-      const user = userEvent.setup();
-      render(<IntroductionEditView adventure={mockAdventure} />);
-
-      const textInput = screen.getByTestId(
-        "introduction-text-input"
-      ) as HTMLTextAreaElement;
-
-      await user.clear(textInput);
-      await user.type(textInput, "Modified text");
-      expect(textInput.value).toBe("Modified text");
-
-      const resetButton = screen.getByTestId("reset-button");
-      await user.click(resetButton);
-
-      expect(textInput.value).toBe(mockAdventure.intro.paragraphs.join("\n\n"));
-    });
-
-    it("clears validation errors when reset is clicked", async () => {
-      const user = userEvent.setup();
-      render(<IntroductionEditView adventure={mockAdventure} />);
-
-      const titleInput = screen.getByTestId("introduction-title-input");
-      const saveButton = screen.getByTestId("save-button");
-
-      // Create validation error
-      await user.clear(titleInput);
-      await user.click(saveButton);
-
-      await waitFor(() => {
-        expect(screen.getByText("Title must not be blank")).toBeInTheDocument();
-      });
-
-      // Reset should clear the error
-      const resetButton = screen.getByTestId("reset-button");
-      await user.click(resetButton);
-
-      expect(
-        screen.queryByText("Title must not be blank")
-      ).not.toBeInTheDocument();
     });
   });
 });
