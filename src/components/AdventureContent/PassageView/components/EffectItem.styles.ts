@@ -17,7 +17,5 @@ export const RemoveButton = styled(Button)`
   flex-shrink: 0;
   padding-block: var(--space-2);
   width: var(--space-7);
-  margin-block-start: calc(
-    1em * var(--line-height-dense) + var(--space-1)
-  ); /* Align with input field (label height + gap) */
+  margin-block-start: calc(1em * var(--line-height-dense) + var(--space-1));
 `;

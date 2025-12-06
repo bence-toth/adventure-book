@@ -15,6 +15,19 @@ vi.mock("@/context/useAdventure", () => ({
   }),
 }));
 
+// Mock react-router-dom's useBlocker
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useBlocker: vi.fn(() => ({
+      state: "unblocked",
+      proceed: vi.fn(),
+      reset: vi.fn(),
+    })),
+  };
+});
+
 describe("PassageEditView Integration", () => {
   beforeEach(() => {
     mockUpdatePassage.mockClear();

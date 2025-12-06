@@ -3,6 +3,8 @@ import { useAdventure } from "@/context/useAdventure";
 import { Input } from "@/components/common/Input/Input";
 import { Textarea } from "@/components/common/Textarea/Textarea";
 import { Button } from "@/components/common/Button/Button";
+import { UnsavedChangesModal } from "@/components/common/UnsavedChangesModal/UnsavedChangesModal";
+import { useUnsavedChangesWarning } from "@/utils/useUnsavedChangesWarning";
 import { validateTitle, validateIntroductionText } from "@/utils/validation";
 import type { Adventure } from "@/data/types";
 import {
@@ -70,6 +72,12 @@ export const IntroductionEditView = ({
     setTextError(undefined);
   }, [adventure]);
 
+  // Use custom hook for unsaved changes warning
+  const { isModalOpen, proceedNavigation, cancelNavigation } =
+    useUnsavedChangesWarning({
+      hasUnsavedChanges: hasChanges,
+    });
+
   return (
     <EditViewLayout>
       <EditScrollableContent>
@@ -115,6 +123,11 @@ export const IntroductionEditView = ({
           Undo changes
         </Button>
       </EditFooter>
+      <UnsavedChangesModal
+        isOpen={isModalOpen}
+        onStay={cancelNavigation}
+        onLeave={proceedNavigation}
+      />
     </EditViewLayout>
   );
 };

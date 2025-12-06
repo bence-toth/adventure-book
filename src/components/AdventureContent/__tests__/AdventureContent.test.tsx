@@ -17,6 +17,11 @@ vi.mock("react-router-dom", async () => {
     ...actual,
     useNavigate: () => mockNavigate,
     useParams: () => mockParams,
+    useBlocker: vi.fn(() => ({
+      state: "unblocked",
+      proceed: vi.fn(),
+      reset: vi.fn(),
+    })),
   };
 });
 

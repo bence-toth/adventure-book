@@ -6,6 +6,19 @@ import { IntroductionEditView } from "../IntroductionEditView";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
 import * as useAdventureHook from "@/context/useAdventure";
 
+// Mock react-router-dom's useBlocker
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useBlocker: vi.fn(() => ({
+      state: "unblocked",
+      proceed: vi.fn(),
+      reset: vi.fn(),
+    })),
+  };
+});
+
 describe("IntroductionEditView Component", () => {
   const mockUpdateIntroduction = vi.fn();
 

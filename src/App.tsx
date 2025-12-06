@@ -1,68 +1,30 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
-import { AdventureContent } from "@/components/AdventureContent/AdventureContent";
+import { Outlet } from "react-router-dom";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
-import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
-import { ROUTES } from "@/constants/routes";
 import { AdventureProvider } from "@/context/AdventureContext";
 import { AppContainer, AppContent } from "./App.styles";
 
-const App = () => {
+const AppLayout = () => {
   return (
     <ErrorBoundary>
       <AppContainer>
         <AppContent as="main">
-          <Routes>
-            <Route path={ROUTES.ROOT} element={<AdventureManager />} />
-
-            <Route
-              path="/adventure/:adventureId/*"
-              element={
-                <AdventureProvider>
-                  <Routes>
-                    <Route
-                      path="test"
-                      element={<Navigate to="introduction" replace />}
-                    />
-                    <Route
-                      path="test/introduction"
-                      element={<TestAdventure />}
-                    />
-                    <Route
-                      path="test/passage/:id"
-                      element={<TestAdventure />}
-                    />
-                    <Route
-                      path="content"
-                      element={<Navigate to="introduction" replace />}
-                    />
-                    <Route
-                      path="content/introduction"
-                      element={<AdventureContent />}
-                    />
-                    <Route
-                      path="content/passage/:id"
-                      element={<AdventureContent />}
-                    />
-                    <Route
-                      path="structure"
-                      element={<div>Structure view coming soon</div>}
-                    />
-                    <Route
-                      path="*"
-                      element={<Navigate to="test/introduction" replace />}
-                    />
-                  </Routes>
-                </AdventureProvider>
-              }
-            />
-
-            <Route path="*" element={<Navigate to={ROUTES.ROOT} replace />} />
-          </Routes>
+          <Outlet />
         </AppContent>
       </AppContainer>
     </ErrorBoundary>
   );
 };
 
+const AdventureLayout = () => {
+  return (
+    <AdventureProvider>
+      <Outlet />
+    </AdventureProvider>
+  );
+};
+
+const App = AppLayout;
+
 export default App;
+
+export { AdventureLayout };

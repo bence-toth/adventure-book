@@ -1,6 +1,8 @@
 import { useAdventure } from "@/context/useAdventure";
 import { Textarea } from "@/components/common/Textarea/Textarea";
 import { Select } from "@/components/common/Select/Select";
+import { UnsavedChangesModal } from "@/components/common/UnsavedChangesModal/UnsavedChangesModal";
+import { useUnsavedChangesWarning } from "@/utils/useUnsavedChangesWarning";
 import type { Passage } from "@/data/types";
 import {
   EditViewLayout,
@@ -47,6 +49,12 @@ export const PassageEditView = ({
     setEffects: state.setEffects,
     resetState: state.resetState,
   });
+
+  // Use custom hook for unsaved changes warning
+  const { isModalOpen, proceedNavigation, cancelNavigation } =
+    useUnsavedChangesWarning({
+      hasUnsavedChanges: state.hasChanges,
+    });
 
   // Get available passage IDs for choice dropdowns
   const availablePassages = adventure
@@ -157,6 +165,11 @@ export const PassageEditView = ({
         hasChanges={state.hasChanges}
         onSave={handleSave}
         onReset={handleReset}
+      />
+      <UnsavedChangesModal
+        isOpen={isModalOpen}
+        onStay={cancelNavigation}
+        onLeave={proceedNavigation}
       />
     </EditViewLayout>
   );
