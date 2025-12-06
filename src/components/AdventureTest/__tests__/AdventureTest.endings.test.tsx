@@ -1,6 +1,6 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import { TestAdventure } from "../TestAdventure";
+import { AdventureTest } from "../AdventureTest";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
 import { getAdventureTestRoute } from "@/constants/routes";
@@ -21,7 +21,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-describe("TestAdventure Component", () => {
+describe("AdventureTest Component", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     vi.clearAllMocks();
@@ -32,7 +32,7 @@ describe("TestAdventure Component", () => {
     it("navigates to introduction when restart is clicked", async () => {
       mockParams = { id: "4", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });

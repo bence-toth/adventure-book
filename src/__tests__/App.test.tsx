@@ -6,7 +6,7 @@ import { createMemoryRouter, RouterProvider, Navigate } from "react-router-dom";
 import { setupTestAdventure } from "./mockAdventureData";
 import App, { AdventureLayout } from "../App";
 import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
-import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
+import { AdventureTest } from "@/components/AdventureTest/AdventureTest";
 import { AdventureContent } from "@/components/AdventureContent/AdventureContent";
 import { ROUTES } from "@/constants/routes";
 
@@ -35,11 +35,11 @@ const renderAppWithRoute = (initialRoute: string) => {
               },
               {
                 path: "test/introduction",
-                element: <TestAdventure />,
+                element: <AdventureTest />,
               },
               {
                 path: "test/passage/:id",
-                element: <TestAdventure />,
+                element: <AdventureTest />,
               },
               {
                 path: "content",
@@ -98,7 +98,7 @@ describe("App Component", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders TestAdventure component when navigating to an adventure", async () => {
+  it("renders AdventureTest component when navigating to an adventure", async () => {
     renderAppWithRoute(`/adventure/${TEST_STORY_ID}/test/passage/1`);
 
     // Should show passage content from the mock adventure

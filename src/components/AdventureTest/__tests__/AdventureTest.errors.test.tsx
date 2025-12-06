@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import { TestAdventure } from "../TestAdventure";
+import { AdventureTest } from "../AdventureTest";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
 import {} from "@/constants/routes";
@@ -22,7 +22,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-describe("TestAdventure Component", () => {
+describe("AdventureTest Component", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     vi.clearAllMocks();
@@ -36,7 +36,7 @@ describe("TestAdventure Component", () => {
         adventureId: TEST_STORY_ID,
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
       });
@@ -64,7 +64,7 @@ describe("TestAdventure Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <TestAdventure />
+          <AdventureTest />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -87,7 +87,7 @@ describe("TestAdventure Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <TestAdventure />
+          <AdventureTest />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -112,7 +112,7 @@ describe("TestAdventure Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <TestAdventure />
+          <AdventureTest />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -136,7 +136,7 @@ describe("TestAdventure Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <TestAdventure />
+          <AdventureTest />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,
@@ -160,7 +160,7 @@ describe("TestAdventure Component", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <TestAdventure />
+          <AdventureTest />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,

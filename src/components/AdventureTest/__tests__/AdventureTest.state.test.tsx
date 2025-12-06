@@ -1,6 +1,6 @@
 import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import { TestAdventure } from "../TestAdventure";
+import { AdventureTest } from "../AdventureTest";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
 import {
@@ -25,7 +25,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-describe("TestAdventure Component - State Integration", () => {
+describe("AdventureTest Component - State Integration", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     vi.clearAllMocks();
@@ -34,7 +34,7 @@ describe("TestAdventure Component - State Integration", () => {
 
   describe("Debug Mode Choice Display", () => {
     it("maintains correct navigation when debug mode is enabled", async () => {
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -52,7 +52,7 @@ describe("TestAdventure Component - State Integration", () => {
     });
   });
 
-  describe("Integration with useTestAdventureState Hook", () => {
+  describe("Integration with useAdventureTestState Hook", () => {
     it("resets inventory when navigating from passage back to introduction", async () => {
       // This test verifies that the component correctly integrates with the hook
       // to handle navigation from ending passage to introduction
@@ -69,7 +69,7 @@ describe("TestAdventure Component - State Integration", () => {
 
       mockParams = { id: "10", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: adventureWithEnding,
         isDebugModeEnabled: true,

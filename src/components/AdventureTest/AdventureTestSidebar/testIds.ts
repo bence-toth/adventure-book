@@ -1,4 +1,4 @@
-export const TEST_ADVENTURE_SIDEBAR_TEST_IDS = {
+export const ADVENTURE_TEST_SIDEBAR_TEST_IDS = {
   DEBUG_MODE_TOGGLE: "debug-mode-toggle",
 } as const;
 

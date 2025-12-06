@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import { TestAdventure } from "../TestAdventure";
+import { AdventureTest } from "../AdventureTest";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
 import { ErrorBoundary } from "@/components/ErrorBoundary/ErrorBoundary";
@@ -21,19 +21,19 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-describe("TestAdventure Component - Effects Integration", () => {
+describe("AdventureTest Component - Effects Integration", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     vi.clearAllMocks();
     mockParams = { id: "1", adventureId: TEST_STORY_ID };
   });
 
-  describe("Integration with useTestAdventureState Hook", () => {
+  describe("Integration with useAdventureTestState Hook", () => {
     it("renders passage correctly when adventure has no effects", async () => {
       // Integration test: verify the component renders normally with passages that have no effects
       mockParams = { id: "1", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -52,7 +52,7 @@ describe("TestAdventure Component - Effects Integration", () => {
       // Passage 4 in mockAdventure is an ending
       mockParams = { id: "4", adventureId: TEST_STORY_ID };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -77,7 +77,7 @@ describe("TestAdventure Component - Effects Integration", () => {
 
       renderWithAdventure(
         <ErrorBoundary>
-          <TestAdventure />
+          <AdventureTest />
         </ErrorBoundary>,
         {
           adventureId: TEST_STORY_ID,

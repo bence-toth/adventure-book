@@ -12,13 +12,13 @@ import {
   PassageNotFoundError,
 } from "@/utils/errors";
 import { AdventureLayout } from "@/components/layouts/AdventureLayout/AdventureLayout";
-import { TestAdventureSidebar } from "./TestAdventureSidebar/TestAdventureSidebar";
+import { AdventureTestSidebar } from "./AdventureTestSidebar/AdventureTestSidebar";
 import { LoadingState } from "./LoadingState/LoadingState";
 import { IntroductionView } from "./IntroductionView/IntroductionView";
 import { PassageView } from "./PassageView/PassageView";
-import { useTestAdventureState } from "./useTestAdventureState";
+import { useAdventureTestState } from "./useAdventureTestState";
 
-export const TestAdventure = () => {
+export const AdventureTest = () => {
   const { id, adventureId } = useParams<{ id: string; adventureId: string }>();
   const navigate = useNavigate();
   const { adventure, isLoading, error, isDebugModeEnabled } = useAdventure();
@@ -28,7 +28,7 @@ export const TestAdventure = () => {
   const passageId = id ? parseInt(id, 10) : null;
 
   // Manage inventory state using custom hook
-  const { inventory, handleAddItem, handleRemoveItem } = useTestAdventureState({
+  const { inventory, handleAddItem, handleRemoveItem } = useAdventureTestState({
     adventure,
     passageId,
     isIntroduction,
@@ -38,7 +38,7 @@ export const TestAdventure = () => {
     return (
       <AdventureLayout
         sidebar={
-          <TestAdventureSidebar
+          <AdventureTestSidebar
             inventory={inventory}
             onAddItem={handleAddItem}
             onRemoveItem={handleRemoveItem}
@@ -69,7 +69,7 @@ export const TestAdventure = () => {
     return (
       <AdventureLayout
         sidebar={
-          <TestAdventureSidebar
+          <AdventureTestSidebar
             inventory={inventory}
             onAddItem={handleAddItem}
             onRemoveItem={handleRemoveItem}
@@ -111,7 +111,7 @@ export const TestAdventure = () => {
   return (
     <AdventureLayout
       sidebar={
-        <TestAdventureSidebar
+        <AdventureTestSidebar
           inventory={inventory}
           onAddItem={handleAddItem}
           onRemoveItem={handleRemoveItem}

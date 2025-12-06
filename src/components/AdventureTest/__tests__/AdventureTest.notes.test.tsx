@@ -1,6 +1,6 @@
 import { screen } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
-import { TestAdventure } from "../TestAdventure";
+import { AdventureTest } from "../AdventureTest";
 import { renderWithAdventure } from "@/__tests__/testUtils";
 import { createMockPassage } from "@/__tests__/mockAdventureData";
 import { PASSAGE_TEST_IDS } from "../testIds";
@@ -42,7 +42,7 @@ vi.mock("@/data/adventureLoader", async () => {
   };
 });
 
-describe("TestAdventure - Passage Notes", () => {
+describe("AdventureTest - Passage Notes", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     vi.clearAllMocks();
@@ -79,7 +79,7 @@ describe("TestAdventure - Passage Notes", () => {
         items: [],
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -121,7 +121,7 @@ describe("TestAdventure - Passage Notes", () => {
         items: [],
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: false,
@@ -159,7 +159,7 @@ describe("TestAdventure - Passage Notes", () => {
         items: [],
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -197,7 +197,7 @@ describe("TestAdventure - Passage Notes", () => {
         items: [],
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -231,7 +231,7 @@ describe("TestAdventure - Passage Notes", () => {
         items: [],
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -267,7 +267,7 @@ Each line provides context.`;
         items: [],
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -308,7 +308,7 @@ Each line provides context.`;
         items: [],
       };
 
-      renderWithAdventure(<TestAdventure />, {
+      renderWithAdventure(<AdventureTest />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,

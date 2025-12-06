@@ -6,7 +6,7 @@ import {
   mockAdventure,
 } from "@/__tests__/mockAdventureData";
 import { renderWithAdventure } from "@/__tests__/testUtils";
-import { TestAdventureSidebar } from "../TestAdventureSidebar";
+import { AdventureTestSidebar } from "../AdventureTestSidebar";
 import {
   AdventureContext,
   type AdventureContextType,
@@ -14,14 +14,14 @@ import {
 
 const TEST_STORY_ID = "test-adventure-id";
 
-// Default props for TestAdventureSidebar
+// Default props for AdventureTestSidebar
 const defaultProps = {
   inventory: [] as string[],
   onAddItem: vi.fn(),
   onRemoveItem: vi.fn(),
 };
 
-describe("TestAdventureSidebar", () => {
+describe("AdventureTestSidebar", () => {
   beforeEach(async () => {
     localStorage.clear();
     await setupTestAdventure(TEST_STORY_ID);
@@ -32,7 +32,7 @@ describe("TestAdventureSidebar", () => {
   });
 
   it("should render the inventory heading", async () => {
-    renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+    renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -40,7 +40,7 @@ describe("TestAdventureSidebar", () => {
   });
 
   it("should show empty message when no items are collected", async () => {
-    renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+    renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
       adventureId: TEST_STORY_ID,
     });
 
@@ -49,7 +49,7 @@ describe("TestAdventureSidebar", () => {
 
   it("should display collected items", async () => {
     renderWithAdventure(
-      <TestAdventureSidebar {...defaultProps} inventory={["mock_item_1"]} />,
+      <AdventureTestSidebar {...defaultProps} inventory={["mock_item_1"]} />,
       {
         adventureId: TEST_STORY_ID,
       }
@@ -61,7 +61,7 @@ describe("TestAdventureSidebar", () => {
 
   it("should display multiple collected items", async () => {
     renderWithAdventure(
-      <TestAdventureSidebar
+      <AdventureTestSidebar
         {...defaultProps}
         inventory={["mock_item_1", "mock_item_2"]}
       />,
@@ -76,7 +76,7 @@ describe("TestAdventureSidebar", () => {
 
   it("should not display items that are not collected", async () => {
     renderWithAdventure(
-      <TestAdventureSidebar {...defaultProps} inventory={["mock_item_1"]} />,
+      <AdventureTestSidebar {...defaultProps} inventory={["mock_item_1"]} />,
       {
         adventureId: TEST_STORY_ID,
       }
@@ -89,7 +89,7 @@ describe("TestAdventureSidebar", () => {
   it("should handle items not in adventure inventory gracefully", async () => {
     // Pass an item ID not in the adventure
     renderWithAdventure(
-      <TestAdventureSidebar {...defaultProps} inventory={["unknown_item"]} />,
+      <AdventureTestSidebar {...defaultProps} inventory={["unknown_item"]} />,
       {
         adventureId: TEST_STORY_ID,
       }
@@ -101,7 +101,7 @@ describe("TestAdventureSidebar", () => {
 
   it("should render inventory items as a list", async () => {
     renderWithAdventure(
-      <TestAdventureSidebar
+      <AdventureTestSidebar
         {...defaultProps}
         inventory={["mock_item_1", "mock_item_2"]}
       />,
@@ -134,7 +134,7 @@ describe("TestAdventureSidebar", () => {
     const { container } = render(
       <MemoryRouter initialEntries={["/"]}>
         <AdventureContext.Provider value={mockContextValue}>
-          <TestAdventureSidebar {...defaultProps} />
+          <AdventureTestSidebar {...defaultProps} />
         </AdventureContext.Provider>
       </MemoryRouter>
     );
@@ -162,7 +162,7 @@ describe("TestAdventureSidebar", () => {
     const { container } = render(
       <MemoryRouter initialEntries={[`/adventure/${TEST_STORY_ID}/test`]}>
         <AdventureContext.Provider value={mockContextValue}>
-          <TestAdventureSidebar {...defaultProps} />
+          <AdventureTestSidebar {...defaultProps} />
         </AdventureContext.Provider>
       </MemoryRouter>
     );
@@ -191,7 +191,7 @@ describe("TestAdventureSidebar", () => {
     const { container } = render(
       <MemoryRouter initialEntries={["/"]}>
         <AdventureContext.Provider value={mockContextValue}>
-          <TestAdventureSidebar {...defaultProps} />
+          <AdventureTestSidebar {...defaultProps} />
         </AdventureContext.Provider>
       </MemoryRouter>
     );
@@ -229,7 +229,7 @@ describe("TestAdventureSidebar", () => {
           <Routes>
             <Route
               path="/adventure/:adventureId/test/passage/:id"
-              element={<TestAdventureSidebar {...defaultProps} />}
+              element={<AdventureTestSidebar {...defaultProps} />}
             />
           </Routes>
         </AdventureContext.Provider>
@@ -246,7 +246,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should render debug inventory when debug mode is enabled", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -261,7 +261,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should render normal inventory when debug mode is disabled", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: false,
@@ -279,7 +279,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should show all items with checkboxes in debug mode", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -292,7 +292,7 @@ describe("TestAdventureSidebar", () => {
     it("should allow toggling items in debug mode", async () => {
       const mockOnAddItem = vi.fn();
       renderWithAdventure(
-        <TestAdventureSidebar {...defaultProps} onAddItem={mockOnAddItem} />,
+        <AdventureTestSidebar {...defaultProps} onAddItem={mockOnAddItem} />,
         {
           adventureId: TEST_STORY_ID,
           adventure: mockAdventure,
@@ -312,7 +312,7 @@ describe("TestAdventureSidebar", () => {
 
     it("should reflect current inventory state in debug mode", async () => {
       renderWithAdventure(
-        <TestAdventureSidebar {...defaultProps} inventory={["mock_item_1"]} />,
+        <AdventureTestSidebar {...defaultProps} inventory={["mock_item_1"]} />,
         {
           adventureId: TEST_STORY_ID,
           adventure: mockAdventure,
@@ -332,7 +332,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should render debug navigation when debug mode is enabled", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,
@@ -343,7 +343,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should not render debug navigation when debug mode is disabled", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: false,
@@ -357,7 +357,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should always show debug mode toggle in footer", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: false,
@@ -370,7 +370,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should show debug toggle as unchecked when debug mode is disabled", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: false,
@@ -383,7 +383,7 @@ describe("TestAdventureSidebar", () => {
     });
 
     it("should show debug toggle as checked when debug mode is enabled", async () => {
-      renderWithAdventure(<TestAdventureSidebar {...defaultProps} />, {
+      renderWithAdventure(<AdventureTestSidebar {...defaultProps} />, {
         adventureId: TEST_STORY_ID,
         adventure: mockAdventure,
         isDebugModeEnabled: true,

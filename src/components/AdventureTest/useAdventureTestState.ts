@@ -1,20 +1,20 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import type { Adventure } from "@/data/types";
 
-interface UseTestAdventureStateParams {
+interface UseAdventureTestStateParams {
   adventure: Adventure | null;
   passageId: number | null;
   isIntroduction: boolean;
 }
 
-interface UseTestAdventureStateReturn {
+interface UseAdventureTestStateReturn {
   inventory: string[];
   handleAddItem: (itemId: string) => void;
   handleRemoveItem: (itemId: string) => void;
 }
 
 /**
- * Custom hook for managing test adventure state, primarily inventory management.
+ * Custom hook for managing adventure test state, primarily inventory management.
  * Handles inventory state, route-based resets, and passage effect processing.
  *
  * Key responsibilities:
@@ -24,11 +24,11 @@ interface UseTestAdventureStateReturn {
  * - Provides callbacks for manual inventory manipulation in debug mode
  * - Prevents duplicate items in inventory
  */
-export const useTestAdventureState = ({
+export const useAdventureTestState = ({
   adventure,
   passageId,
   isIntroduction,
-}: UseTestAdventureStateParams): UseTestAdventureStateReturn => {
+}: UseAdventureTestStateParams): UseAdventureTestStateReturn => {
   // Key insight: inventory should be reset based on route, not in an effect
   // Normalize NaN to null to prevent infinite re-renders
   const normalizedPassageId =

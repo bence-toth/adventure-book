@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import { useAdventure } from "@/context/useAdventure";
 import { Sidebar } from "@/components/common/Sidebar/Sidebar";
 import { ToggleButton } from "@/components/common/ToggleButton/ToggleButton";
-import { TEST_ADVENTURE_SIDEBAR_TEST_IDS } from "./testIds";
+import { ADVENTURE_TEST_SIDEBAR_TEST_IDS } from "./testIds";
 import { Inventory } from "./Inventory/Inventory";
 import { DebugInventory } from "./DebugInventory/DebugInventory";
 import { DebugNavigation } from "./DebugNavigation/DebugNavigation";
@@ -10,19 +10,19 @@ import {
   SidebarLayout,
   SidebarContent,
   SidebarFooter,
-} from "./TestAdventureSidebar.styles";
+} from "./AdventureTestSidebar.styles";
 
-interface TestAdventureSidebarProps {
+interface AdventureTestSidebarProps {
   inventory: string[];
   onAddItem: (itemId: string) => void;
   onRemoveItem: (itemId: string) => void;
 }
 
-export const TestAdventureSidebar = ({
+export const AdventureTestSidebar = ({
   inventory,
   onAddItem,
   onRemoveItem,
-}: TestAdventureSidebarProps) => {
+}: AdventureTestSidebarProps) => {
   const { id } = useParams<{ id: string }>();
   const { adventure, isDebugModeEnabled, setIsDebugModeEnabled } =
     useAdventure();
@@ -64,7 +64,7 @@ export const TestAdventureSidebar = ({
             label="Debug mode"
             isChecked={isDebugModeEnabled}
             onChange={setIsDebugModeEnabled}
-            data-testid={TEST_ADVENTURE_SIDEBAR_TEST_IDS.DEBUG_MODE_TOGGLE}
+            data-testid={ADVENTURE_TEST_SIDEBAR_TEST_IDS.DEBUG_MODE_TOGGLE}
           />
         </SidebarFooter>
       </SidebarLayout>

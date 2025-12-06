@@ -40,7 +40,7 @@ YAML Adventure Files → Parser → Validation → Type-Safe Objects → React C
 
 - **App**: Route management and error boundaries
 - **AdventureManager**: Main interface for managing and testing adventures
-- **TestAdventure**: Adventure playback and testing interface
+- **AdventureTest**: Adventure playback and testing interface
 - **ErrorBoundary**: Centralized error handling for data loading failures
 - **Adventure System**: Pure functions for parsing, validation, and data access via IndexedDB
 

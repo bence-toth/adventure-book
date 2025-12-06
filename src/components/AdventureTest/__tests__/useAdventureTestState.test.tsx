@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, beforeEach } from "vitest";
-import { useTestAdventureState } from "../useTestAdventureState";
+import { useAdventureTestState } from "../useAdventureTestState";
 import type { Adventure } from "@/data/types";
 
 const createMockAdventure = (): Adventure => ({
@@ -57,7 +57,7 @@ const createMockAdventure = (): Adventure => ({
   ],
 });
 
-describe("useTestAdventureState", () => {
+describe("useAdventureTestState", () => {
   let mockAdventure: Adventure;
 
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe("useTestAdventureState", () => {
   describe("Initialization", () => {
     it("initializes with empty inventory", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 1,
           isIntroduction: false,
@@ -79,7 +79,7 @@ describe("useTestAdventureState", () => {
 
     it("initializes with empty inventory when in introduction", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: null,
           isIntroduction: true,
@@ -101,7 +101,7 @@ describe("useTestAdventureState", () => {
           adventure: Adventure;
           passageId: number | null;
           isIntroduction: boolean;
-        }) => useTestAdventureState({ adventure, passageId, isIntroduction }),
+        }) => useAdventureTestState({ adventure, passageId, isIntroduction }),
         {
           initialProps: {
             adventure: mockAdventure,
@@ -135,7 +135,7 @@ describe("useTestAdventureState", () => {
           adventure: Adventure;
           passageId: number | null;
           isIntroduction: boolean;
-        }) => useTestAdventureState({ adventure, passageId, isIntroduction }),
+        }) => useAdventureTestState({ adventure, passageId, isIntroduction }),
         {
           initialProps: {
             adventure: mockAdventure,
@@ -169,7 +169,7 @@ describe("useTestAdventureState", () => {
           adventure: Adventure;
           passageId: number | null;
           isIntroduction: boolean;
-        }) => useTestAdventureState({ adventure, passageId, isIntroduction }),
+        }) => useAdventureTestState({ adventure, passageId, isIntroduction }),
         {
           initialProps: {
             adventure: mockAdventure,
@@ -199,7 +199,7 @@ describe("useTestAdventureState", () => {
   describe("Effect Processing - add_item", () => {
     it("adds item to inventory when passage has add_item effect", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 2,
           isIntroduction: false,
@@ -211,7 +211,7 @@ describe("useTestAdventureState", () => {
 
     it("does not duplicate items when add_item effect adds same item twice", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 6,
           isIntroduction: false,
@@ -224,7 +224,7 @@ describe("useTestAdventureState", () => {
 
     it("processes multiple add_item effects in sequence", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 5,
           isIntroduction: false,
@@ -246,7 +246,7 @@ describe("useTestAdventureState", () => {
           adventure: Adventure;
           passageId: number | null;
           isIntroduction: boolean;
-        }) => useTestAdventureState({ adventure, passageId, isIntroduction }),
+        }) => useAdventureTestState({ adventure, passageId, isIntroduction }),
         {
           initialProps: {
             adventure: mockAdventure,
@@ -288,7 +288,7 @@ describe("useTestAdventureState", () => {
           adventure: Adventure;
           passageId: number | null;
           isIntroduction: boolean;
-        }) => useTestAdventureState({ adventure, passageId, isIntroduction }),
+        }) => useAdventureTestState({ adventure, passageId, isIntroduction }),
         {
           initialProps: {
             adventure: mockAdventure,
@@ -315,7 +315,7 @@ describe("useTestAdventureState", () => {
 
     it("handles remove_item when item does not exist in inventory", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 3, // Has remove_item for sword, but we never added it
           isIntroduction: false,
@@ -330,7 +330,7 @@ describe("useTestAdventureState", () => {
   describe("Edge Cases", () => {
     it("does not process effects when adventure is null", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: null,
           passageId: 2,
           isIntroduction: false,
@@ -343,7 +343,7 @@ describe("useTestAdventureState", () => {
 
     it("does not process effects when in introduction mode", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: null,
           isIntroduction: true,
@@ -356,7 +356,7 @@ describe("useTestAdventureState", () => {
 
     it("does not process effects when passageId is null", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: null,
           isIntroduction: false,
@@ -368,7 +368,7 @@ describe("useTestAdventureState", () => {
 
     it("does not process effects when passageId is NaN", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: NaN,
           isIntroduction: false,
@@ -380,7 +380,7 @@ describe("useTestAdventureState", () => {
 
     it("does not process effects for ending passages", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 4,
           isIntroduction: false,
@@ -393,7 +393,7 @@ describe("useTestAdventureState", () => {
 
     it("does not process effects when passage has no effects", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 1,
           isIntroduction: false,
@@ -405,7 +405,7 @@ describe("useTestAdventureState", () => {
 
     it("handles passage not found gracefully", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 999, // Non-existent passage
           isIntroduction: false,
@@ -420,7 +420,7 @@ describe("useTestAdventureState", () => {
   describe("Manual Inventory Management", () => {
     it("adds item manually via handleAddItem", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 1,
           isIntroduction: false,
@@ -436,7 +436,7 @@ describe("useTestAdventureState", () => {
 
     it("does not duplicate item when adding manually", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 1,
           isIntroduction: false,
@@ -454,7 +454,7 @@ describe("useTestAdventureState", () => {
 
     it("removes item manually via handleRemoveItem", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 1,
           isIntroduction: false,
@@ -479,7 +479,7 @@ describe("useTestAdventureState", () => {
 
     it("handles removing item that does not exist", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 1,
           isIntroduction: false,
@@ -496,7 +496,7 @@ describe("useTestAdventureState", () => {
 
     it("adds multiple items manually", () => {
       const { result } = renderHook(() =>
-        useTestAdventureState({
+        useAdventureTestState({
           adventure: mockAdventure,
           passageId: 1,
           isIntroduction: false,
@@ -524,7 +524,7 @@ describe("useTestAdventureState", () => {
           adventure: Adventure;
           passageId: number | null;
           isIntroduction: boolean;
-        }) => useTestAdventureState({ adventure, passageId, isIntroduction }),
+        }) => useAdventureTestState({ adventure, passageId, isIntroduction }),
         {
           initialProps: {
             adventure: mockAdventure,
