@@ -1,4 +1,4 @@
-import { screen, fireEvent, waitFor } from "@testing-library/react";
+import { screen, fireEvent } from "@testing-library/react";
 import { vi, beforeEach, describe, it, expect } from "vitest";
 import { TestAdventure } from "../TestAdventure";
 import { renderWithAdventure } from "@/__tests__/testUtils";
@@ -25,7 +25,7 @@ vi.mock("react-router-dom", async () => {
   };
 });
 
-describe("TestAdventure Component", () => {
+describe("TestAdventure Component - State Integration", () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     vi.clearAllMocks();
@@ -52,10 +52,10 @@ describe("TestAdventure Component", () => {
     });
   });
 
-  describe("Inventory State Management", () => {
+  describe("Integration with useTestAdventureState Hook", () => {
     it("resets inventory when navigating from passage back to introduction", async () => {
-      // This test verifies that clicking the restart button on an ending passage
-      // navigates to the introduction (where inventory state is reset)
+      // This test verifies that the component correctly integrates with the hook
+      // to handle navigation from ending passage to introduction
       const adventureWithEnding: Adventure = {
         ...mockAdventure,
         passages: {
@@ -85,158 +85,6 @@ describe("TestAdventure Component", () => {
       // Verify navigate was called to go to introduction (where inventory resets)
       expect(mockNavigate).toHaveBeenCalledWith(
         getAdventureTestRoute(TEST_STORY_ID)
-      );
-    });
-
-    it("properly handles remove_item effect during passage navigation", async () => {
-      // Create adventure where we add an item in one passage and remove it in another
-      const adventureWithEffects: Adventure = {
-        ...mockAdventure,
-        passages: {
-          ...mockAdventure.passages,
-          11: {
-            paragraphs: ["You picked up a torch."],
-            choices: [{ text: "Continue", goto: 12 }],
-            effects: [{ type: "add_item", item: "torch" }],
-          },
-          12: {
-            paragraphs: ["The torch burned out and crumbled to ash."],
-            choices: [{ text: "Move on", goto: 1 }],
-            effects: [{ type: "remove_item", item: "torch" }],
-          },
-        },
-        items: [
-          ...(mockAdventure.items || []),
-          { id: "torch", name: "Burning Torch" },
-        ],
-      };
-
-      // Start at passage 11 to add the item
-      mockParams = { id: "11", adventureId: TEST_STORY_ID };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: adventureWithEffects,
-        isDebugModeEnabled: true,
-      });
-
-      await screen.findByText("You picked up a torch.");
-
-      // Verify item was added
-      await waitFor(() => {
-        const torchToggle = screen.queryByRole("switch", {
-          name: /Burning Torch/,
-        });
-        if (torchToggle) {
-          expect(torchToggle).toBeChecked();
-        }
-      });
-
-      // Directly navigate to passage 12 by clicking the choice
-      const continueButton = await screen.findByRole("button", {
-        name: /Continue/,
-      });
-      fireEvent.click(continueButton);
-
-      expect(mockNavigate).toHaveBeenCalledWith(
-        getAdventureTestPassageRoute(TEST_STORY_ID, 12)
-      );
-    });
-
-    it("does not duplicate items when add_item effect adds same item twice", async () => {
-      const adventureWithEffects: Adventure = {
-        ...mockAdventure,
-        passages: {
-          ...mockAdventure.passages,
-          13: {
-            paragraphs: ["You tried to pick up the coin again."],
-            choices: [{ text: "Continue", goto: 1 }],
-            effects: [
-              { type: "add_item", item: "coin" },
-              { type: "add_item", item: "coin" }, // Try to add same item twice
-            ],
-          },
-        },
-        items: [
-          ...(mockAdventure.items || []),
-          { id: "coin", name: "Gold Coin" },
-        ],
-      };
-
-      mockParams = { id: "13", adventureId: TEST_STORY_ID };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: adventureWithEffects,
-        isDebugModeEnabled: true,
-      });
-
-      await screen.findByText("You tried to pick up the coin again.");
-
-      // Verify the item is in inventory (should only appear once)
-      await waitFor(() => {
-        const coinToggle = screen.queryByRole("switch", {
-          name: /Gold Coin/,
-        });
-        if (coinToggle) {
-          expect(coinToggle).toBeChecked();
-        }
-      });
-    });
-
-    it("executes remove_item effect correctly when item exists in inventory", async () => {
-      // This test ensures the remove_item branch is executed properly
-      const adventureWithEffects: Adventure = {
-        ...mockAdventure,
-        passages: {
-          ...mockAdventure.passages,
-          14: {
-            paragraphs: ["You found a mysterious key."],
-            choices: [{ text: "Use the key", goto: 15 }],
-            effects: [{ type: "add_item", item: "key" }],
-          },
-          15: {
-            paragraphs: ["You used the key to open the door. It broke!"],
-            choices: [{ text: "Enter", goto: 1 }],
-            effects: [{ type: "remove_item", item: "key" }],
-          },
-        },
-        items: [
-          ...(mockAdventure.items || []),
-          { id: "key", name: "Mysterious Key" },
-        ],
-      };
-
-      // Start at passage 14 where we get the key
-      mockParams = { id: "14", adventureId: TEST_STORY_ID };
-
-      renderWithAdventure(<TestAdventure />, {
-        adventureId: TEST_STORY_ID,
-        adventure: adventureWithEffects,
-        isDebugModeEnabled: true,
-      });
-
-      await screen.findByText("You found a mysterious key.");
-
-      // Wait for the add_item effect to execute
-      await waitFor(() => {
-        const keyToggle = screen.queryByRole("switch", {
-          name: /Mysterious Key/,
-        });
-        if (keyToggle) {
-          expect(keyToggle).toBeChecked();
-        }
-      });
-
-      // Now click to navigate to passage 15 where the key is removed
-      const useKeyButton = await screen.findByRole("button", {
-        name: /Use the key/,
-      });
-      fireEvent.click(useKeyButton);
-
-      // This should trigger the remove_item effect
-      expect(mockNavigate).toHaveBeenCalledWith(
-        getAdventureTestPassageRoute(TEST_STORY_ID, 15)
       );
     });
   });
