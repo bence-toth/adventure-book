@@ -584,6 +584,33 @@ describe("Select Component", () => {
         ).toBe(true);
       });
     });
+
+    it("focuses selected item when dropdown opens", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="2"
+          data-testid="test-select"
+        />
+      );
+
+      const button = screen.getByRole("combobox");
+      await user.click(button);
+
+      await waitFor(() => {
+        expect(button).toHaveAttribute("aria-expanded", "true");
+      });
+
+      // The selected option (Option 2, index 1) should be focused
+      await waitFor(() => {
+        const selectedOption = screen.getByTestId("test-select-option-2");
+        expect(selectedOption).toHaveAttribute("tabindex", "0");
+        expect(selectedOption).toHaveAttribute("aria-selected", "true");
+      });
+    });
   });
 
   describe("Icons", () => {

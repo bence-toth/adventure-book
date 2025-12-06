@@ -102,6 +102,18 @@ export const Select = ({
     [click, dismiss, role, listNavigation]
   );
 
+  // Set active index to selected item when dropdown opens
+  useEffect(() => {
+    if (isOpen) {
+      const selectedIndex = options.findIndex((opt) => opt.value === value);
+      if (selectedIndex !== -1) {
+        setActiveIndex(selectedIndex);
+      } else {
+        setActiveIndex(null);
+      }
+    }
+  }, [isOpen, options, value]);
+
   // Focus the active item when activeIndex changes
   useEffect(() => {
     if (isOpen && activeIndex !== null && listRef.current[activeIndex]) {
