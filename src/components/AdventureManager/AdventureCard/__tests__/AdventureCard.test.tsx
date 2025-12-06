@@ -166,11 +166,12 @@ describe("AdventureCard Component", () => {
     it("closes delete modal after deletion is complete via onCancelDelete", async () => {
       renderAdventureCard(true); // Modal is open
 
-      // Verify modal is open
+      // Verify modal is open by checking for both paragraphs
       expect(
-        screen.getByText(
-          'Are you sure you want to delete "Test Adventure"? This action cannot be undone.'
-        )
+        screen.getByText('Are you sure you want to delete "Test Adventure"?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("This action cannot be undone.")
       ).toBeInTheDocument();
 
       const cancelButton = screen.getByText("Cancel");
@@ -182,11 +183,12 @@ describe("AdventureCard Component", () => {
     it("calls onCancelDelete when modal is closed via dialog close button", async () => {
       renderAdventureCard(true); // Modal is open
 
-      // The modal should now be visible
+      // The modal should now be visible - check for both paragraphs
       expect(
-        screen.getByText(
-          'Are you sure you want to delete "Test Adventure"? This action cannot be undone.'
-        )
+        screen.getByText('Are you sure you want to delete "Test Adventure"?')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("This action cannot be undone.")
       ).toBeInTheDocument();
 
       // Close via cancel button which triggers onCancel callback

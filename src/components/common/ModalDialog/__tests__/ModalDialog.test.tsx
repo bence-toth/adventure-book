@@ -110,6 +110,59 @@ describe("ModalDialog Component", () => {
       expect(screen.getByText("Line 2")).toBeInTheDocument();
     });
 
+    it("displays multiple paragraphs from array of strings", () => {
+      render(
+        <ModalDialog
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          title="Confirm"
+          message={[
+            "This is the first paragraph.",
+            "This is the second paragraph.",
+            "This is the third paragraph.",
+          ]}
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
+        />
+      );
+
+      expect(
+        screen.getByText("This is the first paragraph.")
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("This is the second paragraph.")
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("This is the third paragraph.")
+      ).toBeInTheDocument();
+    });
+
+    it("renders paragraphs as separate p elements when array is provided", () => {
+      render(
+        <ModalDialog
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          title="Confirm"
+          message={["First paragraph", "Second paragraph"]}
+          actions={[
+            { label: "Cancel", onClick: vi.fn() },
+            { label: "Confirm", onClick: vi.fn(), variant: "neutral" },
+          ]}
+        />
+      );
+
+      const messageContainer = screen.getByTestId(
+        DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.MESSAGE
+      );
+      const paragraphs = messageContainer.querySelectorAll("p");
+
+      expect(paragraphs).toHaveLength(2);
+      expect(paragraphs[0].textContent).toBe("First paragraph");
+      expect(paragraphs[1].textContent).toBe("Second paragraph");
+    });
+
     it("displays custom button labels", () => {
       render(
         <ModalDialog

@@ -19,7 +19,10 @@ export const UnsavedChangesModal = ({
       isOpen={isOpen}
       onOpenChange={onStay}
       title="Unsaved changes"
-      message="You have unsaved changes. Are you sure you want to leave? Your changes will be lost."
+      message={[
+        "You have unsaved changes. Are you sure you want to leave?",
+        "Your changes will be lost.",
+      ]}
       actions={[
         {
           label: "Keep editing",

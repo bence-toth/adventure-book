@@ -53,6 +53,14 @@ export const DialogTitle = styled.h2`
 export const DialogMessage = styled.div`
   margin: 0 0 var(--space-3);
   line-height: var(--line-height-relaxed);
+
+  p {
+    margin: 0;
+
+    & + p {
+      margin-block-start: var(--space-2);
+    }
+  }
 `;
 
 export const DialogActions = styled.div`

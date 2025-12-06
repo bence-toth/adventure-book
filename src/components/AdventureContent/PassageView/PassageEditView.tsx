@@ -1,7 +1,7 @@
 import { useAdventure } from "@/context/useAdventure";
 import { Textarea } from "@/components/common/Textarea/Textarea";
 import { Select } from "@/components/common/Select/Select";
-import { UnsavedChangesModal } from "@/components/common/UnsavedChangesModal/UnsavedChangesModal";
+import { UnsavedChangesModal } from "../UnsavedChangesModal/UnsavedChangesModal";
 import { useUnsavedChangesWarning } from "@/utils/useUnsavedChangesWarning";
 import type { Passage } from "@/data/types";
 import {

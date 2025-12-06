@@ -18,12 +18,10 @@ export const AdventureCardDeleteModal = ({
       isOpen={isOpen}
       onOpenChange={onCancel}
       title="Delete Adventure"
-      message={
-        <p>
-          Are you sure you want to delete "{adventureTitle}"? This action cannot
-          be undone.
-        </p>
-      }
+      message={[
+        `Are you sure you want to delete "${adventureTitle}"?`,
+        "This action cannot be undone.",
+      ]}
       actions={[
         { label: "Cancel", onClick: onCancel },
         { label: "Delete", onClick: onConfirm, variant: "danger" },

@@ -3,7 +3,7 @@ import { useAdventure } from "@/context/useAdventure";
 import { Input } from "@/components/common/Input/Input";
 import { Textarea } from "@/components/common/Textarea/Textarea";
 import { Button } from "@/components/common/Button/Button";
-import { UnsavedChangesModal } from "@/components/common/UnsavedChangesModal/UnsavedChangesModal";
+import { UnsavedChangesModal } from "../UnsavedChangesModal/UnsavedChangesModal";
 import { useUnsavedChangesWarning } from "@/utils/useUnsavedChangesWarning";
 import { validateTitle, validateIntroductionText } from "@/utils/validation";
 import type { Adventure } from "@/data/types";

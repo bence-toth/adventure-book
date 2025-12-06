@@ -27,10 +27,23 @@ interface ModalDialogProps {
   isOpen: boolean;
   onOpenChange: () => void;
   title: string;
-  message: ReactNode;
+  message: string | string[] | ReactNode;
   actions: ModalAction[];
   "data-testid"?: string;
 }
+
+const renderMessage = (message: string | string[] | ReactNode) => {
+  if (Array.isArray(message)) {
+    return (
+      <>
+        {message.map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
+      </>
+    );
+  }
+  return message;
+};
 
 export const ModalDialog = ({
   isOpen,
@@ -96,7 +109,7 @@ export const ModalDialog = ({
             <DialogMessage
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.MESSAGE}
             >
-              {message}
+              {renderMessage(message)}
             </DialogMessage>
             <DialogActions
               data-testid={DELETE_ADVENTURE_CONFIRMATION_MODAL_TEST_IDS.ACTIONS}
