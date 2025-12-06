@@ -333,6 +333,24 @@ describe("usePassageEditState", () => {
       expect(result.current.hasChanges).toBe(true);
     });
 
+    it("clears effectsError when changing effect type", () => {
+      const { result } = renderHook(() => usePassageEditState({ passage }));
+
+      act(() => {
+        result.current.setEffects([{ type: "add_item", item: "key" }]);
+        result.current.setEffectsError("Test effects error");
+      });
+
+      expect(result.current.effectsError).toBe("Test effects error");
+
+      act(() => {
+        result.current.handleEffectTypeChange(0, "remove_item");
+      });
+
+      expect(result.current.effectsError).toBeUndefined();
+      expect(result.current.effects[0].type).toBe("remove_item");
+    });
+
     it("updates effect item and clears error", () => {
       const { result } = renderHook(() => usePassageEditState({ passage }));
 
@@ -353,6 +371,24 @@ describe("usePassageEditState", () => {
       expect(result.current.effects[0].error).toBeUndefined();
       expect(result.current.effectsError).toBeUndefined();
       expect(result.current.hasChanges).toBe(true);
+    });
+
+    it("clears effectsError when changing effect item", () => {
+      const { result } = renderHook(() => usePassageEditState({ passage }));
+
+      act(() => {
+        result.current.setEffects([{ type: "add_item", item: "key" }]);
+        result.current.setEffectsError("Test effects error");
+      });
+
+      expect(result.current.effectsError).toBe("Test effects error");
+
+      act(() => {
+        result.current.handleEffectItemChange(0, "sword");
+      });
+
+      expect(result.current.effectsError).toBeUndefined();
+      expect(result.current.effects[0].item).toBe("sword");
     });
   });
 
@@ -574,6 +610,81 @@ describe("usePassageEditState", () => {
 
       expect(result.current.hasChanges).toBe(true);
     });
+
+    it("detects changes when switching ending passage to regular and modifying effects", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        ending: true,
+        type: "victory",
+      };
+
+      const { result } = renderHook(() => usePassageEditState({ passage }));
+
+      // Switch to regular passage
+      act(() => {
+        result.current.handleIsEndingChange(false);
+      });
+
+      // Add an effect
+      act(() => {
+        result.current.handleAddEffect();
+      });
+
+      expect(result.current.hasChanges).toBe(true);
+    });
+
+    it("detects changes comparing ending type when passage was not originally ending", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        choices: [{ text: "Choice", goto: 2 }],
+      };
+
+      const { result } = renderHook(() => usePassageEditState({ passage }));
+
+      // Switch to ending and set type
+      act(() => {
+        result.current.handleIsEndingChange(true);
+        result.current.handleEndingTypeChange("victory");
+      });
+
+      expect(result.current.hasChanges).toBe(true);
+    });
+
+    it("detects changes comparing choices when original passage was ending", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        ending: true,
+        type: "victory",
+      };
+
+      const { result } = renderHook(() => usePassageEditState({ passage }));
+
+      // Switch to regular passage and add choices
+      act(() => {
+        result.current.handleIsEndingChange(false);
+        result.current.handleAddChoice();
+      });
+
+      expect(result.current.hasChanges).toBe(true);
+    });
+
+    it("detects changes comparing effects when original passage was ending", () => {
+      const passage: Passage = {
+        paragraphs: ["Test"],
+        ending: true,
+        type: "victory",
+      };
+
+      const { result } = renderHook(() => usePassageEditState({ passage }));
+
+      // Switch to regular passage and add effects
+      act(() => {
+        result.current.handleIsEndingChange(false);
+        result.current.handleAddEffect();
+      });
+
+      expect(result.current.hasChanges).toBe(true);
+    });
   });
 
   describe("Reset state", () => {
@@ -634,9 +745,11 @@ describe("usePassageEditState", () => {
           target: { value: "Modified" },
         } as React.ChangeEvent<HTMLTextAreaElement>);
         result.current.handleEndingTypeChange("defeat");
+        result.current.setEndingTypeError("Test error");
       });
 
       expect(result.current.hasChanges).toBe(true);
+      expect(result.current.endingTypeError).toBe("Test error");
 
       // Reset
       act(() => {
@@ -648,6 +761,32 @@ describe("usePassageEditState", () => {
       expect(result.current.endingType).toBe("victory");
       expect(result.current.choices).toEqual([]);
       expect(result.current.effects).toEqual([]);
+      expect(result.current.endingTypeError).toBeUndefined();
+      expect(result.current.hasChanges).toBe(false);
+    });
+
+    it("resets ending passage without type to empty string", () => {
+      const passage: Passage = {
+        paragraphs: ["Test ending"],
+        ending: true,
+      };
+
+      const { result } = renderHook(() => usePassageEditState({ passage }));
+
+      // Make a change
+      act(() => {
+        result.current.handleEndingTypeChange("victory");
+      });
+
+      expect(result.current.endingType).toBe("victory");
+      expect(result.current.hasChanges).toBe(true);
+
+      // Reset
+      act(() => {
+        result.current.resetState();
+      });
+
+      expect(result.current.endingType).toBe("");
       expect(result.current.hasChanges).toBe(false);
     });
   });
