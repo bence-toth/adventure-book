@@ -326,4 +326,108 @@ passages:
       );
     });
   });
+
+  describe("self-referencing validation", () => {
+    it("should throw error when a choice points to the same passage", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Adventure"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Start"
+passages:
+  1:
+    text: "Test passage with self-reference"
+    choices:
+      - text: "Loop back"
+        goto: 1
+`;
+      expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
+        "Passage 1 has a choice that points to itself"
+      );
+    });
+
+    it("should throw error when any choice in a passage self-references", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Adventure"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Start"
+passages:
+  1:
+    text: "First passage"
+    choices:
+      - text: "Go to 2"
+        goto: 2
+      - text: "Loop back"
+        goto: 1
+  2:
+    text: "Second passage"
+    ending: true
+`;
+      expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
+        "Passage 1 has a choice that points to itself"
+      );
+    });
+
+    it("should allow circular references between different passages", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Adventure"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Start"
+passages:
+  1:
+    text: "First passage"
+    choices:
+      - text: "Go to 2"
+        goto: 2
+  2:
+    text: "Second passage"
+    choices:
+      - text: "Go back to 1"
+        goto: 1
+      - text: "End"
+        goto: 3
+  3:
+    text: "Ending"
+    ending: true
+`;
+      expect(() => AdventureParser.parseFromString(yamlContent)).not.toThrow();
+    });
+
+    it("should validate self-references in later passages", () => {
+      const yamlContent = `
+metadata:
+  title: "Test Adventure"
+  author: "Test Author"
+  version: "1.0"
+intro:
+  text: "Test intro"
+  action: "Start"
+passages:
+  1:
+    text: "First passage"
+    choices:
+      - text: "Go to 2"
+        goto: 2
+  2:
+    text: "Second passage with self-reference"
+    choices:
+      - text: "Loop"
+        goto: 2
+`;
+      expect(() => AdventureParser.parseFromString(yamlContent)).toThrow(
+        "Passage 2 has a choice that points to itself"
+      );
+    });
+  });
 });

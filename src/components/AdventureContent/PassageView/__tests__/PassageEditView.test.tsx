@@ -350,4 +350,70 @@ describe("PassageEditView Integration", () => {
       });
     });
   });
+
+  describe("Self-referencing prevention", () => {
+    it("excludes current passage from choice dropdown options", async () => {
+      const passage: Passage = {
+        paragraphs: ["Test passage"],
+        choices: [{ text: "Go somewhere", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Open the goto dropdown for the first choice
+      const gotoSelect = screen.getByTestId("choice-goto-0");
+      fireEvent.click(gotoSelect);
+
+      // Wait for options to appear
+      await waitFor(() => {
+        // Verify passage 2 is available
+        expect(
+          screen.getByTestId("choice-goto-0-option-2")
+        ).toBeInTheDocument();
+        // Verify passage 3 is available
+        expect(
+          screen.getByTestId("choice-goto-0-option-3")
+        ).toBeInTheDocument();
+      });
+
+      // Verify current passage (1) is NOT available
+      expect(
+        screen.queryByTestId("choice-goto-0-option-1")
+      ).not.toBeInTheDocument();
+    });
+
+    it("excludes current passage from dropdown when adding new choice", async () => {
+      const passage: Passage = {
+        paragraphs: ["Test passage"],
+        choices: [{ text: "Existing choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={5} passage={passage} />);
+
+      // Add a new choice
+      const addButton = screen.getByTestId("add-choice-button");
+      fireEvent.click(addButton);
+
+      // Open the goto dropdown for the new choice
+      await waitFor(() => {
+        expect(screen.getByTestId("choice-goto-1")).toBeInTheDocument();
+      });
+
+      const gotoSelect = screen.getByTestId("choice-goto-1");
+      fireEvent.click(gotoSelect);
+
+      // Wait for options to appear
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("choice-goto-1-option-1")
+        ).toBeInTheDocument();
+      });
+
+      // Verify current passage (5) is NOT available but others are
+      expect(
+        screen.queryByTestId("choice-goto-1-option-5")
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId("choice-goto-1-option-1")).toBeInTheDocument();
+    });
+  });
 });

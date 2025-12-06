@@ -70,6 +70,7 @@ export const PassageEditView = ({
   const availablePassages = adventure
     ? Object.keys(adventure.passages)
         .map(Number)
+        .filter((id) => id !== passageId) // Exclude current passage
         .sort((a, b) => a - b)
     : [];
 
