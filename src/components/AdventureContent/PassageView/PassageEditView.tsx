@@ -91,7 +91,6 @@ export const PassageEditView = ({
                 data-testid="passage-text-input"
               />
             </FormSection>
-
             <FormSection>
               <Textarea
                 label="Notes"
@@ -101,7 +100,6 @@ export const PassageEditView = ({
                 data-testid="passage-notes-input"
               />
             </FormSection>
-
             <FormSection>
               <Select
                 label="Passage type"
@@ -116,7 +114,6 @@ export const PassageEditView = ({
                 data-testid="passage-type-select"
               />
             </FormSection>
-
             {state.isEnding ? (
               <FormSection>
                 <Select
