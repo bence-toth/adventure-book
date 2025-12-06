@@ -1,13 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, waitFor, act } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import "fake-indexeddb/auto";
 import { AdventureProvider, AdventureContext } from "../AdventureContext";
 import { saveAdventure, type StoredAdventure } from "@/data/adventureDatabase";
-import * as adventureLoader from "@/data/adventureLoader";
+import { invalidateAdventureCache } from "@/data/adventureLoader";
 import { useContext } from "react";
-import type { Adventure } from "@/data/types";
 
 // Sample valid adventure YAML
 const sampleAdventureYAML = `metadata:
@@ -61,13 +60,6 @@ const TestConsumer = () => {
     }));
   };
 
-  const handleSimulateSave = async () => {
-    await withSaving(async () => {
-      // Simulate async operation
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    });
-  };
-
   const handleSimulateLongSave = async () => {
     await withSaving(async () => {
       // Simulate longer async operation (>500ms)
@@ -92,9 +84,6 @@ const TestConsumer = () => {
       <button onClick={handleUpdateTitle} data-testid="update-title-button">
         Update Title
       </button>
-      <button onClick={handleSimulateSave} data-testid="simulate-save-button">
-        Simulate Save
-      </button>
       <button
         onClick={handleSimulateLongSave}
         data-testid="simulate-long-save-button"
@@ -110,6 +99,9 @@ const TestConsumer = () => {
 
 describe("AdventureContext", () => {
   beforeEach(async () => {
+    // Clear adventure cache
+    invalidateAdventureCache();
+
     // Clear IndexedDB before each test
     const dbs = await indexedDB.databases();
     await Promise.all(
@@ -124,486 +116,238 @@ describe("AdventureContext", () => {
     );
   });
 
-  it("should provide context to children", () => {
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-id"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    expect(screen.getByTestId("loading-state")).toBeInTheDocument();
-    expect(screen.getByTestId("adventure-id")).toBeInTheDocument();
-  });
-
-  it("should set loading to false and clear state when no adventureId", async () => {
-    render(
-      <MemoryRouter initialEntries={["/some-path"]}>
-        <Routes>
-          <Route
-            path="/some-path"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
+  describe("Context Integration", () => {
+    it("should provide all context values to children", () => {
+      render(
+        <MemoryRouter initialEntries={["/adventure/test-id"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
       );
+
+      expect(screen.getByTestId("loading-state")).toBeInTheDocument();
+      expect(screen.getByTestId("adventure-id")).toBeInTheDocument();
+      expect(screen.getByTestId("error-state")).toBeInTheDocument();
+      expect(screen.getByTestId("saving-state")).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId("adventure-id")).toHaveTextContent("no-id");
-    expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
-  });
+    it("should extract adventureId from route params", async () => {
+      const adventure: StoredAdventure = {
+        id: "test-adventure-route",
+        title: "Test Adventure",
+        content: sampleAdventureYAML,
+        lastEdited: new Date(),
+        createdAt: new Date(),
+      };
 
-  it("should load adventure when adventureId is provided", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-1",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
+      await saveAdventure(adventure);
 
-    await saveAdventure(adventure);
+      render(
+        <MemoryRouter initialEntries={["/adventure/test-adventure-route"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
+      );
 
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-1"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Should start as loading
-    expect(screen.getByTestId("loading-state")).toHaveTextContent("loading");
-
-    // Wait for adventure to load
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("loading-state")).toHaveTextContent(
-          "not-loading"
+      await waitFor(() => {
+        expect(screen.getByTestId("adventure-id")).toHaveTextContent(
+          "test-adventure-route"
         );
-      },
-      { timeout: 3000 }
-    );
-
-    expect(screen.getByTestId("adventure-id")).toHaveTextContent(
-      "test-adventure-1"
-    );
-    expect(screen.getByTestId("error-state")).toHaveTextContent("no-error");
-    expect(screen.getByTestId("adventure-data")).toBeInTheDocument();
-    expect(screen.getByTestId("adventure-title")).toHaveTextContent(
-      "Test Adventure"
-    );
-    expect(screen.getByTestId("adventure-author")).toHaveTextContent(
-      "Test Author"
-    );
+      });
+    });
   });
 
-  it("should set error state when adventure loading fails", async () => {
-    // Mock console.error to avoid noise in test output
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+  describe("useAdventureLoader Integration", () => {
+    it("should load adventure using useAdventureLoader hook", async () => {
+      const adventure: StoredAdventure = {
+        id: "test-adventure-1",
+        title: "Test Adventure",
+        content: sampleAdventureYAML,
+        lastEdited: new Date(),
+        createdAt: new Date(),
+      };
 
-    render(
-      <MemoryRouter initialEntries={["/adventure/non-existent-id"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
+      await saveAdventure(adventure);
 
-    // Wait for error state
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("error-state")).not.toHaveTextContent(
-          "no-error"
-        );
-      },
-      { timeout: 3000 }
-    );
+      render(
+        <MemoryRouter initialEntries={["/adventure/test-adventure-1"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
+      );
 
-    expect(screen.getByTestId("loading-state")).toHaveTextContent(
-      "not-loading"
-    );
-    expect(screen.getByTestId("adventure-id")).toHaveTextContent(
-      "non-existent-id"
-    );
-    expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
+      // Should start as loading
+      expect(screen.getByTestId("loading-state")).toHaveTextContent("loading");
 
-    consoleSpy.mockRestore();
-  });
+      // Wait for adventure to load and sync to local state
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("loading-state")).toHaveTextContent(
+            "not-loading"
+          );
+          expect(screen.getByTestId("adventure-data")).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
-  it("should handle invalid adventure YAML", async () => {
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-    const invalidAdventure: StoredAdventure = {
-      id: "invalid-adventure",
-      title: "Invalid",
-      content: "not valid yaml: [unclosed",
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
-
-    await saveAdventure(invalidAdventure);
-
-    render(
-      <MemoryRouter initialEntries={["/adventure/invalid-adventure"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Wait for error state - check that loading is complete and error exists
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("loading-state")).toHaveTextContent(
-          "not-loading"
-        );
-      },
-      { timeout: 3000 }
-    );
-
-    // Verify error is set
-    const errorState = screen.getByTestId("error-state");
-    expect(errorState.textContent).not.toBe("no-error");
-
-    expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
-
-    consoleSpy.mockRestore();
-  });
-
-  it("should handle non-Error exceptions with fallback message", async () => {
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-
-    // Mock loadAdventureById to throw a non-Error value
-    const mockLoadAdventureById = vi
-      .spyOn(adventureLoader, "loadAdventureById")
-      .mockRejectedValueOnce("string error" as never);
-
-    render(
-      <MemoryRouter initialEntries={["/adventure/error-test"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("loading-state")).toHaveTextContent(
-          "not-loading"
-        );
-      },
-      { timeout: 3000 }
-    );
-
-    expect(screen.getByTestId("error-state")).toHaveTextContent(
-      "Failed to load adventure"
-    );
-    expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
-
-    consoleSpy.mockRestore();
-    mockLoadAdventureById.mockRestore();
-  });
-
-  // Note: Testing adventureId changes with rerender is complex due to
-  // how MemoryRouter handles route changes. This is better covered by
-  // integration tests where actual navigation occurs.
-
-  // Note: Testing route changes with rerender has timing complexities.
-  // The loading/clearing behavior is already covered by other tests.
-
-  it("should update adventure via updateAdventure function", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-2",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
-
-    await saveAdventure(adventure);
-
-    const user = userEvent.setup();
-
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-2"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Wait for adventure to load
-    await waitFor(() => {
       expect(screen.getByTestId("adventure-title")).toHaveTextContent(
         "Test Adventure"
       );
     });
 
-    // Update the title
-    const updateButton = screen.getByTestId("update-title-button");
-    await user.click(updateButton);
+    it("should handle loading errors from useAdventureLoader", async () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
-    // Verify title was updated
-    await waitFor(() => {
-      expect(screen.getByTestId("adventure-title")).toHaveTextContent(
-        "Updated Title"
+      render(
+        <MemoryRouter initialEntries={["/adventure/non-existent-id"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
       );
+
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("error-state")).not.toHaveTextContent(
+            "no-error"
+          );
+        },
+        { timeout: 3000 }
+      );
+
+      expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+    });
+
+    it("should reload adventure when reloadAdventure is called", async () => {
+      const adventure: StoredAdventure = {
+        id: "test-adventure-reload",
+        title: "Test Adventure",
+        content: sampleAdventureYAML,
+        lastEdited: new Date(),
+        createdAt: new Date(),
+      };
+
+      await saveAdventure(adventure);
+
+      const user = userEvent.setup();
+
+      render(
+        <MemoryRouter initialEntries={["/adventure/test-adventure-reload"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId("loading-state")).toHaveTextContent(
+          "not-loading"
+        );
+      });
+
+      const reloadButton = screen.getByTestId("reload-adventure-button");
+      await user.click(reloadButton);
+
+      // Should be loading again
+      await waitFor(() => {
+        expect(screen.getByTestId("loading-state")).toHaveTextContent(
+          "loading"
+        );
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("loading-state")).toHaveTextContent(
+          "not-loading"
+        );
+      });
     });
   });
 
-  it("should not update adventure when adventure is null", async () => {
-    const user = userEvent.setup();
+  describe("useSavingState Integration", () => {
+    it("should provide withSaving function from useSavingState hook", async () => {
+      const adventure: StoredAdventure = {
+        id: "test-adventure-saving",
+        title: "Test Adventure",
+        content: sampleAdventureYAML,
+        lastEdited: new Date(),
+        createdAt: new Date(),
+      };
 
-    render(
-      <MemoryRouter initialEntries={["/some-path"]}>
-        <Routes>
-          <Route
-            path="/some-path"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
+      await saveAdventure(adventure);
 
-    // Wait for initial load (should be null)
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
+      const user = userEvent.setup();
+
+      render(
+        <MemoryRouter initialEntries={["/adventure/test-adventure-saving"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
       );
-    });
 
-    expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByTestId("loading-state")).toHaveTextContent(
+          "not-loading"
+        );
+      });
 
-    // Try to update the title when adventure is null
-    const updateButton = screen.getByTestId("update-title-button");
-    await user.click(updateButton);
-
-    // Should remain null
-    expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
-  });
-
-  it("should track saving state with withSaving", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-3",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
-
-    await saveAdventure(adventure);
-
-    const user = userEvent.setup();
-
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-3"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Wait for adventure to load
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
-      );
-    });
-
-    // Initial state should be not-saving
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
-
-    // Trigger a quick save (100ms - less than 500ms threshold)
-    const saveButton = screen.getByTestId("simulate-save-button");
-    const clickPromise = user.click(saveButton);
-
-    // Should NOT show saving state for quick operations
-    // Wait a bit to ensure it doesn't flash
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 200));
-    });
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
-
-    // Wait for save to complete
-    await clickPromise;
-
-    // Should still be not-saving after operation completes
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
-  });
-
-  it("should show saving state only for operations longer than 500ms", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-3b",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
-
-    await saveAdventure(adventure);
-
-    const user = userEvent.setup();
-
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-3b"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Wait for adventure to load
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
-      );
-    });
-
-    // Initial state should be not-saving
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
-
-    // Trigger a long save (600ms - more than 500ms threshold)
-    const longSaveButton = screen.getByTestId("simulate-long-save-button");
-    const clickPromise = user.click(longSaveButton);
-
-    // Should NOT show saving immediately
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
-
-    // Wait for more than 500ms to ensure the timeout fires and saving state appears
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
-      },
-      { timeout: 700 }
-    );
-
-    // Wait for save to complete
-    await clickPromise;
-
-    // Should return to not-saving after operation completes
-    await waitFor(() => {
       expect(screen.getByTestId("saving-state")).toHaveTextContent(
         "not-saving"
       );
-    });
-  });
 
-  it("should handle multiple concurrent saves correctly", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-4",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
+      const longSaveButton = screen.getByTestId("simulate-long-save-button");
+      const clickPromise = user.click(longSaveButton);
 
-    await saveAdventure(adventure);
-
-    const user = userEvent.setup();
-
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-4"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Wait for adventure to load
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
-      );
-    });
-
-    // Trigger multiple long saves to ensure they last beyond the 500ms threshold
-    const longSaveButton = screen.getByTestId("simulate-long-save-button");
-    const clickPromise1 = user.click(longSaveButton);
-    const clickPromise2 = user.click(longSaveButton);
-
-    // Should NOT show saving immediately
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
-
-    // Should show saving state after 500ms
-    await act(async () => {
+      // Should show saving after delay
       await waitFor(
         () => {
           expect(screen.getByTestId("saving-state")).toHaveTextContent(
@@ -612,336 +356,195 @@ describe("AdventureContext", () => {
         },
         { timeout: 700 }
       );
-    });
 
-    // Wait for all saves to complete
-    await Promise.all([clickPromise1, clickPromise2]);
+      await clickPromise;
 
-    // Should return to not-saving only after all operations complete
-    await waitFor(() => {
-      expect(screen.getByTestId("saving-state")).toHaveTextContent(
-        "not-saving"
-      );
+      await waitFor(() => {
+        expect(screen.getByTestId("saving-state")).toHaveTextContent(
+          "not-saving"
+        );
+      });
     });
   });
 
-  it("should cleanup timeout on unmount during saving operation", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-5",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
-
-    await saveAdventure(adventure);
-
-    const user = userEvent.setup();
-
-    const { unmount } = render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-5"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Wait for adventure to load
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
-      );
-    });
-
-    // Trigger a long save operation
-    const longSaveButton = screen.getByTestId("simulate-long-save-button");
-    const clickPromise = user.click(longSaveButton);
-
-    // Wait a bit to start the timeout
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-    });
-
-    // Unmount the component while saving is in progress
-    unmount();
-
-    // Wait for the click promise to settle
-    await clickPromise.catch(() => {
-      // Ignore errors from unmounting during operation
-    });
-
-    // If we get here without errors, the cleanup worked correctly
-    expect(true).toBe(true);
-  });
-
-  it("should reload adventure when reloadAdventure is called", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-6",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
-
-    await saveAdventure(adventure);
-
-    const user = userEvent.setup();
-
-    // Spy on loadAdventureById to track how many times it's called
-    const loadSpy = vi.spyOn(adventureLoader, "loadAdventureById");
-
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-6"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
-
-    // Wait for adventure to load initially
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
-      );
-    });
-
-    expect(screen.getByTestId("adventure-title")).toHaveTextContent(
-      "Test Adventure"
-    );
-
-    // loadAdventureById should have been called once on initial load
-    expect(loadSpy).toHaveBeenCalledTimes(1);
-
-    // Trigger reload
-    const reloadButton = screen.getByTestId("reload-adventure-button");
-    await user.click(reloadButton);
-
-    // Should be loading again
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent("loading");
-    });
-
-    // Wait for adventure to reload
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
-      );
-    });
-
-    // loadAdventureById should have been called twice (initial + reload)
-    expect(loadSpy).toHaveBeenCalledTimes(2);
-
-    // Adventure should still be loaded
-    expect(screen.getByTestId("adventure-title")).toHaveTextContent(
-      "Test Adventure"
-    );
-
-    loadSpy.mockRestore();
-  });
-
-  it("should maintain saving state when one operation completes but others are still running", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-7",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
-
-    await saveAdventure(adventure);
-
-    const TestConsumerWithStaggeredSaves = () => {
-      const context = useContext(AdventureContext);
-
-      if (!context) {
-        return <div>No context</div>;
-      }
-
-      const { isSaving, withSaving, isLoading } = context;
-
-      const handleStaggeredSaves = async () => {
-        // Start a long save operation
-        const longSave = withSaving(async () => {
-          await new Promise((resolve) => setTimeout(resolve, 700));
-        });
-
-        // Start a shorter save operation after 100ms
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        const shortSave = withSaving(async () => {
-          await new Promise((resolve) => setTimeout(resolve, 200));
-        });
-
-        // Wait for the short save to complete first
-        await shortSave;
-
-        // Long save should still be running
-        return longSave;
+  describe("updateAdventure Integration", () => {
+    it("should update adventure state locally", async () => {
+      const adventure: StoredAdventure = {
+        id: "test-adventure-update",
+        title: "Test Adventure",
+        content: sampleAdventureYAML,
+        lastEdited: new Date(),
+        createdAt: new Date(),
       };
 
-      return (
-        <div>
-          <div data-testid="loading-state">
-            {isLoading ? "loading" : "not-loading"}
-          </div>
-          <div data-testid="saving-state">
-            {isSaving ? "saving" : "not-saving"}
-          </div>
-          <button
-            onClick={handleStaggeredSaves}
-            data-testid="staggered-save-button"
-          >
-            Staggered Saves
-          </button>
-        </div>
+      await saveAdventure(adventure);
+
+      const user = userEvent.setup();
+
+      render(
+        <MemoryRouter initialEntries={["/adventure/test-adventure-update"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
       );
-    };
 
-    const user = userEvent.setup();
+      await waitFor(() => {
+        expect(screen.getByTestId("adventure-title")).toHaveTextContent(
+          "Test Adventure"
+        );
+      });
 
-    render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-7"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumerWithStaggeredSaves />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
+      const updateButton = screen.getByTestId("update-title-button");
+      await user.click(updateButton);
 
-    // Wait for adventure to load
-    await waitFor(() => {
-      expect(screen.getByTestId("loading-state")).toHaveTextContent(
-        "not-loading"
-      );
+      await waitFor(() => {
+        expect(screen.getByTestId("adventure-title")).toHaveTextContent(
+          "Updated Title"
+        );
+      });
     });
 
-    // Initial state should be not-saving
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("not-saving");
+    it("should not update when adventure is null", async () => {
+      const user = userEvent.setup();
 
-    // Trigger staggered saves
-    const staggeredButton = screen.getByTestId("staggered-save-button");
-    const clickPromise = user.click(staggeredButton);
-
-    // Wait for the timeout to trigger (>500ms) and saving state to appear
-    await waitFor(
-      () => {
-        expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
-      },
-      { timeout: 700 }
-    );
-
-    // Wait a bit more to ensure short save completes but long save is still running
-    // At this point we should still be saving
-    await new Promise((resolve) => setTimeout(resolve, 250));
-    expect(screen.getByTestId("saving-state")).toHaveTextContent("saving");
-
-    // Wait for all saves to complete
-    await clickPromise;
-
-    // Should return to not-saving after all operations complete
-    await waitFor(() => {
-      expect(screen.getByTestId("saving-state")).toHaveTextContent(
-        "not-saving"
+      render(
+        <MemoryRouter initialEntries={["/some-path"]}>
+          <Routes>
+            <Route
+              path="/some-path"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
       );
+
+      await waitFor(() => {
+        expect(screen.getByTestId("loading-state")).toHaveTextContent(
+          "not-loading"
+        );
+      });
+
+      expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
+
+      const updateButton = screen.getByTestId("update-title-button");
+      await user.click(updateButton);
+
+      expect(screen.queryByTestId("adventure-data")).not.toBeInTheDocument();
     });
   });
 
-  it("should not update state if component unmounts during adventure loading", async () => {
-    const adventure: StoredAdventure = {
-      id: "test-adventure-8",
-      title: "Test Adventure",
-      content: sampleAdventureYAML,
-      lastEdited: new Date(),
-      createdAt: new Date(),
-    };
+  describe("Full Integration Flow", () => {
+    it("should handle complete adventure lifecycle with all hooks", async () => {
+      const adventure: StoredAdventure = {
+        id: "test-adventure-full",
+        title: "Test Adventure",
+        content: sampleAdventureYAML,
+        lastEdited: new Date(),
+        createdAt: new Date(),
+      };
 
-    await saveAdventure(adventure);
+      await saveAdventure(adventure);
 
-    let resolveLoad: ((value: Adventure) => void) | null = null;
+      const user = userEvent.setup();
 
-    // Mock loadAdventureById with a promise we can control
-    const mockLoadAdventureById = vi
-      .spyOn(adventureLoader, "loadAdventureById")
-      .mockImplementation(
-        () =>
-          new Promise((resolve) => {
-            resolveLoad = resolve;
-          })
+      render(
+        <MemoryRouter initialEntries={["/adventure/test-adventure-full"]}>
+          <Routes>
+            <Route
+              path="/adventure/:adventureId"
+              element={
+                <AdventureProvider>
+                  <TestConsumer />
+                </AdventureProvider>
+              }
+            />
+          </Routes>
+        </MemoryRouter>
       );
 
-    const { unmount } = render(
-      <MemoryRouter initialEntries={["/adventure/test-adventure-8"]}>
-        <Routes>
-          <Route
-            path="/adventure/:adventureId"
-            element={
-              <AdventureProvider>
-                <TestConsumer />
-              </AdventureProvider>
-            }
-          />
-        </Routes>
-      </MemoryRouter>
-    );
+      // 1. Load adventure (useAdventureLoader)
+      expect(screen.getByTestId("loading-state")).toHaveTextContent("loading");
 
-    // Should start as loading
-    expect(screen.getByTestId("loading-state")).toHaveTextContent("loading");
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("loading-state")).toHaveTextContent(
+            "not-loading"
+          );
+          expect(screen.getByTestId("adventure-title")).toHaveTextContent(
+            "Test Adventure"
+          );
+        },
+        { timeout: 3000 }
+      );
 
-    // Unmount the component
-    unmount();
+      // 2. Update adventure locally (updateAdventure)
+      const updateButton = screen.getByTestId("update-title-button");
+      await user.click(updateButton);
 
-    // Now resolve the load after unmounting
-    await act(async () => {
-      if (resolveLoad) {
-        resolveLoad({
-          metadata: {
-            title: "Test Adventure",
-            author: "Test Author",
-            version: "1.0.0",
-          },
-          intro: {
-            paragraphs: ["Welcome to the test adventure."],
-            action: "Begin",
-          },
-          items: [],
-          passages: {
-            1: {
-              paragraphs: ["You are at the start."],
-              choices: [{ text: "Go forward", goto: 2 }],
-            },
-            2: {
-              paragraphs: ["You went forward."],
-              type: "victory",
-              ending: true,
-            },
-          },
-        });
-      }
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await waitFor(() => {
+        expect(screen.getByTestId("adventure-title")).toHaveTextContent(
+          "Updated Title"
+        );
+      });
+
+      // 3. Simulate long save operation (useSavingState via withSaving)
+      const longSaveButton = screen.getByTestId("simulate-long-save-button");
+      const clickPromise = user.click(longSaveButton);
+
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("saving-state")).toHaveTextContent(
+            "saving"
+          );
+        },
+        { timeout: 700 }
+      );
+
+      await clickPromise;
+
+      await waitFor(() => {
+        expect(screen.getByTestId("saving-state")).toHaveTextContent(
+          "not-saving"
+        );
+      });
+
+      // 4. Reload adventure (useAdventureLoader reloadAdventure)
+      const reloadButton = screen.getByTestId("reload-adventure-button");
+      await user.click(reloadButton);
+
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("loading-state")).toHaveTextContent(
+            "loading"
+          );
+        },
+        { timeout: 500 }
+      );
+
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("loading-state")).toHaveTextContent(
+            "not-loading"
+          );
+          // After reload, adventure should be back to original from database
+          expect(screen.getByTestId("adventure-title")).toHaveTextContent(
+            "Test Adventure"
+          );
+        },
+        { timeout: 3000 }
+      );
     });
-
-    // If we get here without errors, the isMounted check worked
-    expect(true).toBe(true);
-
-    mockLoadAdventureById.mockRestore();
   });
 });

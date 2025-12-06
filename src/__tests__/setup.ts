@@ -50,7 +50,9 @@ console.warn = (...args: unknown[]) => {
   originalConsoleWarn(...args);
 };
 
-// Clear localStorage before each test
-beforeEach(() => {
+// Clear localStorage and mocks before each test
+beforeEach(async () => {
   localStorage.clear();
+  // Note: IndexedDB is NOT cleared here to allow test setup to persist
+  // Individual test files should clear IndexedDB in their own beforeEach if needed
 });

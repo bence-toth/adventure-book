@@ -1,12 +1,9 @@
+import { beforeEach, describe, it, expect } from "vitest";
+import "fake-indexeddb/auto";
 import { screen } from "@testing-library/react";
 import { render } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider, Navigate } from "react-router-dom";
-import { beforeEach, describe, it, expect, vi } from "vitest";
-import { createMockAdventureLoader } from "./mockAdventureData";
-
-// Mock adventureLoader using the factory function
-vi.mock("@/data/adventureLoader", () => createMockAdventureLoader());
-
+import { setupTestAdventure } from "./mockAdventureData";
 import App, { AdventureLayout } from "../App";
 import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
 import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
@@ -82,8 +79,9 @@ const renderAppWithRoute = (initialRoute: string) => {
 };
 
 describe("App Component", () => {
-  beforeEach(() => {
-    // Tests now use mocked adventureLoader
+  beforeEach(async () => {
+    // Setup test adventure in IndexedDB
+    await setupTestAdventure(TEST_STORY_ID);
   });
 
   it("renders AdventureManager component on root path", async () => {
@@ -104,8 +102,9 @@ describe("App Component", () => {
     renderAppWithRoute(`/adventure/${TEST_STORY_ID}/test/passage/1`);
 
     // Should show passage content from the mock adventure
+    // Wait longer for adventure to load from IndexedDB
     expect(
-      await screen.findByText(/This is mock passage 1/)
+      await screen.findByText(/This is mock passage 1/, {}, { timeout: 3000 })
     ).toBeInTheDocument();
   });
 
@@ -121,8 +120,9 @@ describe("App Component", () => {
     renderAppWithRoute(`/adventure/${TEST_STORY_ID}/test/passage/2`);
 
     // Check for content from passage 2
+    // Wait longer for adventure to load from IndexedDB
     expect(
-      await screen.findByText(/This is mock passage 2/)
+      await screen.findByText(/This is mock passage 2/, {}, { timeout: 3000 })
     ).toBeInTheDocument();
   });
 });

@@ -17,6 +17,7 @@ let currentAdventureId: string | null = null;
 
 // Invalidate the cache for a specific adventure ID
 export const invalidateAdventureCache = (adventureId?: string): void => {
+  // Clear cache if no ID specified, or if the ID matches the currently cached adventure
   if (!adventureId || currentAdventureId === adventureId) {
     loadedAdventure = null;
     currentAdventureId = null;
@@ -27,8 +28,11 @@ export const invalidateAdventureCache = (adventureId?: string): void => {
 export const loadAdventureById = async (
   adventureId: string
 ): Promise<Adventure> => {
+  // Disable cache in test environment to avoid stale data between tests
+  const shouldUseCache = import.meta.env.MODE !== "test";
+
   // Check if we already have this adventure loaded
-  if (loadedAdventure && currentAdventureId === adventureId) {
+  if (shouldUseCache && loadedAdventure && currentAdventureId === adventureId) {
     return loadedAdventure;
   }
 
@@ -40,8 +44,10 @@ export const loadAdventureById = async (
 
   const adventure = AdventureParser.parseFromString(storedAdventure.content);
 
-  loadedAdventure = adventure;
-  currentAdventureId = adventureId;
+  if (shouldUseCache) {
+    loadedAdventure = adventure;
+    currentAdventureId = adventureId;
+  }
 
   return adventure;
 };

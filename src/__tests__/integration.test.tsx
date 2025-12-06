@@ -1,17 +1,14 @@
+import { describe, it, expect, beforeEach } from "vitest";
+import "fake-indexeddb/auto";
 import { screen, fireEvent } from "@testing-library/react";
 import { render } from "@testing-library/react";
 import { createMemoryRouter, RouterProvider, Navigate } from "react-router-dom";
-import { describe, it, expect, vi } from "vitest";
 import { INTRODUCTION_TEST_IDS } from "@/components/AdventureContent/testIds";
 import {
   PASSAGE_TEST_IDS,
   getChoiceButtonTestId,
 } from "@/components/AdventureContent/testIds";
-import { createMockAdventureLoader } from "./mockAdventureData";
-
-// Mock adventureLoader using the factory function
-vi.mock("@/data/adventureLoader", () => createMockAdventureLoader());
-
+import { setupTestAdventure } from "./mockAdventureData";
 import App, { AdventureLayout } from "../App";
 import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
 import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
@@ -21,6 +18,11 @@ import { ROUTES } from "@/constants/routes";
 const TEST_STORY_ID = "test-adventure-id";
 
 describe("Adventure Book Integration Tests", () => {
+  beforeEach(async () => {
+    // Setup test adventure in IndexedDB
+    await setupTestAdventure(TEST_STORY_ID);
+  });
+
   const renderApp = (initialRoute = "/") => {
     const router = createMemoryRouter(
       [
@@ -88,8 +90,12 @@ describe("Adventure Book Integration Tests", () => {
   it("completes a full adventure flow", async () => {
     renderApp(`/adventure/${TEST_STORY_ID}/test`);
 
-    // Start at introduction
-    const title = await screen.findByTestId(INTRODUCTION_TEST_IDS.TITLE);
+    // Start at introduction - wait for adventure to load from IndexedDB
+    const title = await screen.findByTestId(
+      INTRODUCTION_TEST_IDS.TITLE,
+      {},
+      { timeout: 3000 }
+    );
     expect(title).toBeInTheDocument();
     expect(title).toHaveTextContent("Mock Test Adventure");
 
@@ -124,9 +130,11 @@ describe("Adventure Book Integration Tests", () => {
 
     renderApp(`/adventure/${TEST_STORY_ID}/test/passage/999`);
 
-    // Should show error for non-existent passage
+    // Should show error for non-existent passage - wait for adventure to load
     const errorMessages = await screen.findAllByText(
-      /Passage #999 does not exist/
+      /Passage #999 does not exist/,
+      {},
+      { timeout: 3000 }
     );
     expect(errorMessages.length).toBeGreaterThan(0);
 
@@ -137,9 +145,9 @@ describe("Adventure Book Integration Tests", () => {
   it("navigates through different adventure paths", async () => {
     renderApp(`/adventure/${TEST_STORY_ID}/test/passage/1`);
 
-    // Start at passage 1
+    // Start at passage 1 - wait for adventure to load from IndexedDB
     expect(
-      await screen.findByText(/This is mock passage 1/)
+      await screen.findByText(/This is mock passage 1/, {}, { timeout: 3000 })
     ).toBeInTheDocument();
 
     // Click second choice to go to passage 3
@@ -155,9 +163,13 @@ describe("Adventure Book Integration Tests", () => {
   it("handles the ending passage correctly", async () => {
     renderApp(`/adventure/${TEST_STORY_ID}/test/passage/4`);
 
-    // Should show ending passage
+    // Should show ending passage - wait for adventure to load
     expect(
-      await screen.findByText(/This is the mock ending passage/)
+      await screen.findByText(
+        /This is the mock ending passage/,
+        {},
+        { timeout: 3000 }
+      )
     ).toBeInTheDocument();
     expect(await screen.findByText(/Congratulations/)).toBeInTheDocument();
 
