@@ -12,7 +12,6 @@ interface EffectListProps {
   effects: EffectData[];
   effectsError?: string;
   itemOptions: Array<{ value: string; label: string }>;
-  effectRefs: React.MutableRefObject<(HTMLSelectElement | null)[]>;
   onAddEffect: () => void;
   onRemoveEffect: (index: number) => void;
   onEffectTypeChange: (index: number, value: string) => void;
@@ -23,7 +22,6 @@ export const EffectList = ({
   effects,
   effectsError,
   itemOptions,
-  effectRefs,
   onAddEffect,
   onRemoveEffect,
   onEffectTypeChange,
@@ -42,9 +40,6 @@ export const EffectList = ({
           onTypeChange={onEffectTypeChange}
           onItemChange={onEffectItemChange}
           onRemove={onRemoveEffect}
-          effectRef={(el) => {
-            effectRefs.current[index] = el;
-          }}
         />
       ))}
       <AddButton

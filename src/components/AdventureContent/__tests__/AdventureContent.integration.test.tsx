@@ -219,10 +219,14 @@ describe("AdventureContent Integration", () => {
       const typeSelect = await screen.findByTestId("passage-type-select");
 
       // Should start as regular
-      expect(typeSelect).toHaveValue("regular");
+      expect(typeSelect).toHaveTextContent("Regular");
 
       // Change to ending
-      fireEvent.change(typeSelect, { target: { value: "ending" } });
+      fireEvent.click(typeSelect);
+      const endingOption = await screen.findByTestId(
+        "passage-type-select-option-ending"
+      );
+      fireEvent.click(endingOption);
 
       // Ending type select should appear
       const endingTypeSelect = await screen.findByTestId("ending-type-select");
@@ -240,14 +244,22 @@ describe("AdventureContent Integration", () => {
       const typeSelect = await screen.findByTestId("passage-type-select");
 
       // Change to ending
-      fireEvent.change(typeSelect, { target: { value: "ending" } });
+      fireEvent.click(typeSelect);
+      const endingOption = await screen.findByTestId(
+        "passage-type-select-option-ending"
+      );
+      fireEvent.click(endingOption);
 
       const endingTypeSelect = await screen.findByTestId("ending-type-select");
 
       // Select victory ending
-      fireEvent.change(endingTypeSelect, { target: { value: "victory" } });
+      fireEvent.click(endingTypeSelect);
+      const victoryOption = await screen.findByTestId(
+        "ending-type-select-option-victory"
+      );
+      fireEvent.click(victoryOption);
 
-      expect(endingTypeSelect).toHaveValue("victory");
+      expect(endingTypeSelect).toHaveTextContent("Victory");
     });
 
     it("displays passage type correctly for existing ending passages", async () => {
@@ -259,10 +271,10 @@ describe("AdventureContent Integration", () => {
       });
 
       const typeSelect = await screen.findByTestId("passage-type-select");
-      expect(typeSelect).toHaveValue("ending");
+      expect(typeSelect).toHaveTextContent("Ending");
 
       const endingTypeSelect = await screen.findByTestId("ending-type-select");
-      expect(endingTypeSelect).toHaveValue("victory");
+      expect(endingTypeSelect).toHaveTextContent("Victory");
     });
   });
 

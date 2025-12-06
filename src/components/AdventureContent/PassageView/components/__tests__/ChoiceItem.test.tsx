@@ -30,7 +30,8 @@ describe("ChoiceItem", () => {
     );
 
     expect(screen.getByTestId("choice-text-0")).toHaveValue("Test choice");
-    expect(screen.getByTestId("choice-goto-0")).toHaveValue("2");
+    // Custom Select shows selected option text in button
+    expect(screen.getByTestId("choice-goto-0")).toHaveTextContent("Passage 2");
   });
 
   it("renders with empty values", () => {
@@ -48,7 +49,10 @@ describe("ChoiceItem", () => {
     );
 
     expect(screen.getByTestId("choice-text-1")).toHaveValue("");
-    expect(screen.getByTestId("choice-goto-1")).toHaveValue("");
+    // Custom Select shows placeholder when no value selected
+    expect(screen.getByTestId("choice-goto-1")).toHaveTextContent(
+      "Select passage"
+    );
   });
 
   it("calls onTextChange when text input changes", () => {
@@ -71,7 +75,7 @@ describe("ChoiceItem", () => {
     expect(mockOnTextChange).toHaveBeenCalledWith(0, "Updated choice");
   });
 
-  it("calls onGotoChange when goto select changes", () => {
+  it("calls onGotoChange when goto select changes", async () => {
     const choice: ChoiceData = { text: "Test choice", goto: 2 };
 
     renderWithAdventure(
@@ -86,7 +90,11 @@ describe("ChoiceItem", () => {
     );
 
     const gotoSelect = screen.getByTestId("choice-goto-0");
-    fireEvent.change(gotoSelect, { target: { value: "3" } });
+    fireEvent.click(gotoSelect);
+
+    // Wait for dropdown to open and click option
+    const option = await screen.findByTestId("choice-goto-0-option-3");
+    fireEvent.click(option);
 
     expect(mockOnGotoChange).toHaveBeenCalledWith(0, "3");
   });

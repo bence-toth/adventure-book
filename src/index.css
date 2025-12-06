@@ -213,6 +213,7 @@ h6 {
   /* Border variables */
   --border-width-surface: 1px;
   --border-width-interactive: 2px;
+  --border-width-interactive-hairline: 1px;
 
   /* Element sizing variables */
   --size-top-bar: calc(var(--space-base) * 10);

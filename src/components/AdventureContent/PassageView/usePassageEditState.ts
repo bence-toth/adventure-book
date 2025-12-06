@@ -55,9 +55,7 @@ export const usePassageEditState = ({ passage }: UsePassageEditStateProps) => {
 
   // Refs for auto-focusing newly added items
   const choiceRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const effectRefs = useRef<(HTMLSelectElement | null)[]>([]);
   const shouldFocusChoice = useRef<number | null>(null);
-  const shouldFocusEffect = useRef<number | null>(null);
 
   // Refs for preserving state when switching between regular and ending passages
   const savedChoices = useRef<ChoiceData[]>([]);
@@ -72,15 +70,6 @@ export const usePassageEditState = ({ passage }: UsePassageEditStateProps) => {
       shouldFocusChoice.current = null;
     }
   }, [choices]);
-
-  // Auto-focus newly added effect
-  useEffect(() => {
-    if (shouldFocusEffect.current !== null) {
-      const index = shouldFocusEffect.current;
-      effectRefs.current[index]?.focus();
-      shouldFocusEffect.current = null;
-    }
-  }, [effects]);
 
   // Check if any changes have been made
   const hasChanges = useMemo(() => {
@@ -186,9 +175,7 @@ export const usePassageEditState = ({ passage }: UsePassageEditStateProps) => {
   };
 
   const handleAddEffect = () => {
-    const newIndex = effects.length;
     setEffects([...effects, { type: "", item: "" }]);
-    shouldFocusEffect.current = newIndex;
     if (effectsError) setEffectsError(undefined);
   };
 
@@ -306,7 +293,6 @@ export const usePassageEditState = ({ passage }: UsePassageEditStateProps) => {
     hasChanges,
     // Refs
     choiceRefs,
-    effectRefs,
     // Handlers
     handleTextChange,
     handleNotesChange,

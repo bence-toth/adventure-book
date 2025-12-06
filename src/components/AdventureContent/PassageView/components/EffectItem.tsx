@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { Trash2, PackagePlus, PackageMinus } from "lucide-react";
 import { Select } from "@/components/common/Select/Select";
 import type { EffectData } from "../usePassageEditState";
 import { EffectRow, EffectControls, RemoveButton } from "./EffectItem.styles";
@@ -10,7 +10,6 @@ interface EffectItemProps {
   onTypeChange: (index: number, value: string) => void;
   onItemChange: (index: number, value: string) => void;
   onRemove: (index: number) => void;
-  effectRef?: (el: HTMLSelectElement | null) => void;
 }
 
 export const EffectItem = ({
@@ -20,27 +19,27 @@ export const EffectItem = ({
   onTypeChange,
   onItemChange,
   onRemove,
-  effectRef,
 }: EffectItemProps) => {
   return (
     <EffectRow>
       <EffectControls>
         <Select
-          ref={effectRef}
           id={`effect-type-${index}`}
           label="Effect type"
           options={[
             {
               value: "add_item",
               label: "Add item to inventory",
+              icon: PackagePlus,
             },
             {
               value: "remove_item",
               label: "Remove item from inventory",
+              icon: PackageMinus,
             },
           ]}
           value={effect.type}
-          onChange={(e) => onTypeChange(index, e.target.value)}
+          onChange={(value) => onTypeChange(index, value)}
           placeholder="Select effect type"
           error={effect.error}
           data-testid={`effect-type-${index}`}
@@ -50,7 +49,7 @@ export const EffectItem = ({
           label="Item"
           options={itemOptions}
           value={effect.item}
-          onChange={(e) => onItemChange(index, e.target.value)}
+          onChange={(value) => onItemChange(index, value)}
           placeholder="Select item"
           data-testid={`effect-item-${index}`}
         />

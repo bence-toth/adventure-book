@@ -115,7 +115,7 @@ describe("ChoiceList", () => {
     expect(mockOnAddChoice).toHaveBeenCalledTimes(1);
   });
 
-  it("passes handlers to ChoiceItem components", () => {
+  it("passes handlers to ChoiceItem components", async () => {
     const choices: ChoiceData[] = [{ text: "Choice 1", goto: 2 }];
 
     renderWithAdventure(
@@ -135,9 +135,11 @@ describe("ChoiceList", () => {
     fireEvent.change(textInput, { target: { value: "Updated" } });
     expect(mockOnChoiceTextChange).toHaveBeenCalledWith(0, "Updated");
 
-    // Test goto change
+    // Test goto change - click dropdown and select option
     const gotoSelect = screen.getByTestId("choice-goto-0");
-    fireEvent.change(gotoSelect, { target: { value: "3" } });
+    fireEvent.click(gotoSelect);
+    const option = await screen.findByTestId("choice-goto-0-option-3");
+    fireEvent.click(option);
     expect(mockOnChoiceGotoChange).toHaveBeenCalledWith(0, "3");
 
     // Test remove
