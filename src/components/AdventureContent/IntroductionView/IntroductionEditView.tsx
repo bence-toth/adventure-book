@@ -14,6 +14,7 @@ import {
   EditContainer,
   EditFooter,
   FormSection,
+  PageTitle,
 } from "./IntroductionEditView.styles";
 
 interface IntroductionEditViewProps {
@@ -82,6 +83,7 @@ export const IntroductionEditView = ({
     <EditViewLayout>
       <EditScrollableContent>
         <ContentWrapper>
+          <PageTitle>Introduction</PageTitle>
           <EditContainer>
             <FormSection>
               <Input

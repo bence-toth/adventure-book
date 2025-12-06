@@ -10,6 +10,7 @@ import {
   ContentWrapper,
   EditContainer,
   FormSection,
+  PageTitle,
 } from "./PassageEditView.styles";
 import { usePassageEditState } from "./usePassageEditState";
 import { usePassageSaveActions } from "./usePassageSaveActions";
@@ -78,6 +79,7 @@ export const PassageEditView = ({
     <EditViewLayout>
       <EditScrollableContent>
         <ContentWrapper>
+          <PageTitle>Passage {passageId}</PageTitle>
           <EditContainer>
             <FormSection>
               <Textarea

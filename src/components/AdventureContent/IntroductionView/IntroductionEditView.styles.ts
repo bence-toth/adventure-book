@@ -22,6 +22,15 @@ export const ContentWrapper = styled.div`
   max-width: var(--size-content);
 `;
 
+export const PageTitle = styled.h1`
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: ${getColor({ type: "foreground", variant: "neutral" })};
+  padding-inline: var(--space-3);
+  padding-block-start: var(--space-3);
+  padding-block-end: var(--space-1);
+`;
+
 export const EditContainer = styled.div`
   display: flex;
   flex-direction: column;
