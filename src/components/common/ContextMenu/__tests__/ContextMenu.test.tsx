@@ -145,7 +145,7 @@ describe("ContextMenu Component", () => {
 
       const item = screen.getByText("Default Item");
       expect(item).toBeInTheDocument();
-      expect(item).toHaveAttribute("data-testid", "context-menu-item");
+      expect(item).toHaveAttribute("data-testid", "context-menu-option-0");
 
       document.body.removeChild(triggerElement);
     });
@@ -168,7 +168,7 @@ describe("ContextMenu Component", () => {
 
       const item = screen.getByText("Delete");
       expect(item).toBeInTheDocument();
-      expect(item).toHaveAttribute("data-testid", "context-menu-item");
+      expect(item).toHaveAttribute("data-testid", "context-menu-option-0");
 
       document.body.removeChild(triggerElement);
     });
@@ -191,7 +191,7 @@ describe("ContextMenu Component", () => {
 
       const item = screen.getByText("Normal Item");
       expect(item).toBeInTheDocument();
-      expect(item).toHaveAttribute("data-testid", "context-menu-item");
+      expect(item).toHaveAttribute("data-testid", "context-menu-option-0");
 
       document.body.removeChild(triggerElement);
     });
@@ -305,7 +305,8 @@ describe("ContextMenu Component", () => {
       );
 
       const item = screen.getByText("Accessible Item");
-      expect(item.tagName).toBe("BUTTON");
+      expect(item.tagName).toBe("DIV");
+      expect(item).toHaveAttribute("role", "option");
 
       document.body.removeChild(triggerElement);
     });

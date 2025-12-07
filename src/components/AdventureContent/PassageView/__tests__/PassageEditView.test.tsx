@@ -1,4 +1,5 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { PassageEditView } from "../PassageEditView";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
@@ -308,6 +309,7 @@ describe("PassageEditView Integration", () => {
     });
 
     it("handles ending passage workflow through all components", async () => {
+      const user = userEvent.setup();
       const passage: Passage = {
         paragraphs: ["Ending text"],
         choices: [{ text: "Should disappear", goto: 2 }],
@@ -317,37 +319,49 @@ describe("PassageEditView Integration", () => {
 
       // Switch to ending using the select dropdown
       const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.click(passageTypeSelect);
+      await user.click(passageTypeSelect);
       const endingOption = await screen.findByTestId(
         "passage-type-select-option-ending"
       );
-      fireEvent.click(endingOption);
+      await user.click(endingOption);
 
       // Verify choices are hidden
       expect(screen.queryByTestId("choice-text-0")).not.toBeInTheDocument();
 
       // Set ending type
       const endingTypeSelect = screen.getByTestId("ending-type-select");
-      fireEvent.click(endingTypeSelect);
+      await user.click(endingTypeSelect);
+
       const victoryOption = await screen.findByTestId(
         "ending-type-select-option-victory"
       );
-      fireEvent.click(victoryOption);
+      await user.click(victoryOption);
+
+      // Wait for dropdown to close
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("ending-type-select-option-victory")
+        ).not.toBeInTheDocument();
+      });
 
       // Save
       const saveButton = screen.getByTestId("save-button");
-      fireEvent.click(saveButton);
+      await user.click(saveButton);
 
-      await waitFor(() => {
-        expect(mockUpdatePassage).toHaveBeenCalledWith(
-          1,
-          expect.objectContaining({
-            ending: true,
-            type: "victory",
-            paragraphs: ["Ending text"],
-          })
-        );
-      });
+      // Verify the passage was saved with the correct ending type
+      await waitFor(
+        () => {
+          expect(mockUpdatePassage).toHaveBeenCalledWith(
+            1,
+            expect.objectContaining({
+              ending: true,
+              type: "victory",
+              paragraphs: ["Ending text"],
+            })
+          );
+        },
+        { timeout: 2000 }
+      );
     });
   });
 
