@@ -24,7 +24,7 @@ export const mockPassages: Record<number, Passage> = {
     choices: [
       { text: "Go to mock passage 2", goto: 2 },
       { text: "Go to mock passage 3", goto: 3 },
-      { text: "Return to start", goto: 1 },
+      { text: "Continue to ending", goto: 4 },
     ],
   },
   2: {
@@ -118,8 +118,8 @@ passages:
         goto: 2
       - text: "Go to mock passage 3"
         goto: 3
-      - text: "Return to start"
-        goto: 1
+      - text: "Continue to ending"
+        goto: 4
   2:
     notes: "Second passage demonstrating first choice path."
     text: |

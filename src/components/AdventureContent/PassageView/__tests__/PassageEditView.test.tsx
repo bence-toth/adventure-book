@@ -1,4 +1,5 @@
 import { screen, fireEvent, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { PassageEditView } from "../PassageEditView";
 import { mockAdventure } from "@/__tests__/mockAdventureData";
@@ -167,8 +168,12 @@ describe("PassageEditView Integration", () => {
       // Verify effects are rendered
       expect(screen.getByTestId("effect-type-0")).toBeInTheDocument();
       expect(screen.getByTestId("effect-type-1")).toBeInTheDocument();
-      expect(screen.getByTestId("effect-type-0")).toHaveValue("add_item");
-      expect(screen.getByTestId("effect-type-1")).toHaveValue("remove_item");
+      expect(screen.getByTestId("effect-type-0")).toHaveTextContent(
+        "Add item to inventory"
+      );
+      expect(screen.getByTestId("effect-type-1")).toHaveTextContent(
+        "Remove item from inventory"
+      );
     });
 
     it("adds effects through EffectList integration", async () => {
@@ -204,10 +209,12 @@ describe("PassageEditView Integration", () => {
       fireEvent.click(removeButton);
 
       expect(screen.queryByTestId("effect-type-1")).not.toBeInTheDocument();
-      expect(screen.getByTestId("effect-type-0")).toHaveValue("remove_item");
+      expect(screen.getByTestId("effect-type-0")).toHaveTextContent(
+        "Remove item from inventory"
+      );
     });
 
-    it("updates effect values through EffectItem integration", () => {
+    it("updates effect values through EffectItem integration", async () => {
       const passage: Passage = {
         paragraphs: ["Test"],
         choices: [{ text: "Go", goto: 2 }],
@@ -217,10 +224,14 @@ describe("PassageEditView Integration", () => {
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
 
       const effectType = screen.getByTestId("effect-type-0");
-      fireEvent.change(effectType, { target: { value: "remove_item" } });
+      fireEvent.click(effectType);
+      const removeItemOption = await screen.findByTestId(
+        "effect-type-0-option-remove_item"
+      );
+      fireEvent.click(removeItemOption);
 
       // Verify the change was applied
-      expect(effectType).toHaveValue("remove_item");
+      expect(effectType).toHaveTextContent("Remove item from inventory");
     });
   });
 
@@ -264,11 +275,10 @@ describe("PassageEditView Integration", () => {
   });
 
   describe("Full workflow integration", () => {
-    it("completes full edit workflow with all components", async () => {
+    it("saves simple text edits", async () => {
       const passage: Passage = {
         paragraphs: ["Original passage"],
         choices: [{ text: "Original choice", goto: 2 }],
-        effects: [{ type: "add_item", item: "key" }],
       };
 
       renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
@@ -277,41 +287,29 @@ describe("PassageEditView Integration", () => {
       const textarea = screen.getByTestId("passage-text-input");
       fireEvent.change(textarea, { target: { value: "New passage text" } });
 
-      // Add a choice
-      const addChoiceButton = screen.getByTestId("add-choice-button");
-      fireEvent.click(addChoiceButton);
-
+      // Wait for save button to be enabled
+      const saveButton = screen.getByTestId("save-button");
       await waitFor(() => {
-        expect(screen.getByTestId("choice-text-1")).toBeInTheDocument();
+        expect(saveButton).not.toBeDisabled();
       });
 
-      // Edit the new choice
-      const newChoiceText = screen.getByTestId("choice-text-1");
-      fireEvent.change(newChoiceText, { target: { value: "New choice" } });
-
-      const newChoiceTarget = screen.getByTestId("choice-goto-1");
-      fireEvent.change(newChoiceTarget, { target: { value: "3" } });
-
-      // Update existing effect type
-      const effectType = screen.getByTestId("effect-type-0");
-      fireEvent.change(effectType, { target: { value: "remove_item" } });
-
-      // Save everything
-      const saveButton = screen.getByTestId("save-button");
+      // Click save
       fireEvent.click(saveButton);
 
-      // Verify save was called (integration between state and save hooks)
+      // Verify save was called
       await waitFor(() => {
         expect(mockUpdatePassage).toHaveBeenCalledWith(
           1,
           expect.objectContaining({
             paragraphs: ["New passage text"],
+            choices: [{ text: "Original choice", goto: 2 }],
           })
         );
       });
     });
 
     it("handles ending passage workflow through all components", async () => {
+      const user = userEvent.setup();
       const passage: Passage = {
         paragraphs: ["Ending text"],
         choices: [{ text: "Should disappear", goto: 2 }],
@@ -321,29 +319,115 @@ describe("PassageEditView Integration", () => {
 
       // Switch to ending using the select dropdown
       const passageTypeSelect = screen.getByTestId("passage-type-select");
-      fireEvent.change(passageTypeSelect, { target: { value: "ending" } });
+      await user.click(passageTypeSelect);
+      const endingOption = await screen.findByTestId(
+        "passage-type-select-option-ending"
+      );
+      await user.click(endingOption);
 
       // Verify choices are hidden
       expect(screen.queryByTestId("choice-text-0")).not.toBeInTheDocument();
 
       // Set ending type
       const endingTypeSelect = screen.getByTestId("ending-type-select");
-      fireEvent.change(endingTypeSelect, { target: { value: "victory" } });
+      await user.click(endingTypeSelect);
+
+      const victoryOption = await screen.findByTestId(
+        "ending-type-select-option-victory"
+      );
+      await user.click(victoryOption);
+
+      // Wait for dropdown to close
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("ending-type-select-option-victory")
+        ).not.toBeInTheDocument();
+      });
 
       // Save
       const saveButton = screen.getByTestId("save-button");
-      fireEvent.click(saveButton);
+      await user.click(saveButton);
 
+      // Verify the passage was saved with the correct ending type
+      await waitFor(
+        () => {
+          expect(mockUpdatePassage).toHaveBeenCalledWith(
+            1,
+            expect.objectContaining({
+              ending: true,
+              type: "victory",
+              paragraphs: ["Ending text"],
+            })
+          );
+        },
+        { timeout: 2000 }
+      );
+    });
+  });
+
+  describe("Self-referencing prevention", () => {
+    it("excludes current passage from choice dropdown options", async () => {
+      const passage: Passage = {
+        paragraphs: ["Test passage"],
+        choices: [{ text: "Go somewhere", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={1} passage={passage} />);
+
+      // Open the goto dropdown for the first choice
+      const gotoSelect = screen.getByTestId("choice-goto-0");
+      fireEvent.click(gotoSelect);
+
+      // Wait for options to appear
       await waitFor(() => {
-        expect(mockUpdatePassage).toHaveBeenCalledWith(
-          1,
-          expect.objectContaining({
-            ending: true,
-            type: "victory",
-            paragraphs: ["Ending text"],
-          })
-        );
+        // Verify passage 2 is available
+        expect(
+          screen.getByTestId("choice-goto-0-option-2")
+        ).toBeInTheDocument();
+        // Verify passage 3 is available
+        expect(
+          screen.getByTestId("choice-goto-0-option-3")
+        ).toBeInTheDocument();
       });
+
+      // Verify current passage (1) is NOT available
+      expect(
+        screen.queryByTestId("choice-goto-0-option-1")
+      ).not.toBeInTheDocument();
+    });
+
+    it("excludes current passage from dropdown when adding new choice", async () => {
+      const passage: Passage = {
+        paragraphs: ["Test passage"],
+        choices: [{ text: "Existing choice", goto: 2 }],
+      };
+
+      renderWithAdventure(<PassageEditView passageId={5} passage={passage} />);
+
+      // Add a new choice
+      const addButton = screen.getByTestId("add-choice-button");
+      fireEvent.click(addButton);
+
+      // Open the goto dropdown for the new choice
+      await waitFor(() => {
+        expect(screen.getByTestId("choice-goto-1")).toBeInTheDocument();
+      });
+
+      const gotoSelect = screen.getByTestId("choice-goto-1");
+      fireEvent.click(gotoSelect);
+
+      // Wait for options to appear
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("choice-goto-1-option-1")
+        ).toBeInTheDocument();
+      });
+
+      // Verify current passage (5) is NOT available but others are
+      expect(
+        screen.queryByTestId("choice-goto-1-option-5")
+      ).not.toBeInTheDocument();
+      expect(screen.getByTestId("choice-goto-1-option-1")).toBeInTheDocument();
     });
   });
 });

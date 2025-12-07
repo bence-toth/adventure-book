@@ -1,26 +1,24 @@
 import type { ReactNode, ComponentType } from "react";
-import { createElement, useEffect } from "react";
-import {
-  useFloating,
-  autoUpdate,
-  offset,
-  flip,
-  shift,
-  useClick,
-  useDismiss,
-  useRole,
-  useInteractions,
-  FloatingFocusManager,
-  type Placement,
-} from "@floating-ui/react";
-import { MenuContainer, MenuItem, MenuItemIcon } from "./ContextMenu.styles";
+import { useRef, useState } from "react";
+import { Dropdown } from "@/components/common/Dropdown/Dropdown";
+import { useMenuItems } from "./useMenuItems";
+import { useMenuSelection } from "./useMenuSelection";
+import { useMenuKeyboardNavigation } from "./useMenuKeyboardNavigation";
 
 interface ContextMenuProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   triggerRef: HTMLElement | null;
   children: ReactNode;
-  placement?: Placement;
+  placement?:
+    | "top-start"
+    | "top-end"
+    | "bottom-start"
+    | "bottom-end"
+    | "left-start"
+    | "left-end"
+    | "right-start"
+    | "right-end";
   "data-testid"?: string;
 }
 
@@ -32,47 +30,35 @@ export const ContextMenu = ({
   placement = "bottom-start",
   "data-testid": dataTestId,
 }: ContextMenuProps) => {
-  const { refs, floatingStyles, context } = useFloating({
-    open: isOpen,
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const listRef = useRef<Array<HTMLElement | null>>([]);
+
+  const { menuItems, dropdownOptions } = useMenuItems(children);
+  const { handleSelect } = useMenuSelection(menuItems);
+  const { handleKeyDown } = useMenuKeyboardNavigation({
+    activeIndex,
+    menuItems,
+    handleSelect,
     onOpenChange,
-    middleware: [offset(4), flip(), shift({ padding: 8 })],
-    whileElementsMounted: autoUpdate,
-    placement,
+    setActiveIndex,
   });
 
-  const click = useClick(context);
-  const dismiss = useDismiss(context);
-  const role = useRole(context);
-
-  const { getFloatingProps } = useInteractions([click, dismiss, role]);
-
-  // Sync the floating-ui reference element when the trigger element changes.
-  // floating-ui needs to know which element to position the menu relative to, but the
-  // trigger element may not be available during initial render (parent state) or may change.
-  // This updates floating-ui's internal reference to the trigger element by calling
-  // refs.setReference whenever triggerRef changes, allowing the menu to position
-  // itself correctly relative to the current trigger element.
-  useEffect(() => {
-    if (triggerRef) {
-      refs.setReference(triggerRef);
-    }
-  }, [triggerRef, refs]);
-
-  if (!isOpen) return null;
-
   return (
-    <FloatingFocusManager context={context} modal={false}>
-      <MenuContainer
-        // Callback ref to set the floating element, safe to use in render
-        // eslint-disable-next-line react-hooks/refs
-        ref={refs.setFloating}
-        style={floatingStyles}
-        data-testid={dataTestId || "context-menu"}
-        {...getFloatingProps()}
-      >
-        {children}
-      </MenuContainer>
-    </FloatingFocusManager>
+    <Dropdown
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      triggerRef={triggerRef}
+      options={dropdownOptions}
+      onSelect={handleSelect}
+      placement={placement}
+      shouldMatchTriggerWidth={false}
+      role="menu"
+      activeIndex={activeIndex}
+      onActiveIndexChange={setActiveIndex}
+      listRef={listRef}
+      onKeyDown={handleKeyDown}
+      data-testid={dataTestId || "context-menu"}
+    />
   );
 };
 
@@ -84,29 +70,9 @@ interface ContextMenuItemProps {
   "data-testid"?: string;
 }
 
-export const ContextMenuItem = ({
-  onClick,
-  children,
-  variant = "default",
-  icon,
-  "data-testid": dataTestId,
-}: ContextMenuItemProps) => {
-  const iconElement = icon
-    ? createElement(icon, {
-        size: 16,
-        strokeWidth: 2,
-        "aria-hidden": true,
-      })
-    : null;
-
-  return (
-    <MenuItem
-      $variant={variant}
-      onClick={onClick}
-      data-testid={dataTestId || "context-menu-item"}
-    >
-      {iconElement && <MenuItemIcon>{iconElement}</MenuItemIcon>}
-      {children}
-    </MenuItem>
-  );
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const ContextMenuItem = (_props: ContextMenuItemProps) => {
+  // This component is just a marker for extracting menu items from children
+  // It doesn't render anything directly
+  return null;
 };

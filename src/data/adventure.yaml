@@ -147,7 +147,7 @@ passages:
         goto: 5
 
   11:
-    notes: "Recursion trap - demonstrates unbounded recursion. Removes lambda_scroll if player has it. Can lead to infinite loop."
+    notes: "First recursion passage - demonstrates unbounded recursion. Removes lambda_scroll if player has it. Leads to circular recursion loop."
     text: |
       You embrace the recursion and find yourself in an infinite loop of discovery. Each iteration reveals new patterns — the Tower of Hanoi unfolds its ancient puzzle, fractals bloom with self-similar beauty.
 
@@ -161,7 +161,7 @@ passages:
       - text: "Find the base case and return"
         goto: 6
       - text: "Continue recursing (dangerous!)"
-        goto: 11
+        goto: 16
 
   12:
     text: |
@@ -208,3 +208,17 @@ passages:
       You stand now as a true code adventurer, ready for whatever challenges await in the vast universe of programming. The algorithms bow to your understanding, the data structures align themselves for your inspection, and the functions eagerly await your commands.
     ending: true
     type: "victory"
+
+  16:
+    notes: "Second recursion passage - continues the unbounded recursion loop. Forms circular reference with passage 11."
+    text: |
+      Deeper and deeper you descend into the recursive abyss. The patterns repeat endlessly, each call spawning another, each layer mirroring the one before. The stack grows precariously tall, threatening to collapse under its own weight.
+
+      You see the mathematical beauty in the repetition — each recursive call is elegant in isolation, but together they form a dangerous spiral. The base case remains elusive, always just one more call away.
+
+      The recursive patterns swirl around you hypnotically. You must decide whether to break free or continue the descent into computational infinity.
+    choices:
+      - text: "Break the cycle and return"
+        goto: 6
+      - text: "Dive deeper into recursion"
+        goto: 11

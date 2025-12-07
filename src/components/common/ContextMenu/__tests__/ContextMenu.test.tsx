@@ -1,60 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import { useState } from "react";
 import { ContextMenu, ContextMenuItem } from "../ContextMenu";
 
-describe("ContextMenu Component", () => {
-  describe("Visibility", () => {
-    it("renders when open is true", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()}>Test Item</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.getByText("Test Item")).toBeInTheDocument();
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("does not render when open is false", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={false}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()}>Test Item</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.queryByText("Test Item")).not.toBeInTheDocument();
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("handles null triggerRef gracefully", () => {
-      render(
-        <ContextMenu isOpen={true} onOpenChange={vi.fn()} triggerRef={null}>
-          <ContextMenuItem onClick={vi.fn()}>Test Item</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.getByText("Test Item")).toBeInTheDocument();
-    });
-  });
-
-  describe("Menu Items", () => {
-    it("renders multiple menu items", () => {
+describe("ContextMenu Component - Integration", () => {
+  describe("Integration with useMenuItems Hook", () => {
+    it("renders multiple menu items using useMenuItems hook", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -77,7 +28,53 @@ describe("ContextMenu Component", () => {
       document.body.removeChild(triggerElement);
     });
 
-    it("calls onClick handler when menu item is clicked", () => {
+    it("passes variants correctly through to Dropdown", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={vi.fn()} variant="danger">
+            Delete
+          </ContextMenuItem>
+        </ContextMenu>
+      );
+
+      const item = screen.getByText("Delete");
+      expect(item).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+
+    it("passes icons correctly through to Dropdown", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+      const TestIcon = () => <svg data-testid="test-icon" />;
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={vi.fn()} icon={TestIcon}>
+            Item with Icon
+          </ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.getByTestId("test-icon")).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+  });
+
+  describe("Integration with useMenuSelection Hook", () => {
+    it("triggers onClick handler when menu item is clicked", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
       const handleClick = vi.fn();
@@ -99,7 +96,7 @@ describe("ContextMenu Component", () => {
       document.body.removeChild(triggerElement);
     });
 
-    it("calls onClick for the correct item when multiple items exist", () => {
+    it("triggers correct onClick handler for multiple items", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
       const handleClick1 = vi.fn();
@@ -128,266 +125,75 @@ describe("ContextMenu Component", () => {
     });
   });
 
-  describe("ContextMenuItem Variants", () => {
-    it("renders with default variant by default", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()}>Default Item</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      const item = screen.getByText("Default Item");
-      expect(item).toBeInTheDocument();
-      expect(item).toHaveAttribute("data-testid", "context-menu-item");
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("renders with danger variant when specified", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()} variant="danger">
-            Delete
-          </ContextMenuItem>
-        </ContextMenu>
-      );
-
-      const item = screen.getByText("Delete");
-      expect(item).toBeInTheDocument();
-      expect(item).toHaveAttribute("data-testid", "context-menu-item");
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("renders with default variant when explicitly specified", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()} variant="default">
-            Normal Item
-          </ContextMenuItem>
-        </ContextMenu>
-      );
-
-      const item = screen.getByText("Normal Item");
-      expect(item).toBeInTheDocument();
-      expect(item).toHaveAttribute("data-testid", "context-menu-item");
-
-      document.body.removeChild(triggerElement);
-    });
-  });
-
-  describe("Component Structure", () => {
-    it("renders context menu container", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()}>Item</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.getByTestId("context-menu")).toBeInTheDocument();
-
-      document.body.removeChild(triggerElement);
-    });
-  });
-
-  describe("Menu Items with Icons", () => {
-    it("renders menu item with icon", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-      const TestIcon = () => <svg data-testid="test-icon" />;
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()} icon={TestIcon}>
-            Item with Icon
-          </ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.getByText("Item with Icon")).toBeInTheDocument();
-      expect(screen.getByTestId("test-icon")).toBeInTheDocument();
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("renders menu item without icon", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()}>Item without Icon</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.getByText("Item without Icon")).toBeInTheDocument();
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("renders multiple menu items with different icons", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-      const Icon1 = () => <svg data-testid="icon-1" />;
-      const Icon2 = () => <svg data-testid="icon-2" />;
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()} icon={Icon1}>
-            Item 1
-          </ContextMenuItem>
-          <ContextMenuItem onClick={vi.fn()} icon={Icon2}>
-            Item 2
-          </ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.getByTestId("icon-1")).toBeInTheDocument();
-      expect(screen.getByTestId("icon-2")).toBeInTheDocument();
-
-      document.body.removeChild(triggerElement);
-    });
-  });
-
-  describe("Accessibility", () => {
-    it("renders menu items as buttons", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()}>Accessible Item</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      const item = screen.getByText("Accessible Item");
-      expect(item.tagName).toBe("BUTTON");
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("menu items are keyboard accessible", () => {
+  describe("Integration with useMenuKeyboardNavigation Hook", () => {
+    it("menu items are keyboard accessible via click", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
       const handleClick = vi.fn();
 
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={handleClick}>Keyboard Item</ContextMenuItem>
-        </ContextMenu>
-      );
+      const TestWrapper = () => {
+        const [isOpen, setIsOpen] = useState(true);
+        return (
+          <ContextMenu
+            isOpen={isOpen}
+            onOpenChange={setIsOpen}
+            triggerRef={triggerElement}
+          >
+            <ContextMenuItem onClick={handleClick}>
+              Keyboard Item
+            </ContextMenuItem>
+          </ContextMenu>
+        );
+      };
+
+      render(<TestWrapper />);
 
       const item = screen.getByText("Keyboard Item");
-      item.focus();
-      fireEvent.click(item);
+      act(() => {
+        item.focus();
+        fireEvent.click(item);
+      });
 
       expect(handleClick).toHaveBeenCalled();
 
       document.body.removeChild(triggerElement);
     });
 
-    it("icons have aria-hidden attribute for screen readers", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-      // Mock icon component that accepts and spreads all props
-      const TestIcon = (props: Record<string, unknown>) => (
-        <svg data-testid="test-icon" {...props} />
-      );
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={vi.fn()} icon={TestIcon}>
-            Accessible Icon Item
-          </ContextMenuItem>
-        </ContextMenu>
-      );
-
-      // The aria-hidden attribute is on the SVG element itself
-      const icon = screen.getByTestId("test-icon");
-      expect(icon).toHaveAttribute("aria-hidden", "true");
-
-      document.body.removeChild(triggerElement);
-    });
-
-    it("menu items with icons remain clickable", () => {
+    it("menu items with icons remain clickable via keyboard navigation", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
       const handleClick = vi.fn();
       const TestIcon = () => <svg data-testid="test-icon" />;
 
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-        >
-          <ContextMenuItem onClick={handleClick} icon={TestIcon}>
-            Clickable Icon Item
-          </ContextMenuItem>
-        </ContextMenu>
-      );
+      const TestWrapper = () => {
+        const [isOpen, setIsOpen] = useState(true);
+        return (
+          <ContextMenu
+            isOpen={isOpen}
+            onOpenChange={setIsOpen}
+            triggerRef={triggerElement}
+          >
+            <ContextMenuItem onClick={handleClick} icon={TestIcon}>
+              Clickable Icon Item
+            </ContextMenuItem>
+          </ContextMenu>
+        );
+      };
 
-      fireEvent.click(screen.getByText("Clickable Icon Item"));
+      render(<TestWrapper />);
+
+      act(() => {
+        fireEvent.click(screen.getByText("Clickable Icon Item"));
+      });
+
       expect(handleClick).toHaveBeenCalledTimes(1);
 
       document.body.removeChild(triggerElement);
     });
   });
 
-  describe("Placement", () => {
-    it("uses top-end placement by default", () => {
+  describe("Integration with Dropdown Component", () => {
+    it("renders context menu container via Dropdown", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -401,36 +207,12 @@ describe("ContextMenu Component", () => {
         </ContextMenu>
       );
 
-      // The placement is handled by Floating UI internally
-      // We just verify the component renders without errors
       expect(screen.getByTestId("context-menu")).toBeInTheDocument();
 
       document.body.removeChild(triggerElement);
     });
 
-    it("accepts custom placement prop", () => {
-      const triggerElement = document.createElement("button");
-      document.body.appendChild(triggerElement);
-
-      render(
-        <ContextMenu
-          isOpen={true}
-          onOpenChange={vi.fn()}
-          triggerRef={triggerElement}
-          placement="bottom-start"
-        >
-          <ContextMenuItem onClick={vi.fn()}>Item</ContextMenuItem>
-        </ContextMenu>
-      );
-
-      expect(screen.getByTestId("context-menu")).toBeInTheDocument();
-
-      document.body.removeChild(triggerElement);
-    });
-  });
-
-  describe("Interaction States", () => {
-    it("updates when open state changes from false to true", () => {
+    it("passes isOpen prop to Dropdown correctly", () => {
       const triggerElement = document.createElement("button");
       document.body.appendChild(triggerElement);
 
@@ -461,38 +243,143 @@ describe("ContextMenu Component", () => {
       document.body.removeChild(triggerElement);
     });
 
-    it("updates when triggerRef changes", () => {
-      const triggerElement1 = document.createElement("button");
-      const triggerElement2 = document.createElement("button");
-      document.body.appendChild(triggerElement1);
-      document.body.appendChild(triggerElement2);
+    it("passes triggerRef to Dropdown correctly", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
 
-      const { rerender } = render(
+      render(
         <ContextMenu
           isOpen={true}
           onOpenChange={vi.fn()}
-          triggerRef={triggerElement1}
+          triggerRef={triggerElement}
         >
           <ContextMenuItem onClick={vi.fn()}>Item</ContextMenuItem>
         </ContextMenu>
       );
 
       expect(screen.getByText("Item")).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+
+    it("handles null triggerRef gracefully", () => {
+      render(
+        <ContextMenu isOpen={true} onOpenChange={vi.fn()} triggerRef={null}>
+          <ContextMenuItem onClick={vi.fn()}>Test Item</ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.getByText("Test Item")).toBeInTheDocument();
+    });
+
+    it("passes placement prop to Dropdown", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+          placement="bottom-start"
+        >
+          <ContextMenuItem onClick={vi.fn()}>Item</ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.getByTestId("context-menu")).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+
+    it("passes custom data-testid to Dropdown", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+          data-testid="custom-menu"
+        >
+          <ContextMenuItem onClick={vi.fn()}>Item</ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.getByTestId("custom-menu")).toBeInTheDocument();
+
+      document.body.removeChild(triggerElement);
+    });
+  });
+
+  describe("Full End-to-End Integration", () => {
+    it("complete user flow: render, click, and handle selection", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+      const onClickEdit = vi.fn();
+      const onClickDelete = vi.fn();
+      const onOpenChange = vi.fn();
+
+      render(
+        <ContextMenu
+          isOpen={true}
+          onOpenChange={onOpenChange}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={onClickEdit}>Edit</ContextMenuItem>
+          <ContextMenuItem onClick={onClickDelete} variant="danger">
+            Delete
+          </ContextMenuItem>
+        </ContextMenu>
+      );
+
+      // Verify rendering
+      expect(screen.getByText("Edit")).toBeInTheDocument();
+      expect(screen.getByText("Delete")).toBeInTheDocument();
+
+      // Click first item
+      fireEvent.click(screen.getByText("Edit"));
+      expect(onClickEdit).toHaveBeenCalledTimes(1);
+      expect(onClickDelete).not.toHaveBeenCalled();
+
+      // Click second item
+      fireEvent.click(screen.getByText("Delete"));
+      expect(onClickDelete).toHaveBeenCalledTimes(1);
+
+      document.body.removeChild(triggerElement);
+    });
+
+    it("handles dynamic state updates correctly", () => {
+      const triggerElement = document.createElement("button");
+      document.body.appendChild(triggerElement);
+
+      const { rerender } = render(
+        <ContextMenu
+          isOpen={false}
+          onOpenChange={vi.fn()}
+          triggerRef={triggerElement}
+        >
+          <ContextMenuItem onClick={vi.fn()}>Item A</ContextMenuItem>
+        </ContextMenu>
+      );
+
+      expect(screen.queryByText("Item A")).not.toBeInTheDocument();
 
       rerender(
         <ContextMenu
           isOpen={true}
           onOpenChange={vi.fn()}
-          triggerRef={triggerElement2}
+          triggerRef={triggerElement}
         >
-          <ContextMenuItem onClick={vi.fn()}>Item</ContextMenuItem>
+          <ContextMenuItem onClick={vi.fn()}>Item B</ContextMenuItem>
         </ContextMenu>
       );
 
-      expect(screen.getByText("Item")).toBeInTheDocument();
+      expect(screen.queryByText("Item A")).not.toBeInTheDocument();
+      expect(screen.getByText("Item B")).toBeInTheDocument();
 
-      document.body.removeChild(triggerElement1);
-      document.body.removeChild(triggerElement2);
+      document.body.removeChild(triggerElement);
     });
   });
 });

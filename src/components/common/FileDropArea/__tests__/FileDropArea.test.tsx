@@ -1,10 +1,16 @@
-import { screen, fireEvent, waitFor, act } from "@testing-library/react";
-import { describe, it, expect, vi } from "vitest";
+import { screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { FileDropArea } from "../FileDropArea";
 import { render } from "@/__tests__/testUtils";
+import * as useFileDropModule from "../useFileDrop";
 
 describe("FileDropArea Component", () => {
   const mockOnFileDrop = vi.fn();
+
+  beforeEach(() => {
+    // Restore the original implementation before each test
+    vi.restoreAllMocks();
+  });
 
   afterEach(() => {
     vi.clearAllMocks();
@@ -32,7 +38,15 @@ describe("FileDropArea Component", () => {
       expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
     });
 
-    it("shows overlay when dragging over", () => {
+    it("shows overlay when isDragging is true", () => {
+      vi.spyOn(useFileDropModule, "useFileDrop").mockReturnValue({
+        isDragging: true,
+        handleDragEnter: vi.fn(),
+        handleDragLeave: vi.fn(),
+        handleDragOver: vi.fn(),
+        handleDrop: vi.fn(),
+      });
+
       render(
         <FileDropArea
           onFileDrop={mockOnFileDrop}
@@ -42,144 +56,20 @@ describe("FileDropArea Component", () => {
           <div>Content</div>
         </FileDropArea>
       );
-
-      const dropArea = screen.getByTestId("drop-area");
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
 
       expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
       expect(screen.getByText("Drop file here")).toBeInTheDocument();
     });
 
-    it("hides overlay when drag leaves", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const dropArea = screen.getByTestId("drop-area");
-
-      // Enter and leave once
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      fireEvent.dragLeave(dropArea, {
-        dataTransfer: { files: [] },
+    it("displays custom drop label", () => {
+      vi.spyOn(useFileDropModule, "useFileDrop").mockReturnValue({
+        isDragging: true,
+        handleDragEnter: vi.fn(),
+        handleDragLeave: vi.fn(),
+        handleDragOver: vi.fn(),
+        handleDrop: vi.fn(),
       });
 
-      expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
-    });
-  });
-
-  describe("File Drop Handling", () => {
-    it("calls onFileDrop with any file", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
-      const dropArea = screen.getByTestId("drop-area");
-
-      fireEvent.drop(dropArea, {
-        dataTransfer: { files: [file] },
-      });
-
-      expect(mockOnFileDrop).toHaveBeenCalledTimes(1);
-      expect(mockOnFileDrop).toHaveBeenCalledWith(file);
-    });
-
-    it("calls onFileDrop with first file when multiple files dropped", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const file1 = new File(["content1"], "test1.yaml", { type: "text/yaml" });
-      const file2 = new File(["content2"], "test2.yaml", { type: "text/yaml" });
-      const dropArea = screen.getByTestId("drop-area");
-
-      fireEvent.drop(dropArea, {
-        dataTransfer: { files: [file1, file2] },
-      });
-
-      expect(mockOnFileDrop).toHaveBeenCalledTimes(1);
-      expect(mockOnFileDrop).toHaveBeenCalledWith(file1);
-    });
-
-    it("hides overlay after successful drop", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
-      const dropArea = screen.getByTestId("drop-area");
-
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      fireEvent.drop(dropArea, {
-        dataTransfer: { files: [file] },
-      });
-
-      expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
-    });
-
-    it("does not call onFileDrop when no files are dropped", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const dropArea = screen.getByTestId("drop-area");
-
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      fireEvent.drop(dropArea, {
-        dataTransfer: { files: [] },
-      });
-
-      expect(mockOnFileDrop).not.toHaveBeenCalled();
-      expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
-    });
-  });
-
-  describe("Custom Drop Label", () => {
-    it("uses custom drop label when provided", () => {
       render(
         <FileDropArea
           onFileDrop={mockOnFileDrop}
@@ -190,41 +80,60 @@ describe("FileDropArea Component", () => {
         </FileDropArea>
       );
 
-      const dropArea = screen.getByTestId("drop-area");
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-
       expect(screen.getByText("Drop your adventure here")).toBeInTheDocument();
-    });
-
-    it("displays the provided drop label", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const dropArea = screen.getByTestId("drop-area");
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-
-      expect(screen.getByText("Drop file here")).toBeInTheDocument();
     });
   });
 
-  describe("Disabled State", () => {
-    it("does not show overlay when disabled and dragging", () => {
+  describe("Integration with useFileDrop Hook", () => {
+    it("calls useFileDrop with correct parameters", () => {
+      const useFileDropSpy = vi.spyOn(useFileDropModule, "useFileDrop");
+
       render(
         <FileDropArea
           onFileDrop={mockOnFileDrop}
           dropLabel="Drop file here"
           isDisabled={true}
+        >
+          <div>Content</div>
+        </FileDropArea>
+      );
+
+      expect(useFileDropSpy).toHaveBeenCalledWith({
+        onFileDrop: mockOnFileDrop,
+        isDisabled: true,
+      });
+    });
+
+    it("passes default isDisabled value to hook", () => {
+      const useFileDropSpy = vi.spyOn(useFileDropModule, "useFileDrop");
+
+      render(
+        <FileDropArea onFileDrop={mockOnFileDrop} dropLabel="Drop file here">
+          <div>Content</div>
+        </FileDropArea>
+      );
+
+      expect(useFileDropSpy).toHaveBeenCalledWith({
+        onFileDrop: mockOnFileDrop,
+        isDisabled: false,
+      });
+    });
+
+    it("attaches drag event handlers to container", () => {
+      const mockHandlers = {
+        isDragging: false,
+        handleDragEnter: vi.fn(),
+        handleDragLeave: vi.fn(),
+        handleDragOver: vi.fn(),
+        handleDrop: vi.fn(),
+      };
+
+      vi.spyOn(useFileDropModule, "useFileDrop").mockReturnValue(mockHandlers);
+
+      render(
+        <FileDropArea
+          onFileDrop={mockOnFileDrop}
+          dropLabel="Drop file here"
           data-testid="drop-area"
         >
           <div>Content</div>
@@ -232,118 +141,82 @@ describe("FileDropArea Component", () => {
       );
 
       const dropArea = screen.getByTestId("drop-area");
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
 
+      fireEvent.dragEnter(dropArea, { dataTransfer: { files: [] } });
+      expect(mockHandlers.handleDragEnter).toHaveBeenCalled();
+
+      fireEvent.dragLeave(dropArea, { dataTransfer: { files: [] } });
+      expect(mockHandlers.handleDragLeave).toHaveBeenCalled();
+
+      fireEvent.dragOver(dropArea, { dataTransfer: { files: [] } });
+      expect(mockHandlers.handleDragOver).toHaveBeenCalled();
+
+      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
+      fireEvent.drop(dropArea, { dataTransfer: { files: [file] } });
+      expect(mockHandlers.handleDrop).toHaveBeenCalled();
+    });
+  });
+
+  describe("End-to-End Drag and Drop", () => {
+    it("completes full drag and drop cycle", () => {
+      render(
+        <FileDropArea
+          onFileDrop={mockOnFileDrop}
+          dropLabel="Drop file here"
+          data-testid="drop-area"
+        >
+          <div>Content</div>
+        </FileDropArea>
+      );
+
+      const dropArea = screen.getByTestId("drop-area");
+
+      // Start dragging
+      fireEvent.dragEnter(dropArea, { dataTransfer: { files: [] } });
+      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
+
+      // Drop file
+      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
+      fireEvent.drop(dropArea, { dataTransfer: { files: [file] } });
+
+      // Verify callback was called
+      expect(mockOnFileDrop).toHaveBeenCalledWith(file);
+
+      // Overlay should be hidden
       expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
     });
 
-    it("does not call onFileDrop when disabled", () => {
+    it("handles drag enter and leave without dropping", () => {
       render(
         <FileDropArea
           onFileDrop={mockOnFileDrop}
           dropLabel="Drop file here"
-          isDisabled={true}
           data-testid="drop-area"
         >
           <div>Content</div>
         </FileDropArea>
       );
 
-      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
       const dropArea = screen.getByTestId("drop-area");
 
-      fireEvent.drop(dropArea, {
-        dataTransfer: { files: [file] },
-      });
+      // Start dragging
+      fireEvent.dragEnter(dropArea, { dataTransfer: { files: [] } });
+      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
 
+      // Leave without dropping
+      fireEvent.dragLeave(dropArea, { dataTransfer: { files: [] } });
+
+      // Overlay should be hidden and callback not called
+      expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
       expect(mockOnFileDrop).not.toHaveBeenCalled();
     });
 
-    it("works normally when disabled is false", () => {
+    it("works with disabled state", () => {
       render(
         <FileDropArea
           onFileDrop={mockOnFileDrop}
           dropLabel="Drop file here"
-          isDisabled={false}
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const dropArea = screen.getByTestId("drop-area");
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
-      fireEvent.drop(dropArea, {
-        dataTransfer: { files: [file] },
-      });
-
-      expect(mockOnFileDrop).toHaveBeenCalledWith(file);
-    });
-  });
-
-  describe("Drag Events", () => {
-    it("prevents default on dragOver", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const dropArea = screen.getByTestId("drop-area");
-      const event = new Event("dragover", { bubbles: true, cancelable: true });
-      Object.defineProperty(event, "dataTransfer", {
-        value: { files: [] },
-      });
-
-      const preventDefaultSpy = vi.spyOn(event, "preventDefault");
-      dropArea.dispatchEvent(event);
-
-      expect(preventDefaultSpy).toHaveBeenCalled();
-    });
-
-    it("prevents default on drop", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
-      const dropArea = screen.getByTestId("drop-area");
-      const event = new Event("drop", { bubbles: true, cancelable: true });
-      Object.defineProperty(event, "dataTransfer", {
-        value: { files: [file] },
-      });
-
-      const preventDefaultSpy = vi.spyOn(event, "preventDefault");
-      dropArea.dispatchEvent(event);
-
-      expect(preventDefaultSpy).toHaveBeenCalled();
-    });
-  });
-
-  describe("Drag Cancellation", () => {
-    it("hides overlay when drag is cancelled (dragend event)", async () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
+          isDisabled={true}
           data-testid="drop-area"
         >
           <div>Content</div>
@@ -352,94 +225,14 @@ describe("FileDropArea Component", () => {
 
       const dropArea = screen.getByTestId("drop-area");
 
-      // Start dragging
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      // Cancel drag (e.g., press ESC or drag back to original location)
-      const dragEndEvent = new Event("dragend", { bubbles: true });
-      await act(async () => {
-        document.dispatchEvent(dragEndEvent);
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("file-drop-overlay")
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it("hides overlay when file is dropped outside the drop area", async () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div>Content</div>
-        </FileDropArea>
-      );
-
-      const dropArea = screen.getByTestId("drop-area");
-
-      // Start dragging
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      // Drop outside the drop area
-      const dropEvent = new Event("drop", { bubbles: true });
-      await act(async () => {
-        document.dispatchEvent(dropEvent);
-      });
-
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("file-drop-overlay")
-        ).not.toBeInTheDocument();
-      });
-    });
-
-    it("handles multiple drag enter/leave events correctly", () => {
-      render(
-        <FileDropArea
-          onFileDrop={mockOnFileDrop}
-          dropLabel="Drop file here"
-          data-testid="drop-area"
-        >
-          <div data-testid="inner-element">Content</div>
-        </FileDropArea>
-      );
-
-      const dropArea = screen.getByTestId("drop-area");
-      const innerElement = screen.getByTestId("inner-element");
-
-      // Enter the drop area
-      fireEvent.dragEnter(dropArea, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      // Enter a nested element (counter should increment)
-      fireEvent.dragEnter(innerElement, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      // Leave the nested element (counter should decrement but still > 0)
-      fireEvent.dragLeave(innerElement, {
-        dataTransfer: { files: [] },
-      });
-      expect(screen.getByTestId("file-drop-overlay")).toBeInTheDocument();
-
-      // Leave the drop area (counter should reach 0)
-      fireEvent.dragLeave(dropArea, {
-        dataTransfer: { files: [] },
-      });
+      // Try to drag when disabled
+      fireEvent.dragEnter(dropArea, { dataTransfer: { files: [] } });
       expect(screen.queryByTestId("file-drop-overlay")).not.toBeInTheDocument();
+
+      // Try to drop when disabled
+      const file = new File(["content"], "test.yaml", { type: "text/yaml" });
+      fireEvent.drop(dropArea, { dataTransfer: { files: [file] } });
+      expect(mockOnFileDrop).not.toHaveBeenCalled();
     });
   });
 });

@@ -357,13 +357,19 @@ export class AdventureParser {
   private static validateReferences(adventure: Adventure): void {
     const passageNumbers = Object.keys(adventure.passages).map(Number);
 
-    // Validate all goto references exist
+    // Validate all goto references exist and don't self-reference
     for (const [passageId, passage] of Object.entries(adventure.passages)) {
       if ("choices" in passage && passage.choices) {
         for (const choice of passage.choices) {
           if (!passageNumbers.includes(choice.goto)) {
             throw new Error(
               `Passage ${passageId} has invalid goto: ${choice.goto}`
+            );
+          }
+          // Validate that choices cannot point to the same passage
+          if (choice.goto === Number(passageId)) {
+            throw new Error(
+              `Passage ${passageId} has a choice that points to itself`
             );
           }
         }

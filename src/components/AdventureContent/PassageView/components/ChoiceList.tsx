@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { Plus } from "lucide-react";
 import type { ChoiceData } from "../usePassageEditState";
 import {
@@ -11,7 +12,11 @@ import { ChoiceItem } from "./ChoiceItem";
 interface ChoiceListProps {
   choices: ChoiceData[];
   choicesError?: string;
-  passageOptions: Array<{ value: string; label: string }>;
+  passageOptions: Array<{
+    value: string;
+    label: string;
+    icon?: ComponentType<Record<string, unknown>>;
+  }>;
   choiceRefs: React.MutableRefObject<(HTMLInputElement | null)[]>;
   onAddChoice: () => void;
   onRemoveChoice: (index: number) => void;

@@ -1,9 +1,18 @@
+import type { ComponentType } from "react";
+import {
+  Skull,
+  Trophy,
+  PackagePlus,
+  PackageMinus,
+  Split,
+  MoveUp,
+} from "lucide-react";
 import { useAdventure } from "@/context/useAdventure";
+import type { Passage } from "@/data/types";
 import { Textarea } from "@/components/common/Textarea/Textarea";
 import { Select } from "@/components/common/Select/Select";
 import { UnsavedChangesModal } from "../UnsavedChangesModal/UnsavedChangesModal";
 import { useUnsavedChangesWarning } from "@/utils/useUnsavedChangesWarning";
-import type { Passage } from "@/data/types";
 import {
   EditViewLayout,
   EditScrollableContent,
@@ -61,12 +70,59 @@ export const PassageEditView = ({
   const availablePassages = adventure
     ? Object.keys(adventure.passages)
         .map(Number)
+        .filter((id) => id !== passageId) // Exclude current passage
         .sort((a, b) => a - b)
     : [];
+
+  // Helper function to get icon for a passage (same logic as sidebar)
+  const getPassageIcon = (
+    passage: Passage
+  ): ComponentType<{ size?: number; strokeWidth?: number }> => {
+    // Check if it's an ending
+    if (passage.ending) {
+      if (passage.type === "defeat") {
+        return Skull;
+      }
+      return Trophy; // victory or neutral
+    }
+
+    // Check for effects
+    if (passage.effects) {
+      const hasAddItem = passage.effects.some(
+        (effect) => effect.type === "add_item"
+      );
+      const hasRemoveItem = passage.effects.some(
+        (effect) => effect.type === "remove_item"
+      );
+
+      if (hasAddItem) {
+        return PackagePlus;
+      }
+      if (hasRemoveItem) {
+        return PackageMinus;
+      }
+    }
+
+    // Check number of choices
+    if (passage.choices) {
+      if (passage.choices.length > 1) {
+        return Split;
+      }
+      if (passage.choices.length === 1) {
+        return MoveUp;
+      }
+    }
+
+    // Default icon
+    return MoveUp;
+  };
 
   const passageOptions = availablePassages.map((id) => ({
     value: String(id),
     label: `Passage ${id}`,
+    icon: adventure?.passages[id]
+      ? getPassageIcon(adventure.passages[id])
+      : undefined,
   }));
 
   // Get available items for effect dropdowns
@@ -91,7 +147,6 @@ export const PassageEditView = ({
                 data-testid="passage-text-input"
               />
             </FormSection>
-
             <FormSection>
               <Textarea
                 label="Notes"
@@ -101,7 +156,6 @@ export const PassageEditView = ({
                 data-testid="passage-notes-input"
               />
             </FormSection>
-
             <FormSection>
               <Select
                 label="Passage type"
@@ -110,13 +164,12 @@ export const PassageEditView = ({
                   { value: "ending", label: "Ending passage" },
                 ]}
                 value={state.isEnding ? "ending" : "regular"}
-                onChange={(e) =>
-                  state.handleIsEndingChange(e.target.value === "ending")
+                onChange={(value) =>
+                  state.handleIsEndingChange(value === "ending")
                 }
                 data-testid="passage-type-select"
               />
             </FormSection>
-
             {state.isEnding ? (
               <FormSection>
                 <Select
@@ -127,7 +180,7 @@ export const PassageEditView = ({
                     { value: "neutral", label: "Neutral" },
                   ]}
                   value={state.endingType}
-                  onChange={(e) => state.handleEndingTypeChange(e.target.value)}
+                  onChange={(value) => state.handleEndingTypeChange(value)}
                   error={state.endingTypeError}
                   placeholder="Select ending type"
                   data-testid="ending-type-select"
@@ -140,7 +193,6 @@ export const PassageEditView = ({
                     effects={state.effects}
                     effectsError={state.effectsError}
                     itemOptions={itemOptions}
-                    effectRefs={state.effectRefs}
                     onAddEffect={state.handleAddEffect}
                     onRemoveEffect={state.handleRemoveEffect}
                     onEffectTypeChange={state.handleEffectTypeChange}

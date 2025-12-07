@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { EllipsisVertical } from "lucide-react";
 import type { StoredAdventure } from "@/data/adventureDatabase";
+import { sanitizeFilename, downloadFile } from "@/utils/fileDownload";
 import { FormattedDate } from "@/components/common/FormattedDate/FormattedDate";
 import { AdventureCardDeleteModal } from "./AdventureCardDeleteModal";
 import { AdventureCardContextMenu } from "./AdventureCardContextMenu";
@@ -49,6 +50,18 @@ export const AdventureCard = ({
     setIsContextMenuOpen(false);
   }, [onDeleteClick]);
 
+  const handleDownloadClick = useCallback(() => {
+    try {
+      const sanitizedTitle = sanitizeFilename(adventure.title);
+      const filename = `${sanitizedTitle}.yaml`;
+      downloadFile(adventure.content, filename, "text/yaml;charset=utf-8");
+    } catch (error) {
+      console.error("Failed to download adventure:", error);
+    } finally {
+      setIsContextMenuOpen(false);
+    }
+  }, [adventure]);
+
   return (
     <>
       <AdventureCardContainer>
@@ -78,6 +91,7 @@ export const AdventureCard = ({
         isOpen={isContextMenuOpen}
         onOpenChange={setIsContextMenuOpen}
         triggerRef={contextMenuTrigger}
+        onDownloadClick={handleDownloadClick}
         onDeleteClick={handleDeleteClick}
       />
       <AdventureCardDeleteModal

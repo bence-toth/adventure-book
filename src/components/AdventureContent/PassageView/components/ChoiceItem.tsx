@@ -1,3 +1,4 @@
+import type { ComponentType } from "react";
 import { Trash2 } from "lucide-react";
 import { Input } from "@/components/common/Input/Input";
 import { Select } from "@/components/common/Select/Select";
@@ -7,7 +8,11 @@ import { ChoiceRow, ChoiceControls, RemoveButton } from "./ChoiceItem.styles";
 interface ChoiceItemProps {
   choice: ChoiceData;
   index: number;
-  passageOptions: Array<{ value: string; label: string }>;
+  passageOptions: Array<{
+    value: string;
+    label: string;
+    icon?: ComponentType<Record<string, unknown>>;
+  }>;
   onTextChange: (index: number, value: string) => void;
   onGotoChange: (index: number, value: string) => void;
   onRemove: (index: number) => void;
@@ -40,7 +45,7 @@ export const ChoiceItem = ({
           label="Go to"
           options={passageOptions}
           value={choice.goto ? String(choice.goto) : ""}
-          onChange={(e) => onGotoChange(index, e.target.value)}
+          onChange={(value) => onGotoChange(index, value)}
           error={choice.gotoError}
           placeholder="Select passage"
           data-testid={`choice-goto-${index}`}

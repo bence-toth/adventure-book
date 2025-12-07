@@ -391,6 +391,46 @@ describe("usePassageSaveActions", () => {
       const savedPassage = mockUpdatePassage.mock.calls[0][1] as Passage;
       expect(savedPassage.effects).toEqual([{ type: "add_item", item: "key" }]);
     });
+
+    it("validates effects as a group and sets error when validation fails", async () => {
+      const choices: ChoiceData[] = [{ text: "Choice", goto: 2 }];
+      const effects: EffectData[] = [
+        { type: "add_item", item: "key" },
+        { type: "add_item", item: "key" }, // Duplicate - should fail group validation
+      ];
+
+      // Mock validateEffects to return an error for duplicates
+      vi.mocked(validation.validateEffects).mockReturnValueOnce(
+        'Cannot add the same inventory item "key" multiple times'
+      );
+
+      const { result } = renderHook(() =>
+        usePassageSaveActions({
+          passageId: 1,
+          updatePassage: mockUpdatePassage,
+          text: "Test",
+          notes: "",
+          isEnding: false,
+          endingType: "",
+          choices,
+          effects,
+          setTextError: mockSetTextError,
+          setChoicesError: mockSetChoicesError,
+          setEffectsError: mockSetEffectsError,
+          setEndingTypeError: mockSetEndingTypeError,
+          setChoices: mockSetChoices,
+          setEffects: mockSetEffects,
+          resetState: mockResetState,
+        })
+      );
+
+      await result.current.handleSave();
+
+      expect(mockSetEffectsError).toHaveBeenCalledWith(
+        'Cannot add the same inventory item "key" multiple times'
+      );
+      expect(mockUpdatePassage).not.toHaveBeenCalled();
+    });
   });
 
   describe("handleSave for ending passages", () => {

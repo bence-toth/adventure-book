@@ -29,8 +29,11 @@ describe("EffectItem", () => {
       />
     );
 
-    expect(screen.getByTestId("effect-type-0")).toHaveValue("add_item");
-    expect(screen.getByTestId("effect-item-0")).toHaveValue("key");
+    // Custom Select shows selected option text in button
+    expect(screen.getByTestId("effect-type-0")).toHaveTextContent(
+      "Add item to inventory"
+    );
+    expect(screen.getByTestId("effect-item-0")).toHaveTextContent("Key");
   });
 
   it("renders with empty values", () => {
@@ -47,11 +50,16 @@ describe("EffectItem", () => {
       />
     );
 
-    expect(screen.getByTestId("effect-type-1")).toHaveValue("");
-    expect(screen.getByTestId("effect-item-1")).toHaveValue("");
+    // Custom Select shows placeholder when no value selected
+    expect(screen.getByTestId("effect-type-1")).toHaveTextContent(
+      "Select effect type"
+    );
+    expect(screen.getByTestId("effect-item-1")).toHaveTextContent(
+      "Select item"
+    );
   });
 
-  it("calls onTypeChange when type select changes", () => {
+  it("calls onTypeChange when type select changes", async () => {
     const effect: EffectData = { type: "add_item", item: "key" };
 
     renderWithAdventure(
@@ -66,12 +74,18 @@ describe("EffectItem", () => {
     );
 
     const typeSelect = screen.getByTestId("effect-type-0");
-    fireEvent.change(typeSelect, { target: { value: "remove_item" } });
+    fireEvent.click(typeSelect);
+
+    // Wait for dropdown to open and click option
+    const option = await screen.findByTestId(
+      "effect-type-0-option-remove_item"
+    );
+    fireEvent.click(option);
 
     expect(mockOnTypeChange).toHaveBeenCalledWith(0, "remove_item");
   });
 
-  it("calls onItemChange when item select changes", () => {
+  it("calls onItemChange when item select changes", async () => {
     const effect: EffectData = { type: "add_item", item: "key" };
 
     renderWithAdventure(
@@ -86,7 +100,11 @@ describe("EffectItem", () => {
     );
 
     const itemSelect = screen.getByTestId("effect-item-0");
-    fireEvent.change(itemSelect, { target: { value: "sword" } });
+    fireEvent.click(itemSelect);
+
+    // Wait for dropdown to open and click option
+    const option = await screen.findByTestId("effect-item-0-option-sword");
+    fireEvent.click(option);
 
     expect(mockOnItemChange).toHaveBeenCalledWith(0, "sword");
   });
@@ -134,26 +152,7 @@ describe("EffectItem", () => {
     ).toBeInTheDocument();
   });
 
-  it("passes ref to type select", () => {
-    const effect: EffectData = { type: "add_item", item: "key" };
-    const mockRef = vi.fn();
-
-    renderWithAdventure(
-      <EffectItem
-        effect={effect}
-        index={0}
-        itemOptions={mockItemOptions}
-        onTypeChange={mockOnTypeChange}
-        onItemChange={mockOnItemChange}
-        onRemove={mockOnRemove}
-        effectRef={mockRef}
-      />
-    );
-
-    expect(mockRef).toHaveBeenCalled();
-  });
-
-  it("renders correct effect type options", () => {
+  it("renders correct effect type options", async () => {
     const effect: EffectData = { type: "", item: "" };
 
     renderWithAdventure(
@@ -170,11 +169,22 @@ describe("EffectItem", () => {
     const typeSelect = screen.getByTestId("effect-type-0");
     expect(typeSelect).toBeInTheDocument();
 
-    // Check that options exist by verifying the select can be changed to these values
-    fireEvent.change(typeSelect, { target: { value: "add_item" } });
+    // Click to open dropdown
+    fireEvent.click(typeSelect);
+
+    // Check that options exist by clicking them
+    const addItemOption = await screen.findByTestId(
+      "effect-type-0-option-add_item"
+    );
+    fireEvent.click(addItemOption);
     expect(mockOnTypeChange).toHaveBeenCalledWith(0, "add_item");
 
-    fireEvent.change(typeSelect, { target: { value: "remove_item" } });
+    // Open again and click different option
+    fireEvent.click(typeSelect);
+    const removeItemOption = await screen.findByTestId(
+      "effect-type-0-option-remove_item"
+    );
+    fireEvent.click(removeItemOption);
     expect(mockOnTypeChange).toHaveBeenCalledWith(0, "remove_item");
   });
 });

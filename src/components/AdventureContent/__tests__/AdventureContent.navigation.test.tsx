@@ -101,7 +101,7 @@ describe("AdventureContent navigation", () => {
     // Wait for passage 1 to load
     await screen.findByTestId("passage-text-input");
     const passageTypeSelect = await screen.findByTestId("passage-type-select");
-    expect(passageTypeSelect).toHaveValue("regular");
+    expect(passageTypeSelect).toHaveTextContent("Regular");
 
     // Verify navigation to ending passage works
     fireEvent.click(screen.getByTestId(getNavigationPassageTestId(4)));

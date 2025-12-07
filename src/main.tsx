@@ -8,7 +8,7 @@ import {
 import "./index.css";
 import App, { AdventureLayout } from "./App.tsx";
 import { AdventureManager } from "@/components/AdventureManager/AdventureManager";
-import { TestAdventure } from "@/components/TestAdventure/TestAdventure";
+import { AdventureTest } from "@/components/AdventureTest/AdventureTest";
 import { AdventureContent } from "@/components/AdventureContent/AdventureContent";
 import { ROUTES } from "@/constants/routes";
 
@@ -35,11 +35,11 @@ const router = createBrowserRouter(
             },
             {
               path: "test/introduction",
-              element: <TestAdventure />,
+              element: <AdventureTest />,
             },
             {
               path: "test/passage/:id",
-              element: <TestAdventure />,
+              element: <AdventureTest />,
             },
             {
               path: "content",

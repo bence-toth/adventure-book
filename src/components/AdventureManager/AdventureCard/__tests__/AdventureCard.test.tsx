@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { AdventureCard } from "../AdventureCard";
 import type { StoredAdventure } from "@/data/adventureDatabase";
+import * as fileDownload from "@/utils/fileDownload";
+import { ADVENTURE_CARD_TEST_IDS } from "../../testIds";
 
 describe("AdventureCard Component", () => {
   const mockAdventure: StoredAdventure = {
@@ -84,7 +86,23 @@ describe("AdventureCard Component", () => {
       const menuButton = screen.getByLabelText("Open menu for Test Adventure");
       fireEvent.click(menuButton);
 
+      expect(screen.getByText("Download as YAML")).toBeInTheDocument();
+
       expect(screen.getByText("Delete")).toBeInTheDocument();
+    });
+
+    it("renders download menu item with download icon", () => {
+      renderAdventureCard();
+
+      const menuButton = screen.getByLabelText("Open menu for Test Adventure");
+      fireEvent.click(menuButton);
+
+      expect(screen.getByText("Download as YAML")).toBeInTheDocument();
+
+      const downloadMenuItem = screen.getByText("Download as YAML");
+      // Verify icon is present (lucide-react icons render as SVG)
+      const svg = downloadMenuItem.querySelector("svg");
+      expect(svg).toBeInTheDocument();
     });
 
     it("renders delete menu item with trash icon", () => {
@@ -108,6 +126,128 @@ describe("AdventureCard Component", () => {
       fireEvent.click(menuButton);
 
       expect(mockOnOpen).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("Download Adventure", () => {
+    it("successfully downloads YAML file when download is clicked", () => {
+      const downloadFileSpy = vi
+        .spyOn(fileDownload, "downloadFile")
+        .mockImplementation(() => {});
+
+      renderAdventureCard();
+
+      const menuButton = screen.getByLabelText("Open menu for Test Adventure");
+      fireEvent.click(menuButton);
+
+      const downloadMenuItem = screen.getByTestId(
+        ADVENTURE_CARD_TEST_IDS.CONTEXT_MENU_DOWNLOAD
+      );
+      fireEvent.click(downloadMenuItem);
+
+      expect(downloadFileSpy).toHaveBeenCalledTimes(1);
+      expect(downloadFileSpy).toHaveBeenCalledWith(
+        "mock content",
+        "Test Adventure.yaml",
+        "text/yaml;charset=utf-8"
+      );
+
+      downloadFileSpy.mockRestore();
+    });
+
+    it("closes context menu after download", async () => {
+      const downloadFileSpy = vi
+        .spyOn(fileDownload, "downloadFile")
+        .mockImplementation(() => {});
+
+      renderAdventureCard();
+
+      const menuButton = screen.getByLabelText("Open menu for Test Adventure");
+      fireEvent.click(menuButton);
+
+      const downloadMenuItem = screen.getByTestId(
+        ADVENTURE_CARD_TEST_IDS.CONTEXT_MENU_DOWNLOAD
+      );
+      fireEvent.click(downloadMenuItem);
+
+      // Context menu should be closed
+      await waitFor(() => {
+        const menuItems = screen.queryAllByRole("menuitem");
+        expect(menuItems).toHaveLength(0);
+      });
+
+      downloadFileSpy.mockRestore();
+    });
+
+    it("handles download errors gracefully", () => {
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
+      const downloadFileSpy = vi
+        .spyOn(fileDownload, "downloadFile")
+        .mockImplementation(() => {
+          throw new Error("Download failed");
+        });
+
+      renderAdventureCard();
+
+      const menuButton = screen.getByLabelText("Open menu for Test Adventure");
+      fireEvent.click(menuButton);
+
+      const downloadMenuItem = screen.getByTestId(
+        ADVENTURE_CARD_TEST_IDS.CONTEXT_MENU_DOWNLOAD
+      );
+      fireEvent.click(downloadMenuItem);
+
+      // Verify error was logged
+      expect(consoleSpy).toHaveBeenCalledWith(
+        "Failed to download adventure:",
+        expect.any(Error)
+      );
+
+      // Component should still be functional
+      expect(menuButton).toBeInTheDocument();
+
+      consoleSpy.mockRestore();
+      downloadFileSpy.mockRestore();
+    });
+
+    it("sanitizes filename correctly", () => {
+      const downloadFileSpy = vi
+        .spyOn(fileDownload, "downloadFile")
+        .mockImplementation(() => {});
+
+      const adventureWithSpecialChars: StoredAdventure = {
+        ...mockAdventure,
+        title: "Test: Adventure / Edition #1",
+      };
+
+      render(
+        <AdventureCard
+          adventure={adventureWithSpecialChars}
+          onOpen={mockOnOpen}
+          onDeleteClick={mockOnDeleteClick}
+          isDeleteModalOpen={false}
+          onConfirmDelete={mockOnConfirmDelete}
+          onCancelDelete={mockOnCancelDelete}
+        />
+      );
+
+      const menuButton = screen.getByLabelText(
+        "Open menu for Test: Adventure / Edition #1"
+      );
+      fireEvent.click(menuButton);
+
+      const downloadMenuItem = screen.getByTestId(
+        ADVENTURE_CARD_TEST_IDS.CONTEXT_MENU_DOWNLOAD
+      );
+      fireEvent.click(downloadMenuItem);
+
+      const call = downloadFileSpy.mock.calls[0];
+      // Verify the filename was sanitized (special characters replaced with _)
+      expect(call[1]).toBe("Test_ Adventure _ Edition #1.yaml");
+
+      downloadFileSpy.mockRestore();
     });
   });
 
