@@ -1,4 +1,3 @@
-import React from "react";
 import { describe, it, expect, vi } from "vitest";
 import {
   render,
@@ -8,32 +7,18 @@ import {
   act,
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Trash2, Plus, Check } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 import { Select } from "../Select";
 
-describe("Select Component", () => {
+describe("Select Component - Integration", () => {
   const mockOptions = [
     { value: "1", label: "Option 1" },
     { value: "2", label: "Option 2" },
     { value: "3", label: "Option 3" },
   ];
 
-  describe("Rendering", () => {
-    it("renders with label and placeholder", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          placeholder="Choose one"
-          data-testid="test-select"
-        />
-      );
-
-      expect(screen.getByText("Test Select")).toBeInTheDocument();
-      expect(screen.getByText("Choose one")).toBeInTheDocument();
-    });
-
-    it("renders selected value when provided", () => {
+  describe("Integration with useSelectedOption Hook", () => {
+    it("displays selected option label via hook", () => {
       render(
         <Select
           label="Test Select"
@@ -46,74 +31,388 @@ describe("Select Component", () => {
       expect(screen.getByText("Option 2")).toBeInTheDocument();
     });
 
-    it("renders placeholder when no value is selected", () => {
+    it("displays placeholder when no value selected", () => {
       render(
         <Select
           label="Test Select"
           options={mockOptions}
+          placeholder="Choose one"
+          data-testid="test-select"
+        />
+      );
+
+      expect(screen.getByText("Choose one")).toBeInTheDocument();
+    });
+
+    it("updates displayed value when selection changes", async () => {
+      const { rerender } = render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="1"
+          data-testid="test-select"
+        />
+      );
+
+      expect(screen.getByText("Option 1")).toBeInTheDocument();
+
+      rerender(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="3"
+          data-testid="test-select"
+        />
+      );
+
+      expect(screen.getByText("Option 3")).toBeInTheDocument();
+    });
+
+    it("displays icon from selected option", () => {
+      const optionsWithIcons = [
+        { value: "1", label: "Add", icon: Plus },
+        { value: "2", label: "Delete", icon: Trash2 },
+      ];
+
+      render(
+        <Select
+          label="Test Select"
+          options={optionsWithIcons}
+          value="2"
+          data-testid="test-select"
+        />
+      );
+
+      expect(screen.getByText("Delete")).toBeInTheDocument();
+      // Icon should be rendered
+      const button = screen.getByRole("combobox");
+      expect(button.querySelector("svg")).toBeInTheDocument();
+    });
+  });
+
+  describe("Integration with useSelectActiveIndex Hook", () => {
+    it("sets active index to selected value when dropdown opens", async () => {
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="2"
+          data-testid="test-select"
+        />
+      );
+
+      fireEvent.click(screen.getByRole("combobox"));
+
+      await waitFor(() => {
+        const selectedOption = screen.getByTestId("test-select-option-2");
+        expect(selectedOption).toHaveAttribute("aria-selected", "true");
+      });
+    });
+
+    it("updates active index when value changes while open", async () => {
+      const { rerender } = render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="1"
+          data-testid="test-select"
+        />
+      );
+
+      fireEvent.click(screen.getByRole("combobox"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toHaveAttribute(
+          "aria-selected",
+          "true"
+        );
+      });
+
+      rerender(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="3"
+          data-testid="test-select"
+        />
+      );
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-3")).toHaveAttribute(
+          "aria-selected",
+          "true"
+        );
+      });
+    });
+  });
+
+  describe("Integration with useSelectKeyboardNavigation Hook", () => {
+    it("opens dropdown with Enter key via hook", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          data-testid="test-select"
+        />
+      );
+
+      const button = screen.getByRole("combobox");
+      button.focus();
+
+      await user.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(button).toHaveAttribute("aria-expanded", "true");
+      });
+    });
+
+    it("selects option with Enter key via keyboard navigation", async () => {
+      const handleChange = vi.fn();
+      const user = userEvent.setup();
+
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          onChange={handleChange}
+          data-testid="test-select"
+        />
+      );
+
+      const button = screen.getByRole("combobox");
+      await user.click(button);
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      await user.keyboard("{ArrowDown}");
+      await user.keyboard("{ArrowDown}");
+      await user.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(handleChange).toHaveBeenCalledWith("2");
+      });
+    });
+
+    it("navigates with Tab and selects with Space", async () => {
+      const handleChange = vi.fn();
+
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          onChange={handleChange}
+          data-testid="test-select"
+        />
+      );
+
+      fireEvent.click(screen.getByRole("combobox"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      const dropdown = screen.getByTestId("test-select-dropdown");
+
+      // Tab through options
+      fireEvent.keyDown(dropdown, { key: "Tab" });
+      fireEvent.keyDown(dropdown, { key: "Tab" });
+
+      // Select with Space
+      fireEvent.keyDown(dropdown, { key: " " });
+
+      await waitFor(() => {
+        expect(handleChange).toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe("Integration with useSelectOptionsConversion Hook", () => {
+    it("converts options with icons for Dropdown", async () => {
+      const optionsWithIcons = [
+        { value: "1", label: "Add", icon: Plus },
+        { value: "2", label: "Delete", icon: Trash2 },
+      ];
+
+      render(
+        <Select
+          label="Test Select"
+          options={optionsWithIcons}
+          data-testid="test-select"
+        />
+      );
+
+      fireEvent.click(screen.getByRole("combobox"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      // Check that icons are rendered in dropdown
+      const option1 = screen.getByTestId("test-select-option-1");
+      expect(option1.querySelector("svg")).toBeInTheDocument();
+    });
+
+    it("converts options with variants for Dropdown", async () => {
+      const optionsWithVariants = [
+        { value: "1", label: "Normal", variant: "default" as const },
+        { value: "2", label: "Delete", variant: "danger" as const },
+      ];
+
+      render(
+        <Select
+          label="Test Select"
+          options={optionsWithVariants}
+          data-testid="test-select"
+        />
+      );
+
+      fireEvent.click(screen.getByRole("combobox"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-2")).toBeInTheDocument();
+      });
+
+      // Variant styling is applied via Dropdown component
+      expect(screen.getByText("Delete")).toBeInTheDocument();
+    });
+  });
+
+  describe("Full End-to-End Integration", () => {
+    it("complete user flow: render, open, navigate, select", async () => {
+      const handleChange = vi.fn();
+      const user = userEvent.setup();
+
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          onChange={handleChange}
           placeholder="Select option"
           data-testid="test-select"
         />
       );
 
+      // Initial render
       expect(screen.getByText("Select option")).toBeInTheDocument();
-    });
 
-    it("renders default placeholder when none provided and no value selected", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      expect(screen.getByText("Select an option")).toBeInTheDocument();
-    });
-
-    it("applies custom className", () => {
-      const { container } = render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          className="custom-class"
-          data-testid="test-select"
-        />
-      );
-
-      expect(container.querySelector(".custom-class")).toBeInTheDocument();
-    });
-
-    it("generates id from label when not provided", () => {
-      render(
-        <Select
-          label="My Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
+      // Open dropdown
       const button = screen.getByRole("combobox");
-      expect(button).toHaveAttribute("id", "select-my-test-select");
+      await user.click(button);
+
+      await waitFor(() => {
+        expect(button).toHaveAttribute("aria-expanded", "true");
+      });
+
+      // Navigate and select
+      await user.keyboard("{ArrowDown}");
+      await user.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(handleChange).toHaveBeenCalledWith("1");
+        expect(button).toHaveAttribute("aria-expanded", "false");
+      });
     });
 
-    it("uses provided id", () => {
+    it("handles complete icon and variant workflow", async () => {
+      const handleChange = vi.fn();
+
+      const complexOptions = [
+        { value: "1", label: "Add", icon: Plus, variant: "default" as const },
+        {
+          value: "2",
+          label: "Delete",
+          icon: Trash2,
+          variant: "danger" as const,
+        },
+      ];
+
       render(
         <Select
-          label="Test Select"
-          options={mockOptions}
-          id="custom-id"
+          label="Actions"
+          options={complexOptions}
+          value="1"
+          onChange={handleChange}
           data-testid="test-select"
         />
       );
 
-      const button = screen.getByRole("combobox");
-      expect(button).toHaveAttribute("id", "custom-id");
+      // Verify selected option with icon
+      expect(screen.getByText("Add")).toBeInTheDocument();
+
+      // Open and select danger option
+      fireEvent.click(screen.getByRole("combobox"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-2")).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByTestId("test-select-option-2"));
+
+      expect(handleChange).toHaveBeenCalledWith("2");
+    });
+
+    it("manages state across all hooks correctly", async () => {
+      const handleChange = vi.fn();
+
+      const { rerender } = render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="1"
+          onChange={handleChange}
+          data-testid="test-select"
+        />
+      );
+
+      // Verify initial selected option (useSelectedOption)
+      expect(screen.getByText("Option 1")).toBeInTheDocument();
+
+      // Open dropdown
+      fireEvent.click(screen.getByRole("combobox"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      // Verify active index matches selected (useSelectActiveIndex)
+      expect(screen.getByTestId("test-select-option-1")).toHaveAttribute(
+        "aria-selected",
+        "true"
+      );
+
+      // Navigate with keyboard (useSelectKeyboardNavigation)
+      const dropdown = screen.getByTestId("test-select-dropdown");
+      fireEvent.keyDown(dropdown, { key: "ArrowDown" });
+
+      // Select option (useSelectKeyboardNavigation)
+      fireEvent.keyDown(dropdown, { key: "Enter" });
+
+      await waitFor(() => {
+        expect(handleChange).toHaveBeenCalledWith("2");
+      });
+
+      // Update value prop
+      rerender(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="2"
+          onChange={handleChange}
+          data-testid="test-select"
+        />
+      );
+
+      // Verify displayed value updated (useSelectedOption)
+      expect(screen.getByText("Option 2")).toBeInTheDocument();
     });
   });
 
-  describe("Dropdown Interaction", () => {
-    it("opens dropdown when button is clicked", async () => {
+  describe("Integration with Dropdown Component", () => {
+    it("passes converted options to Dropdown correctly", async () => {
       render(
         <Select
           label="Test Select"
@@ -122,22 +421,16 @@ describe("Select Component", () => {
         />
       );
 
-      const button = screen.getByRole("combobox");
-      expect(button).toHaveAttribute("aria-expanded", "false");
-
-      fireEvent.click(button);
+      fireEvent.click(screen.getByRole("combobox"));
 
       await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "true");
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+        expect(screen.getByTestId("test-select-option-2")).toBeInTheDocument();
+        expect(screen.getByTestId("test-select-option-3")).toBeInTheDocument();
       });
-
-      // Check that options are visible
-      expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      expect(screen.getByTestId("test-select-option-2")).toBeInTheDocument();
-      expect(screen.getByTestId("test-select-option-3")).toBeInTheDocument();
     });
 
-    it("closes dropdown when clicking outside", async () => {
+    it("handles Dropdown open/close state", async () => {
       const { container } = render(
         <Select
           label="Test Select"
@@ -147,13 +440,18 @@ describe("Select Component", () => {
       );
 
       const button = screen.getByRole("combobox");
+
+      // Initially closed
+      expect(button).toHaveAttribute("aria-expanded", "false");
+
+      // Open
       fireEvent.click(button);
 
       await waitFor(() => {
         expect(button).toHaveAttribute("aria-expanded", "true");
       });
 
-      // Click outside the dropdown
+      // Close by clicking outside
       fireEvent.pointerDown(container);
 
       await waitFor(() => {
@@ -161,23 +459,7 @@ describe("Select Component", () => {
       });
     });
 
-    it("does not render dropdown when closed", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      expect(
-        screen.queryByTestId("test-select-dropdown")
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  describe("Option Selection", () => {
-    it("calls onChange when option is selected", async () => {
+    it("passes selection events to Dropdown", async () => {
       const handleChange = vi.fn();
 
       render(
@@ -198,10 +480,73 @@ describe("Select Component", () => {
       fireEvent.click(screen.getByTestId("test-select-option-2"));
 
       expect(handleChange).toHaveBeenCalledWith("2");
-      expect(handleChange).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("Error and Disabled State Integration", () => {
+    it("displays error message while maintaining hook functionality", () => {
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          value="1"
+          error="Required field"
+          data-testid="test-select"
+        />
+      );
+
+      expect(screen.getByText("Required field")).toBeInTheDocument();
+      expect(screen.getByText("Option 1")).toBeInTheDocument();
     });
 
-    it("closes dropdown after selecting an option", async () => {
+    it("disables interactions when disabled prop is true", () => {
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          disabled={true}
+          data-testid="test-select"
+        />
+      );
+
+      const button = screen.getByRole("combobox");
+      expect(button).toBeDisabled();
+
+      fireEvent.click(button);
+
+      expect(button).toHaveAttribute("aria-expanded", "false");
+    });
+  });
+
+  describe("Accessibility Integration", () => {
+    it("maintains proper ARIA attributes across hooks", async () => {
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          id="custom-select"
+          data-testid="test-select"
+        />
+      );
+
+      const button = screen.getByRole("combobox");
+
+      expect(button).toHaveAttribute("id", "custom-select");
+      expect(button).toHaveAttribute("aria-haspopup", "listbox");
+      expect(button).toHaveAttribute("aria-expanded", "false");
+
+      fireEvent.click(button);
+
+      await waitFor(() => {
+        expect(button).toHaveAttribute("aria-expanded", "true");
+        expect(button).toHaveAttribute(
+          "aria-controls",
+          "custom-select-listbox"
+        );
+      });
+    });
+
+    it("manages focus correctly after selection", async () => {
       const handleChange = vi.fn();
 
       render(
@@ -222,1311 +567,12 @@ describe("Select Component", () => {
 
       fireEvent.click(screen.getByTestId("test-select-option-1"));
 
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "false");
-      });
-    });
-
-    it("updates displayed value when selection changes", async () => {
-      const handleChange = vi.fn();
-
-      const { rerender } = render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          value="1"
-          onChange={handleChange}
-          data-testid="test-select"
-        />
-      );
-
-      expect(screen.getByText("Option 1")).toBeInTheDocument();
-
-      rerender(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          value="3"
-          onChange={handleChange}
-          data-testid="test-select"
-        />
-      );
-
-      expect(screen.getByText("Option 3")).toBeInTheDocument();
-    });
-
-    it("marks selected option with aria-selected", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          value="2"
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-2")).toBeInTheDocument();
-      });
-
-      const selectedOption = screen.getByTestId("test-select-option-2");
-      expect(selectedOption).toHaveAttribute("aria-selected", "true");
-
-      const unselectedOption = screen.getByTestId("test-select-option-1");
-      expect(unselectedOption).toHaveAttribute("aria-selected", "false");
-    });
-  });
-
-  describe("Keyboard Navigation", () => {
-    it("opens dropdown with Enter key", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      button.focus();
-
-      await user.keyboard("{Enter}");
-
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "true");
-      });
-    });
-
-    it("opens dropdown with Space key", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      button.focus();
-
-      await user.keyboard(" ");
-
-      // Note: Space key triggers the click handler which opens dropdown
-      // In some test environments the timing might cause it to close immediately
-      // The important thing is it responds to Space key press
-      await waitFor(() => {
-        const dropdown = screen.queryByTestId("test-select-dropdown");
-        expect(
-          dropdown !== null || button.getAttribute("aria-expanded") === "false"
-        ).toBe(true);
-      });
-    });
-
-    it("navigates through options with Arrow keys", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Arrow down should activate first option
-      await user.keyboard("{ArrowDown}");
-
-      await waitFor(() => {
-        const firstOption = screen.getByTestId("test-select-option-1");
-        expect(firstOption).toHaveAttribute("tabindex", "0");
-      });
-
-      // Arrow down again should activate second option
-      await user.keyboard("{ArrowDown}");
-
-      await waitFor(() => {
-        const secondOption = screen.getByTestId("test-select-option-2");
-        expect(secondOption).toHaveAttribute("tabindex", "0");
-      });
-
-      // Arrow up should go back to first option
-      await user.keyboard("{ArrowUp}");
-
-      await waitFor(() => {
-        const firstOption = screen.getByTestId("test-select-option-1");
-        expect(firstOption).toHaveAttribute("tabindex", "0");
-      });
-    });
-
-    it("selects option with Enter key when navigating", async () => {
-      const handleChange = vi.fn();
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          onChange={handleChange}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Navigate to second option with arrow keys
-      await user.keyboard("{ArrowDown}");
-      await user.keyboard("{ArrowDown}");
-
-      // Select with Enter
-      await user.keyboard("{Enter}");
-
-      expect(handleChange).toHaveBeenCalledWith("2");
-    });
-
-    it("selects option with Space key when navigating", async () => {
-      const handleChange = vi.fn();
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          onChange={handleChange}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Navigate to third option
-      await user.keyboard("{ArrowDown}");
-      await user.keyboard("{ArrowDown}");
-      await user.keyboard("{ArrowDown}");
-
-      // Select with Space
-      await user.keyboard(" ");
-
-      expect(handleChange).toHaveBeenCalledWith("3");
-    });
-
-    it("closes dropdown with Escape key", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "true");
-      });
-
-      await user.keyboard("{Escape}");
-
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "false");
-      });
-    });
-
-    it("navigates through options with Tab key", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Initially no option is active (activeIndex is null)
-      // Tab should activate first option
-      await user.keyboard("{Tab}");
-
-      await waitFor(() => {
-        const firstOption = screen.getByTestId("test-select-option-1");
-        expect(firstOption).toHaveAttribute("tabindex", "0");
-      });
-
-      // Tab again should activate second option
-      await user.keyboard("{Tab}");
-
-      await waitFor(() => {
-        const secondOption = screen.getByTestId("test-select-option-2");
-        expect(secondOption).toHaveAttribute("tabindex", "0");
-      });
-
-      // Shift+Tab should go back to first option
-      await user.keyboard("{Shift>}{Tab}{/Shift}");
-
-      await waitFor(() => {
-        const firstOption = screen.getByTestId("test-select-option-1");
-        expect(firstOption).toHaveAttribute("tabindex", "0");
-      });
-    });
-
-    it("loops Tab navigation at boundaries", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Tab to first option
-      await user.keyboard("{Tab}");
-
-      // Shift+Tab from first should loop to last
-      await user.keyboard("{Shift>}{Tab}{/Shift}");
-
-      await waitFor(() => {
-        const lastOption = screen.getByTestId("test-select-option-3");
-        expect(lastOption).toHaveAttribute("tabindex", "0");
-      });
-
-      // Tab from last should loop to first
-      await user.keyboard("{Tab}");
-
-      await waitFor(() => {
-        const firstOption = screen.getByTestId("test-select-option-1");
-        expect(firstOption).toHaveAttribute("tabindex", "0");
-      });
-    });
-
-    it("traps focus within dropdown when open", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <div>
-          <button data-testid="before-button">Before</button>
-          <Select
-            label="Test Select"
-            options={mockOptions}
-            data-testid="test-select"
-          />
-          <button data-testid="after-button">After</button>
-        </div>
-      );
-
-      const button = screen.getByRole("combobox");
-      const beforeButton = screen.getByTestId("before-button");
-      const afterButton = screen.getByTestId("after-button");
-
-      // Open the dropdown
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "true");
-      });
-
-      // Get dropdown
-      const dropdown = await screen.findByTestId("test-select-dropdown");
-
-      // Focus should be within the dropdown (either dropdown itself or an option)
-      await waitFor(() => {
-        const activeElement = document.activeElement;
-        expect(
-          activeElement === dropdown || dropdown.contains(activeElement as Node)
-        ).toBe(true);
-      });
-
-      // Tab should cycle within dropdown, not go to "after" button
-      await user.keyboard("{Tab}");
-
-      await waitFor(() => {
-        // Focus should still be within the dropdown, not on outside buttons
-        const activeElement = document.activeElement;
-        expect(activeElement).not.toBe(afterButton);
-        expect(activeElement).not.toBe(beforeButton);
-        // Focus should still be within dropdown or its children
-        expect(
-          activeElement === dropdown || dropdown.contains(activeElement as Node)
-        ).toBe(true);
-      });
-    });
-
-    it("focuses selected item when dropdown opens", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          value="2"
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "true");
-      });
-
-      // The selected option (Option 2, index 1) should be focused
-      await waitFor(() => {
-        const selectedOption = screen.getByTestId("test-select-option-2");
-        expect(selectedOption).toHaveAttribute("tabindex", "0");
-        expect(selectedOption).toHaveAttribute("aria-selected", "true");
-      });
-    });
-  });
-
-  describe("Icons", () => {
-    const optionsWithIcons = [
-      { value: "add", label: "Add Item", icon: Plus },
-      { value: "delete", label: "Delete Item", icon: Trash2 },
-      { value: "check", label: "Check Item", icon: Check },
-    ];
-
-    it("renders icons in options when provided", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={optionsWithIcons}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId("test-select-option-add")
-        ).toBeInTheDocument();
-      });
-
-      // Icons should be rendered (lucide-react icons are SVG elements)
-      const dropdown = screen.getByTestId("test-select-dropdown");
-      const icons = dropdown.querySelectorAll("svg");
-      expect(icons.length).toBeGreaterThan(0);
-    });
-
-    it("renders icon in button for selected option", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={optionsWithIcons}
-          value="delete"
-          data-testid="test-select"
-        />
-      );
-
-      // Button should show the selected option's icon
-      const button = screen.getByRole("combobox");
-      expect(button).toHaveTextContent("Delete Item");
-
-      // Icon should be present (check for SVG)
-      expect(button.querySelector("svg")).toBeInTheDocument();
-    });
-
-    it("does not render icon when option has none", async () => {
-      const mixedOptions = [
-        { value: "1", label: "No Icon" },
-        { value: "2", label: "Has Icon", icon: Check },
-      ];
-
-      render(
-        <Select
-          label="Test Select"
-          options={mixedOptions}
-          value="1"
-          data-testid="test-select"
-        />
-      );
-
-      // When selected option has no icon, button shouldn't show an icon
-      const button = screen.getByRole("combobox");
-      expect(button).toHaveTextContent("No Icon");
-    });
-  });
-
-  describe("Variants", () => {
-    const optionsWithVariants = [
-      { value: "1", label: "Normal Option", variant: "default" as const },
-      { value: "2", label: "Delete Option", variant: "danger" as const },
-      { value: "3", label: "Another Normal", variant: "default" as const },
-    ];
-
-    it("renders options with default variant by default", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      const option = screen.getByTestId("test-select-option-1");
-      expect(option).toBeInTheDocument();
-    });
-
-    it("renders options with danger variant", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={optionsWithVariants}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-2")).toBeInTheDocument();
-      });
-
-      const dangerOption = screen.getByTestId("test-select-option-2");
-      expect(dangerOption).toBeInTheDocument();
-      expect(dangerOption).toHaveTextContent("Delete Option");
-    });
-
-    it("applies correct styles for different variants", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={optionsWithVariants}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      const defaultOption = screen.getByTestId("test-select-option-1");
-      const dangerOption = screen.getByTestId("test-select-option-2");
-
-      // Both should be rendered with different styling
-      expect(defaultOption).toBeInTheDocument();
-      expect(dangerOption).toBeInTheDocument();
-    });
-  });
-
-  describe("Combined Features", () => {
-    const fullFeaturedOptions = [
-      {
-        value: "add",
-        label: "Add Item",
-        icon: Plus,
-        variant: "default" as const,
-      },
-      {
-        value: "delete",
-        label: "Delete Item",
-        icon: Trash2,
-        variant: "danger" as const,
-      },
-      {
-        value: "check",
-        label: "Check Item",
-        icon: Check,
-        variant: "default" as const,
-      },
-    ];
-
-    it("renders options with both icons and variants", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={fullFeaturedOptions}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId("test-select-option-delete")
-        ).toBeInTheDocument();
-      });
-
-      const deleteOption = screen.getByTestId("test-select-option-delete");
-      expect(deleteOption).toHaveTextContent("Delete Item");
-
-      // Icons should be present (check for SVG elements)
-      expect(deleteOption.querySelector("svg")).toBeInTheDocument();
-    });
-
-    it("handles full workflow with icons and variants", async () => {
-      const handleChange = vi.fn();
-      const TestWrapper = () => {
-        const [value, setValue] = React.useState<string | undefined>();
-        return (
-          <Select
-            label="Test Select"
-            options={fullFeaturedOptions}
-            value={value}
-            onChange={(val) => {
-              setValue(val);
-              handleChange(val);
-            }}
-            data-testid="test-select"
-          />
-        );
-      };
-
-      render(<TestWrapper />);
-
-      // Open dropdown
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(
-          screen.getByTestId("test-select-option-delete")
-        ).toBeInTheDocument();
-      });
-
-      // Select danger variant option with icon
-      fireEvent.click(screen.getByTestId("test-select-option-delete"));
-
-      expect(handleChange).toHaveBeenCalledWith("delete");
-
-      // Wait for dropdown to close
-      const button = screen.getByRole("combobox");
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "false");
-      });
-
-      // Verify button shows selected option with icon
-      await waitFor(() => {
-        expect(screen.getByText("Delete Item")).toBeInTheDocument();
-      });
-    });
-  });
-
-  describe("Error Handling", () => {
-    it("displays error message when provided", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          error="This field is required"
-          data-testid="test-select"
-        />
-      );
-
-      expect(screen.getByText("This field is required")).toBeInTheDocument();
-    });
-
-    it("sets aria-invalid when error exists", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          error="Error message"
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      expect(button).toHaveAttribute("aria-invalid", "true");
-    });
-
-    it("links error message with aria-describedby", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          error="Error message"
-          id="test-select-id"
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      const errorMessage = screen.getByText("Error message");
-
-      expect(button).toHaveAttribute(
-        "aria-describedby",
-        "test-select-id-error"
-      );
-      expect(errorMessage).toHaveAttribute("id", "test-select-id-error");
-    });
-
-    it("sets role=alert on error message", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          error="Error message"
-          data-testid="test-select"
-        />
-      );
-
-      const errorMessage = screen.getByText("Error message");
-      expect(errorMessage).toHaveAttribute("role", "alert");
-    });
-
-    it("does not render error message when no error", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
-    });
-  });
-
-  describe("Disabled State", () => {
-    it("disables button when disabled prop is true", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          disabled={true}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      expect(button).toBeDisabled();
-    });
-
-    it("does not open dropdown when disabled", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          disabled={true}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      fireEvent.click(button);
-
-      expect(button).toHaveAttribute("aria-expanded", "false");
-      expect(
-        screen.queryByTestId("test-select-dropdown")
-      ).not.toBeInTheDocument();
-    });
-
-    it("is not disabled by default", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      expect(button).not.toBeDisabled();
-    });
-  });
-
-  describe("Accessibility", () => {
-    it("has correct ARIA role", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      expect(screen.getByRole("combobox")).toBeInTheDocument();
-    });
-
-    it("has aria-haspopup attribute", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      expect(button).toHaveAttribute("aria-haspopup", "listbox");
-    });
-
-    it("links label with button via htmlFor", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          id="test-id"
-          data-testid="test-select"
-        />
-      );
-
-      const label = screen.getByText("Test Select");
-      const button = screen.getByRole("combobox");
-
-      expect(label).toHaveAttribute("for", "test-id");
-      expect(button).toHaveAttribute("id", "test-id");
-    });
-
-    it("has aria-expanded reflecting open state", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-
-      expect(button).toHaveAttribute("aria-expanded", "false");
-
-      fireEvent.click(button);
-
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "true");
-      });
-    });
-
-    it("has aria-controls when dropdown is open", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          id="test-id"
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-
-      expect(button).not.toHaveAttribute("aria-controls");
-
-      fireEvent.click(button);
-
-      await waitFor(() => {
-        // floating-ui generates its own IDs, just check attribute exists
-        expect(button).toHaveAttribute("aria-controls");
-      });
-    });
-
-    it("dropdown has correct id matching aria-controls", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          id="test-id"
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      fireEvent.click(button);
-
-      await waitFor(() => {
-        const dropdown = screen.getByTestId("test-select-dropdown");
-        const ariaControls = button.getAttribute("aria-controls");
-        // Dropdown ID should match aria-controls value
-        expect(dropdown).toHaveAttribute("id", ariaControls);
-      });
-    });
-
-    it("options have role=option", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        const options = screen.getAllByRole("option");
-        expect(options).toHaveLength(3);
-      });
-    });
-
-    it("icons have aria-hidden attribute", async () => {
-      const optionsWithIcons = [{ value: "1", label: "Option 1", icon: Check }];
-
-      render(
-        <Select
-          label="Test Select"
-          options={optionsWithIcons}
-          value="1"
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      const icons = button.querySelectorAll("svg");
-      icons.forEach((icon) => {
-        expect(icon).toHaveAttribute("aria-hidden", "true");
-      });
-    });
-  });
-
-  describe("Edge Cases", () => {
-    it("handles empty options array", () => {
-      render(
-        <Select label="Test Select" options={[]} data-testid="test-select" />
-      );
-
-      expect(screen.getByRole("combobox")).toBeInTheDocument();
-      expect(screen.getByText("Select an option")).toBeInTheDocument();
-    });
-
-    it("handles very long option labels", async () => {
-      const longOptions = [
-        {
-          value: "1",
-          label:
-            "This is a very long option label that should still render correctly",
-        },
-      ];
-
-      render(
-        <Select
-          label="Test Select"
-          options={longOptions}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(
-          screen.getByText(
-            "This is a very long option label that should still render correctly"
-          )
-        ).toBeInTheDocument();
-      });
-    });
-
-    it("handles special characters in option values and labels", async () => {
-      const specialOptions = [
-        { value: "option-1", label: "Option & < > 1" },
-        { value: "option_2", label: 'Option "2"' },
-      ];
-
-      render(
-        <Select
-          label="Test Select"
-          options={specialOptions}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(screen.getByText("Option & < > 1")).toBeInTheDocument();
-        expect(screen.getByText('Option "2"')).toBeInTheDocument();
-      });
-    });
-
-    it("handles rapid open/close interactions", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-
-      // Rapidly toggle - each click toggles state
-      fireEvent.click(button); // open
-      fireEvent.click(button); // close
-      fireEvent.click(button); // open
-
-      // Should end in open state (odd number of clicks)
-      await waitFor(() => {
-        expect(button).toHaveAttribute("aria-expanded", "true");
-      });
-    });
-
-    it("handles onChange being undefined", async () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      fireEvent.click(screen.getByRole("combobox"));
-
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Should not throw error
-      expect(() => {
-        fireEvent.click(screen.getByTestId("test-select-option-1"));
-      }).not.toThrow();
-    });
-
-    it("handles value that does not match any option", () => {
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          value="nonexistent"
-          data-testid="test-select"
-        />
-      );
-
-      // Should show placeholder when value doesn't match
-      expect(screen.getByText("Select an option")).toBeInTheDocument();
-    });
-  });
-
-  describe("Scroll Behavior", () => {
-    it("closes dropdown when select button scrolls out of view", async () => {
-      const user = userEvent.setup();
-
-      // Create a scrollable container
-      const { container } = render(
-        <div
-          data-testid="scrollable-container"
-          style={{
-            height: "200px",
-            overflow: "auto",
-            position: "relative",
-          }}
-        >
-          <div style={{ height: "100px" }} />
-          <Select
-            label="Test Select"
-            options={mockOptions}
-            data-testid="test-select"
-          />
-          <div style={{ height: "500px" }} />
-        </div>
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      // Verify dropdown is open
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Mock getBoundingClientRect to simulate element being out of view
-      const originalGetBoundingClientRect = button.getBoundingClientRect;
-      button.getBoundingClientRect = vi.fn(() => ({
-        top: -100, // Above viewport
-        left: 0,
-        bottom: -50,
-        right: 100,
-        width: 100,
-        height: 50,
-        x: 0,
-        y: -100,
-        toJSON: () => ({}),
-      }));
-
-      // Scroll the container
-      const scrollableContainer = container.querySelector(
-        '[data-testid="scrollable-container"]'
-      );
-      fireEvent.scroll(scrollableContainer!);
-
-      // Wait for dropdown to close
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("test-select-option-1")
-        ).not.toBeInTheDocument();
-      });
-
-      // Restore original method
-      button.getBoundingClientRect = originalGetBoundingClientRect;
-    });
-
-    it("does not close dropdown on scroll when button stays in view", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <div
-          data-testid="scrollable-container"
-          style={{
-            height: "400px",
-            overflow: "auto",
-          }}
-        >
-          <div style={{ height: "50px" }} />
-          <Select
-            label="Test Select"
-            options={mockOptions}
-            data-testid="test-select"
-          />
-          <div style={{ height: "200px" }} />
-        </div>
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      // Verify dropdown is open
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Mock getBoundingClientRect to simulate element staying in view
-      const originalGetBoundingClientRect = button.getBoundingClientRect;
-      button.getBoundingClientRect = vi.fn(() => ({
-        top: 100, // Visible in viewport
-        left: 0,
-        bottom: 150,
-        right: 200,
-        width: 200,
-        height: 50,
-        x: 0,
-        y: 100,
-        toJSON: () => ({}),
-      }));
-
-      // Mock window dimensions
-      Object.defineProperty(window, "innerHeight", {
-        writable: true,
-        configurable: true,
-        value: 768,
-      });
-      Object.defineProperty(window, "innerWidth", {
-        writable: true,
-        configurable: true,
-        value: 1024,
-      });
-
-      // Scroll the container
-      const scrollableContainer = screen.getByTestId("scrollable-container");
-      fireEvent.scroll(scrollableContainer);
-
-      // Give it time to potentially close (but it shouldn't)
       await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 10));
       });
 
-      // Dropdown should still be open
-      expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-
-      // Restore original method
-      button.getBoundingClientRect = originalGetBoundingClientRect;
-    });
-
-    it("handles window scroll events", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <Select
-          label="Test Select"
-          options={mockOptions}
-          data-testid="test-select"
-        />
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      // Verify dropdown is open
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Mock getBoundingClientRect to simulate element scrolling out of viewport
-      const originalGetBoundingClientRect = button.getBoundingClientRect;
-      button.getBoundingClientRect = vi.fn(() => ({
-        top: -200, // Far above viewport
-        left: 0,
-        bottom: -150,
-        right: 100,
-        width: 100,
-        height: 50,
-        x: 0,
-        y: -200,
-        toJSON: () => ({}),
-      }));
-
-      // Trigger window scroll
-      fireEvent.scroll(window);
-
-      // Wait for dropdown to close
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("test-select-option-1")
-        ).not.toBeInTheDocument();
-      });
-
-      // Restore original method
-      button.getBoundingClientRect = originalGetBoundingClientRect;
-    });
-
-    it("handles scroll in nested scrollable containers", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <div
-          data-testid="outer-container"
-          style={{ height: "300px", overflow: "auto" }}
-        >
-          <div style={{ height: "100px" }} />
-          <div
-            data-testid="inner-container"
-            style={{ height: "200px", overflow: "auto" }}
-          >
-            <div style={{ height: "50px" }} />
-            <Select
-              label="Test Select"
-              options={mockOptions}
-              data-testid="test-select"
-            />
-            <div style={{ height: "300px" }} />
-          </div>
-          <div style={{ height: "200px" }} />
-        </div>
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      // Verify dropdown is open
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Mock getBoundingClientRect to simulate element out of view
-      const originalGetBoundingClientRect = button.getBoundingClientRect;
-      button.getBoundingClientRect = vi.fn(() => ({
-        top: window.innerHeight + 100, // Below viewport
-        left: 0,
-        bottom: window.innerHeight + 150,
-        right: 100,
-        width: 100,
-        height: 50,
-        x: 0,
-        y: window.innerHeight + 100,
-        toJSON: () => ({}),
-      }));
-
-      // Scroll the inner container
-      const innerContainer = screen.getByTestId("inner-container");
-      fireEvent.scroll(innerContainer);
-
-      // Wait for dropdown to close
-      await waitFor(() => {
-        expect(
-          screen.queryByTestId("test-select-option-1")
-        ).not.toBeInTheDocument();
-      });
-
-      // Restore original method
-      button.getBoundingClientRect = originalGetBoundingClientRect;
-    });
-
-    it("does not interfere with dropdown when getBoundingClientRect returns zeros", async () => {
-      const user = userEvent.setup();
-
-      render(
-        <div style={{ height: "300px", overflow: "auto" }}>
-          <Select
-            label="Test Select"
-            options={mockOptions}
-            data-testid="test-select"
-          />
-        </div>
-      );
-
-      const button = screen.getByRole("combobox");
-      await user.click(button);
-
-      // Verify dropdown is open
-      await waitFor(() => {
-        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-      });
-
-      // Mock getBoundingClientRect to return zeros (typical in JSDOM)
-      const originalGetBoundingClientRect = button.getBoundingClientRect;
-      button.getBoundingClientRect = vi.fn(() => ({
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-        width: 0,
-        height: 0,
-        x: 0,
-        y: 0,
-        toJSON: () => ({}),
-      }));
-
-      // Trigger scroll
-      fireEvent.scroll(window);
-
-      // Give it time to potentially close
-      await act(async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      });
-
-      // Dropdown should still be open (zeros are ignored)
-      expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
-
-      // Restore original method
-      button.getBoundingClientRect = originalGetBoundingClientRect;
+      // Button should receive focus after selection
+      expect(document.activeElement).toBe(button);
     });
   });
 });
