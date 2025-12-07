@@ -1,6 +1,12 @@
 import React from "react";
 import { describe, it, expect, vi } from "vitest";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  act,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Trash2, Plus, Check } from "lucide-react";
 import { Select } from "../Select";
@@ -1227,6 +1233,300 @@ describe("Select Component", () => {
 
       // Should show placeholder when value doesn't match
       expect(screen.getByText("Select an option")).toBeInTheDocument();
+    });
+  });
+
+  describe("Scroll Behavior", () => {
+    it("closes dropdown when select button scrolls out of view", async () => {
+      const user = userEvent.setup();
+
+      // Create a scrollable container
+      const { container } = render(
+        <div
+          data-testid="scrollable-container"
+          style={{
+            height: "200px",
+            overflow: "auto",
+            position: "relative",
+          }}
+        >
+          <div style={{ height: "100px" }} />
+          <Select
+            label="Test Select"
+            options={mockOptions}
+            data-testid="test-select"
+          />
+          <div style={{ height: "500px" }} />
+        </div>
+      );
+
+      const button = screen.getByRole("combobox");
+      await user.click(button);
+
+      // Verify dropdown is open
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      // Mock getBoundingClientRect to simulate element being out of view
+      const originalGetBoundingClientRect = button.getBoundingClientRect;
+      button.getBoundingClientRect = vi.fn(() => ({
+        top: -100, // Above viewport
+        left: 0,
+        bottom: -50,
+        right: 100,
+        width: 100,
+        height: 50,
+        x: 0,
+        y: -100,
+        toJSON: () => ({}),
+      }));
+
+      // Scroll the container
+      const scrollableContainer = container.querySelector(
+        '[data-testid="scrollable-container"]'
+      );
+      fireEvent.scroll(scrollableContainer!);
+
+      // Wait for dropdown to close
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("test-select-option-1")
+        ).not.toBeInTheDocument();
+      });
+
+      // Restore original method
+      button.getBoundingClientRect = originalGetBoundingClientRect;
+    });
+
+    it("does not close dropdown on scroll when button stays in view", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <div
+          data-testid="scrollable-container"
+          style={{
+            height: "400px",
+            overflow: "auto",
+          }}
+        >
+          <div style={{ height: "50px" }} />
+          <Select
+            label="Test Select"
+            options={mockOptions}
+            data-testid="test-select"
+          />
+          <div style={{ height: "200px" }} />
+        </div>
+      );
+
+      const button = screen.getByRole("combobox");
+      await user.click(button);
+
+      // Verify dropdown is open
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      // Mock getBoundingClientRect to simulate element staying in view
+      const originalGetBoundingClientRect = button.getBoundingClientRect;
+      button.getBoundingClientRect = vi.fn(() => ({
+        top: 100, // Visible in viewport
+        left: 0,
+        bottom: 150,
+        right: 200,
+        width: 200,
+        height: 50,
+        x: 0,
+        y: 100,
+        toJSON: () => ({}),
+      }));
+
+      // Mock window dimensions
+      Object.defineProperty(window, "innerHeight", {
+        writable: true,
+        configurable: true,
+        value: 768,
+      });
+      Object.defineProperty(window, "innerWidth", {
+        writable: true,
+        configurable: true,
+        value: 1024,
+      });
+
+      // Scroll the container
+      const scrollableContainer = screen.getByTestId("scrollable-container");
+      fireEvent.scroll(scrollableContainer);
+
+      // Give it time to potentially close (but it shouldn't)
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
+
+      // Dropdown should still be open
+      expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+
+      // Restore original method
+      button.getBoundingClientRect = originalGetBoundingClientRect;
+    });
+
+    it("handles window scroll events", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <Select
+          label="Test Select"
+          options={mockOptions}
+          data-testid="test-select"
+        />
+      );
+
+      const button = screen.getByRole("combobox");
+      await user.click(button);
+
+      // Verify dropdown is open
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      // Mock getBoundingClientRect to simulate element scrolling out of viewport
+      const originalGetBoundingClientRect = button.getBoundingClientRect;
+      button.getBoundingClientRect = vi.fn(() => ({
+        top: -200, // Far above viewport
+        left: 0,
+        bottom: -150,
+        right: 100,
+        width: 100,
+        height: 50,
+        x: 0,
+        y: -200,
+        toJSON: () => ({}),
+      }));
+
+      // Trigger window scroll
+      fireEvent.scroll(window);
+
+      // Wait for dropdown to close
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("test-select-option-1")
+        ).not.toBeInTheDocument();
+      });
+
+      // Restore original method
+      button.getBoundingClientRect = originalGetBoundingClientRect;
+    });
+
+    it("handles scroll in nested scrollable containers", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <div
+          data-testid="outer-container"
+          style={{ height: "300px", overflow: "auto" }}
+        >
+          <div style={{ height: "100px" }} />
+          <div
+            data-testid="inner-container"
+            style={{ height: "200px", overflow: "auto" }}
+          >
+            <div style={{ height: "50px" }} />
+            <Select
+              label="Test Select"
+              options={mockOptions}
+              data-testid="test-select"
+            />
+            <div style={{ height: "300px" }} />
+          </div>
+          <div style={{ height: "200px" }} />
+        </div>
+      );
+
+      const button = screen.getByRole("combobox");
+      await user.click(button);
+
+      // Verify dropdown is open
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      // Mock getBoundingClientRect to simulate element out of view
+      const originalGetBoundingClientRect = button.getBoundingClientRect;
+      button.getBoundingClientRect = vi.fn(() => ({
+        top: window.innerHeight + 100, // Below viewport
+        left: 0,
+        bottom: window.innerHeight + 150,
+        right: 100,
+        width: 100,
+        height: 50,
+        x: 0,
+        y: window.innerHeight + 100,
+        toJSON: () => ({}),
+      }));
+
+      // Scroll the inner container
+      const innerContainer = screen.getByTestId("inner-container");
+      fireEvent.scroll(innerContainer);
+
+      // Wait for dropdown to close
+      await waitFor(() => {
+        expect(
+          screen.queryByTestId("test-select-option-1")
+        ).not.toBeInTheDocument();
+      });
+
+      // Restore original method
+      button.getBoundingClientRect = originalGetBoundingClientRect;
+    });
+
+    it("does not interfere with dropdown when getBoundingClientRect returns zeros", async () => {
+      const user = userEvent.setup();
+
+      render(
+        <div style={{ height: "300px", overflow: "auto" }}>
+          <Select
+            label="Test Select"
+            options={mockOptions}
+            data-testid="test-select"
+          />
+        </div>
+      );
+
+      const button = screen.getByRole("combobox");
+      await user.click(button);
+
+      // Verify dropdown is open
+      await waitFor(() => {
+        expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+      });
+
+      // Mock getBoundingClientRect to return zeros (typical in JSDOM)
+      const originalGetBoundingClientRect = button.getBoundingClientRect;
+      button.getBoundingClientRect = vi.fn(() => ({
+        top: 0,
+        left: 0,
+        bottom: 0,
+        right: 0,
+        width: 0,
+        height: 0,
+        x: 0,
+        y: 0,
+        toJSON: () => ({}),
+      }));
+
+      // Trigger scroll
+      fireEvent.scroll(window);
+
+      // Give it time to potentially close
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
+
+      // Dropdown should still be open (zeros are ignored)
+      expect(screen.getByTestId("test-select-option-1")).toBeInTheDocument();
+
+      // Restore original method
+      button.getBoundingClientRect = originalGetBoundingClientRect;
     });
   });
 });

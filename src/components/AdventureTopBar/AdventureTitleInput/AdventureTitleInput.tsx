@@ -83,6 +83,7 @@ export const AdventureTitleInput = ({
   return (
     <TopBarTitleInput
       type="text"
+      name="adventure-title"
       value={displayTitle}
       onChange={handleTitleChange}
       onBlur={handleTitleBlur}

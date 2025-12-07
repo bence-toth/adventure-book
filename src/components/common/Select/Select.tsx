@@ -102,7 +102,66 @@ export const Select = ({
     [click, dismiss, role, listNavigation]
   );
 
-  // Set active index to selected item when dropdown opens
+  // Close dropdown when select button scrolls out of view
+  useEffect(() => {
+    if (!isOpen || !refs.reference.current) return;
+
+    const referenceElement = refs.reference.current;
+
+    // Only works with real DOM elements, not virtual elements
+    if (!("parentElement" in referenceElement)) return;
+
+    const checkVisibility = () => {
+      const rect = referenceElement.getBoundingClientRect();
+
+      // Skip check in test environment where getBoundingClientRect returns zeros
+      if (rect.width === 0 && rect.height === 0) return;
+
+      const isVisible =
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= window.innerHeight &&
+        rect.right <= window.innerWidth;
+
+      if (!isVisible) {
+        setIsOpen(false);
+      }
+    };
+
+    // Check on scroll events
+    const handleScroll = () => {
+      checkVisibility();
+    };
+
+    // Add scroll listeners to all scrollable ancestors
+    let element = referenceElement.parentElement;
+    const scrollElements: Element[] = [];
+
+    while (element) {
+      const style = window.getComputedStyle(element);
+      const isScrollable =
+        style.overflow === "auto" ||
+        style.overflow === "scroll" ||
+        style.overflowY === "auto" ||
+        style.overflowY === "scroll";
+
+      if (isScrollable) {
+        scrollElements.push(element);
+        element.addEventListener("scroll", handleScroll);
+      }
+      element = element.parentElement;
+    }
+
+    // Also listen to window scroll
+    window.addEventListener("scroll", handleScroll, true);
+
+    return () => {
+      scrollElements.forEach((el) => {
+        el.removeEventListener("scroll", handleScroll);
+      });
+      window.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [isOpen, refs.reference]); // Set active index to selected item when dropdown opens
   useEffect(() => {
     if (isOpen) {
       const selectedIndex = options.findIndex((opt) => opt.value === value);
@@ -225,7 +284,7 @@ export const Select = ({
 
       {isOpen && (
         <FloatingPortal>
-          <FloatingFocusManager context={context} modal={true}>
+          <FloatingFocusManager context={context} modal={false}>
             <SelectDropdown
               // Callback ref to set the floating element, safe to use in render
               // eslint-disable-next-line react-hooks/refs
